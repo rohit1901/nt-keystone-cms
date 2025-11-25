@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "keystone dev",
-    "start": "keystone start",
     "build": "keystone build",
-    "seed": "ts-node --transpile-only seed.ts"
+    "seed": "ts-node --transpile-only seed.ts",
+    "postinstall": "keystone postinstall",
+    "generate": "keystone prisma migrate dev",
+    "start": "keystone start --with-migrations"
   },
   "dependencies": {
     "@keystone-6/auth": "^8.0.0",

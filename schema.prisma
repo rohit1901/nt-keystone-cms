@@ -19,110 +19,245 @@ model User {
   createdAt DateTime? @default(now())
 }
 
-model Certification {
-  id          String @id @default(cuid())
-  title       String @default("")
-  description String @default("")
-  image       String @default("")
-  link        String @default("")
-  width       Int?
-  height      Int?
+model CTA {
+  id                      String        @id @default(cuid())
+  label                   String        @default("")
+  href                    String        @default("")
+  external                Boolean       @default(false)
+  from_FooterPart_items   FooterPart[]  @relation("FooterPart_items")
+  from_Section_contentCTA Section[]     @relation("Section_contentCTA")
+  from_PageContent_cta    PageContent[] @relation("PageContent_cta")
 }
 
-model Benefit {
-  id                         String         @id @default(cuid())
-  icon                       String         @default("")
-  title                      String         @default("")
-  description                String         @default("")
-  from_StandardPage_benefits StandardPage[] @relation("StandardPage_benefits")
+model HeroBannerAdditional {
+  id                         String       @id @default(cuid())
+  icon                       String       @default("")
+  text                       String       @default("")
+  from_HeroBanner_additional HeroBanner[] @relation("HeroBanner_additional")
 }
 
-model Testimonial {
-  id       String  @id @default(cuid())
-  name     String  @default("")
-  role     String  @default("")
-  company  String  @default("")
-  content  String  @default("")
-  rating   Int?
-  imageUrl String  @default("")
-  badge    String? @default("{\"icon\":\"\",\"label\":\"\"}")
-}
+model HeroBanner {
+  id               String                @id @default(cuid())
+  label            String                @default("")
+  href             String                @default("")
+  external         Boolean               @default(false)
+  additional       HeroBannerAdditional? @relation("HeroBanner_additional", fields: [additionalId], references: [id])
+  additionalId     String?               @map("additional")
+  from_Hero_banner Hero[]                @relation("Hero_banner")
 
-model FaqItem {
-  id                     String         @id @default(cuid())
-  question               String         @default("")
-  answer                 String         @default("")
-  from_StandardPage_faqs StandardPage[] @relation("StandardPage_faqs")
+  @@index([additionalId])
 }
 
 model Hero {
-  id           String  @id @default(cuid())
-  subHeading   String  @default("")
-  ctaLabel     String  @default("")
-  ctaHref      String  @default("")
-  ctaExternal  Boolean @default(false)
-  bannerConfig String? @default("{\"icon\":\"RiFlagLine\",\"additional\":{\"icon\":\"RiStarLine\",\"text\":\"New Feature\"}}")
+  id                       String      @id @default(cuid())
+  subHeading               String      @default("")
+  banner                   HeroBanner? @relation("Hero_banner", fields: [bannerId], references: [id])
+  bannerId                 String?     @map("banner")
+  from_Section_contentHero Section[]   @relation("Section_contentHero")
+
+  @@index([bannerId])
 }
 
-model NavigationItem {
-  id          String         @id @default(cuid())
-  icon        String         @default("")
-  ctaLabel    String         @default("")
-  ctaHref     String         @default("")
-  ctaExternal Boolean        @default(false)
-  section     FooterSection? @relation("NavigationItem_section", fields: [sectionId], references: [id])
-  sectionId   String?        @map("section")
-
-  @@index([sectionId])
+model Benefit {
+  id                           String    @id @default(cuid())
+  icon                         String    @default("")
+  title                        String    @default("")
+  description                  String    @default("")
+  from_Section_contentBenefits Section[] @relation("Section_contentBenefits")
 }
 
-model FooterSection {
-  id    String           @id @default(cuid())
-  title String           @default("")
-  items NavigationItem[] @relation("NavigationItem_section")
+model FaqItem {
+  id                       String    @id @default(cuid())
+  question                 String    @default("")
+  answer                   String    @default("")
+  from_Section_contentFaqs Section[] @relation("Section_contentFaqs")
+}
+
+model Certification {
+  id                                 String    @id @default(cuid())
+  title                              String    @default("")
+  description                        String    @default("")
+  image                              String    @default("")
+  link                               String    @default("")
+  width                              String    @default("")
+  height                             String    @default("")
+  from_Section_contentCertifications Section[] @relation("Section_contentCertifications")
+}
+
+model Testimonial {
+  id                               String    @id @default(cuid())
+  badgeIcon                        String    @default("")
+  badgeLabel                       String    @default("")
+  name                             String    @default("")
+  role                             String    @default("")
+  company                          String    @default("")
+  imageSrc                         String    @default("")
+  imageAlt                         String    @default("")
+  imageWidth                       String    @default("")
+  imageHeight                      String    @default("")
+  imageClassName                   String    @default("")
+  content                          String    @default("")
+  from_Section_contentTestimonials Section[] @relation("Section_contentTestimonials")
+}
+
+model FeatureSection {
+  id                           String    @id @default(cuid())
+  title                        String    @default("")
+  description                  String    @default("")
+  longDescription              String    @default("")
+  visualization                String    @default("")
+  from_Section_contentFeatures Section[] @relation("Section_contentFeatures")
 }
 
 model ApproachStep {
-  id           String  @id @default(cuid())
-  title        String  @default("")
-  description  String  @default("")
-  activityTime String  @default("")
-  type         String?
-  stepOrder    Int?
+  id                                String    @id @default(cuid())
+  type                              String?
+  title                             String    @default("")
+  description                       String    @default("")
+  activityTime                      String    @default("")
+  from_Section_contentApproachSteps Section[] @relation("Section_contentApproachSteps")
 }
 
-model AnalyticsReport {
-  id            String                 @id @default(cuid())
-  heading       String                 @default("")
-  subheading    String                 @default("")
-  stats         String?                @default("{\"totalDeployments\":\"0\",\"deploymentChange\":\"+0\",\"deploymentChangePercent\":\"0%\",\"changePeriod\":\"Last 30 days\"}")
-  tableHeadings String?                @default("[]")
-  summaryItems  AnalyticsSummaryItem[] @relation("AnalyticsReport_summaryItems")
+model Language {
+  id    String  @id @default(cuid())
+  label String?
+  value String?
+}
+
+model NavigationSectionItem {
+  id                           String              @id @default(cuid())
+  label                        String              @default("")
+  href                         String              @default("")
+  external                     Boolean             @default(false)
+  icon                         String              @default("")
+  from_NavigationSection_items NavigationSection[] @relation("NavigationSection_items")
+}
+
+model NavigationSection {
+  id                             String                  @id @default(cuid())
+  items                          NavigationSectionItem[] @relation("NavigationSection_items")
+  from_Section_contentNavigation Section[]               @relation("Section_contentNavigation")
+}
+
+model FooterPart {
+  id                          String          @id @default(cuid())
+  title                       String          @default("")
+  items                       CTA[]           @relation("FooterPart_items")
+  from_FooterSection_sections FooterSection[] @relation("FooterSection_sections")
+}
+
+model FooterSection {
+  id                                 String       @id @default(cuid())
+  title                              String       @default("")
+  sections                           FooterPart[] @relation("FooterSection_sections")
+  from_Section_contentFooterSections Section[]    @relation("Section_contentFooterSections")
+}
+
+model AnalyticsStat {
+  id                          String             @id @default(cuid())
+  totalDeployments            String             @default("")
+  deploymentChange            String             @default("")
+  deploymentChangePercent     String             @default("")
+  changePeriod                String             @default("")
+  from_AnalyticsSection_stats AnalyticsSection[] @relation("AnalyticsSection_stats")
 }
 
 model AnalyticsSummaryItem {
-  id                                String            @id @default(cuid())
-  name                              String            @default("")
-  deployments                       String            @default("")
-  uptime                            String            @default("")
-  clientSatisfaction                String            @default("")
-  efficiency                        String            @default("")
-  revenueGrowth                     String            @default("")
-  bgColor                           String            @default("")
-  changeType                        String?
-  from_AnalyticsReport_summaryItems AnalyticsReport[] @relation("AnalyticsReport_summaryItems")
+  id                            String             @id @default(cuid())
+  name                          String             @default("")
+  deployments                   String             @default("")
+  uptime                        String             @default("")
+  clientSatisfaction            String             @default("")
+  efficiency                    String             @default("")
+  revenueGrowth                 String             @default("")
+  bgColor                       String             @default("")
+  changeType                    String?
+  from_AnalyticsSection_summary AnalyticsSection[] @relation("AnalyticsSection_summary")
 }
 
-model StandardPage {
+model AnalyticsHeading {
+  id                                  String             @id @default(cuid())
+  text                                String             @default("")
+  from_AnalyticsSection_tableHeadings AnalyticsSection[] @relation("AnalyticsSection_tableHeadings")
+}
+
+model AnalyticsSection {
+  id                            String                 @id @default(cuid())
+  heading                       String                 @default("")
+  subheading                    String                 @default("")
+  stats                         AnalyticsStat?         @relation("AnalyticsSection_stats", fields: [statsId], references: [id])
+  statsId                       String?                @map("stats")
+  tableHeadings                 AnalyticsHeading[]     @relation("AnalyticsSection_tableHeadings")
+  summary                       AnalyticsSummaryItem[] @relation("AnalyticsSection_summary")
+  from_Section_contentAnalytics Section[]              @relation("Section_contentAnalytics")
+
+  @@index([statsId])
+}
+
+model Value {
+  id                       String         @id @default(cuid())
+  label                    String         @default("")
+  description              String         @default("")
+  icon                     String         @default("")
+  from_AboutSection_values AboutSection[] @relation("AboutSection_values")
+}
+
+model AboutSection {
+  id                        String    @id @default(cuid())
+  heading                   String    @default("")
+  intro                     String    @default("")
+  valuesTitle               String    @default("")
+  values                    Value[]   @relation("AboutSection_values")
+  from_Section_contentAbout Section[] @relation("Section_contentAbout")
+}
+
+model MapSection {
+  id                      String    @id @default(cuid())
+  title                   String    @default("")
+  subheading              String    @default("")
+  description             String    @default("")
+  from_Section_contentMap Section[] @relation("Section_contentMap")
+}
+
+model Section {
+  id                        String             @id @default(cuid())
+  type                      String
+  contentHero               Hero?              @relation("Section_contentHero", fields: [contentHeroId], references: [id])
+  contentHeroId             String?            @map("contentHero")
+  contentBenefits           Benefit[]          @relation("Section_contentBenefits")
+  contentFeatures           FeatureSection[]   @relation("Section_contentFeatures")
+  contentFaqs               FaqItem[]          @relation("Section_contentFaqs")
+  contentTestimonials       Testimonial[]      @relation("Section_contentTestimonials")
+  contentCertifications     Certification[]    @relation("Section_contentCertifications")
+  contentApproachSteps      ApproachStep[]     @relation("Section_contentApproachSteps")
+  contentAbout              AboutSection?      @relation("Section_contentAbout", fields: [contentAboutId], references: [id])
+  contentAboutId            String?            @map("contentAbout")
+  contentAnalytics          AnalyticsSection?  @relation("Section_contentAnalytics", fields: [contentAnalyticsId], references: [id])
+  contentAnalyticsId        String?            @map("contentAnalytics")
+  contentNavigation         NavigationSection? @relation("Section_contentNavigation", fields: [contentNavigationId], references: [id])
+  contentNavigationId       String?            @map("contentNavigation")
+  contentFooterSections     FooterSection[]    @relation("Section_contentFooterSections")
+  contentCTA                CTA[]              @relation("Section_contentCTA")
+  contentMap                MapSection?        @relation("Section_contentMap", fields: [contentMapId], references: [id])
+  contentMapId              String?            @map("contentMap")
+  from_PageContent_sections PageContent[]      @relation("PageContent_sections")
+
+  @@index([contentHeroId])
+  @@index([contentAboutId])
+  @@index([contentAnalyticsId])
+  @@index([contentNavigationId])
+  @@index([contentMapId])
+}
+
+model PageContent {
   id          String    @id @default(cuid())
   title       String    @default("")
   description String    @default("")
   image       String    @default("")
   imageAlt    String    @default("")
-  ctaLabel    String    @default("")
-  ctaHref     String    @default("")
-  ctaExternal Boolean   @default(false)
-  subheading  String    @default("")
-  benefits    Benefit[] @relation("StandardPage_benefits")
-  faqs        FaqItem[] @relation("StandardPage_faqs")
+  cta         CTA?      @relation("PageContent_cta", fields: [ctaId], references: [id])
+  ctaId       String?   @map("cta")
+  sections    Section[] @relation("PageContent_sections")
+
+  @@index([ctaId])
 }

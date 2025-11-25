@@ -1,4 +1,4 @@
-import { list } from "@keystone-6/core";
+import { list, ListConfig } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
 import {
   text,
@@ -10,36 +10,12 @@ import {
   password,
   timestamp,
 } from "@keystone-6/core/fields";
+import { aboutSection } from "./data/data";
+import { isTemplateSpan } from "typescript";
 
-// --- 1. Reusable Field Groups (Type definitions) ---
+// --- Concrete Lists ---
 
-// Maps to your 'CTA' type
-// We flatten this for better Admin UI (easier than managing relations for simple links)
-const ctaFields = {
-  ctaLabel: text({ validation: { isRequired: true } }),
-  ctaHref: text({ validation: { isRequired: true } }),
-  ctaExternal: checkbox({ label: "Open in new tab?" }),
-};
-
-// Maps to your 'PageContent' type
-const pageContentFields = {
-  title: text({ validation: { isRequired: true } }),
-  description: text({ ui: { displayMode: "textarea" } }),
-  image: text({ label: "Image URL" }), // Or use an 'image' field if using local/S3 storage
-  imageAlt: text(),
-  // We embed CTA fields directly to mimic "cta?: CTA"
-  ...ctaFields,
-};
-
-// Maps to 'Language' options
-const languageOptions = [
-  { label: "English", value: "en-US" },
-  { label: "German", value: "de-DE" },
-];
-
-// --- 2. Concrete Lists ---
-
-export const lists = {
+export const lists: Record<string, ListConfig<any>> = {
   // --- REQUIRED: The User List for Authentication ---
   User: list({
     access: allowAll,
@@ -55,104 +31,100 @@ export const lists = {
       }),
     },
   }),
-  // --- Content Blocks ---
-
-  Certification: list({
+  CTA: {
     access: allowAll,
     fields: {
+      label: text({ validation: { isRequired: true } }),
+      href: text({ validation: { isRequired: true } }),
+      external: checkbox(),
+    },
+  },
+
+  HeroBannerAdditional: {
+    access: allowAll,
+    fields: {
+      icon: text(),
+      text: text(),
+    },
+  },
+
+  HeroBanner: {
+    access: allowAll,
+    fields: {
+      label: text({ validation: { isRequired: true } }),
+      href: text({ validation: { isRequired: true } }),
+      external: checkbox(),
+      additional: relationship({ ref: "HeroBannerAdditional", many: false }),
+    },
+  },
+
+  Hero: {
+    access: allowAll,
+    fields: {
+      subHeading: text({ validation: { isRequired: true } }),
+      banner: relationship({ ref: "HeroBanner", many: false }),
+    },
+  },
+
+  Benefit: {
+    access: allowAll,
+    fields: {
+      icon: text(),
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
-      image: text({ label: "Image URL" }),
-      link: text(),
-      width: integer(),
-      height: integer(),
     },
-  }),
+  },
 
-  Benefit: list({
-    access: allowAll,
-    fields: {
-      icon: text({ label: "RemixIcon Name" }), // e.g., "RiCloudLine"
-      title: text({ validation: { isRequired: true } }),
-      description: text({ ui: { displayMode: "textarea" } }),
-    },
-  }),
-
-  Testimonial: list({
-    access: allowAll,
-    fields: {
-      name: text({ validation: { isRequired: true } }),
-      role: text(),
-      company: text(),
-      content: text({ ui: { displayMode: "textarea" } }),
-      rating: integer({ validation: { min: 1, max: 5 } }),
-      imageUrl: text(),
-      // Badge is a nested small object; JSON is often simplest for this UI fluff
-      badge: json({
-        label: "Badge Config",
-        defaultValue: { icon: "", label: "" },
-      }),
-    },
-  }),
-
-  FaqItem: list({
+  FaqItem: {
     access: allowAll,
     fields: {
       question: text({ validation: { isRequired: true } }),
       answer: text({ ui: { displayMode: "textarea" } }),
     },
-  }),
+  },
 
-  // --- Complex Page Sections ---
-
-  // Maps to 'HeroType'
-  Hero: list({
-    access: allowAll,
-    fields: {
-      subHeading: text(),
-      // Hero has the CTA fields merged in your type
-      ...ctaFields,
-      // The 'banner' prop is deeply nested ({ icon, additional: { icon, text } })
-      // A JSON field is best here to preserve strict structure without creating 3 separate lists
-      bannerConfig: json({
-        label: "Banner Configuration",
-        defaultValue: {
-          icon: "RiFlagLine",
-          additional: { icon: "RiStarLine", text: "New Feature" },
-        },
-      }),
-    },
-  }),
-
-  // Maps to 'NavigationSectionItem' & 'FooterSection'
-  // We create a list for the Items, and the Section will relate to them
-  NavigationItem: list({
-    access: allowAll,
-    fields: {
-      icon: text({ label: "RemixIcon Name" }),
-      // Extends CTA
-      ...ctaFields,
-      // Relationship back to section (optional, or defined on the Section side)
-      section: relationship({ ref: "FooterSection.items", many: false }),
-    },
-  }),
-
-  FooterSection: list({
-    access: allowAll,
-    fields: {
-      title: text({ validation: { isRequired: true } }),
-      items: relationship({ ref: "NavigationItem.section", many: true }),
-    },
-  }),
-
-  // --- Process / Approach ---
-
-  ApproachStep: list({
+  Certification: {
     access: allowAll,
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
-      activityTime: text(),
+      image: text(),
+      link: text(),
+      width: text(),
+      height: text(),
+    },
+  },
+
+  Testimonial: {
+    access: allowAll,
+    fields: {
+      badgeIcon: text(),
+      badgeLabel: text(),
+      name: text(),
+      role: text(),
+      company: text(),
+      imageSrc: text(),
+      imageAlt: text(),
+      imageWidth: text(),
+      imageHeight: text(),
+      imageClassName: text(),
+      content: text({ ui: { displayMode: "textarea" } }),
+    },
+  },
+
+  FeatureSection: {
+    access: allowAll,
+    fields: {
+      title: text(),
+      description: text(),
+      longDescription: text({ ui: { displayMode: "textarea" } }),
+      visualization: text(),
+    },
+  },
+
+  ApproachStep: {
+    access: allowAll,
+    fields: {
       type: select({
         options: [
           { label: "Done", value: "done" },
@@ -160,48 +132,82 @@ export const lists = {
           { label: "Open", value: "open" },
         ],
       }),
-      // Sorting/Ordering index is usually helpful here
-      stepOrder: integer(),
+      title: text(),
+      description: text({ ui: { displayMode: "textarea" } }),
+      activityTime: text(),
     },
-  }),
-
-  // --- Analytics Data (Singleton-like structure) ---
-
-  AnalyticsReport: list({
+  },
+  Language: {
     access: allowAll,
-    ui: {
-      labelField: "heading",
-    },
     fields: {
-      heading: text(),
-      subheading: text(),
-      // 'stats' is a fixed object structure (AnalyticsStats)
-      stats: json({
-        label: "Top Level Stats",
-        defaultValue: {
-          totalDeployments: "0",
-          deploymentChange: "+0",
-          deploymentChangePercent: "0%",
-          changePeriod: "Last 30 days",
-        },
+      label: select({
+        options: [
+          { label: "English", value: "English" },
+          { label: "German", value: "German" },
+        ],
       }),
-      // 'tableHeadings' is a string array
-      tableHeadings: json({ defaultValue: [] }),
-      // 'summary' is the list of rows
-      summaryItems: relationship({ ref: "AnalyticsSummaryItem", many: true }),
+      value: select({
+        options: [
+          { label: "en-US", value: "en-US" },
+          { label: "de-DE", value: "de-DE" },
+        ],
+      }),
     },
-  }),
+  },
 
-  AnalyticsSummaryItem: list({
+  NavigationSectionItem: {
+    access: allowAll,
+    fields: {
+      label: text(),
+      href: text(),
+      external: checkbox(),
+      icon: text(),
+    },
+  },
+
+  NavigationSection: {
+    access: allowAll,
+    fields: {
+      items: relationship({ ref: "NavigationSectionItem", many: true }),
+    },
+  },
+
+  FooterPart: {
+    access: allowAll,
+    fields: {
+      title: text(),
+      items: relationship({ ref: "CTA", many: true }),
+    },
+  },
+
+  FooterSection: {
+    access: allowAll,
+    fields: {
+      title: text(),
+      sections: relationship({ ref: "FooterPart", many: true }),
+    },
+  },
+
+  AnalyticsStat: {
+    access: allowAll,
+    fields: {
+      totalDeployments: text(),
+      deploymentChange: text(),
+      deploymentChangePercent: text(),
+      changePeriod: text(),
+    },
+  },
+
+  AnalyticsSummaryItem: {
     access: allowAll,
     fields: {
       name: text(),
-      deployments: text(), // Keeping as text per your type ("string"), change to integer if needed
+      deployments: text(),
       uptime: text(),
       clientSatisfaction: text(),
       efficiency: text(),
       revenueGrowth: text(),
-      bgColor: text({ label: "Background Hex Color" }),
+      bgColor: text(),
       changeType: select({
         options: [
           { label: "Positive", value: "positive" },
@@ -209,21 +215,103 @@ export const lists = {
         ],
       }),
     },
-  }),
+  },
 
-  // --- Example Composite Implementation ---
-
-  // Maps to 'PageContentWithSubHeading'
-  StandardPage: list({
+  AnalyticsHeading: {
     access: allowAll,
     fields: {
-      // 1. Base PageContent
-      ...pageContentFields,
-      // 2. The Composite extension
-      subheading: text(),
-      // 3. Relationships to other sections (Implementing your generic maps)
-      benefits: relationship({ ref: "Benefit", many: true }),
-      faqs: relationship({ ref: "FaqItem", many: true }),
+      text: text(),
     },
-  }),
+  },
+
+  AnalyticsSection: {
+    access: allowAll,
+    fields: {
+      heading: text(),
+      subheading: text(),
+      stats: relationship({ ref: "AnalyticsStat", many: false }),
+      tableHeadings: relationship({ ref: "AnalyticsHeading", many: true }),
+      summary: relationship({ ref: "AnalyticsSummaryItem", many: true }),
+    },
+  },
+
+  Value: {
+    access: allowAll,
+    fields: {
+      label: text(),
+      description: text(),
+      icon: text(),
+    },
+  },
+
+  AboutSection: {
+    access: allowAll,
+    fields: {
+      heading: text(),
+      intro: text(),
+      valuesTitle: text(),
+      values: relationship({ ref: "Value", many: true }),
+    },
+  },
+
+  MapSection: {
+    access: allowAll,
+    fields: {
+      title: text(),
+      subheading: text(),
+      description: text(),
+    },
+  },
+
+  Section: {
+    access: allowAll,
+    fields: {
+      type: select({
+        options: [
+          { label: "Hero", value: "hero" },
+          { label: "Benefits", value: "benefits" },
+          { label: "Features", value: "features" },
+          { label: "FAQs", value: "faqs" },
+          { label: "Testimonials", value: "testimonials" },
+          { label: "Certifications", value: "certifications" },
+          { label: "Approach", value: "approach" },
+          { label: "About", value: "about" },
+          { label: "Analytics", value: "analytics" },
+          { label: "Navigation", value: "navigation" },
+          { label: "Footer", value: "footer" },
+          { label: "CTA", value: "cta" },
+          { label: "Map", value: "map" },
+        ],
+        validation: { isRequired: true },
+      }),
+      contentHero: relationship({ ref: "Hero", many: false }),
+      contentBenefits: relationship({ ref: "Benefit", many: true }),
+      contentFeatures: relationship({ ref: "FeatureSection", many: true }),
+      contentFaqs: relationship({ ref: "FaqItem", many: true }),
+      contentTestimonials: relationship({ ref: "Testimonial", many: true }),
+      contentCertifications: relationship({ ref: "Certification", many: true }),
+      contentApproachSteps: relationship({ ref: "ApproachStep", many: true }),
+      contentAbout: relationship({ ref: "AboutSection", many: false }),
+      contentAnalytics: relationship({ ref: "AnalyticsSection", many: false }),
+      contentNavigation: relationship({
+        ref: "NavigationSection",
+        many: false,
+      }),
+      contentFooterSections: relationship({ ref: "FooterSection", many: true }),
+      contentCTA: relationship({ ref: "CTA", many: true }),
+      contentMap: relationship({ ref: "MapSection", many: false }),
+    },
+  },
+
+  PageContent: {
+    access: allowAll,
+    fields: {
+      title: text({ validation: { isRequired: true } }),
+      description: text(),
+      image: text(),
+      imageAlt: text(),
+      cta: relationship({ ref: "CTA", many: false }),
+      sections: relationship({ ref: "Section", many: true }),
+    },
+  },
 };
