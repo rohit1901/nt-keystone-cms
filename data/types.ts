@@ -20,10 +20,8 @@ export type FaqItem = {
 export type Certification = {
   title: string;
   description: string;
-  image: string;
+  image?: Image;
   link?: string;
-  width: number;
-  height: number;
 };
 
 // Strict, Discriminated Union for Sections
@@ -59,16 +57,18 @@ export type Testimonial = {
   content: string;
 };
 
+export type Image = {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  className?: string;
+  fill?: boolean;
+};
+
 export type TestimonialSection = {
   background: {
-    imageProps: {
-      src: string;
-      alt: string;
-      fill?: boolean;
-      width?: number;
-      height?: number;
-      className?: string;
-    };
+    image: Image;
     outerClassName: string;
   }[];
   testimonials?: Testimonial[];
@@ -76,7 +76,7 @@ export type TestimonialSection = {
 };
 
 export type FeatureSection = {
-  id: string;
+  fid: string;
   title: string;
   description: string;
   longDescription: string;
@@ -85,13 +85,7 @@ export type FeatureSection = {
 
 export type CTASection = {
   background: {
-    imageProps: {
-      src: string;
-      alt: string;
-      width?: number;
-      height?: number;
-      className?: string;
-    };
+    image: Image;
     outerClassName?: string;
   }[];
   ctas: CTA[];
@@ -192,8 +186,11 @@ export type NavigationSection = {
 export interface PageContent {
   title: string;
   description?: string;
-  image?: string;
-  imageAlt?: string;
+  image?: Image;
   cta?: CTA;
   sections: Section[];
 }
+
+// Prisma Types
+
+export type PrismaType<T, U = {}> = T & { id: string } & U;

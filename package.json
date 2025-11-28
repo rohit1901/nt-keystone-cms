@@ -6,7 +6,6 @@
     "dev": "keystone dev",
     "build": "keystone build",
     "seed": "ts-node --transpile-only seed.ts",
-    "postinstall": "keystone postinstall",
     "generate": "keystone prisma migrate dev",
     "start": "keystone start --with-migrations"
   },
