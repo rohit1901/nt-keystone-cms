@@ -1,7 +1,6 @@
 // seed.ts
-// FIXME
 import "dotenv/config";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, Prisma, AnalyticsStat } from "@prisma/client";
 import {
   mapSection,
   navigationSection,
@@ -13,10 +12,16 @@ import {
   certificationsSection,
   featuresSection,
   approachSection,
+  footerSection,
+  analyticsSection,
+  aboutSection,
+  mainPageContent,
+  navigationPageContent,
+  Certification,
+  FooterSection,
+  PageContent,
 } from "./data";
 import { Section, Image, PrismaType } from "./data";
-import { UnionType } from "@graphql-ts/schema";
-import { InternalArgs } from "@prisma/client/runtime/library";
 
 const prisma = new PrismaClient();
 
@@ -75,7 +80,6 @@ const seedCtaSection = async () => {
   console.log(`CTA Section seeded: ${sectionRecord.id}`);
 };
 
-// Updated seedTestimonialSection
 const seedTestimonialSection = async () => {
   if (testimonialSection.type !== "testimonials") {
     throw new Error("Invalid testimonial section type");
@@ -181,16 +185,36 @@ const seedFaqs = async () => {
   });
   console.log(`${faqsSection.type} Section seeded`);
 };
-// FIXME
+const createCertification = async (certification: Certification) => {
+  const image = certification.image
+    ? await createImages([certification.image])
+    : [];
+  return prisma.certification.create({
+    data: {
+      title: certification.title,
+      description: certification.description,
+      image:
+        image.length > 0
+          ? {
+              connect: {
+                id: image[0]?.id,
+              },
+            }
+          : undefined,
+    },
+  });
+};
 const seedCertifications = async () => {
   if (certificationsSection.type !== "certifications") {
     throw new Error("Invalid certifications section type");
   }
   const certifications = certificationsSection.content;
-  const sectionRecord = await prisma.certification.createMany({
-    data: certifications,
-  });
-  console.log(`${certificationsSection.type} Section seeded`);
+  const sectionRecord = await Promise.all(
+    certifications.map(createCertification),
+  );
+  console.log(
+    `${certificationsSection.type} Section seeded: ${certifications.length} records`,
+  );
 };
 
 const seedFeatures = async () => {
@@ -209,11 +233,26 @@ const seedApproaches = async () => {
     throw new Error("Invalid approaches section type");
   }
   const approaches = approachSection.content;
-  const sectionRecord = await prisma.approach.createMany({
-    data: approaches,
+
+  const steps = await prisma.approachStep.createManyAndReturn({
+    data: approaches.steps.map((step) => ({
+      title: step.title,
+      description: step.description,
+      activityTime: step.activityTime,
+      aid: step.aid,
+    })),
+  });
+  const sectionRecord = await prisma.approach.create({
+    data: {
+      title: approaches.title,
+      description: approaches.description,
+      steps: {
+        connect: steps.map((step) => ({ id: step.id })),
+      },
+    },
   });
   console.log(
-    `${approachSection.type} Section seeded: ${sectionRecord.count} records`,
+    `${approachSection.type} Section seeded: ${steps.length} records`,
   );
 };
 
@@ -227,20 +266,127 @@ const seedNavigationSection = async () => {
   });
   console.log(`Navigation Section seeded: ${sectionRecord.count} records`);
 };
-
-const seedMap = async () => {
-  const type = mapSection.type;
-  if (type !== "map") {
-    throw new Error("Invalid map section type");
-  }
-  const sectionRecord = await prisma.map.create({
+const createFooterPartItems = async (section: FooterSection) => {
+  const items = await prisma.navigationLink.createManyAndReturn({
+    data: section.items,
+  });
+  return items;
+};
+const createFooterPart = async (section: FooterSection) => {
+  const items = await createFooterPartItems(section);
+  return await prisma.footerPart.create({
     data: {
-      title: mapSection.content.title,
-      description: mapSection.content.description,
-      subheading: mapSection.content.subheading,
+      title: section.title,
+      items: {
+        connect: items.map((item) => ({ id: item.id })),
+      },
     },
   });
-  console.log(`Section seeded: ${sectionRecord.title}`);
+};
+const seedFooter = async () => {
+  if (footerSection.type !== "footer") {
+    throw new Error("Invalid footer section type");
+  }
+  await Promise.all(
+    footerSection.content.sections.map(async (section) => {
+      return await createFooterPart(section);
+    }),
+  );
+  const parts = await prisma.footerPart.findMany();
+  const languages = await prisma.language.createManyAndReturn({
+    data: footerSection.content.languages,
+  });
+  const sectionRecords = await prisma.footer.create({
+    data: {
+      sections: {
+        connect: parts.map((part) => ({ id: part.id })),
+      },
+      languages: {
+        connect: languages.map((language) => ({ id: language.id })),
+      },
+    },
+  });
+  console.log(`Footer seeded`);
+};
+
+const seedAnalyticsSection = async () => {
+  if (analyticsSection.type !== "analytics") {
+    throw new Error("Invalid analytics section type");
+  }
+  const analyticsStats: PrismaType<AnalyticsStat> =
+    await prisma.analyticsStat.create({
+      data: {
+        ...analyticsSection.content.stats,
+      },
+    });
+  const analyticsSummaries =
+    await prisma.analyticsSummaryItem.createManyAndReturn({
+      data: analyticsSection.content.summary,
+    });
+  const sectionRecord = await prisma.analyticsSection.create({
+    data: {
+      heading: analyticsSection.content.heading,
+      subheading: analyticsSection.content.subheading,
+      tableHeadings: JSON.stringify(analyticsSection.content.tableHeadings),
+      statsId: analyticsStats.id,
+      summary: {
+        connect: analyticsSummaries.map((summary) => ({ id: summary.id })),
+      },
+    },
+  });
+  console.log(`Section seeded: ${analyticsSection.type}`);
+};
+
+const seedAboutSection = async () => {
+  if (aboutSection.type !== "about") {
+    throw new Error("Invalid about section type");
+  }
+  const valueRecords = await prisma.value.createManyAndReturn({
+    data: aboutSection.content.values,
+  });
+  await prisma.about.create({
+    data: {
+      heading: aboutSection.content.heading,
+      intro: aboutSection.content.intro,
+      valuesTitle: aboutSection.content.valuesTitle,
+      values: {
+        connect: valueRecords.map((value) => ({ id: value.id })),
+      },
+    },
+  });
+  console.log(`Section seeded: ${aboutSection.type}`);
+};
+
+const seedMapSection = async () => {
+  if (mapSection.type !== "map") {
+    throw new Error("Invalid map section type");
+  }
+  const mapRecord = await prisma.map.create({
+    data: {
+      title: mapSection.content.title,
+      subheading: mapSection.content.subheading,
+      description: mapSection.content.description,
+    },
+  });
+  console.log(`Section seeded: ${mapSection.type}`);
+};
+
+const seedPageContent = async (content: PageContent) => {
+  const img = content.image ? await createImages([content.image]) : null;
+  const cta = await prisma.cta.create({
+    data: content.cta,
+  });
+  // main page content
+  const mainPageContentRecord = await prisma.pageContent.create({
+    data: {
+      title: content.title,
+      description: content.description,
+      imageId: img ? img[0].id : null,
+      ctaId: cta.id,
+      // TODO: manually connect sections or think of an identifier to connect sections
+    },
+  });
+  console.log(`Page Content Section seeded`);
 };
 
 async function main() {
@@ -250,7 +396,9 @@ async function main() {
   await seedBenefitsSection();
 
   // Seed Map
-  await seedMap();
+  await seedMapSection();
+
+  await seedTestimonialSection();
 
   // Seed Navigation Section
   await seedNavigationSection();
@@ -262,11 +410,22 @@ async function main() {
   await seedCtaSection();
 
   // Seed Certifications
-  // await seedCertifications();
+  await seedCertifications();
 
   await seedFaqs();
 
   await seedFeatures();
+
+  await seedApproaches();
+
+  await seedFooter();
+
+  await seedAnalyticsSection();
+
+  await seedAboutSection();
+
+  await seedPageContent(mainPageContent);
+  await seedPageContent(navigationPageContent);
 
   console.log("Seeding complete!");
   await prisma.$disconnect();

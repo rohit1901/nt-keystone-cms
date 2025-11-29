@@ -299,7 +299,7 @@ export const approachSection: Section = {
     description: "At Nimbus Tech, we follow a structured approach ...",
     steps: [
       {
-        id: 1,
+        aid: 1,
         type: "done",
         title: "Discovery: Listen & Learn",
         description:
@@ -307,7 +307,7 @@ export const approachSection: Section = {
         activityTime: "Step 1",
       },
       {
-        id: 2,
+        aid: 2,
         type: "done",
         title: "Planning: Architect for Success",
         description:
@@ -315,7 +315,7 @@ export const approachSection: Section = {
         activityTime: "Step 2",
       },
       {
-        id: 3,
+        aid: 3,
         type: "done",
         title: "Development: Build with Quality",
         description:
@@ -323,7 +323,7 @@ export const approachSection: Section = {
         activityTime: "Step 3",
       },
       {
-        id: 4,
+        aid: 4,
         type: "in progress",
         title: "Deployment: Launch & Deliver",
         description:
@@ -331,7 +331,7 @@ export const approachSection: Section = {
         activityTime: "Step 4",
       },
       {
-        id: 5,
+        aid: 5,
         type: "open",
         title: "Support: Optimize & Grow",
         description: "We provide ongoing support and continuous improvement.",
@@ -381,7 +381,7 @@ export const navigationPageContent: PageContent = {
 // Footer Section > Footer
 export const footerSection: Section = {
   type: "footer",
-  id: "footer-section",
+  id: "footerf",
   content: {
     sections: [
       {

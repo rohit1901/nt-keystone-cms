@@ -885,6 +885,7 @@ type ApproachStep {
   title: String
   description: String
   activityTime: String
+  aid: Int
 }
 
 input ApproachStepWhereUniqueInput {
@@ -900,6 +901,7 @@ input ApproachStepWhereInput {
   title: StringFilter
   description: StringFilter
   activityTime: StringFilter
+  aid: IntFilter
 }
 
 input StringNullableFilter {
@@ -916,12 +918,24 @@ input StringNullableFilter {
   not: StringNullableFilter
 }
 
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
+}
+
 input ApproachStepOrderByInput {
   id: OrderDirection
   type: OrderDirection
   title: OrderDirection
   description: OrderDirection
   activityTime: OrderDirection
+  aid: OrderDirection
 }
 
 input ApproachStepUpdateInput {
@@ -929,6 +943,7 @@ input ApproachStepUpdateInput {
   title: String
   description: String
   activityTime: String
+  aid: Int
 }
 
 input ApproachStepUpdateArgs {
@@ -941,6 +956,7 @@ input ApproachStepCreateInput {
   title: String
   description: String
   activityTime: String
+  aid: Int
 }
 
 type Approach {
@@ -1099,8 +1115,8 @@ input NavigationLinkCreateInput {
 type FooterPart {
   id: ID!
   title: String
-  items(where: CtaWhereInput! = {}, orderBy: [CtaOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CtaWhereUniqueInput): [Cta!]
-  itemsCount(where: CtaWhereInput! = {}): Int
+  items(where: NavigationLinkWhereInput! = {}, orderBy: [NavigationLinkOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NavigationLinkWhereUniqueInput): [NavigationLink!]
+  itemsCount(where: NavigationLinkWhereInput! = {}): Int
 }
 
 input FooterPartWhereUniqueInput {
@@ -1113,7 +1129,13 @@ input FooterPartWhereInput {
   NOT: [FooterPartWhereInput!]
   id: IDFilter
   title: StringFilter
-  items: CtaManyRelationFilter
+  items: NavigationLinkManyRelationFilter
+}
+
+input NavigationLinkManyRelationFilter {
+  every: NavigationLinkWhereInput
+  some: NavigationLinkWhereInput
+  none: NavigationLinkWhereInput
 }
 
 input FooterPartOrderByInput {
@@ -1123,7 +1145,14 @@ input FooterPartOrderByInput {
 
 input FooterPartUpdateInput {
   title: String
-  items: CtaRelateToManyForUpdateInput
+  items: NavigationLinkRelateToManyForUpdateInput
+}
+
+input NavigationLinkRelateToManyForUpdateInput {
+  disconnect: [NavigationLinkWhereUniqueInput!]
+  set: [NavigationLinkWhereUniqueInput!]
+  create: [NavigationLinkCreateInput!]
+  connect: [NavigationLinkWhereUniqueInput!]
 }
 
 input FooterPartUpdateArgs {
@@ -1133,13 +1162,20 @@ input FooterPartUpdateArgs {
 
 input FooterPartCreateInput {
   title: String
-  items: CtaRelateToManyForCreateInput
+  items: NavigationLinkRelateToManyForCreateInput
+}
+
+input NavigationLinkRelateToManyForCreateInput {
+  create: [NavigationLinkCreateInput!]
+  connect: [NavigationLinkWhereUniqueInput!]
 }
 
 type Footer {
   id: ID!
   sections(where: FooterPartWhereInput! = {}, orderBy: [FooterPartOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FooterPartWhereUniqueInput): [FooterPart!]
   sectionsCount(where: FooterPartWhereInput! = {}): Int
+  languages(where: LanguageWhereInput! = {}, orderBy: [LanguageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LanguageWhereUniqueInput): [Language!]
+  languagesCount(where: LanguageWhereInput! = {}): Int
 }
 
 input FooterWhereUniqueInput {
@@ -1152,6 +1188,7 @@ input FooterWhereInput {
   NOT: [FooterWhereInput!]
   id: IDFilter
   sections: FooterPartManyRelationFilter
+  languages: LanguageManyRelationFilter
 }
 
 input FooterPartManyRelationFilter {
@@ -1160,12 +1197,19 @@ input FooterPartManyRelationFilter {
   none: FooterPartWhereInput
 }
 
+input LanguageManyRelationFilter {
+  every: LanguageWhereInput
+  some: LanguageWhereInput
+  none: LanguageWhereInput
+}
+
 input FooterOrderByInput {
   id: OrderDirection
 }
 
 input FooterUpdateInput {
   sections: FooterPartRelateToManyForUpdateInput
+  languages: LanguageRelateToManyForUpdateInput
 }
 
 input FooterPartRelateToManyForUpdateInput {
@@ -1175,6 +1219,13 @@ input FooterPartRelateToManyForUpdateInput {
   connect: [FooterPartWhereUniqueInput!]
 }
 
+input LanguageRelateToManyForUpdateInput {
+  disconnect: [LanguageWhereUniqueInput!]
+  set: [LanguageWhereUniqueInput!]
+  create: [LanguageCreateInput!]
+  connect: [LanguageWhereUniqueInput!]
+}
+
 input FooterUpdateArgs {
   where: FooterWhereUniqueInput!
   data: FooterUpdateInput!
@@ -1182,11 +1233,17 @@ input FooterUpdateArgs {
 
 input FooterCreateInput {
   sections: FooterPartRelateToManyForCreateInput
+  languages: LanguageRelateToManyForCreateInput
 }
 
 input FooterPartRelateToManyForCreateInput {
   create: [FooterPartCreateInput!]
   connect: [FooterPartWhereUniqueInput!]
+}
+
+input LanguageRelateToManyForCreateInput {
+  create: [LanguageCreateInput!]
+  connect: [LanguageWhereUniqueInput!]
 }
 
 type AnalyticsStat {
@@ -1634,12 +1691,6 @@ input ApproachManyRelationFilter {
   none: ApproachWhereInput
 }
 
-input NavigationLinkManyRelationFilter {
-  every: NavigationLinkWhereInput
-  some: NavigationLinkWhereInput
-  none: NavigationLinkWhereInput
-}
-
 input FooterManyRelationFilter {
   every: FooterWhereInput
   some: FooterWhereInput
@@ -1733,13 +1784,6 @@ input AnalyticsSectionRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input NavigationLinkRelateToManyForUpdateInput {
-  disconnect: [NavigationLinkWhereUniqueInput!]
-  set: [NavigationLinkWhereUniqueInput!]
-  create: [NavigationLinkCreateInput!]
-  connect: [NavigationLinkWhereUniqueInput!]
-}
-
 input FooterRelateToManyForUpdateInput {
   disconnect: [FooterWhereUniqueInput!]
   set: [FooterWhereUniqueInput!]
@@ -1825,11 +1869,6 @@ input AboutRelateToOneForCreateInput {
 input AnalyticsSectionRelateToOneForCreateInput {
   create: AnalyticsSectionCreateInput
   connect: AnalyticsSectionWhereUniqueInput
-}
-
-input NavigationLinkRelateToManyForCreateInput {
-  create: [NavigationLinkCreateInput!]
-  connect: [NavigationLinkWhereUniqueInput!]
 }
 
 input FooterRelateToManyForCreateInput {

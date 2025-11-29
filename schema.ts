@@ -169,6 +169,7 @@ export const lists: Record<string, ListConfig<any>> = {
       title: text(),
       description: text({ ui: { displayMode: "textarea" } }),
       activityTime: text(),
+      aid: integer({ validation: { isRequired: true } }),
     },
   }),
   Approach: list({
@@ -213,13 +214,21 @@ export const lists: Record<string, ListConfig<any>> = {
     access: allowAll,
     fields: {
       title: text(),
-      items: relationship({ ref: "Cta", many: true }),
+      items: relationship({ ref: "NavigationLink", many: true }),
     },
   },
   Footer: {
     access: allowAll,
     fields: {
       sections: relationship({ ref: "FooterPart", many: true }),
+      languages: relationship({
+        ref: "Language",
+        many: true,
+        ui: {
+          displayMode: "select",
+          labelField: "label",
+        },
+      }),
     },
   },
   // Analytics configs

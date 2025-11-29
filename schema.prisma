@@ -20,13 +20,12 @@ model User {
 }
 
 model Cta {
-  id                    String        @id @default(cuid())
-  label                 String        @default("")
-  href                  String        @default("")
-  external              Boolean       @default(false)
-  from_CtaSection_ctas  CtaSection[]  @relation("CtaSection_ctas")
-  from_FooterPart_items FooterPart[]  @relation("FooterPart_items")
-  from_PageContent_cta  PageContent[] @relation("PageContent_cta")
+  id                   String        @id @default(cuid())
+  label                String        @default("")
+  href                 String        @default("")
+  external             Boolean       @default(false)
+  from_CtaSection_ctas CtaSection[]  @relation("CtaSection_ctas")
+  from_PageContent_cta PageContent[] @relation("PageContent_cta")
 }
 
 model CtaSection {
@@ -168,6 +167,7 @@ model ApproachStep {
   title               String     @default("")
   description         String     @default("")
   activityTime        String     @default("")
+  aid                 Int
   from_Approach_steps Approach[] @relation("Approach_steps")
 }
 
@@ -180,30 +180,33 @@ model Approach {
 }
 
 model Language {
-  id    String  @id @default(cuid())
-  label String?
-  value String?
+  id                    String   @id @default(cuid())
+  label                 String?
+  value                 String?
+  from_Footer_languages Footer[] @relation("Footer_languages")
 }
 
 model NavigationLink {
-  id                             String    @id @default(cuid())
-  label                          String    @default("")
-  href                           String    @default("")
-  external                       Boolean   @default(false)
-  icon                           String    @default("")
-  from_Section_contentNavigation Section[] @relation("Section_contentNavigation")
+  id                             String       @id @default(cuid())
+  label                          String       @default("")
+  href                           String       @default("")
+  external                       Boolean      @default(false)
+  icon                           String       @default("")
+  from_FooterPart_items          FooterPart[] @relation("FooterPart_items")
+  from_Section_contentNavigation Section[]    @relation("Section_contentNavigation")
 }
 
 model FooterPart {
-  id                   String   @id @default(cuid())
-  title                String   @default("")
-  items                Cta[]    @relation("FooterPart_items")
-  from_Footer_sections Footer[] @relation("Footer_sections")
+  id                   String           @id @default(cuid())
+  title                String           @default("")
+  items                NavigationLink[] @relation("FooterPart_items")
+  from_Footer_sections Footer[]         @relation("Footer_sections")
 }
 
 model Footer {
   id                         String       @id @default(cuid())
   sections                   FooterPart[] @relation("Footer_sections")
+  languages                  Language[]   @relation("Footer_languages")
   from_Section_contentFooter Section[]    @relation("Section_contentFooter")
 }
 

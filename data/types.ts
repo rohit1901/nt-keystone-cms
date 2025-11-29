@@ -121,7 +121,7 @@ export type ApproachSection = {
 };
 
 export type ApproachStep = {
-  id: number;
+  aid: number;
   type: "done" | "in progress" | "open";
   title: string;
   description: string;
@@ -192,5 +192,4 @@ export interface PageContent {
 }
 
 // Prisma Types
-
 export type PrismaType<T, U = {}> = T & { id: string } & U;
