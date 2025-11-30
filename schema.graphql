@@ -1690,8 +1690,7 @@ type Section {
   contentApproaches: Approach
   contentAbout: About
   contentAnalytics: Analytic
-  contentNavigation(where: NavigationWhereInput! = {}, orderBy: [NavigationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NavigationWhereUniqueInput): [Navigation!]
-  contentNavigationCount(where: NavigationWhereInput! = {}): Int
+  contentNavigation: Navigation
   contentFooter: Footer
   contentCta: CtaSection
   contentMap: Map
@@ -1716,7 +1715,7 @@ input SectionWhereInput {
   contentApproaches: ApproachWhereInput
   contentAbout: AboutWhereInput
   contentAnalytics: AnalyticWhereInput
-  contentNavigation: NavigationManyRelationFilter
+  contentNavigation: NavigationWhereInput
   contentFooter: FooterWhereInput
   contentCta: CtaSectionWhereInput
   contentMap: MapWhereInput
@@ -1746,12 +1745,6 @@ input CertificationManyRelationFilter {
   none: CertificationWhereInput
 }
 
-input NavigationManyRelationFilter {
-  every: NavigationWhereInput
-  some: NavigationWhereInput
-  none: NavigationWhereInput
-}
-
 input SectionOrderByInput {
   id: OrderDirection
   type: OrderDirection
@@ -1768,7 +1761,7 @@ input SectionUpdateInput {
   contentApproaches: ApproachRelateToOneForUpdateInput
   contentAbout: AboutRelateToOneForUpdateInput
   contentAnalytics: AnalyticRelateToOneForUpdateInput
-  contentNavigation: NavigationRelateToManyForUpdateInput
+  contentNavigation: NavigationRelateToOneForUpdateInput
   contentFooter: FooterRelateToOneForUpdateInput
   contentCta: CtaSectionRelateToOneForUpdateInput
   contentMap: MapRelateToOneForUpdateInput
@@ -1832,11 +1825,10 @@ input AnalyticRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input NavigationRelateToManyForUpdateInput {
-  disconnect: [NavigationWhereUniqueInput!]
-  set: [NavigationWhereUniqueInput!]
-  create: [NavigationCreateInput!]
-  connect: [NavigationWhereUniqueInput!]
+input NavigationRelateToOneForUpdateInput {
+  create: NavigationCreateInput
+  connect: NavigationWhereUniqueInput
+  disconnect: Boolean
 }
 
 input FooterRelateToOneForUpdateInput {
@@ -1873,7 +1865,7 @@ input SectionCreateInput {
   contentApproaches: ApproachRelateToOneForCreateInput
   contentAbout: AboutRelateToOneForCreateInput
   contentAnalytics: AnalyticRelateToOneForCreateInput
-  contentNavigation: NavigationRelateToManyForCreateInput
+  contentNavigation: NavigationRelateToOneForCreateInput
   contentFooter: FooterRelateToOneForCreateInput
   contentCta: CtaSectionRelateToOneForCreateInput
   contentMap: MapRelateToOneForCreateInput
@@ -1924,9 +1916,9 @@ input AnalyticRelateToOneForCreateInput {
   connect: AnalyticWhereUniqueInput
 }
 
-input NavigationRelateToManyForCreateInput {
-  create: [NavigationCreateInput!]
-  connect: [NavigationWhereUniqueInput!]
+input NavigationRelateToOneForCreateInput {
+  create: NavigationCreateInput
+  connect: NavigationWhereUniqueInput
 }
 
 input FooterRelateToOneForCreateInput {
