@@ -140,3 +140,4 @@ dist
 .keystone
 keystone.db
 migrations/
+/.zed

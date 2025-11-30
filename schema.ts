@@ -12,7 +12,6 @@ import {
 } from "@keystone-6/core/fields";
 
 // --- Concrete Lists ---
-
 export const lists: Record<string, ListConfig<any>> = {
   // --- REQUIRED: The User List for Authentication ---
   User: list({
@@ -38,13 +37,6 @@ export const lists: Record<string, ListConfig<any>> = {
       external: checkbox(),
     },
   }),
-  CtaSection: list({
-    access: allowAll,
-    fields: {
-      background: relationship({ ref: "Background", many: true }),
-      ctas: relationship({ ref: "Cta", many: true }),
-    },
-  }),
   Image: list({
     access: allowAll,
     fields: {
@@ -63,7 +55,6 @@ export const lists: Record<string, ListConfig<any>> = {
       outerClassName: text(),
     },
   }),
-  // Testimonial configs
   TestimonialBadge: {
     access: allowAll,
     fields: {
@@ -71,7 +62,7 @@ export const lists: Record<string, ListConfig<any>> = {
       label: text(),
     },
   },
-  Testimonial: {
+  TestimonialItem: list({
     access: allowAll,
     fields: {
       badge: relationship({ ref: "TestimonialBadge", many: false }),
@@ -81,24 +72,15 @@ export const lists: Record<string, ListConfig<any>> = {
       image: relationship({ ref: "Image", many: false }),
       content: text({ ui: { displayMode: "textarea" } }),
     },
-  },
-  TestimonialSection: {
-    access: allowAll,
-    fields: {
-      background: relationship({ ref: "Background", many: true }),
-      testimonials: relationship({ ref: "Testimonial", many: true }),
-      fallback: relationship({ ref: "Testimonial", many: false }),
-    },
-  },
-  // Hero configs
-  HeroBannerAdditional: {
+  }),
+  HeroBannerAdditional: list({
     access: allowAll,
     fields: {
       icon: text(),
       text: text(),
     },
-  },
-  HeroBanner: {
+  }),
+  HeroBanner: list({
     access: allowAll,
     fields: {
       label: text({ validation: { isRequired: true } }),
@@ -106,56 +88,7 @@ export const lists: Record<string, ListConfig<any>> = {
       external: checkbox(),
       additional: relationship({ ref: "HeroBannerAdditional", many: false }),
     },
-  },
-  Hero: {
-    access: allowAll,
-    fields: {
-      subHeading: text({ validation: { isRequired: true } }),
-      banner: relationship({ ref: "HeroBanner", many: false }),
-    },
-  },
-  // Benefits configs
-  Benefit: list({
-    access: allowAll,
-    fields: {
-      icon: text(),
-      title: text({ validation: { isRequired: true } }),
-      description: text({ ui: { displayMode: "textarea" } }),
-    },
   }),
-  // FAQs configs
-  Faq: list({
-    access: allowAll,
-    fields: {
-      question: text({ validation: { isRequired: true } }),
-      answer: text({
-        ui: { displayMode: "textarea" },
-        validation: { isRequired: true },
-      }),
-    },
-  }),
-  // Certifications configs
-  Certification: list({
-    access: allowAll,
-    fields: {
-      title: text({ validation: { isRequired: true } }),
-      description: text({ ui: { displayMode: "textarea" } }),
-      image: relationship({ ref: "Image", many: false }),
-      link: text(),
-    },
-  }),
-  // Features configs
-  Feature: list({
-    access: allowAll,
-    fields: {
-      fid: text({ validation: { isRequired: true } }),
-      title: text(),
-      description: text(),
-      longDescription: text({ ui: { displayMode: "textarea" } }),
-      visualization: text(),
-    },
-  }),
-  // Approach configs
   ApproachStep: list({
     access: allowAll,
     fields: {
@@ -172,17 +105,8 @@ export const lists: Record<string, ListConfig<any>> = {
       aid: integer({ validation: { isRequired: true } }),
     },
   }),
-  Approach: list({
-    access: allowAll,
-    fields: {
-      title: text(),
-      description: text({ ui: { displayMode: "textarea" } }),
-      steps: relationship({ ref: "ApproachStep", many: true }),
-    },
-  }),
-  // Language configs
   // TODO: check whether this should be a list or a single item
-  Language: {
+  Language: list({
     access: allowAll,
     fields: {
       label: select({
@@ -198,8 +122,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ],
       }),
     },
-  },
-  // Navigation configs
+  }),
   NavigationLink: list({
     access: allowAll,
     fields: {
@@ -209,30 +132,7 @@ export const lists: Record<string, ListConfig<any>> = {
       icon: text(),
     },
   }),
-  // Footer configs
-  FooterPart: {
-    access: allowAll,
-    fields: {
-      title: text(),
-      items: relationship({ ref: "NavigationLink", many: true }),
-    },
-  },
-  Footer: {
-    access: allowAll,
-    fields: {
-      sections: relationship({ ref: "FooterPart", many: true }),
-      languages: relationship({
-        ref: "Language",
-        many: true,
-        ui: {
-          displayMode: "select",
-          labelField: "label",
-        },
-      }),
-    },
-  },
-  // Analytics configs
-  AnalyticsStat: {
+  AnalyticsStat: list({
     access: allowAll,
     fields: {
       totalDeployments: text(),
@@ -240,8 +140,8 @@ export const lists: Record<string, ListConfig<any>> = {
       deploymentChangePercent: text(),
       changePeriod: text(),
     },
-  },
-  AnalyticsSummaryItem: {
+  }),
+  AnalyticsSummaryItem: list({
     access: allowAll,
     fields: {
       name: text(),
@@ -258,12 +158,123 @@ export const lists: Record<string, ListConfig<any>> = {
         ],
       }),
     },
-  },
-  AnalyticsSection: {
+  }),
+  FooterPart: list({
     access: allowAll,
     fields: {
-      heading: text(),
-      subheading: text(),
+      title: text(),
+      items: relationship({ ref: "NavigationLink", many: true }),
+    },
+  }),
+  Value: list({
+    access: allowAll,
+    fields: {
+      label: text(),
+      description: text(),
+      icon: text(),
+    },
+  }),
+  // Sections
+  CtaSection: list({
+    access: allowAll,
+    fields: {
+      background: relationship({ ref: "Background", many: true }),
+      ctas: relationship({ ref: "Cta", many: true }),
+    },
+  }),
+  Testimonial: list({
+    access: allowAll,
+    fields: {
+      background: relationship({ ref: "Background", many: true }),
+      testimonials: relationship({ ref: "TestimonialItem", many: true }),
+      fallback: relationship({ ref: "TestimonialItem", many: false }),
+    },
+  }),
+  Hero: list({
+    access: allowAll,
+    fields: {
+      subHeading: text({ validation: { isRequired: true } }),
+      banner: relationship({ ref: "HeroBanner", many: false }),
+    },
+  }),
+  Benefit: list({
+    access: allowAll,
+    fields: {
+      icon: text(),
+      title: text({ validation: { isRequired: true } }),
+      description: text({ ui: { displayMode: "textarea" } }),
+    },
+  }),
+  Faq: list({
+    access: allowAll,
+    fields: {
+      question: text({ validation: { isRequired: true } }),
+      answer: text({
+        ui: { displayMode: "textarea" },
+        validation: { isRequired: true },
+      }),
+    },
+  }),
+  Certification: list({
+    access: allowAll,
+    fields: {
+      title: text({ validation: { isRequired: true } }),
+      description: text({ ui: { displayMode: "textarea" } }),
+      image: relationship({ ref: "Image", many: false }),
+      link: text(),
+    },
+  }),
+  Feature: list({
+    access: allowAll,
+    fields: {
+      fid: text({ validation: { isRequired: true } }),
+      title: text(),
+      description: text(),
+      longDescription: text({ ui: { displayMode: "textarea" } }),
+      visualization: text(),
+    },
+  }),
+  Approach: list({
+    access: allowAll,
+    fields: {
+      title: text(),
+      description: text({ ui: { displayMode: "textarea" } }),
+      steps: relationship({ ref: "ApproachStep", many: true }),
+    },
+  }),
+  Navigation: list({
+    access: allowAll,
+    fields: {
+      title: text(),
+      description: text({ ui: { displayMode: "textarea" } }),
+      image: relationship({ ref: "Image", many: false }),
+      cta: relationship({ ref: "Cta", many: false }),
+      items: relationship({ ref: "NavigationLink", many: true }),
+    },
+  }),
+  Footer: list({
+    access: allowAll,
+    fields: {
+      sections: relationship({ ref: "FooterPart", many: true }),
+      languages: relationship({
+        ref: "Language",
+        many: true,
+        ui: {
+          displayMode: "select",
+          labelField: "label",
+        },
+      }),
+    },
+  }),
+  Analytic: list({
+    access: allowAll,
+    fields: {
+      heading: text({
+        validation: { isRequired: true },
+      }),
+      subheading: text({
+        validation: { isRequired: true },
+      }),
       stats: relationship({ ref: "AnalyticsStat", many: false }),
       tableHeadings: multiselect({
         options: [
@@ -277,50 +288,53 @@ export const lists: Record<string, ListConfig<any>> = {
       }),
       summary: relationship({ ref: "AnalyticsSummaryItem", many: true }),
     },
-  },
-  // About configs
-  Value: {
+  }),
+  About: list({
     access: allowAll,
     fields: {
-      label: text(),
-      description: text(),
-      icon: text(),
-    },
-  },
-  About: {
-    access: allowAll,
-    fields: {
-      heading: text(),
-      intro: text(),
-      valuesTitle: text(),
+      heading: text({
+        validation: { isRequired: true },
+      }),
+      intro: text({
+        validation: { isRequired: true },
+      }),
+      valuesTitle: text({
+        validation: { isRequired: true },
+      }),
       values: relationship({ ref: "Value", many: true }),
-      closing: text(),
+      closing: text({
+        validation: { isRequired: true },
+      }),
     },
-  },
-  // Map configs
-  Map: {
+  }),
+  Map: list({
     access: allowAll,
     fields: {
-      title: text(),
-      subheading: text(),
-      description: text(),
+      title: text({
+        validation: { isRequired: true },
+      }),
+      subheading: text({
+        validation: { isRequired: true },
+      }),
+      description: text({
+        validation: { isRequired: true },
+      }),
     },
-  },
-  // Section configs
-  Section: {
+  }),
+  Section: list({
     access: allowAll,
     fields: {
       type: select({
         options: [
           { label: "Hero", value: "hero" },
-          { label: "Benefit", value: "benefits" },
-          { label: "Feature", value: "features" },
-          { label: "FAQ", value: "faqs" },
-          { label: "Testimonial", value: "testimonials" },
-          { label: "Certification", value: "certifications" },
+          { label: "Benefit", value: "benefit" },
+          { label: "Feature", value: "feature" },
+          { label: "FAQ", value: "faq" },
+          { label: "Testimonial", value: "testimonial" },
+          { label: "Certification", value: "certification" },
           { label: "Approach", value: "approach" },
           { label: "About", value: "about" },
-          { label: "Analytics", value: "analytics" },
+          { label: "Analytic", value: "analytic" },
           { label: "Navigation", value: "navigation" },
           { label: "Footer", value: "footer" },
           { label: "CTA", value: "cta" },
@@ -328,36 +342,75 @@ export const lists: Record<string, ListConfig<any>> = {
         ],
         validation: { isRequired: true },
       }),
-      contentHero: relationship({ ref: "Hero", many: false }),
-      contentBenefits: relationship({ ref: "Benefit", many: true }),
-      contentFeatures: relationship({ ref: "Feature", many: true }),
-      contentFaqs: relationship({ ref: "Faq", many: true }),
-      contentTestimonials: relationship({
-        ref: "TestimonialSection",
+      contentHero: relationship({
+        ref: "Hero",
         many: false,
       }),
-      contentCertifications: relationship({ ref: "Certification", many: true }),
-      contentApproach: relationship({ ref: "Approach", many: true }),
-      contentAbout: relationship({ ref: "About", many: false }),
-      contentAnalytics: relationship({ ref: "AnalyticsSection", many: false }),
-      contentNavigation: relationship({
-        ref: "NavigationLink",
+      contentBenefits: relationship({
+        ref: "Benefit",
         many: true,
       }),
-      contentFooter: relationship({ ref: "Footer", many: true }),
-      contentCta: relationship({ ref: "CtaSection", many: true }),
-      contentMap: relationship({ ref: "Map", many: false }),
+      contentFeatures: relationship({
+        ref: "Feature",
+        many: true,
+      }),
+      contentFaqs: relationship({
+        ref: "Faq",
+        many: true,
+      }),
+      contentTestimonials: relationship({
+        ref: "Testimonial",
+        many: false,
+      }),
+      contentCertifications: relationship({
+        ref: "Certification",
+        many: true,
+      }),
+      contentApproaches: relationship({
+        ref: "Approach",
+        many: false,
+      }),
+      contentAbout: relationship({
+        ref: "About",
+        many: false,
+      }),
+      contentAnalytics: relationship({
+        ref: "Analytic",
+        many: false,
+      }),
+      contentNavigation: relationship({
+        ref: "Navigation",
+        many: false,
+      }),
+      contentFooter: relationship({
+        ref: "Footer",
+        many: false,
+      }),
+      // TODO: rename cta section
+      contentCta: relationship({
+        ref: "CtaSection",
+        many: false,
+      }),
+      contentMap: relationship({
+        ref: "Map",
+        many: false,
+      }),
     },
-  },
+  }),
   // PageContent configs
-  PageContent: {
+  // Each page has a unique slug and sections
+  PageContent: list({
     access: allowAll,
     fields: {
+      slug: text({ validation: { isRequired: true } }),
       title: text({ validation: { isRequired: true } }),
-      description: text(),
+      description: text({ validation: { isRequired: true } }),
       image: relationship({ ref: "Image", many: false }),
       cta: relationship({ ref: "Cta", many: false }),
-      sections: relationship({ ref: "Section", many: true }),
+      sections: relationship({
+        ref: "Section",
+        many: false,
+      }),
     },
-  },
+  }),
 };

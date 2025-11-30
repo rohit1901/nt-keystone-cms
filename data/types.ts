@@ -1,4 +1,7 @@
 // Type Definitions
+export type IdentifierSlug = {
+  slug: "main";
+};
 
 export type CTA = {
   label: string;
@@ -24,25 +27,9 @@ export type Certification = {
   link?: string;
 };
 
-// Strict, Discriminated Union for Sections
-export type Section =
-  | { type: "benefits"; id: string; content: Benefit[] }
-  | { type: "faqs"; id: string; content: FaqItem[] }
-  | { type: "certifications"; id: string; content: Certification[] }
-  | { type: "testimonials"; id: string; content: TestimonialSection }
-  | { type: "features"; id: string; content: FeatureSection[] }
-  | { type: "cta"; id: string; content: CTASection }
-  | { type: "footer"; id: string; content: FooterSectionContent }
-  | { type: "hero"; id: string; content: HeroSection }
-  | { type: "approach"; id: string; content: ApproachSection }
-  | { type: "about"; id: string; content: AboutSection }
-  | { type: "map"; id: string; content: MapSection }
-  | { type: "analytics"; id: string; content: AnalyticsSection }
-  | { type: "navigation"; id: string; content: NavigationSection };
-
 // Section Subtypes
 
-export type Testimonial = {
+export type TestimonialItem = {
   badge: { icon: string; label: string };
   name: string;
   role: string;
@@ -66,13 +53,13 @@ export type Image = {
   fill?: boolean;
 };
 
-export type TestimonialSection = {
+export type Testimonial = {
   background: {
     image: Image;
     outerClassName: string;
   }[];
-  testimonials?: Testimonial[];
-  fallback: Testimonial;
+  testimonials?: TestimonialItem[];
+  fallback: TestimonialItem;
 };
 
 export type FeatureSection = {
@@ -179,17 +166,65 @@ export type AnalyticsSummaryItem = {
 };
 
 export type NavigationSection = {
+  title: string;
+  description: string;
+  image: Image;
+  cta: CTA;
   items: NavigationSectionItem[];
 };
 
 // PAGE CONTENT type for multi-page support
 export interface PageContent {
   title: string;
+  slug: string;
   description?: string;
   image?: Image;
   cta?: CTA;
   sections: Section[];
 }
+// Strict, Discriminated Union for Sections
+export type Section =
+  | { type: "benefits"; id: string; content: Benefit[] }
+  | { type: "faqs"; id: string; content: FaqItem[] }
+  | {
+      type: "certifications";
+      id: string;
+      content: Certification[];
+    }
+  | {
+      type: "testimonials";
+      id: string;
+      content: Testimonial;
+    }
+  | {
+      type: "features";
+      id: string;
+      content: FeatureSection[];
+    }
+  | { type: "cta"; id: string; content: CTASection }
+  | {
+      type: "footer";
+      id: string;
+      content: FooterSectionContent;
+    }
+  | { type: "hero"; id: string; content: HeroSection }
+  | {
+      type: "approach";
+      id: string;
+      content: ApproachSection;
+    }
+  | { type: "about"; id: string; content: AboutSection }
+  | { type: "map"; id: string; content: MapSection }
+  | {
+      type: "analytics";
+      id: string;
+      content: AnalyticsSection;
+    }
+  | {
+      type: "navigation";
+      id: string;
+      content: NavigationSection;
+    };
 
 // Prisma Types
 export type PrismaType<T, U = {}> = T & { id: string } & U;

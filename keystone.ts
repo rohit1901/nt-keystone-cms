@@ -20,7 +20,6 @@ const modelsToClear = [
   "Background",
   "TestimonialBadge",
   "Testimonial",
-  "TestimonialSection",
   "HeroBannerAdditional",
   "HeroBanner",
   "Hero",
@@ -31,6 +30,7 @@ const modelsToClear = [
   "ApproachStep",
   "Approach",
   "Language",
+  "Navigation",
   "NavigationLink",
   "FooterPart",
   "Footer",
@@ -62,7 +62,9 @@ export default withAuth(
         if (process.env.NODE_ENV === "development") {
           for (const model of modelsToClear) {
             console.log("🚀 Starting clear...");
-            await context.prisma[model].deleteMany(undefined);
+            const deleteResult = context.prisma[model]
+              ? context.prisma[model].deleteMany(undefined)
+              : null;
             console.log(`Cleared ${model}`);
           }
         }

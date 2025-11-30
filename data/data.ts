@@ -1,4 +1,4 @@
-import { Benefit, FaqItem, Certification, Section, PageContent } from "./types";
+import { Section, PageContent } from "./types";
 
 // CTA Section
 export const ctaSection: Section = {
@@ -340,12 +340,23 @@ export const approachSection: Section = {
     ],
   },
 };
-// NOTE: Navigation has been transformed to PageSection and NavigationLink
-// Navigation section now as Section
-export const navigationSection: Section = {
+
+// Navigation page content as a PageContent (for single-page or dedicated navigation display)
+export const navigation: Section = {
   type: "navigation",
-  id: "navigation-section",
+  id: "navigation",
   content: {
+    title: "Nimbus Tech",
+    description:
+      "Nimbus Tech is a software development and consulting company specializing in cloud architecture, DevOps, and automation solutions. We help businesses build scalable, efficient, and secure software systems.",
+    image: {
+      src: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg",
+      alt: "Nimbus Tech Hero Image",
+    },
+    cta: {
+      label: "Get started",
+      href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
+    },
     items: [
       { label: "Services", href: "#features" },
       { label: "About Us", href: "#about-us" },
@@ -360,22 +371,6 @@ export const navigationSection: Section = {
       },
     ],
   },
-};
-
-// Navigation page content as a PageContent (for single-page or dedicated navigation display)
-export const navigationPageContent: PageContent = {
-  title: "Nimbus Tech",
-  description:
-    "Nimbus Tech is a software development and consulting company specializing in cloud architecture, DevOps, and automation solutions. We help businesses build scalable, efficient, and secure software systems.",
-  image: {
-    src: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg",
-    alt: "Nimbus Tech Hero Image",
-  },
-  cta: {
-    label: "Get started",
-    href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
-  },
-  sections: [navigationSection],
 };
 
 // Footer Section > Footer
@@ -570,6 +565,7 @@ export const mapSection: Section = {
 // Main page example (assemble sections)
 export const mainPageContent: PageContent = {
   title: "Nimbus Tech",
+  slug: "main",
   description:
     "Custom software development, cloud architecture, and scalable solutions for modern enterprises.",
   image: {
@@ -591,7 +587,7 @@ export const mainPageContent: PageContent = {
     approachSection,
     aboutSection,
     analyticsSection,
-    navigationSection,
+    navigation,
     footerSection,
     ctaSection,
     mapSection,
