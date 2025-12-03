@@ -22,6 +22,16 @@ export const keystoneConfig = config({
     url: "file:./keystone.db",
     enableLogging: true,
   },
+  server: {
+    port: 3000,
+    cors: {
+      origin:
+        process.env.NODE_ENV === "production"
+          ? process.env.CORS_ORIGIN
+          : ["http://localhost:3000", "http://localhost:3001"],
+      credentials: true,
+    },
+  },
   lists,
   session,
 });

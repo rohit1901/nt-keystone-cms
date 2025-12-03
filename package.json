@@ -3,7 +3,7 @@
   "version": "1.0.3",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=development keystone dev",
+    "dev": "keystone dev",
     "build": "keystone build",
     "seed": "ts-node --transpile-only seed.ts",
     "generate": "keystone prisma migrate dev",

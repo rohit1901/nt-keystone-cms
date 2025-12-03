@@ -1,6 +1,12 @@
-// Type Definitions
-export type IdentifierSlug = {
-  slug: "main";
+import { remixIconMap } from "./icons/remixicon-map";
+import { ImageProps } from "next/image";
+
+export type PageContent = {
+  title: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+  cta?: CTA;
 };
 
 export type CTA = {
@@ -9,10 +15,74 @@ export type CTA = {
   external?: boolean;
 };
 
-export type Benefit = {
-  icon: string;
+export type Language = {
+  label: "English" | "German";
+  value: "de-DE" | "en-US";
+};
+
+export type PageContentWithSubHeading = CompositePageContent<
+  "subheading",
+  string
+>;
+
+export type Certification = {
+  id: number;
   title: string;
   description: string;
+  image: string;
+  link?: string; // Optional link for certifications that have a URL
+  width: number;
+  height: number;
+};
+
+export type HeroType = {
+  banner: {
+    icon?: keyof typeof remixIconMap;
+    additional?: {
+      icon: keyof typeof remixIconMap;
+      text: string;
+    };
+  } & CTA;
+  subHeading: string;
+};
+
+export type FeatureVisualization =
+  | "OrbitFeatureVisualization"
+  | "CloudFeatureVisualization"
+  | "ArchitectureFeatureVisualization";
+
+export type Benefit = {
+  icon: keyof typeof remixIconMap;
+  title: string;
+  description: string;
+};
+
+export type Testimonial = {
+  rating?: number;
+  badge?: {
+    icon: keyof typeof remixIconMap;
+    label: string;
+  };
+  name: string;
+  role: string;
+  company: string;
+  image?: ImageProps;
+  content: string;
+};
+
+export type NavigationSectionItem = {
+  icon?: keyof typeof remixIconMap;
+} & CTA;
+
+// Type for a single footer section (e.g., Services, Company)
+export type FooterSection = {
+  title: string;
+  items: NavigationSectionItem[];
+};
+
+// Type for the overall sections object
+export type FooterSections = {
+  [key: string]: FooterSection;
 };
 
 export type FaqItem = {
@@ -20,140 +90,20 @@ export type FaqItem = {
   answer: string;
 };
 
-export type Certification = {
-  title: string;
-  description: string;
-  image?: Image;
-  link?: string;
-};
-
-// Section Subtypes
-
-export type TestimonialItem = {
-  badge: { icon: string; label: string };
-  name: string;
-  role: string;
-  company: string;
-  image: {
-    src: string;
-    alt: string;
-    width: number;
-    height: number;
-    className?: string;
-  };
-  content: string;
-};
-
-export type Image = {
-  src: string;
-  alt: string;
-  width?: number;
-  height?: number;
-  className?: string;
-  fill?: boolean;
-};
-
-export type Testimonial = {
-  background: {
-    image: Image;
-    outerClassName: string;
-  }[];
-  testimonials?: TestimonialItem[];
-  fallback: TestimonialItem;
-};
-
-export type FeatureSection = {
-  fid: string;
-  title: string;
-  description: string;
-  longDescription: string;
-  visualization: string;
-};
-
-export type CTASection = {
-  background: {
-    image: Image;
-    outerClassName?: string;
-  }[];
-  ctas: CTA[];
-};
-
-export type FooterSection = { title: string; items: NavigationSectionItem[] };
-export type FooterSectionContent = {
-  sections: FooterSection[];
-  languages: Language[];
-};
-
-export type NavigationSectionItem = {
-  label: string;
-  href: string;
-  external?: boolean;
-  icon?: string;
-};
-
-export type HeroSection = {
-  subHeading: string;
-  banner: {
-    label: string;
-    href: string;
-    external?: boolean;
-    additional?: { icon: string; text: string };
-  };
-};
-
-export type ApproachSection = {
-  title: string;
-  description: string;
-  steps: ApproachStep[];
-};
-
 export type ApproachStep = {
-  aid: number;
+  id: number;
   type: "done" | "in progress" | "open";
   title: string;
   description: string;
   activityTime: string;
 };
-
-export type AboutSection = {
-  heading: string;
-  intro: string;
-  valuesTitle: string;
-  values: Array<{
-    label: string;
-    description: string;
-    icon: string;
-  }>;
-  closing: string;
-};
-
-export type Language = {
-  label: "English" | "German";
-  value: "en-US" | "de-DE";
-};
-
-export type MapSection = {
+export type OurApproachContent = {
   title: string;
-  subheading: string;
   description: string;
+  steps: ApproachStep[];
 };
 
-// Add analytics section type
-export type AnalyticsSection = {
-  heading: string;
-  subheading: string;
-  stats: AnalyticsStats;
-  tableHeadings: string[];
-  summary: AnalyticsSummaryItem[];
-};
-
-export type AnalyticsStats = {
-  totalDeployments: string;
-  deploymentChange: string;
-  deploymentChangePercent: string;
-  changePeriod: string;
-};
-
+// Type for a single project summary row
 export type AnalyticsSummaryItem = {
   name: string;
   deployments: string;
@@ -165,66 +115,97 @@ export type AnalyticsSummaryItem = {
   changeType: "positive" | "negative";
 };
 
-export type NavigationSection = {
-  title: string;
-  description: string;
-  image: Image;
-  cta: CTA;
-  items: NavigationSectionItem[];
+// Type for the stats section above the table
+export type AnalyticsStats = {
+  totalDeployments: string;
+  deploymentChange: string;
+  deploymentChangePercent: string;
+  changePeriod: string;
 };
 
-// PAGE CONTENT type for multi-page support
-export interface PageContent {
-  title: string;
-  slug: string;
-  description?: string;
-  image?: Image;
-  cta?: CTA;
-  sections: Section[];
-}
-// Strict, Discriminated Union for Sections
-export type Section =
-  | { type: "benefits"; id: string; content: Benefit[] }
-  | { type: "faqs"; id: string; content: FaqItem[] }
-  | {
-      type: "certifications";
-      id: string;
-      content: Certification[];
-    }
-  | {
-      type: "testimonials";
-      id: string;
-      content: Testimonial;
-    }
-  | {
-      type: "features";
-      id: string;
-      content: FeatureSection[];
-    }
-  | { type: "cta"; id: string; content: CTASection }
-  | {
-      type: "footer";
-      id: string;
-      content: FooterSectionContent;
-    }
-  | { type: "hero"; id: string; content: HeroSection }
-  | {
-      type: "approach";
-      id: string;
-      content: ApproachSection;
-    }
-  | { type: "about"; id: string; content: AboutSection }
-  | { type: "map"; id: string; content: MapSection }
-  | {
-      type: "analytics";
-      id: string;
-      content: AnalyticsSection;
-    }
-  | {
-      type: "navigation";
-      id: string;
-      content: NavigationSection;
-    };
+// Type for the overall analytics data object
+export type AnalyticsData = {
+  heading: string;
+  subheading: string;
+  stats: AnalyticsStats;
+  tableHeadings: string[];
+  summary: AnalyticsSummaryItem[];
+};
+
+// --- Generic Composite Helper (single extra section) ---
+
+export type CompositePageContent<
+  ExtraKey extends string,
+  ExtraType,
+> = PageContent & {
+  [K in ExtraKey]: ExtraType;
+};
+
+// Usage:
+/*
+type PageWithBenefits = CompositePageContent<'benefits', Benefit[]>;
+type PageWithFaq = CompositePageContent<'faq', FaqItem[]>;
+*/
+
+// --- Generic Composite Helper (multiple extra sections) ---
+export type CompositePageContentWithExtras<
+  Extras extends Record<string, unknown>,
+> = PageContent & Extras;
+
+// Usage:
+/*
+type PageWithBenefitsAndFaq = CompositePageContentWithExtras<{
+  benefits: Benefit[];
+  faq: FaqItem[];
+}>;
+*/
+
+// --- Helper with Lowercase Key ---
+
+export type CompositePageContentLC<
+  ExtraKey extends string,
+  ExtraType,
+> = PageContent & {
+  [K in Lowercase<ExtraKey>]: ExtraType;
+};
+
+// Usage:
+// type PageWithBenefitsLC = CompositePageContentLC<'Benefits', Benefit[]>;
+
+// --- Composite with Mapping Table (for pluralization, etc.) ---
+
+type KeyMap = {
+  Benefit: "benefits";
+  FaqItem: "faq";
+  // Add more as needed
+};
+
+export type CompositePageContentWithMap<
+  T,
+  K extends keyof KeyMap,
+> = PageContent & {
+  [P in KeyMap[K]]: T;
+};
+
+// Usage:
+/*
+type PageWithBenefitsMapped = CompositePageContentWithMap<Benefit[], 'Benefit'>;
+type PageWithFaqMapped = CompositePageContentWithMap<FaqItem[], 'FaqItem'>;
+ */
+
+// --- Example Usage ---
+
+/*
+const example: PageWithBenefitsAndFaq = {
+  title: "Welcome",
+  benefits: [
+    { icon: "icon1", title: "Fast", description: "Very fast" }
+  ],
+  faq: [
+    { question: "How?", answer: "Like this." }
+  ]
+};
+*/
 
 // Prisma Types
 export type PrismaType<T, U = {}> = T & { id: string } & U;
