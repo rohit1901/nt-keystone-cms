@@ -27,21 +27,32 @@ type WithId<T> = T & { id: string };
 // ==================== SEED DATA ====================
 
 // --- Images ---
-const testimonialImages = [
-  {
+type ImageSeedConfig = {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  fill?: boolean;
+  className?: string;
+};
+
+type SeededImages = Record<string, WithId<ImageSeedConfig>>;
+
+const imageSeedData: Record<string, ImageSeedConfig> = {
+  testimonialField: {
     src: "/images/field.png",
     alt: "clouds background",
     fill: true,
     className: "object-cover",
   },
-  {
+  testimonialDrone: {
     src: "/images/drone.png",
     alt: "drone in the sky",
     width: 1583,
     height: 554,
     className: "animate-hover",
   },
-  {
+  testimonialLogo: {
     src: "/nimbus.svg",
     alt: "Nimbus Tech logo",
     width: 50,
@@ -49,22 +60,103 @@ const testimonialImages = [
     className:
       "rounded-full border-none bg-orange-50 p-3 shadow-lg ring-1 shadow-[#366A79]/20 ring-white/20 transition-transform duration-300 ease-in-out hover:scale-105",
   },
-];
-
-const ctaImages = [
-  {
+  ctaBackgroundBlur: {
     src: "/images/cta-bg-1.png",
     alt: "CTA background",
     width: 800,
     height: 600,
     className: "object-cover",
   },
-  {
+  ctaBackground: {
     src: "/images/cta-bg-2.png",
     alt: "CTA background 2",
     width: 800,
     height: 600,
     className: "object-cover",
+  },
+  navigationHero: {
+    src: "/images/nav-bg.png",
+    alt: "Navigation background",
+    width: 1600,
+    height: 900,
+  },
+  pageHero: {
+    src: "/images/hero-bg.png",
+    alt: "Nimbus Tech hero background",
+    width: 1600,
+    height: 900,
+  },
+  certIsaQbAdvanced: {
+    src: "/images/certifications/isaqb-advanced.png",
+    alt: "CPSA-A certification badge",
+    width: 200,
+    height: 200,
+  },
+  certAwsSap: {
+    src: "/images/certifications/aws-solutions-architect-pro.png",
+    alt: "AWS Solutions Architect Professional badge",
+    width: 200,
+    height: 200,
+  },
+  certAwsDeveloper: {
+    src: "/images/certifications/aws-developer-associate.png",
+    alt: "AWS Certified Developer badge",
+    width: 200,
+    height: 200,
+  },
+  certCka: {
+    src: "/images/certifications/cka.png",
+    alt: "Certified Kubernetes Administrator badge",
+    width: 200,
+    height: 200,
+  },
+  certTerraform: {
+    src: "/images/certifications/terraform-associate.png",
+    alt: "Terraform Associate badge",
+    width: 200,
+    height: 200,
+  },
+  certCsm: {
+    src: "/images/certifications/csm.png",
+    alt: "Certified ScrumMaster badge",
+    width: 200,
+    height: 200,
+  },
+};
+
+type SeededBackgrounds = Record<
+  string,
+  WithId<{
+    imageId: string;
+    outerClassName: string | null;
+  }>
+>;
+
+const backgroundSeedData: Array<{
+  key: string;
+  imageKey: keyof typeof imageSeedData;
+  outerClassName: string;
+}> = [
+  {
+    key: "testimonialPrimary",
+    imageKey: "testimonialField",
+    outerClassName: "absolute inset-0 object-cover",
+  },
+  {
+    key: "testimonialSecondary",
+    imageKey: "testimonialDrone",
+    outerClassName:
+      "absolute top-[19rem] -right-14 w-[19rem] sm:top-[12rem] sm:right-3 sm:w-[23rem] md:top-[12rem] md:right-0 md:w-[25rem] lg:top-[16rem] lg:right-12 lg:w-[34rem]",
+  },
+  {
+    key: "ctaBlur",
+    imageKey: "ctaBackgroundBlur",
+    outerClassName: "cta-background-1",
+  },
+  {
+    key: "ctaForeground",
+    imageKey: "ctaBackground",
+    outerClassName: "cta-background-2",
   },
 ];
 
@@ -141,58 +233,46 @@ const certificationsData = {
         "iSAQB® Certified Professional for Software Architecture - Advanced Level (CPSA-A)",
       description:
         "Advanced certification in software architecture methodology and practice.",
-      image: "/images/certifications/isaqb-advanced.png",
-      width: 200,
-      height: 200,
+      imageKey: "certIsaQbAdvanced",
     },
     {
       certId: 2,
       title: "AWS Certified Solutions Architect - Professional",
       description:
         "Expert-level certification for designing distributed systems on AWS.",
-      image: "/images/certifications/aws-solutions-architect-pro.png",
+      imageKey: "certAwsSap",
       link: "https://aws.amazon.com/certification/certified-solutions-architect-professional/",
-      width: 200,
-      height: 200,
     },
     {
       certId: 3,
       title: "AWS Certified Developer - Associate",
       description:
         "Validates technical expertise in developing and maintaining AWS applications.",
-      image: "/images/certifications/aws-developer-associate.png",
+      imageKey: "certAwsDeveloper",
       link: "https://aws.amazon.com/certification/certified-developer-associate/",
-      width: 200,
-      height: 200,
     },
     {
       certId: 4,
       title: "Certified Kubernetes Administrator (CKA)",
       description:
         "Demonstrates skills in Kubernetes administration and deployment.",
-      image: "/images/certifications/cka.png",
+      imageKey: "certCka",
       link: "https://www.cncf.io/certification/cka/",
-      width: 200,
-      height: 200,
     },
     {
       certId: 5,
       title: "HashiCorp Certified: Terraform Associate",
       description:
         "Validates knowledge of Terraform and infrastructure as code practices.",
-      image: "/images/certifications/terraform-associate.png",
+      imageKey: "certTerraform",
       link: "https://www.hashicorp.com/certification/terraform-associate",
-      width: 200,
-      height: 200,
     },
     {
       certId: 6,
       title: "Certified ScrumMaster (CSM)",
       description:
         "Demonstrates understanding of Scrum framework and agile methodologies.",
-      image: "/images/certifications/csm.png",
-      width: 200,
-      height: 200,
+      imageKey: "certCsm",
     },
   ],
 };
@@ -322,8 +402,7 @@ const approachData = {
 const navigationData = {
   title: "Navigation",
   description: "Quick links to explore our services and get in touch.",
-  image: "/images/nav-bg.png",
-  imageAlt: "Navigation background",
+  imageKey: "navigationHero",
   cta: {
     label: "Contact Us",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
@@ -543,47 +622,38 @@ const pageContentData = {
   title: "Nimbus Tech - Expert Software & Cloud Consulting",
   description:
     "Custom software development, cloud architecture, and scalable solutions for modern enterprises.",
-  image: "/images/hero-bg.png",
-  imageAlt: "Nimbus Tech hero background",
+  imageKey: "pageHero",
 };
 
 // ==================== SEED FUNCTIONS ====================
 
 async function seedImages() {
   console.log("Seeding images...");
-  const allImages = [...testimonialImages, ...ctaImages];
-  const images = await prisma.image.createManyAndReturn({ data: allImages });
-  console.log(`✓ Seeded ${images.length} images`);
-  return images;
+  const entries = await Promise.all(
+    Object.entries(imageSeedData).map(async ([key, data]) => {
+      const image = await prisma.image.create({ data });
+      return [key, image] as const;
+    }),
+  );
+  console.log(`✓ Seeded ${entries.length} images`);
+  return Object.fromEntries(entries) as SeededImages;
 }
 
-async function seedBackgrounds(
-  images: WithId<(typeof testimonialImages)[0]>[],
-) {
+async function seedBackgrounds(images: SeededImages) {
   console.log("Seeding backgrounds...");
-  const backgrounds = await prisma.background.createManyAndReturn({
-    data: [
-      {
-        imageId: images[0].id,
-        outerClassName: "absolute inset-0 object-cover",
-      },
-      {
-        imageId: images[1].id,
-        outerClassName:
-          "absolute top-[19rem] -right-14 w-[19rem] sm:top-[12rem] sm:right-3 sm:w-[23rem]",
-      },
-      {
-        imageId: images[3].id,
-        outerClassName: "cta-background-1",
-      },
-      {
-        imageId: images[4].id,
-        outerClassName: "cta-background-2",
-      },
-    ],
-  });
-  console.log(`✓ Seeded ${backgrounds.length} backgrounds`);
-  return backgrounds;
+  const entries = await Promise.all(
+    backgroundSeedData.map(async ({ key, imageKey, outerClassName }) => {
+      const background = await prisma.background.create({
+        data: {
+          imageId: images[imageKey].id,
+          outerClassName,
+        },
+      });
+      return [key, background] as const;
+    }),
+  );
+  console.log(`✓ Seeded ${entries.length} backgrounds`);
+  return Object.fromEntries(entries) as SeededBackgrounds;
 }
 
 async function seedBenefits() {
@@ -628,8 +698,8 @@ async function seedHero() {
 }
 
 async function seedTestimonials(
-  images: WithId<(typeof testimonialImages)[0]>[],
-  backgrounds: any[],
+  images: SeededImages,
+  backgrounds: SeededBackgrounds,
 ) {
   console.log("Seeding testimonials...");
   const badge = await prisma.testimonialBadge.create({
@@ -641,14 +711,17 @@ async function seedTestimonials(
       name: testimonialData.fallback.name,
       role: testimonialData.fallback.role,
       company: testimonialData.fallback.company,
-      imageId: images[2].id,
+      imageId: images.testimonialLogo.id,
       content: testimonialData.fallback.content,
     },
   });
   const testimonialSection = await prisma.testimonialSection.create({
     data: {
       background: {
-        connect: [{ id: backgrounds[0].id }, { id: backgrounds[1].id }],
+        connect: [
+          { id: backgrounds.testimonialPrimary.id },
+          { id: backgrounds.testimonialSecondary.id },
+        ],
       },
       fallbackId: fallbackItem.id,
     },
@@ -657,10 +730,16 @@ async function seedTestimonials(
   return testimonialSection.id;
 }
 
-async function seedCertifications() {
+async function seedCertifications(images: SeededImages) {
   console.log("Seeding certifications...");
   const certifications = await prisma.certification.createManyAndReturn({
-    data: certificationsData.certifications,
+    data: certificationsData.certifications.map((cert) => ({
+      certId: cert.certId,
+      title: cert.title,
+      description: cert.description,
+      link: cert.link,
+      imageId: images[cert.imageKey].id,
+    })),
   });
   const ctaRecord = await prisma.cta.create({
     data: certificationsData.cta,
@@ -704,10 +783,7 @@ async function seedFaqs() {
 async function seedApproach() {
   console.log("Seeding approach...");
   const steps = await prisma.approachStep.createManyAndReturn({
-    data: approachData.steps.map((step) => ({
-      ...step,
-      aid: step.stepId,
-    })),
+    data: approachData.steps,
   });
   const approach = await prisma.approach.create({
     data: {
@@ -720,7 +796,7 @@ async function seedApproach() {
   return approach.id;
 }
 
-async function seedNavigation() {
+async function seedNavigation(images: SeededImages) {
   console.log("Seeding navigation...");
   const navCta = await prisma.cta.create({
     data: navigationData.cta,
@@ -732,8 +808,9 @@ async function seedNavigation() {
     data: {
       title: navigationData.title,
       description: navigationData.description,
-      image: navigationData.image,
-      imageAlt: navigationData.imageAlt,
+      image: {
+        connect: { id: images[navigationData.imageKey].id },
+      },
       cta: {
         connect: { id: navCta.id },
       },
@@ -821,7 +898,7 @@ async function seedMap() {
   return map.id;
 }
 
-async function seedCta(backgrounds: any[]) {
+async function seedCta(backgrounds: SeededBackgrounds) {
   console.log("Seeding CTA section...");
   const ctas = await prisma.cta.createManyAndReturn({
     data: ctaData.ctas,
@@ -832,7 +909,10 @@ async function seedCta(backgrounds: any[]) {
       description: ctaData.description,
       ctas: { connect: ctas.map((c) => ({ id: c.id })) },
       background: {
-        connect: [{ id: backgrounds[2].id }, { id: backgrounds[3].id }],
+        connect: [
+          { id: backgrounds.ctaBlur.id },
+          { id: backgrounds.ctaForeground.id },
+        ],
       },
     },
   });
@@ -948,7 +1028,7 @@ async function seedSections(ids: {
   return sections.map((s) => s.id);
 }
 
-async function seedPageContent(sectionIds: string[]) {
+async function seedPageContent(sectionIds: string[], images: SeededImages) {
   console.log("Seeding page content...");
   const cta = await prisma.cta.create({
     data: {
@@ -962,8 +1042,9 @@ async function seedPageContent(sectionIds: string[]) {
       slug: pageContentData.slug,
       title: pageContentData.title,
       description: pageContentData.description,
-      image: pageContentData.image,
-      imageAlt: pageContentData.imageAlt,
+      image: {
+        connect: { id: images[pageContentData.imageKey].id },
+      },
       cta: {
         connect: { id: cta.id },
       },
@@ -990,9 +1071,9 @@ async function main() {
     const featuresIds = await seedFeatures();
     const faqsIds = await seedFaqs();
     const testimonialsId = await seedTestimonials(images, backgrounds);
-    const certificationsId = await seedCertifications();
+    const certificationsId = await seedCertifications(images);
     const approachId = await seedApproach();
-    const navigationId = await seedNavigation();
+    const navigationId = await seedNavigation(images);
     const footerId = await seedFooter();
     const analyticsId = await seedAnalytics();
     const aboutId = await seedAbout();
@@ -1015,7 +1096,7 @@ async function main() {
       ctaId,
     });
 
-    await seedPageContent(sectionIds);
+    await seedPageContent(sectionIds, images);
 
     console.log("\n✅ Seeding completed successfully!\n");
   } catch (error) {

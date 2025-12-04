@@ -100,9 +100,12 @@ export const certifications: Certification[] = [
       "iSAQB® Certified Professional for Software Architecture - Advanced Level (CPSA-A)",
     description:
       "Advanced expertise in software architecture principles and practices.",
-    image: "/cpsa.a.png",
-    width: 200,
-    height: 200,
+    image: {
+      src: "/cpsa.a.png",
+      alt: "CPSA-A certification badge",
+      width: 200,
+      height: 200,
+    },
   },
   {
     id: 2,
@@ -110,53 +113,64 @@ export const certifications: Certification[] = [
       "iSAQB® Certified Professional for Software Architecture - Foundation Level (CPSA-F)",
     description:
       "Fundamental knowledge of software architecture concepts and methodologies.",
-    image:
-      "https://app.skillsclub.com/participants/115738/credentials/217564-2301-CPSAFL-223971-EN.png?ngsw-bypass=true&v=1716371214&Expires=1837082997&Signature=duhUg5dapPCYABZlu903zk~WlmPt75Sap-7sFkFgk0Cxd51gSm7lf4XBuR4SM8fU5ephShR50oFamcrsxF23t9E5yuCjSYC0FL1Oeujv7z1BkujgoVK37pdYCYPPlfeW7DepRSYJeAlIYejTrjxq2gsHYHHpOpqBhekyMCVbJ0HPov6B0FNuQtJ9Jr8eH9kAyxwxuAV5AWtT3T5Xfhw33V6zVU55sGWvYEW5i70T24kEodo2FZgVVMOgWsJK4QgjhdlVzMAwVCKrOJshKA33CY48kdPe6DQy26PnbFIoV-j9k6124QIBwLC4X66Gw3R9pMpBLVn6ym3nppBozizmnw__&Key-Pair-Id=APKAJGVOLYFJFHV5FSSQ",
+    image: {
+      src: "https://app.skillsclub.com/participants/115738/credentials/217564-2301-CPSAFL-223971-EN.png?ngsw-bypass=true&v=1716371214&Expires=1837082997&Signature=duhUg5dapPCYABZlu903zk~WlmPt75Sap-7sFkFgk0Cxd51gSm7lf4XBuR4SM8fU5ephShR50oFamcrsxF23t9E5yuCjSYC0FL1Oeujv7z1BkujgoVK37pdYCYPPlfeW7DepRSYJeAlIYejTrjxq2gsHYHHpOpqBhekyMCVbJ0HPov6B0FNuQtJ9Jr8eH9kAyxwxuAV5AWtT3T5Xfhw33V6zVU55sGWvYEW5i70T24kEodo2FZgVVMOgWsJK4QgjhdlVzMAwVCKrOJshKA33CY48kdPe6DQy26PnbFIoV-j9k6124QIBwLC4X66Gw3R9pMpBLVn6ym3nppBozizmnw__&Key-Pair-Id=APKAJGVOLYFJFHV5FSSQ",
+      alt: "CPSA-F certification badge",
+      width: 200,
+      height: 200,
+    },
     link: "https://app.skillsclub.com/credential/28340-f57d08ae92c30e28a0c2850516e8fec9616ac7473feba42e7c4a2e62585c44c0?locale=en&badge=true",
-    width: 200,
-    height: 200,
   },
   {
     id: 3,
     title: "Apollo Certified Graph Developer - Professional",
     description:
       "Certified skills in GraphQL development and Apollo client/server technologies.",
-    image:
-      "https://res.cloudinary.com/apollographql/image/upload/v1654200365/odyssey/certifications/graph_professional_badge.svg",
+    image: {
+      src: "https://res.cloudinary.com/apollographql/image/upload/v1654200365/odyssey/certifications/graph_professional_badge.svg",
+      alt: "Apollo Graph Professional certification badge",
+      width: 200,
+      height: 200,
+    },
     link: "https://www.apollographql.com/tutorials/certifications/d5356f71-0760-4701-ae67-8b56c425c89a",
-    width: 200,
-    height: 200,
   },
   {
     id: 4,
     title: "Apollo Certified Graph Developer - Associate",
     description:
       "Certified skills in GraphQL development and Apollo client/server technologies.",
-    image:
-      "https://res.cloudinary.com/apollographql/image/upload/v1632844693/badge_sfsiin.svg",
+    image: {
+      src: "https://res.cloudinary.com/apollographql/image/upload/v1632844693/badge_sfsiin.svg",
+      alt: "Apollo Graph Associate certification badge",
+      width: 200,
+      height: 200,
+    },
     link: "https://www.apollographql.com/tutorials/certifications/3ad7e4dd-4b29-46f2-8e65-6e5706e0c067",
-    width: 200,
-    height: 200,
   },
   {
     id: 5,
     title: "Git Certified Specialist by GitKraken",
     description:
       "Expertise in Git version control and collaboration workflows.",
-    image: "/gitkraken.svg",
+    image: {
+      src: "/gitkraken.svg",
+      alt: "GitKraken Git certification badge",
+      width: 200,
+      height: 200,
+    },
     link: "https://cdn.filestackcontent.com/dq8NILlGROaJpp4bxYlC?policy=eyJjYWxsIjpbInJlYWQiXSwiZXhwaXJ5IjoxNzUwNjg3MzIwLCJwYXRoIjoiLyJ9&signature=3180d99a6f24a049042e2341f449f4e35a12688f261859fa6dfd88cac212d230",
-    width: 200,
-    height: 200,
   },
   {
     id: 6,
     title: "AWS Certified Developer - Associate",
     description:
       "Demonstrates proficiency in developing and maintaining applications on AWS.",
-    image:
-      "https://d1.awsstatic.com/certification/badges/AWS-Certified-Developer-Associate_badge_150x150.a8973e238efb2d1b0b24f5282e1ad87eb554e6ef.png",
-    width: 200,
-    height: 200,
+    image: {
+      src: "https://d1.awsstatic.com/certification/badges/AWS-Certified-Developer-Associate_badge_150x150.a8973e238efb2d1b0b24f5282e1ad87eb554e6ef.png",
+      alt: "AWS Certified Developer badge",
+      width: 200,
+      height: 200,
+    },
   },
 ];
 
@@ -178,8 +192,12 @@ export const navigationPageContent: PageContent = {
   title: "Nimbus Tech",
   description:
     "Nimbus Tech is a software development and consulting company specializing in cloud architecture, DevOps, and automation solutions. We help businesses build scalable, efficient, and secure software systems.",
-  image: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg", // Example image URL, replace with actual image path
-  imageAlt: "Nimbus Tech Hero Image",
+  image: {
+    src: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg", // Example image URL, replace with actual image path
+    alt: "Nimbus Tech Hero Image",
+    width: 1600,
+    height: 900,
+  },
   cta: {
     label: "Get started",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",

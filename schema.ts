@@ -18,8 +18,7 @@ import { ImageProps } from "next/image";
 export type PageContent = {
   title: string;
   description?: string;
-  image?: string;
-  imageAlt?: string;
+  image?: ImageProps;
   cta?: CTA;
 };
 
@@ -43,10 +42,8 @@ export type Certification = {
   id: number;
   title: string;
   description: string;
-  image: string;
+  image: ImageProps;
   link?: string;
-  width: number;
-  height: number;
 };
 
 export type HeroType = {
@@ -366,10 +363,8 @@ export const lists: Record<string, ListConfig<any>> = {
       certId: integer({ validation: { isRequired: true } }),
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
-      image: text({ validation: { isRequired: true } }),
+      image: relationship({ ref: "Image", many: false }),
       link: text(),
-      width: integer({ validation: { isRequired: true } }),
-      height: integer({ validation: { isRequired: true } }),
     },
   }),
 
@@ -460,8 +455,7 @@ export const lists: Record<string, ListConfig<any>> = {
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
-      image: text(),
-      imageAlt: text(),
+      image: relationship({ ref: "Image", many: false }),
       cta: relationship({ ref: "Cta", many: false }),
       items: relationship({ ref: "NavigationLink", many: true }),
     },
@@ -668,8 +662,7 @@ export const lists: Record<string, ListConfig<any>> = {
       }),
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
-      image: text(),
-      imageAlt: text(),
+      image: relationship({ ref: "Image", many: false }),
       cta: relationship({ ref: "Cta", many: false }),
       sections: relationship({ ref: "Section", many: true }),
     },

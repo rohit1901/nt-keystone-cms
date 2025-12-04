@@ -4,8 +4,7 @@ import { ImageProps } from "next/image";
 export type PageContent = {
   title: string;
   description?: string;
-  image?: string;
-  imageAlt?: string;
+  image?: ImageProps;
   cta?: CTA;
 };
 
@@ -29,10 +28,8 @@ export type Certification = {
   id: number;
   title: string;
   description: string;
-  image: string;
+  image: ImageProps;
   link?: string; // Optional link for certifications that have a URL
-  width: number;
-  height: number;
 };
 
 export type HeroType = {

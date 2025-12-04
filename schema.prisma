@@ -40,6 +40,9 @@ model Image {
   className                  String            @default("")
   from_Background_image      Background[]      @relation("Background_image")
   from_TestimonialItem_image TestimonialItem[] @relation("TestimonialItem_image")
+  from_Certification_image   Certification[]   @relation("Certification_image")
+  from_Navigation_image      Navigation[]      @relation("Navigation_image")
+  from_PageContent_image     PageContent[]     @relation("PageContent_image")
 }
 
 model Background {
@@ -154,11 +157,12 @@ model Certification {
   certId                                   Int
   title                                    String                 @default("")
   description                              String                 @default("")
-  image                                    String                 @default("")
+  image                                    Image?                 @relation("Certification_image", fields: [imageId], references: [id])
+  imageId                                  String?                @map("image")
   link                                     String                 @default("")
-  width                                    Int
-  height                                   Int
   from_CertificationSection_certifications CertificationSection[] @relation("CertificationSection_certifications")
+
+  @@index([imageId])
 }
 
 model CertificationSection {
@@ -215,13 +219,14 @@ model Navigation {
   id                             String           @id @default(cuid())
   title                          String           @default("")
   description                    String           @default("")
-  image                          String           @default("")
-  imageAlt                       String           @default("")
+  image                          Image?           @relation("Navigation_image", fields: [imageId], references: [id])
+  imageId                        String?          @map("image")
   cta                            Cta?             @relation("Navigation_cta", fields: [ctaId], references: [id])
   ctaId                          String?          @map("cta")
   items                          NavigationLink[] @relation("Navigation_items")
   from_Section_contentNavigation Section[]        @relation("Section_contentNavigation")
 
+  @@index([imageId])
   @@index([ctaId])
 }
 
@@ -357,11 +362,12 @@ model PageContent {
   slug        String    @unique @default("")
   title       String    @default("")
   description String    @default("")
-  image       String    @default("")
-  imageAlt    String    @default("")
+  image       Image?    @relation("PageContent_image", fields: [imageId], references: [id])
+  imageId     String?   @map("image")
   cta         Cta?      @relation("PageContent_cta", fields: [ctaId], references: [id])
   ctaId       String?   @map("cta")
   sections    Section[] @relation("PageContent_sections")
 
+  @@index([imageId])
   @@index([ctaId])
 }
