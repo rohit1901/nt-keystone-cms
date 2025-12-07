@@ -12,6 +12,8 @@ import {
   float,
 } from "@keystone-6/core/fields";
 import { ImageProps } from "next/image";
+import { Slug } from "./seed/types";
+import { ImageConfig } from "next/dist/shared/lib/image-config";
 
 // --- TypeScript Type Definitions ---
 
@@ -42,7 +44,7 @@ export type Certification = {
   id: number;
   title: string;
   description: string;
-  image: ImageProps;
+  image: ImageConfig & { type: Slug };
   link?: string;
 };
 
@@ -55,6 +57,8 @@ export type HeroType = {
     };
   } & CTA;
   subHeading: string;
+  title: string;
+  description: string;
 };
 
 export type FeatureVisualization =
@@ -191,6 +195,17 @@ export const lists: Record<string, ListConfig<any>> = {
   }),
 
   // --- Core Content Types ---
+  Type: list({
+    access: allowAll,
+    fields: {
+      label: select({
+        options: [
+          { label: "Certification", value: "certification" },
+          { label: "CTA", value: "cta" },
+        ],
+      }),
+    },
+  }),
 
   // CTA: Call-to-action links
   Cta: list({
@@ -199,6 +214,7 @@ export const lists: Record<string, ListConfig<any>> = {
       label: text({ validation: { isRequired: true } }),
       href: text({ validation: { isRequired: true } }),
       external: checkbox({ defaultValue: false }),
+      type: relationship({ ref: "Type", many: false }),
     },
   }),
 
@@ -211,7 +227,7 @@ export const lists: Record<string, ListConfig<any>> = {
       width: integer(),
       height: integer(),
       fill: checkbox({ defaultValue: false }),
-      className: text(),
+      type: relationship({ ref: "Type", many: false }),
     },
   }),
 
@@ -311,6 +327,8 @@ export const lists: Record<string, ListConfig<any>> = {
   Hero: list({
     access: allowAll,
     fields: {
+      title: text({ validation: { isRequired: true } }),
+      description: text({ validation: { isRequired: true } }),
       subHeading: text({ validation: { isRequired: true } }),
       banner: relationship({ ref: "HeroBanner", many: false }),
     },
@@ -360,7 +378,6 @@ export const lists: Record<string, ListConfig<any>> = {
   Certification: list({
     access: allowAll,
     fields: {
-      certId: integer({ validation: { isRequired: true } }),
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
       image: relationship({ ref: "Image", many: false }),

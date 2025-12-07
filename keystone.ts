@@ -20,7 +20,8 @@ export const keystoneConfig = config({
     //   see https://keystonejs.com/docs/guides/choosing-a-database#title
     provider: "sqlite",
     url: "file:./keystone.db",
-    enableLogging: true,
+    enableLogging: process.env.NODE_ENV === "development",
+    idField: { kind: "autoincrement" },
   },
   server: {
     port: 3000,

@@ -18,6 +18,10 @@
 
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
+import {
+  certifications as certificationsContent,
+  ourCertificationsPageContent,
+} from "./data/data";
 
 const prisma = new PrismaClient();
 
@@ -34,6 +38,7 @@ type ImageSeedConfig = {
   height?: number;
   fill?: boolean;
   className?: string;
+  sizes?: string;
 };
 
 type SeededImages = Record<string, WithId<ImageSeedConfig>>;
@@ -44,6 +49,7 @@ const imageSeedData: Record<string, ImageSeedConfig> = {
     alt: "clouds background",
     fill: true,
     className: "object-cover",
+    sizes: "100vw",
   },
   testimonialDrone: {
     src: "/images/drone.png",
@@ -61,18 +67,18 @@ const imageSeedData: Record<string, ImageSeedConfig> = {
       "rounded-full border-none bg-orange-50 p-3 shadow-lg ring-1 shadow-[#366A79]/20 ring-white/20 transition-transform duration-300 ease-in-out hover:scale-105",
   },
   ctaBackgroundBlur: {
-    src: "/images/cta-bg-1.png",
-    alt: "CTA background",
-    width: 800,
-    height: 600,
-    className: "object-cover",
+    src: "/images/farm-footer.webp",
+    alt: "CTA background Blur",
+    width: 1000,
+    height: 1000,
+    className: "absolute inset-0 -z-10 rounded-2xl blur-xl",
   },
   ctaBackground: {
-    src: "/images/cta-bg-2.png",
+    src: "/images/farm-footer.webp",
     alt: "CTA background 2",
-    width: 800,
-    height: 600,
-    className: "object-cover",
+    width: 1000,
+    height: 1000,
+    className: "relative z-10 rounded-2xl",
   },
   navigationHero: {
     src: "/images/nav-bg.png",
@@ -87,41 +93,57 @@ const imageSeedData: Record<string, ImageSeedConfig> = {
     height: 900,
   },
   certIsaQbAdvanced: {
-    src: "/images/certifications/isaqb-advanced.png",
+    src: "/cpsa.a.png",
     alt: "CPSA-A certification badge",
     width: 200,
     height: 200,
   },
-  certAwsSap: {
-    src: "/images/certifications/aws-solutions-architect-pro.png",
-    alt: "AWS Solutions Architect Professional badge",
+  certIsaQbFoundation: {
+    src: "https://app.skillsclub.com/participants/115738/credentials/217564-2301-CPSAFL-223971-EN.png?ngsw-bypass=true&v=1716371214&Expires=1837082997&Signature=duhUg5dapPCYABZlu903zk~WlmPt75Sap-7sFkFgk0Cxd51gSm7lf4XBuR4SM8fU5ephShR50oFamcrsxF23t9E5yuCjSYC0FL1Oeujv7z1BkujgoVK37pdYCYPPlfeW7DepRSYJeAlIYejTrjxq2gsHYHHpOpqBhekyMCVbJ0HPov6B0FNuQtJ9Jr8eH9kAyxwxuAV5AWtT3T5Xfhw33V6zVU55sGWvYEW5i70T24kEodo2FZgVVMOgWsJK4QgjhdlVzMAwVCKrOJshKA33CY48kdPe6DQy26PnbFIoV-j9k6124QIBwLC4X66Gw3R9pMpBLVn6ym3nppBozizmnw__&Key-Pair-Id=APKAJGVOLYFJFHV5FSSQ",
+    alt: "CPSA-F certification badge",
+    width: 200,
+    height: 200,
+  },
+  certApolloProfessional: {
+    src: "https://res.cloudinary.com/apollographql/image/upload/v1654200365/odyssey/certifications/graph_professional_badge.svg",
+    alt: "Apollo Graph Professional certification badge",
+    width: 200,
+    height: 200,
+  },
+  certApolloAssociate: {
+    src: "https://res.cloudinary.com/apollographql/image/upload/v1632844693/badge_sfsiin.svg",
+    alt: "Apollo Graph Associate certification badge",
+    width: 200,
+    height: 200,
+  },
+  certGitKraken: {
+    src: "/gitkraken.svg",
+    alt: "GitKraken Git certification badge",
     width: 200,
     height: 200,
   },
   certAwsDeveloper: {
-    src: "/images/certifications/aws-developer-associate.png",
+    src: "https://d1.awsstatic.com/certification/badges/AWS-Certified-Developer-Associate_badge_150x150.a8973e238efb2d1b0b24f5282e1ad87eb554e6ef.png",
     alt: "AWS Certified Developer badge",
     width: 200,
     height: 200,
   },
-  certCka: {
-    src: "/images/certifications/cka.png",
-    alt: "Certified Kubernetes Administrator badge",
+  certAwsSap: {
+    src: "https://images.credly.com/size/680x680/images/0e284c3f-5164-4b21-8660-0d84737941bc/image.png",
+    alt: "AWS Solutions Architect Professional badge",
     width: 200,
     height: 200,
   },
-  certTerraform: {
-    src: "/images/certifications/terraform-associate.png",
-    alt: "Terraform Associate badge",
-    width: 200,
-    height: 200,
-  },
-  certCsm: {
-    src: "/images/certifications/csm.png",
-    alt: "Certified ScrumMaster badge",
-    width: 200,
-    height: 200,
-  },
+};
+
+const certificationImageKeyMap: Record<number, keyof typeof imageSeedData> = {
+  1: "certIsaQbAdvanced",
+  2: "certIsaQbFoundation",
+  3: "certApolloProfessional",
+  4: "certApolloAssociate",
+  5: "certGitKraken",
+  6: "certAwsDeveloper",
+  7: "certAwsSap",
 };
 
 type SeededBackgrounds = Record<
@@ -151,12 +173,12 @@ const backgroundSeedData: Array<{
   {
     key: "ctaBlur",
     imageKey: "ctaBackgroundBlur",
-    outerClassName: "cta-background-1",
+    outerClassName: "absolute inset-0 -z-10 rounded-2xl blur-xl",
   },
   {
     key: "ctaForeground",
     imageKey: "ctaBackground",
-    outerClassName: "cta-background-2",
+    outerClassName: "relative z-10 rounded-2xl",
   },
 ];
 
@@ -186,7 +208,10 @@ const benefitsData = {
 
 // --- Hero ---
 const heroData = {
-  subHeading: "Expert Software & Cloud Consulting, Wherever You Are",
+  title: "Nimbus Tech",
+  description:
+    "Custom software development, cloud architecture, and scalable solutions for modern enterprises.",
+  subHeading: "Expert Software & Cloud Consulting",
   banner: {
     label: "🚀 Launch Your Cloud Journey",
     href: "#features",
@@ -209,7 +234,7 @@ const testimonialData = {
       label: "Coming Soon",
     },
     name: "The Nimbus Tech Team",
-    role: "Software & Cloud Experts",
+    role: "Software & Cloud Experts, Germany",
     company: "Nimbus Tech",
     content:
       "As Nimbus Tech launches, we look forward to partnering with innovative organizations and delivering exceptional software and cloud solutions. Your feedback could be featured here!",
@@ -218,63 +243,32 @@ const testimonialData = {
 
 // --- Certifications ---
 const certificationsData = {
-  title: "Our Certifications",
-  description:
-    "Industry-recognized certifications demonstrating our expertise in software architecture and cloud technologies.",
+  title: ourCertificationsPageContent.title,
+  description: ourCertificationsPageContent.description,
   cta: {
-    label: "View All Certifications",
-    href: "#certifications",
-    external: false,
+    label: ourCertificationsPageContent.cta.label,
+    href: ourCertificationsPageContent.cta.href,
+    external:
+      ourCertificationsPageContent.cta.external ??
+      ourCertificationsPageContent.cta.href.startsWith("http"),
   },
-  certifications: [
-    {
-      certId: 1,
-      title:
-        "iSAQB® Certified Professional for Software Architecture - Advanced Level (CPSA-A)",
-      description:
-        "Advanced certification in software architecture methodology and practice.",
-      imageKey: "certIsaQbAdvanced",
+  certifications: certificationsContent.map(
+    ({ id, title, description, link }) => {
+      const imageKey = certificationImageKeyMap[id];
+
+      if (!imageKey) {
+        throw new Error(`Missing image key mapping for certification ${id}`);
+      }
+
+      return {
+        certId: id,
+        title,
+        description,
+        ...(link ? { link } : {}),
+        imageKey,
+      };
     },
-    {
-      certId: 2,
-      title: "AWS Certified Solutions Architect - Professional",
-      description:
-        "Expert-level certification for designing distributed systems on AWS.",
-      imageKey: "certAwsSap",
-      link: "https://aws.amazon.com/certification/certified-solutions-architect-professional/",
-    },
-    {
-      certId: 3,
-      title: "AWS Certified Developer - Associate",
-      description:
-        "Validates technical expertise in developing and maintaining AWS applications.",
-      imageKey: "certAwsDeveloper",
-      link: "https://aws.amazon.com/certification/certified-developer-associate/",
-    },
-    {
-      certId: 4,
-      title: "Certified Kubernetes Administrator (CKA)",
-      description:
-        "Demonstrates skills in Kubernetes administration and deployment.",
-      imageKey: "certCka",
-      link: "https://www.cncf.io/certification/cka/",
-    },
-    {
-      certId: 5,
-      title: "HashiCorp Certified: Terraform Associate",
-      description:
-        "Validates knowledge of Terraform and infrastructure as code practices.",
-      imageKey: "certTerraform",
-      link: "https://www.hashicorp.com/certification/terraform-associate",
-    },
-    {
-      certId: 6,
-      title: "Certified ScrumMaster (CSM)",
-      description:
-        "Demonstrates understanding of Scrum framework and agile methodologies.",
-      imageKey: "certCsm",
-    },
-  ],
+  ),
 };
 
 // --- Features ---
@@ -619,7 +613,7 @@ const ctaData = {
 // --- Page Content ---
 const pageContentData = {
   slug: "home",
-  title: "Nimbus Tech - Expert Software & Cloud Consulting",
+  title: "Nimbus Tech",
   description:
     "Custom software development, cloud architecture, and scalable solutions for modern enterprises.",
   imageKey: "pageHero",
@@ -645,7 +639,7 @@ async function seedBackgrounds(images: SeededImages) {
     backgroundSeedData.map(async ({ key, imageKey, outerClassName }) => {
       const background = await prisma.background.create({
         data: {
-          imageId: images[imageKey].id,
+          imageId: images[imageKey].id ?? undefined,
           outerClassName,
         },
       });
@@ -689,6 +683,8 @@ async function seedHero() {
   });
   const hero = await prisma.hero.create({
     data: {
+      title: heroData.title,
+      description: heroData.description,
       subHeading: heroData.subHeading,
       bannerId: banner.id,
     },
