@@ -16,17 +16,22 @@ async function main(prisma: PrismaClient) {
     const seededCtas = await Ctas.seed(prisma, seededSlugs);
     const seededCtaSections = await Ctas.seedSection(
       prisma,
+      seededSlugs,
       seededCtas,
       seededImages,
     );
     const seededCertifications = await Certifications.seed(
       prisma,
+      seededSlugs,
+      seededCtas,
       seededImages,
     );
     const seededCertificationSections = await Certifications.seedSection(
       prisma,
-      seededCertifications,
+      seededSlugs,
       seededCtas,
+      seededImages,
+      seededCertifications,
     );
   } catch (error) {
     console.error("\n❌ Seeding failed:", error);

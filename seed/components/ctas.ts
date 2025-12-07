@@ -73,14 +73,11 @@ async function seed(prisma: PrismaClient, slugs: SeededSlugs) {
 
 async function seedSection(
   prisma: PrismaClient,
+  slugs: SeededSlugs,
   ctas: SeededCTAs,
   backgrounds: SeededImages,
 ) {
-  const foundCtaSlug = await prisma.type.findFirst({
-    where: {
-      label: "cta",
-    },
-  });
+  const foundCtaSlug = slugs.find((slug) => slug.label === "cta");
 
   if (!foundCtaSlug) {
     throw new Error("CTA slug not found");
@@ -94,53 +91,23 @@ async function seedSection(
     throw new Error("CTA background images not found");
   }
 
-  const existingBackgrounds = await prisma.background.findMany({
-    where: {
-      imageId: {
-        in: ctaImageIds,
-      },
-    },
-  });
-
-  const missingImageIds = ctaImageIds.filter(
-    (imageId) =>
-      !existingBackgrounds.some((background) => background.imageId === imageId),
-  );
-
-  const newlyCreatedBackgrounds = missingImageIds.length
-    ? await prisma.background.createManyAndReturn({
-        data: missingImageIds.map((imageId) => ({
-          imageId,
-          outerClassName: "",
-        })),
-      })
-    : [];
-
-  const backgroundsToConnect = [
-    ...existingBackgrounds,
-    ...newlyCreatedBackgrounds,
-  ];
-
-  const foundCtaCTAs = await prisma.cta.findMany({
-    where: {
-      typeId: foundCtaSlug.id,
-    },
-  });
+  const foundCtaCTAs = ctas.filter((cta) => cta.typeId === foundCtaSlug.id);
 
   if (!foundCtaCTAs.length) {
     throw new Error("CTA records not found");
   }
 
-  console.log(`Found CTA backgrounds, ${backgroundsToConnect.length}`);
-  console.log(`Found CTAs, ${foundCtaCTAs.length}`);
+  const backgroundsToConnect = backgrounds.filter((background) =>
+    ctaImageIds.includes(background.id),
+  );
 
   const sections = await prisma.ctaSection.create({
     data: {
       title: CtasSectionData.title,
       description: CtasSectionData.description,
       background: {
-        connect: backgroundsToConnect.map((background) => ({
-          id: background.id,
+        connect: backgroundsToConnect.map((b) => ({
+          id: b.id,
         })),
       },
       ctas: {

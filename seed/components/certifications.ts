@@ -2,6 +2,8 @@ import Image from "./images";
 import type { SeededCTAs } from "./ctas";
 import type { ImageConfig, SeededImages } from "./images";
 import type { PrismaClient } from "@prisma/client";
+import { SeededSlugs } from "./slugs";
+import Ctas from "./ctas";
 
 // --- Certification Types ---
 export type CertificationImageKey =
@@ -28,12 +30,7 @@ const certificationsData = {
   title: "Our Certifications",
   description:
     "Nimbus Tech is certified in various technologies and methodologies, ensuring the highest quality standards in our projects.",
-  cta: {
-    label: "Let’s Talk",
-    href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
-    external: true,
-    type: "certification",
-  },
+  cta: Ctas.data.ctas.find(({ type }) => type === "certification"),
   certifications: [
     {
       title:
@@ -100,11 +97,19 @@ const certificationsData = {
   ],
 };
 
-async function seed(prisma: PrismaClient, images: SeededImages) {
+async function seed(
+  prisma: PrismaClient,
+  slugs: SeededSlugs,
+  ctas: SeededCTAs,
+  images: SeededImages,
+) {
   console.log("Seeding certifications...");
-  const certificationSlug = await prisma.type.findFirstOrThrow({
-    where: { label: "certification" },
-  });
+  const certificationSlug = slugs.find(
+    (slug) => slug.label === "certification",
+  );
+  if (!certificationSlug) {
+    throw new Error(`Slug not found for label: certification`);
+  }
   const certifications = await prisma.certification.createManyAndReturn({
     data: certificationsData.certifications.map((cert) => ({
       ...cert,
@@ -120,20 +125,24 @@ async function seed(prisma: PrismaClient, images: SeededImages) {
 
 async function seedSection(
   prisma: PrismaClient,
-  certifications: SeededCertifications,
+  slugs: SeededSlugs,
   ctas: SeededCTAs,
+  images: SeededImages,
+  certifications: SeededCertifications,
 ) {
   console.log("Seeding certification sections...");
-  const certificationCtaType = await prisma.type.findFirstOrThrow({
-    where: { label: "certification" },
-  });
-  const certificationCtaLabel = certificationsData.cta.label;
+  const certificationCtaType = slugs.find(
+    (slug) => slug.label === "certification",
+  );
+  if (!certificationCtaType) {
+    throw new Error(`Slug not found for label: certification`);
+  }
   const foundCtaId = ctas.find(
     (cta) => cta.typeId === certificationCtaType.id,
   )?.id;
 
   if (!foundCtaId) {
-    throw new Error(`CTA not found for label: ${certificationCtaLabel}`);
+    throw new Error(`CTA not found for certification`);
   }
   const sections = await prisma.certificationSection.create({
     data: {

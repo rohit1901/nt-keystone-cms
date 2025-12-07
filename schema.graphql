@@ -1837,8 +1837,8 @@ type CtaSection {
   description: String
   ctas(where: CtaWhereInput! = {}, orderBy: [CtaOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CtaWhereUniqueInput): [Cta!]
   ctasCount(where: CtaWhereInput! = {}): Int
-  background(where: BackgroundWhereInput! = {}, orderBy: [BackgroundOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: BackgroundWhereUniqueInput): [Background!]
-  backgroundCount(where: BackgroundWhereInput! = {}): Int
+  background(where: ImageWhereInput! = {}, orderBy: [ImageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ImageWhereUniqueInput): [Image!]
+  backgroundCount(where: ImageWhereInput! = {}): Int
 }
 
 input CtaSectionWhereUniqueInput {
@@ -1853,13 +1853,19 @@ input CtaSectionWhereInput {
   title: StringFilter
   description: StringFilter
   ctas: CtaManyRelationFilter
-  background: BackgroundManyRelationFilter
+  background: ImageManyRelationFilter
 }
 
 input CtaManyRelationFilter {
   every: CtaWhereInput
   some: CtaWhereInput
   none: CtaWhereInput
+}
+
+input ImageManyRelationFilter {
+  every: ImageWhereInput
+  some: ImageWhereInput
+  none: ImageWhereInput
 }
 
 input CtaSectionOrderByInput {
@@ -1872,7 +1878,7 @@ input CtaSectionUpdateInput {
   title: String
   description: String
   ctas: CtaRelateToManyForUpdateInput
-  background: BackgroundRelateToManyForUpdateInput
+  background: ImageRelateToManyForUpdateInput
 }
 
 input CtaRelateToManyForUpdateInput {
@@ -1880,6 +1886,13 @@ input CtaRelateToManyForUpdateInput {
   set: [CtaWhereUniqueInput!]
   create: [CtaCreateInput!]
   connect: [CtaWhereUniqueInput!]
+}
+
+input ImageRelateToManyForUpdateInput {
+  disconnect: [ImageWhereUniqueInput!]
+  set: [ImageWhereUniqueInput!]
+  create: [ImageCreateInput!]
+  connect: [ImageWhereUniqueInput!]
 }
 
 input CtaSectionUpdateArgs {
@@ -1891,12 +1904,17 @@ input CtaSectionCreateInput {
   title: String
   description: String
   ctas: CtaRelateToManyForCreateInput
-  background: BackgroundRelateToManyForCreateInput
+  background: ImageRelateToManyForCreateInput
 }
 
 input CtaRelateToManyForCreateInput {
   create: [CtaCreateInput!]
   connect: [CtaWhereUniqueInput!]
+}
+
+input ImageRelateToManyForCreateInput {
+  create: [ImageCreateInput!]
+  connect: [ImageWhereUniqueInput!]
 }
 
 type Section {

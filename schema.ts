@@ -618,7 +618,7 @@ export const lists: Record<string, ListConfig<any>> = {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
       ctas: relationship({ ref: "Cta", many: true }),
-      background: relationship({ ref: "Background", many: true }),
+      background: relationship({ ref: "Image", many: true }),
     },
   }),
 

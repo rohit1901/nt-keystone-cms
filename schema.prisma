@@ -54,6 +54,7 @@ model Image {
   from_TestimonialItem_image TestimonialItem[] @relation("TestimonialItem_image")
   from_Certification_image   Certification[]   @relation("Certification_image")
   from_Navigation_image      Navigation[]      @relation("Navigation_image")
+  from_CtaSection_background CtaSection[]      @relation("CtaSection_background")
   from_PageContent_image     PageContent[]     @relation("PageContent_image")
 
   @@index([typeId])
@@ -65,7 +66,6 @@ model Background {
   imageId                            Int?                 @map("image")
   outerClassName                     String               @default("")
   from_TestimonialSection_background TestimonialSection[] @relation("TestimonialSection_background")
-  from_CtaSection_background         CtaSection[]         @relation("CtaSection_background")
 
   @@index([imageId])
 }
@@ -322,12 +322,12 @@ model Map {
 }
 
 model CtaSection {
-  id                      Int          @id @default(autoincrement())
-  title                   String       @default("")
-  description             String       @default("")
-  ctas                    Cta[]        @relation("CtaSection_ctas")
-  background              Background[] @relation("CtaSection_background")
-  from_Section_contentCta Section[]    @relation("Section_contentCta")
+  id                      Int       @id @default(autoincrement())
+  title                   String    @default("")
+  description             String    @default("")
+  ctas                    Cta[]     @relation("CtaSection_ctas")
+  background              Image[]   @relation("CtaSection_background")
+  from_Section_contentCta Section[] @relation("Section_contentCta")
 }
 
 model Section {
