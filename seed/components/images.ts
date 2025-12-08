@@ -4,6 +4,12 @@ import type { Maybe } from "../types";
 import type { CertificationImageKey } from "./certifications";
 import type { SeededSlugs, Slug } from "./slugs";
 import type { CtaImageKeys } from "./ctas";
+
+export type TestimonialImageKey =
+  | "testimonialField"
+  | "testimonialDrone"
+  | "testimonialLogo";
+
 // --- Image Types ---
 export type ImageConfig = {
   src: string;
@@ -14,7 +20,10 @@ export type ImageConfig = {
   type?: Maybe<Slug>;
 };
 export type SeededImages = Awaited<ReturnType<typeof seed>>;
-export type ImageKeys = CertificationImageKey | CtaImageKeys;
+export type ImageKeys =
+  | CertificationImageKey
+  | CtaImageKeys
+  | TestimonialImageKey;
 
 // --- Image Data ---
 const imageSeedData: Record<ImageKeys, ImageConfig> = {
@@ -80,6 +89,26 @@ const imageSeedData: Record<ImageKeys, ImageConfig> = {
     width: 1000,
     height: 1000,
     type: "cta",
+  },
+  testimonialField: {
+    src: "/images/field.png",
+    alt: "clouds background",
+    fill: true,
+    type: "testimonial",
+  },
+  testimonialDrone: {
+    src: "/images/drone.png",
+    alt: "clouds background",
+    width: 1583,
+    height: 554,
+    type: "testimonial",
+  },
+  testimonialLogo: {
+    src: "/nimbus.svg",
+    alt: "Nimbus Tech logo",
+    width: 50,
+    height: 50,
+    type: "testimonial",
   },
 };
 

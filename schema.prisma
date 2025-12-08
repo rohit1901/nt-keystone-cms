@@ -33,6 +33,7 @@ model Cta {
   external                      Boolean                @default(false)
   type                          Type?                  @relation("Cta_type", fields: [typeId], references: [id])
   typeId                        Int?                   @map("type")
+  from_Hero_cta                 Hero[]                 @relation("Hero_cta")
   from_CertificationSection_cta CertificationSection[] @relation("CertificationSection_cta")
   from_Navigation_cta           Navigation[]           @relation("Navigation_cta")
   from_CtaSection_ctas          CtaSection[]           @relation("CtaSection_ctas")
@@ -141,9 +142,12 @@ model Hero {
   subHeading               String      @default("")
   banner                   HeroBanner? @relation("Hero_banner", fields: [bannerId], references: [id])
   bannerId                 Int?        @map("banner")
+  cta                      Cta?        @relation("Hero_cta", fields: [ctaId], references: [id])
+  ctaId                    Int?        @map("cta")
   from_Section_contentHero Section[]   @relation("Section_contentHero")
 
   @@index([bannerId])
+  @@index([ctaId])
 }
 
 model Benefit {
@@ -162,10 +166,19 @@ model BenefitSection {
 }
 
 model Faq {
-  id                       Int       @id @default(autoincrement())
-  question                 String    @default("")
-  answer                   String    @default("")
-  from_Section_contentFaqs Section[] @relation("Section_contentFaqs")
+  id                       Int          @id @default(autoincrement())
+  question                 String       @default("")
+  answer                   String       @default("")
+  from_FaqSection_faqs     FaqSection[] @relation("FaqSection_faqs")
+  from_Section_contentFaqs Section[]    @relation("Section_contentFaqs")
+}
+
+model FaqSection {
+  id                             Int       @id @default(autoincrement())
+  title                          String    @default("")
+  description                    String    @default("")
+  faqs                           Faq[]     @relation("FaqSection_faqs")
+  from_Section_contentFaqSection Section[] @relation("Section_contentFaqSection")
 }
 
 model Certification {
@@ -339,6 +352,8 @@ model Section {
   contentBenefitsId         Int?                  @map("contentBenefits")
   contentFeatures           Feature[]             @relation("Section_contentFeatures")
   contentFaqs               Faq[]                 @relation("Section_contentFaqs")
+  contentFaqSection         FaqSection?           @relation("Section_contentFaqSection", fields: [contentFaqSectionId], references: [id])
+  contentFaqSectionId       Int?                  @map("contentFaqSection")
   contentTestimonials       TestimonialSection?   @relation("Section_contentTestimonials", fields: [contentTestimonialsId], references: [id])
   contentTestimonialsId     Int?                  @map("contentTestimonials")
   contentCertifications     CertificationSection? @relation("Section_contentCertifications", fields: [contentCertificationsId], references: [id])
@@ -361,6 +376,7 @@ model Section {
 
   @@index([contentHeroId])
   @@index([contentBenefitsId])
+  @@index([contentFaqSectionId])
   @@index([contentTestimonialsId])
   @@index([contentCertificationsId])
   @@index([contentApproachId])

@@ -1,19 +1,19 @@
 import { list, ListConfig } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
 import {
-  text,
+  checkbox,
+  float,
+  integer,
+  multiselect,
+  password,
   relationship,
   select,
-  integer,
-  checkbox,
-  password,
+  text,
   timestamp,
-  multiselect,
-  float,
 } from "@keystone-6/core/fields";
-import { ImageProps } from "next/image";
-import { Slug } from "./seed/types";
 import { ImageConfig } from "next/dist/shared/lib/image-config";
+import { ImageProps } from "next/image";
+import { Slug } from "./seed/components/slugs";
 
 // --- TypeScript Type Definitions ---
 
@@ -232,13 +232,6 @@ export const lists: Record<string, ListConfig<any>> = {
   }),
 
   // Background: Background configuration with images
-  Background: list({
-    access: allowAll,
-    fields: {
-      image: relationship({ ref: "Image", many: false }),
-      outerClassName: text(),
-    },
-  }),
 
   // Language: Language selector options
   Language: list({
@@ -294,7 +287,7 @@ export const lists: Record<string, ListConfig<any>> = {
     access: allowAll,
     fields: {
       title: text(),
-      background: relationship({ ref: "Background", many: true }),
+      background: relationship({ ref: "Image", many: true }),
       testimonials: relationship({ ref: "TestimonialItem", many: true }),
       fallback: relationship({ ref: "TestimonialItem", many: false }),
     },
@@ -331,6 +324,7 @@ export const lists: Record<string, ListConfig<any>> = {
       description: text({ validation: { isRequired: true } }),
       subHeading: text({ validation: { isRequired: true } }),
       banner: relationship({ ref: "HeroBanner", many: false }),
+      cta: relationship({ ref: "Cta", many: false }),
     },
   }),
 
@@ -369,6 +363,16 @@ export const lists: Record<string, ListConfig<any>> = {
         ui: { displayMode: "textarea" },
         validation: { isRequired: true },
       }),
+    },
+  }),
+
+  // FaqSection: Collection of FAQs with title and description
+  FaqSection: list({
+    access: allowAll,
+    fields: {
+      title: text({ validation: { isRequired: true } }),
+      description: text({ ui: { displayMode: "textarea" } }),
+      faqs: relationship({ ref: "Faq", many: true }),
     },
   }),
 
@@ -634,6 +638,7 @@ export const lists: Record<string, ListConfig<any>> = {
           { label: "Benefits", value: "benefits" },
           { label: "Features", value: "features" },
           { label: "FAQ", value: "faq" },
+          { label: "FAQ Section", value: "faqSection" },
           { label: "Testimonials", value: "testimonials" },
           { label: "Certifications", value: "certifications" },
           { label: "Approach", value: "approach" },
@@ -651,6 +656,7 @@ export const lists: Record<string, ListConfig<any>> = {
       contentBenefits: relationship({ ref: "BenefitSection", many: false }),
       contentFeatures: relationship({ ref: "Feature", many: true }),
       contentFaqs: relationship({ ref: "Faq", many: true }),
+      contentFaqSection: relationship({ ref: "FaqSection", many: false }),
       contentTestimonials: relationship({
         ref: "TestimonialSection",
         many: false,

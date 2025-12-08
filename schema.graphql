@@ -717,6 +717,7 @@ type Hero {
   description: String
   subHeading: String
   banner: HeroBanner
+  cta: Cta
 }
 
 input HeroWhereUniqueInput {
@@ -732,6 +733,7 @@ input HeroWhereInput {
   description: StringFilter
   subHeading: StringFilter
   banner: HeroBannerWhereInput
+  cta: CtaWhereInput
 }
 
 input HeroOrderByInput {
@@ -746,11 +748,18 @@ input HeroUpdateInput {
   description: String
   subHeading: String
   banner: HeroBannerRelateToOneForUpdateInput
+  cta: CtaRelateToOneForUpdateInput
 }
 
 input HeroBannerRelateToOneForUpdateInput {
   create: HeroBannerCreateInput
   connect: HeroBannerWhereUniqueInput
+  disconnect: Boolean
+}
+
+input CtaRelateToOneForUpdateInput {
+  create: CtaCreateInput
+  connect: CtaWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -764,11 +773,17 @@ input HeroCreateInput {
   description: String
   subHeading: String
   banner: HeroBannerRelateToOneForCreateInput
+  cta: CtaRelateToOneForCreateInput
 }
 
 input HeroBannerRelateToOneForCreateInput {
   create: HeroBannerCreateInput
   connect: HeroBannerWhereUniqueInput
+}
+
+input CtaRelateToOneForCreateInput {
+  create: CtaCreateInput
+  connect: CtaWhereUniqueInput
 }
 
 type Benefit {
@@ -914,6 +929,69 @@ input FaqCreateInput {
   answer: String
 }
 
+type FaqSection {
+  id: ID!
+  title: String
+  description: String
+  faqs(where: FaqWhereInput! = {}, orderBy: [FaqOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FaqWhereUniqueInput): [Faq!]
+  faqsCount(where: FaqWhereInput! = {}): Int
+}
+
+input FaqSectionWhereUniqueInput {
+  id: ID
+}
+
+input FaqSectionWhereInput {
+  AND: [FaqSectionWhereInput!]
+  OR: [FaqSectionWhereInput!]
+  NOT: [FaqSectionWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  description: StringFilter
+  faqs: FaqManyRelationFilter
+}
+
+input FaqManyRelationFilter {
+  every: FaqWhereInput
+  some: FaqWhereInput
+  none: FaqWhereInput
+}
+
+input FaqSectionOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  description: OrderDirection
+}
+
+input FaqSectionUpdateInput {
+  title: String
+  description: String
+  faqs: FaqRelateToManyForUpdateInput
+}
+
+input FaqRelateToManyForUpdateInput {
+  disconnect: [FaqWhereUniqueInput!]
+  set: [FaqWhereUniqueInput!]
+  create: [FaqCreateInput!]
+  connect: [FaqWhereUniqueInput!]
+}
+
+input FaqSectionUpdateArgs {
+  where: FaqSectionWhereUniqueInput!
+  data: FaqSectionUpdateInput!
+}
+
+input FaqSectionCreateInput {
+  title: String
+  description: String
+  faqs: FaqRelateToManyForCreateInput
+}
+
+input FaqRelateToManyForCreateInput {
+  create: [FaqCreateInput!]
+  connect: [FaqWhereUniqueInput!]
+}
+
 type Certification {
   id: ID!
   title: String
@@ -1006,12 +1084,6 @@ input CertificationSectionUpdateInput {
   certifications: CertificationRelateToManyForUpdateInput
 }
 
-input CtaRelateToOneForUpdateInput {
-  create: CtaCreateInput
-  connect: CtaWhereUniqueInput
-  disconnect: Boolean
-}
-
 input CertificationRelateToManyForUpdateInput {
   disconnect: [CertificationWhereUniqueInput!]
   set: [CertificationWhereUniqueInput!]
@@ -1029,11 +1101,6 @@ input CertificationSectionCreateInput {
   description: String
   cta: CtaRelateToOneForCreateInput
   certifications: CertificationRelateToManyForCreateInput
-}
-
-input CtaRelateToOneForCreateInput {
-  create: CtaCreateInput
-  connect: CtaWhereUniqueInput
 }
 
 input CertificationRelateToManyForCreateInput {
@@ -1926,6 +1993,7 @@ type Section {
   contentFeaturesCount(where: FeatureWhereInput! = {}): Int
   contentFaqs(where: FaqWhereInput! = {}, orderBy: [FaqOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FaqWhereUniqueInput): [Faq!]
   contentFaqsCount(where: FaqWhereInput! = {}): Int
+  contentFaqSection: FaqSection
   contentTestimonials: TestimonialSection
   contentCertifications: CertificationSection
   contentApproach: Approach
@@ -1951,6 +2019,7 @@ input SectionWhereInput {
   contentBenefits: BenefitSectionWhereInput
   contentFeatures: FeatureManyRelationFilter
   contentFaqs: FaqManyRelationFilter
+  contentFaqSection: FaqSectionWhereInput
   contentTestimonials: TestimonialSectionWhereInput
   contentCertifications: CertificationSectionWhereInput
   contentApproach: ApproachWhereInput
@@ -1968,12 +2037,6 @@ input FeatureManyRelationFilter {
   none: FeatureWhereInput
 }
 
-input FaqManyRelationFilter {
-  every: FaqWhereInput
-  some: FaqWhereInput
-  none: FaqWhereInput
-}
-
 input SectionOrderByInput {
   id: OrderDirection
   type: OrderDirection
@@ -1985,6 +2048,7 @@ input SectionUpdateInput {
   contentBenefits: BenefitSectionRelateToOneForUpdateInput
   contentFeatures: FeatureRelateToManyForUpdateInput
   contentFaqs: FaqRelateToManyForUpdateInput
+  contentFaqSection: FaqSectionRelateToOneForUpdateInput
   contentTestimonials: TestimonialSectionRelateToOneForUpdateInput
   contentCertifications: CertificationSectionRelateToOneForUpdateInput
   contentApproach: ApproachRelateToOneForUpdateInput
@@ -2015,11 +2079,10 @@ input FeatureRelateToManyForUpdateInput {
   connect: [FeatureWhereUniqueInput!]
 }
 
-input FaqRelateToManyForUpdateInput {
-  disconnect: [FaqWhereUniqueInput!]
-  set: [FaqWhereUniqueInput!]
-  create: [FaqCreateInput!]
-  connect: [FaqWhereUniqueInput!]
+input FaqSectionRelateToOneForUpdateInput {
+  create: FaqSectionCreateInput
+  connect: FaqSectionWhereUniqueInput
+  disconnect: Boolean
 }
 
 input TestimonialSectionRelateToOneForUpdateInput {
@@ -2087,6 +2150,7 @@ input SectionCreateInput {
   contentBenefits: BenefitSectionRelateToOneForCreateInput
   contentFeatures: FeatureRelateToManyForCreateInput
   contentFaqs: FaqRelateToManyForCreateInput
+  contentFaqSection: FaqSectionRelateToOneForCreateInput
   contentTestimonials: TestimonialSectionRelateToOneForCreateInput
   contentCertifications: CertificationSectionRelateToOneForCreateInput
   contentApproach: ApproachRelateToOneForCreateInput
@@ -2113,9 +2177,9 @@ input FeatureRelateToManyForCreateInput {
   connect: [FeatureWhereUniqueInput!]
 }
 
-input FaqRelateToManyForCreateInput {
-  create: [FaqCreateInput!]
-  connect: [FaqWhereUniqueInput!]
+input FaqSectionRelateToOneForCreateInput {
+  create: FaqSectionCreateInput
+  connect: FaqSectionWhereUniqueInput
 }
 
 input TestimonialSectionRelateToOneForCreateInput {
@@ -2336,6 +2400,12 @@ type Mutation {
   updateFaqs(data: [FaqUpdateArgs!]!): [Faq]
   deleteFaq(where: FaqWhereUniqueInput!): Faq
   deleteFaqs(where: [FaqWhereUniqueInput!]!): [Faq]
+  createFaqSection(data: FaqSectionCreateInput!): FaqSection
+  createFaqSections(data: [FaqSectionCreateInput!]!): [FaqSection]
+  updateFaqSection(where: FaqSectionWhereUniqueInput!, data: FaqSectionUpdateInput!): FaqSection
+  updateFaqSections(data: [FaqSectionUpdateArgs!]!): [FaqSection]
+  deleteFaqSection(where: FaqSectionWhereUniqueInput!): FaqSection
+  deleteFaqSections(where: [FaqSectionWhereUniqueInput!]!): [FaqSection]
   createCertification(data: CertificationCreateInput!): Certification
   createCertifications(data: [CertificationCreateInput!]!): [Certification]
   updateCertification(where: CertificationWhereUniqueInput!, data: CertificationUpdateInput!): Certification
@@ -2512,6 +2582,9 @@ type Query {
   faq(where: FaqWhereUniqueInput!): Faq
   faqs(where: FaqWhereInput! = {}, orderBy: [FaqOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FaqWhereUniqueInput): [Faq!]
   faqsCount(where: FaqWhereInput! = {}): Int
+  faqSection(where: FaqSectionWhereUniqueInput!): FaqSection
+  faqSections(where: FaqSectionWhereInput! = {}, orderBy: [FaqSectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FaqSectionWhereUniqueInput): [FaqSection!]
+  faqSectionsCount(where: FaqSectionWhereInput! = {}): Int
   certification(where: CertificationWhereUniqueInput!): Certification
   certifications(where: CertificationWhereInput! = {}, orderBy: [CertificationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CertificationWhereUniqueInput): [Certification!]
   certificationsCount(where: CertificationWhereInput! = {}): Int

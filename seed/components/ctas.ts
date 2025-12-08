@@ -26,20 +26,32 @@ const ctas: CTA[] = [
   {
     label: "Start now",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
-    external: true,
+    external: false,
     type: "cta",
   },
   {
     label: "Schedule a discovery call",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de", // TODO: add link to calendars
-    external: true,
+    external: false,
     type: "cta",
   },
   {
     label: "Let’s Talk",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
-    external: true,
+    external: false,
     type: "certification",
+  },
+  {
+    label: "Contact Us",
+    href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de", // TODO: Substack for now, change later
+    external: false,
+    type: "hero",
+  },
+  {
+    label: "News",
+    href: "https://rohitkhanduri.substack.com", // TODO: Substack for now, change later
+    external: true,
+    type: "hero",
   },
 ];
 
