@@ -687,7 +687,7 @@ export const lists: Record<string, ListConfig<any>> = {
       description: text({ ui: { displayMode: "textarea" } }),
       image: relationship({ ref: "Image", many: false }),
       cta: relationship({ ref: "Cta", many: false }),
-      sections: relationship({ ref: "Section", many: true }),
+      sections: relationship({ ref: "Section", many: false }),
     },
   }),
 };

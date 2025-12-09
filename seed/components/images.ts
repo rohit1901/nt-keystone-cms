@@ -4,6 +4,7 @@ import type { Maybe } from "../types";
 import type { CertificationImageKey } from "./certifications";
 import type { SeededSlugs, Slug } from "./slugs";
 import type { CtaImageKeys } from "./ctas";
+import { navigationPageContent } from "../../data/data";
 
 export type TestimonialImageKey =
   | "testimonialField"
@@ -20,9 +21,11 @@ export type ImageConfig = {
   type?: Maybe<Slug>;
 };
 export type SeededImages = Awaited<ReturnType<typeof seed>>;
+export type NavigationImageKey = "navigationPrimary";
 export type ImageKeys =
   | CertificationImageKey
   | CtaImageKeys
+  | NavigationImageKey
   | TestimonialImageKey;
 
 // --- Image Data ---
@@ -90,6 +93,13 @@ const imageSeedData: Record<ImageKeys, ImageConfig> = {
     height: 1000,
     type: "cta",
   },
+  navigationPrimary: {
+    src: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg", // Example image URL, replace with actual image path
+    alt: "Nimbus Tech Hero Image",
+    width: 1600,
+    height: 900,
+    type: "navigation",
+  },
   testimonialField: {
     src: "/images/field.png",
     alt: "clouds background",
@@ -124,8 +134,17 @@ const seed = async (prisma: PrismaClient, slugs: SeededSlugs) => {
     ({ label }) => label === "certification",
   )?.id;
   if (!certificationSlugId) throw new Error("Certification slug not found");
+  const navigationSlugExists = slugs.some(
+    ({ label }) => label === "navigation",
+  );
+  if (!navigationSlugExists) throw new Error("Navigation slug not found");
+  if (!navigationPageContent.image) {
+    throw new Error(
+      "Navigation image data is required in navigationPageContent.image before seeding.",
+    );
+  }
   const seededImages = await prisma.image.createManyAndReturn({
-    data: Object.entries(imageSeedData).map(([key, value]) => ({
+    data: Object.entries(imageSeedData).map(([, value]) => ({
       ...value,
       type: undefined,
       fill: !!value.fill,

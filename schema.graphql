@@ -295,56 +295,6 @@ input ImageCreateInput {
   type: TypeRelateToOneForCreateInput
 }
 
-type Background {
-  id: ID!
-  image: Image
-  outerClassName: String
-}
-
-input BackgroundWhereUniqueInput {
-  id: ID
-}
-
-input BackgroundWhereInput {
-  AND: [BackgroundWhereInput!]
-  OR: [BackgroundWhereInput!]
-  NOT: [BackgroundWhereInput!]
-  id: IDFilter
-  image: ImageWhereInput
-  outerClassName: StringFilter
-}
-
-input BackgroundOrderByInput {
-  id: OrderDirection
-  outerClassName: OrderDirection
-}
-
-input BackgroundUpdateInput {
-  image: ImageRelateToOneForUpdateInput
-  outerClassName: String
-}
-
-input ImageRelateToOneForUpdateInput {
-  create: ImageCreateInput
-  connect: ImageWhereUniqueInput
-  disconnect: Boolean
-}
-
-input BackgroundUpdateArgs {
-  where: BackgroundWhereUniqueInput!
-  data: BackgroundUpdateInput!
-}
-
-input BackgroundCreateInput {
-  image: ImageRelateToOneForCreateInput
-  outerClassName: String
-}
-
-input ImageRelateToOneForCreateInput {
-  create: ImageCreateInput
-  connect: ImageWhereUniqueInput
-}
-
 type Language {
   id: ID!
   label: String
@@ -490,6 +440,12 @@ input TestimonialBadgeRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input ImageRelateToOneForUpdateInput {
+  create: ImageCreateInput
+  connect: ImageWhereUniqueInput
+  disconnect: Boolean
+}
+
 input TestimonialItemUpdateArgs {
   where: TestimonialItemWhereUniqueInput!
   data: TestimonialItemUpdateInput!
@@ -510,11 +466,16 @@ input TestimonialBadgeRelateToOneForCreateInput {
   connect: TestimonialBadgeWhereUniqueInput
 }
 
+input ImageRelateToOneForCreateInput {
+  create: ImageCreateInput
+  connect: ImageWhereUniqueInput
+}
+
 type TestimonialSection {
   id: ID!
   title: String
-  background(where: BackgroundWhereInput! = {}, orderBy: [BackgroundOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: BackgroundWhereUniqueInput): [Background!]
-  backgroundCount(where: BackgroundWhereInput! = {}): Int
+  background(where: ImageWhereInput! = {}, orderBy: [ImageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ImageWhereUniqueInput): [Image!]
+  backgroundCount(where: ImageWhereInput! = {}): Int
   testimonials(where: TestimonialItemWhereInput! = {}, orderBy: [TestimonialItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TestimonialItemWhereUniqueInput): [TestimonialItem!]
   testimonialsCount(where: TestimonialItemWhereInput! = {}): Int
   fallback: TestimonialItem
@@ -530,15 +491,15 @@ input TestimonialSectionWhereInput {
   NOT: [TestimonialSectionWhereInput!]
   id: IDFilter
   title: StringFilter
-  background: BackgroundManyRelationFilter
+  background: ImageManyRelationFilter
   testimonials: TestimonialItemManyRelationFilter
   fallback: TestimonialItemWhereInput
 }
 
-input BackgroundManyRelationFilter {
-  every: BackgroundWhereInput
-  some: BackgroundWhereInput
-  none: BackgroundWhereInput
+input ImageManyRelationFilter {
+  every: ImageWhereInput
+  some: ImageWhereInput
+  none: ImageWhereInput
 }
 
 input TestimonialItemManyRelationFilter {
@@ -554,16 +515,16 @@ input TestimonialSectionOrderByInput {
 
 input TestimonialSectionUpdateInput {
   title: String
-  background: BackgroundRelateToManyForUpdateInput
+  background: ImageRelateToManyForUpdateInput
   testimonials: TestimonialItemRelateToManyForUpdateInput
   fallback: TestimonialItemRelateToOneForUpdateInput
 }
 
-input BackgroundRelateToManyForUpdateInput {
-  disconnect: [BackgroundWhereUniqueInput!]
-  set: [BackgroundWhereUniqueInput!]
-  create: [BackgroundCreateInput!]
-  connect: [BackgroundWhereUniqueInput!]
+input ImageRelateToManyForUpdateInput {
+  disconnect: [ImageWhereUniqueInput!]
+  set: [ImageWhereUniqueInput!]
+  create: [ImageCreateInput!]
+  connect: [ImageWhereUniqueInput!]
 }
 
 input TestimonialItemRelateToManyForUpdateInput {
@@ -586,14 +547,14 @@ input TestimonialSectionUpdateArgs {
 
 input TestimonialSectionCreateInput {
   title: String
-  background: BackgroundRelateToManyForCreateInput
+  background: ImageRelateToManyForCreateInput
   testimonials: TestimonialItemRelateToManyForCreateInput
   fallback: TestimonialItemRelateToOneForCreateInput
 }
 
-input BackgroundRelateToManyForCreateInput {
-  create: [BackgroundCreateInput!]
-  connect: [BackgroundWhereUniqueInput!]
+input ImageRelateToManyForCreateInput {
+  create: [ImageCreateInput!]
+  connect: [ImageWhereUniqueInput!]
 }
 
 input TestimonialItemRelateToManyForCreateInput {
@@ -1929,12 +1890,6 @@ input CtaManyRelationFilter {
   none: CtaWhereInput
 }
 
-input ImageManyRelationFilter {
-  every: ImageWhereInput
-  some: ImageWhereInput
-  none: ImageWhereInput
-}
-
 input CtaSectionOrderByInput {
   id: OrderDirection
   title: OrderDirection
@@ -1955,13 +1910,6 @@ input CtaRelateToManyForUpdateInput {
   connect: [CtaWhereUniqueInput!]
 }
 
-input ImageRelateToManyForUpdateInput {
-  disconnect: [ImageWhereUniqueInput!]
-  set: [ImageWhereUniqueInput!]
-  create: [ImageCreateInput!]
-  connect: [ImageWhereUniqueInput!]
-}
-
 input CtaSectionUpdateArgs {
   where: CtaSectionWhereUniqueInput!
   data: CtaSectionUpdateInput!
@@ -1977,11 +1925,6 @@ input CtaSectionCreateInput {
 input CtaRelateToManyForCreateInput {
   create: [CtaCreateInput!]
   connect: [CtaWhereUniqueInput!]
-}
-
-input ImageRelateToManyForCreateInput {
-  create: [ImageCreateInput!]
-  connect: [ImageWhereUniqueInput!]
 }
 
 type Section {
@@ -2234,8 +2177,7 @@ type PageContent {
   description: String
   image: Image
   cta: Cta
-  sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
-  sectionsCount(where: SectionWhereInput! = {}): Int
+  sections: Section
 }
 
 input PageContentWhereUniqueInput {
@@ -2253,13 +2195,7 @@ input PageContentWhereInput {
   description: StringFilter
   image: ImageWhereInput
   cta: CtaWhereInput
-  sections: SectionManyRelationFilter
-}
-
-input SectionManyRelationFilter {
-  every: SectionWhereInput
-  some: SectionWhereInput
-  none: SectionWhereInput
+  sections: SectionWhereInput
 }
 
 input PageContentOrderByInput {
@@ -2275,14 +2211,13 @@ input PageContentUpdateInput {
   description: String
   image: ImageRelateToOneForUpdateInput
   cta: CtaRelateToOneForUpdateInput
-  sections: SectionRelateToManyForUpdateInput
+  sections: SectionRelateToOneForUpdateInput
 }
 
-input SectionRelateToManyForUpdateInput {
-  disconnect: [SectionWhereUniqueInput!]
-  set: [SectionWhereUniqueInput!]
-  create: [SectionCreateInput!]
-  connect: [SectionWhereUniqueInput!]
+input SectionRelateToOneForUpdateInput {
+  create: SectionCreateInput
+  connect: SectionWhereUniqueInput
+  disconnect: Boolean
 }
 
 input PageContentUpdateArgs {
@@ -2296,12 +2231,12 @@ input PageContentCreateInput {
   description: String
   image: ImageRelateToOneForCreateInput
   cta: CtaRelateToOneForCreateInput
-  sections: SectionRelateToManyForCreateInput
+  sections: SectionRelateToOneForCreateInput
 }
 
-input SectionRelateToManyForCreateInput {
-  create: [SectionCreateInput!]
-  connect: [SectionWhereUniqueInput!]
+input SectionRelateToOneForCreateInput {
+  create: SectionCreateInput
+  connect: SectionWhereUniqueInput
 }
 
 """
@@ -2334,12 +2269,6 @@ type Mutation {
   updateImages(data: [ImageUpdateArgs!]!): [Image]
   deleteImage(where: ImageWhereUniqueInput!): Image
   deleteImages(where: [ImageWhereUniqueInput!]!): [Image]
-  createBackground(data: BackgroundCreateInput!): Background
-  createBackgrounds(data: [BackgroundCreateInput!]!): [Background]
-  updateBackground(where: BackgroundWhereUniqueInput!, data: BackgroundUpdateInput!): Background
-  updateBackgrounds(data: [BackgroundUpdateArgs!]!): [Background]
-  deleteBackground(where: BackgroundWhereUniqueInput!): Background
-  deleteBackgrounds(where: [BackgroundWhereUniqueInput!]!): [Background]
   createLanguage(data: LanguageCreateInput!): Language
   createLanguages(data: [LanguageCreateInput!]!): [Language]
   updateLanguage(where: LanguageWhereUniqueInput!, data: LanguageUpdateInput!): Language
@@ -2549,9 +2478,6 @@ type Query {
   image(where: ImageWhereUniqueInput!): Image
   images(where: ImageWhereInput! = {}, orderBy: [ImageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ImageWhereUniqueInput): [Image!]
   imagesCount(where: ImageWhereInput! = {}): Int
-  background(where: BackgroundWhereUniqueInput!): Background
-  backgrounds(where: BackgroundWhereInput! = {}, orderBy: [BackgroundOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: BackgroundWhereUniqueInput): [Background!]
-  backgroundsCount(where: BackgroundWhereInput! = {}): Int
   language(where: LanguageWhereUniqueInput!): Language
   languages(where: LanguageWhereInput! = {}, orderBy: [LanguageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LanguageWhereUniqueInput): [Language!]
   languagesCount(where: LanguageWhereInput! = {}): Int

@@ -6,9 +6,16 @@ import Slugs from "./components/slugs";
 import Ctas from "./components/ctas";
 import Heroes from "./components/heroes";
 import Benefits from "./components/benefits";
+import Approaches from "./components/approaches";
+import About from "./components/about";
+import Analytics from "./components/analytics";
+import Navigation from "./components/navigation";
+import Footer from "./components/footer";
+import PageContents from "./components/pageContents";
 import FAQs from "./components/faqs";
 import Features from "./components/features";
 import Testimonials from "./components/testimonials";
+import Maps from "./components/maps";
 
 const prisma = new PrismaClient();
 
@@ -19,6 +26,11 @@ async function main(prisma: PrismaClient) {
     const seededSlugs = await Slugs.seed(prisma);
     const seededImages = await Images.seed(prisma, seededSlugs);
     const seededCtas = await Ctas.seed(prisma, seededSlugs);
+    const heroSlug = seededSlugs.find((slug) => slug.label === "hero");
+    const pageContentHeroCtaId = heroSlug
+      ? seededCtas.find((cta) => cta.typeId === heroSlug.id && !cta.external)
+          ?.id
+      : undefined;
     const seededCtaSections = await Ctas.seedSection(
       prisma,
       seededSlugs,
@@ -50,6 +62,30 @@ async function main(prisma: PrismaClient) {
       seededSlugs,
       seededCtas,
     );
+    const seededApproachSteps = await Approaches.seedSteps(prisma);
+    const seededApproach = await Approaches.seed(prisma, seededApproachSteps);
+    const seededValues = await About.seedValues(prisma);
+    const seededAbout = await About.seed(prisma, seededValues);
+    const seededAnalyticsStat = await Analytics.seedStat(prisma);
+    const seededAnalyticsSummaryItems =
+      await Analytics.seedSummaryItems(prisma);
+    const seededAnalytics = await Analytics.seed(
+      prisma,
+      seededAnalyticsStat,
+      seededAnalyticsSummaryItems,
+    );
+    const seededNavigationLinks = await Navigation.seedLinks(prisma);
+    const seededNavigation = await Navigation.seed(
+      prisma,
+      seededImages,
+      seededNavigationLinks,
+    );
+    const seededFooterLanguages = await Footer.seedLanguages(prisma);
+    const seededFooterSections = await Footer.seedSections(prisma);
+    const seededFooter = await Footer.seed(prisma, {
+      languages: seededFooterLanguages,
+      sections: seededFooterSections,
+    });
     const seededFAQs = await FAQs.seed(prisma);
     const seededFAQSections = await FAQs.seedSections(prisma, seededFAQs);
     const seededFeatures = await Features.seed(prisma);
@@ -65,6 +101,42 @@ async function main(prisma: PrismaClient) {
       seededTestimonialItems,
       seededImages,
       seededSlugs,
+    );
+    const seededMapSection = await Maps.seed(prisma);
+
+    const primaryTestimonialSection = seededTestimonialSections[0];
+    if (!primaryTestimonialSection) {
+      throw new Error("Testimonial sections seeding returned no entries");
+    }
+    const primaryFaqSection = seededFAQSections[0];
+    const pageContentOptions =
+      pageContentHeroCtaId != null
+        ? {
+            pageCtas: {
+              home: pageContentHeroCtaId,
+            },
+          }
+        : undefined;
+
+    await PageContents.seed(
+      prisma,
+      {
+        hero: seededHeroes,
+        benefitSection: seededBenefitSections,
+        features: seededFeatures,
+        certificationSection: seededCertificationSections,
+        testimonialSection: primaryTestimonialSection,
+        approach: seededApproach,
+        analytics: seededAnalytics,
+        about: seededAbout,
+        faqItems: seededFAQs,
+        faqSection: primaryFaqSection,
+        ctaSection: seededCtaSections,
+        navigation: seededNavigation,
+        footer: seededFooter,
+        mapSection: seededMapSection,
+      },
+      pageContentOptions,
     );
   } catch (error) {
     console.error("\n❌ Seeding failed:", error);

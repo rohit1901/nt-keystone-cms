@@ -43,32 +43,22 @@ model Cta {
 }
 
 model Image {
-  id                         Int               @id @default(autoincrement())
-  src                        String            @default("")
-  alt                        String            @default("")
-  width                      Int?
-  height                     Int?
-  fill                       Boolean           @default(false)
-  type                       Type?             @relation("Image_type", fields: [typeId], references: [id])
-  typeId                     Int?              @map("type")
-  from_Background_image      Background[]      @relation("Background_image")
-  from_TestimonialItem_image TestimonialItem[] @relation("TestimonialItem_image")
-  from_Certification_image   Certification[]   @relation("Certification_image")
-  from_Navigation_image      Navigation[]      @relation("Navigation_image")
-  from_CtaSection_background CtaSection[]      @relation("CtaSection_background")
-  from_PageContent_image     PageContent[]     @relation("PageContent_image")
+  id                                 Int                  @id @default(autoincrement())
+  src                                String               @default("")
+  alt                                String               @default("")
+  width                              Int?
+  height                             Int?
+  fill                               Boolean              @default(false)
+  type                               Type?                @relation("Image_type", fields: [typeId], references: [id])
+  typeId                             Int?                 @map("type")
+  from_TestimonialItem_image         TestimonialItem[]    @relation("TestimonialItem_image")
+  from_TestimonialSection_background TestimonialSection[] @relation("TestimonialSection_background")
+  from_Certification_image           Certification[]      @relation("Certification_image")
+  from_Navigation_image              Navigation[]         @relation("Navigation_image")
+  from_CtaSection_background         CtaSection[]         @relation("CtaSection_background")
+  from_PageContent_image             PageContent[]        @relation("PageContent_image")
 
   @@index([typeId])
-}
-
-model Background {
-  id                                 Int                  @id @default(autoincrement())
-  image                              Image?               @relation("Background_image", fields: [imageId], references: [id])
-  imageId                            Int?                 @map("image")
-  outerClassName                     String               @default("")
-  from_TestimonialSection_background TestimonialSection[] @relation("TestimonialSection_background")
-
-  @@index([imageId])
 }
 
 model Language {
@@ -106,7 +96,7 @@ model TestimonialItem {
 model TestimonialSection {
   id                               Int               @id @default(autoincrement())
   title                            String            @default("")
-  background                       Background[]      @relation("TestimonialSection_background")
+  background                       Image[]           @relation("TestimonialSection_background")
   testimonials                     TestimonialItem[] @relation("TestimonialSection_testimonials")
   fallback                         TestimonialItem?  @relation("TestimonialSection_fallback", fields: [fallbackId], references: [id])
   fallbackId                       Int?              @map("fallback")
@@ -389,16 +379,18 @@ model Section {
 }
 
 model PageContent {
-  id          Int       @id @default(autoincrement())
-  slug        String    @unique @default("")
-  title       String    @default("")
-  description String    @default("")
-  image       Image?    @relation("PageContent_image", fields: [imageId], references: [id])
-  imageId     Int?      @map("image")
-  cta         Cta?      @relation("PageContent_cta", fields: [ctaId], references: [id])
-  ctaId       Int?      @map("cta")
-  sections    Section[] @relation("PageContent_sections")
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique @default("")
+  title       String   @default("")
+  description String   @default("")
+  image       Image?   @relation("PageContent_image", fields: [imageId], references: [id])
+  imageId     Int?     @map("image")
+  cta         Cta?     @relation("PageContent_cta", fields: [ctaId], references: [id])
+  ctaId       Int?     @map("cta")
+  sections    Section? @relation("PageContent_sections", fields: [sectionsId], references: [id])
+  sectionsId  Int?     @map("sections")
 
   @@index([imageId])
   @@index([ctaId])
+  @@index([sectionsId])
 }
