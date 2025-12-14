@@ -1,3 +1,21 @@
+// seed.ts
+//
+// ⚠️ IMPORTANT: Before running this seed script, you MUST regenerate the Prisma Client:
+//
+//   1. Delete the old client cache:
+//      rm -rf node_modules/.prisma  (or on Windows: rmdir /s /q node_modules\.prisma)
+//
+//   2. Regenerate Prisma Client:
+//      npm run generate
+//
+//   3. Restart your IDE/Editor to pick up new types
+//
+//   4. Then run this seed:
+//      npm run db:seed
+//
+// See PRISMA_REGENERATE.md for full details and troubleshooting.
+//
+
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import Images from "./components/images";

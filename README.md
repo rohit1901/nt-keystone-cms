@@ -45,7 +45,7 @@ This repository provides a headless CMS built using [KeystoneJS](https://keyston
 git clone https://github.com/rohit1901/nt-keystone-cms.git
 cd nt-keystone-cms
 cp .env.copy .env     # Edit .env as needed
-npm install          # or npm install
+npm install          # or yarn install
 ```
 
 ### Configuration
@@ -55,14 +55,14 @@ npm install          # or npm install
 ### Running the Project
 
 ```bash
-# Generate Prisma client
-npm prisma generate
+# Run Prisma migrations (regenerates client)
+npm run generate
 
-# Run migrations or set up DB
-npm prisma migrate dev
+# Seed the database with demo content
+npm run db:seed
 
-# Start the KeystoneJS server
-npm dev
+# Start the KeystoneJS dev server
+npm run dev
 ```
 
 The Admin UI will be available at `http://localhost:3000/admin` by default.
@@ -71,18 +71,20 @@ The Admin UI will be available at `http://localhost:3000/admin` by default.
 
 - `keystone.ts` - KeystoneJS config and schema imports
 - `schema.ts`   - Content and data schemas/lists
-- `data/`       - Modular content and seed data
+- `data/`       - Reference data files. Not to be edited directly and used as a source of truth for data.
 - `auth.ts`     - Auth logic (optional)
-- `seed.ts`     - Script for database seeding
+- `seed/`       - Modular seed components and helpers
+- `seed/index.ts` - Main seed runner invoked by `npm run db:seed`
+- `seed/components/` - Modular seed data used by `seed/index.ts`
 - `schema.prisma` - Prisma database schema
 - `.env.copy`   - Example environment config
 
 ## Database & Seeding
 
-This project uses Prisma with a relational DB (SQLite, PostgreSQL, etc.; see `.env`). To add seed data, update `seed.ts` and run:
+This project uses Prisma with a relational DB (SQLite, PostgreSQL, etc.; see `.env`). Update the data in `seed/` as needed, then execute the TypeScript seed script:
 
 ```bash
-npm ts-node seed.ts
+npm run db:seed      # Runs ts-node --transpile-only ./seed/index.ts
 ```
 
 ## Development

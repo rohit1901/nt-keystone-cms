@@ -5,12 +5,11 @@
   "scripts": {
     "dev": "keystone dev",
     "build": "keystone build",
-    "seed": "ts-node --transpile-only seed.ts",
-    "seed:some": "ts-node --transpile-only ./seed/index.ts",
-    "generate": "keystone prisma migrate dev",
     "start": "keystone start --with-migrations",
+    "generate": "keystone prisma migrate dev",
+    "db:seed": "ts-node --transpile-only ./seed/index.ts",
     "db:reset": "keystone prisma db push --force-reset",
-    "db:reset:seed": "npm run db:reset && npm run seed"
+    "db:reset:seed": "npm run db:reset && npm run db:seed"
   },
   "dependencies": {
     "@keystone-6/auth": "^8.0.0",
