@@ -11,6 +11,8 @@ A **KeystoneJS** CMS for the Nimbus Tech Website.
   - Installation
   - Configuration
   - Running the Project
+  - Quick Start (Makefile)
+  - Docker Setup
 - **Project Structure**
 - **Database & Seeding**
 - **Development**
@@ -66,6 +68,42 @@ npm run dev
 ```
 
 The Admin UI will be available at `http://localhost:3000/admin` by default.
+
+### Quick Start (Makefile)
+
+Prefer the provided `Makefile` targets if you want a streamlined Docker-based setup:
+
+```bash
+make up         # Build and start the database container
+make status     # Check container status/health
+make logs       # Tail database logs
+make psql       # Open a psql shell using project credentials
+make down       # Stop and remove the database container
+make clean      # Remove containers and prune dangling Docker resources
+```
+
+`make container` is an alias for `make up` if you prefer a more descriptive target name.
+
+Combine these with the application commands above to go from a clean repo to a running CMS in a few commands.
+
+### Docker Setup
+
+Use the provided `docker-compose.yml` to provision PostgreSQL locally:
+
+1. Ensure your `.env` file contains `POSTGRES_DB`, `POSTGRES_USER`, and `POSTGRES_PASSWORD` values that match the compose file, and that `DATABASE_URL` references those credentials (e.g. `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DB}`).
+2. Start the database container:
+
+```bash
+docker compose up -d db
+```
+
+3. Wait for the database to report healthy (you can check with `docker compose ps`) before running Prisma commands.
+4. Run the usual project commands (`npm run generate`, `npm run db:seed`, `npm run dev`) to prepare and launch Keystone against the Dockerized database.
+5. When you're done, stop and remove the container with:
+
+```bash
+docker compose down
+```
 
 ## Project Structure
 
