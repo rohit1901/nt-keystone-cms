@@ -139,4 +139,6 @@ dist
 .env
 .keystone
 keystone.db
+*.db-journal
 migrations/
+/.zed

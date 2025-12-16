@@ -3,11 +3,13 @@
   "version": "1.0.3",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=development keystone dev",
+    "dev": "keystone dev",
     "build": "keystone build",
-    "seed": "ts-node --transpile-only seed.ts",
+    "start": "keystone start --with-migrations",
     "generate": "keystone prisma migrate dev",
-    "start": "keystone start --with-migrations"
+    "db:seed": "ts-node --transpile-only ./seed/index.ts",
+    "db:reset": "keystone prisma db push --force-reset",
+    "db:reset:seed": "npm run db:reset && npm run db:seed"
   },
   "dependencies": {
     "@keystone-6/auth": "^8.0.0",
@@ -17,6 +19,7 @@
   },
   "devDependencies": {
     "dotenv": "^17.2.3",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0"
   }
 }

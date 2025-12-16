@@ -11,6 +11,8 @@ A **KeystoneJS** CMS for the Nimbus Tech Website.
   - Installation
   - Configuration
   - Running the Project
+  - Quick Start (Makefile)
+  - Docker Setup
 - **Project Structure**
 - **Database & Seeding**
 - **Development**
@@ -45,7 +47,7 @@ This repository provides a headless CMS built using [KeystoneJS](https://keyston
 git clone https://github.com/rohit1901/nt-keystone-cms.git
 cd nt-keystone-cms
 cp .env.copy .env     # Edit .env as needed
-npm install          # or npm install
+npm install          # or yarn install
 ```
 
 ### Configuration
@@ -55,34 +57,72 @@ npm install          # or npm install
 ### Running the Project
 
 ```bash
-# Generate Prisma client
-npm prisma generate
+# Run Prisma migrations (regenerates client)
+npm run generate
 
-# Run migrations or set up DB
-npm prisma migrate dev
+# Seed the database with demo content
+npm run db:seed
 
-# Start the KeystoneJS server
-npm dev
+# Start the KeystoneJS dev server
+npm run dev
 ```
 
 The Admin UI will be available at `http://localhost:3000/admin` by default.
+
+### Quick Start (Makefile)
+
+Prefer the provided `Makefile` targets if you want a streamlined Docker-based setup:
+
+```bash
+make up         # Build and start the database container
+make status     # Check container status/health
+make logs       # Tail database logs
+make psql       # Open a psql shell using project credentials
+make down       # Stop and remove the database container
+make clean      # Remove containers and prune dangling Docker resources
+```
+
+`make container` is an alias for `make up` if you prefer a more descriptive target name.
+
+Combine these with the application commands above to go from a clean repo to a running CMS in a few commands.
+
+### Docker Setup
+
+Use the provided `docker-compose.yml` to provision PostgreSQL locally:
+
+1. Ensure your `.env` file contains `POSTGRES_DB`, `POSTGRES_USER`, and `POSTGRES_PASSWORD` values that match the compose file, and that `DATABASE_URL` references those credentials (e.g. `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DB}`).
+2. Start the database container:
+
+```bash
+docker compose up -d db
+```
+
+3. Wait for the database to report healthy (you can check with `docker compose ps`) before running Prisma commands.
+4. Run the usual project commands (`npm run generate`, `npm run db:seed`, `npm run dev`) to prepare and launch Keystone against the Dockerized database.
+5. When you're done, stop and remove the container with:
+
+```bash
+docker compose down
+```
 
 ## Project Structure
 
 - `keystone.ts` - KeystoneJS config and schema imports
 - `schema.ts`   - Content and data schemas/lists
-- `data/`       - Modular content and seed data
+- `data/`       - Reference data files. Not to be edited directly and used as a source of truth for data.
 - `auth.ts`     - Auth logic (optional)
-- `seed.ts`     - Script for database seeding
+- `seed/`       - Modular seed components and helpers
+- `seed/index.ts` - Main seed runner invoked by `npm run db:seed`
+- `seed/components/` - Modular seed data used by `seed/index.ts`
 - `schema.prisma` - Prisma database schema
 - `.env.copy`   - Example environment config
 
 ## Database & Seeding
 
-This project uses Prisma with a relational DB (SQLite, PostgreSQL, etc.; see `.env`). To add seed data, update `seed.ts` and run:
+This project uses Prisma with a relational DB (SQLite, PostgreSQL, etc.; see `.env`). Update the data in `seed/` as needed, then execute the TypeScript seed script:
 
 ```bash
-npm ts-node seed.ts
+npm run db:seed      # Runs ts-node --transpile-only ./seed/index.ts
 ```
 
 ## Development
