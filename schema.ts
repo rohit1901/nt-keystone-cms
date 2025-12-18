@@ -182,6 +182,7 @@ export const lists: Record<string, ListConfig<any>> = {
   User: list({
     access: allowAll,
     fields: {
+      authId: text({ isIndexed: "unique" }),
       name: text({ validation: { isRequired: true } }),
       email: text({
         validation: { isRequired: true },

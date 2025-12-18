@@ -3,6 +3,7 @@
 
 type User {
   id: ID!
+  authId: String
   name: String
   email: String
   password: PasswordState
@@ -17,6 +18,7 @@ scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339
 
 input UserWhereUniqueInput {
   id: ID
+  authId: String
   email: String
 }
 
@@ -25,6 +27,7 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
+  authId: StringFilter
   name: StringFilter
   email: StringFilter
   createdAt: DateTimeNullableFilter
@@ -88,6 +91,7 @@ input DateTimeNullableFilter {
 
 input UserOrderByInput {
   id: OrderDirection
+  authId: OrderDirection
   name: OrderDirection
   email: OrderDirection
   createdAt: OrderDirection
@@ -99,6 +103,7 @@ enum OrderDirection {
 }
 
 input UserUpdateInput {
+  authId: String
   name: String
   email: String
   password: String
@@ -111,6 +116,7 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
+  authId: String
   name: String
   email: String
   password: String
@@ -2451,25 +2457,6 @@ type Mutation {
   deletePageContent(where: PageContentWhereUniqueInput!): PageContent
   deletePageContents(where: [PageContentWhereUniqueInput!]!): [PageContent]
   endSession: Boolean!
-  authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
-  createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
-}
-
-union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
-
-type UserAuthenticationWithPasswordSuccess {
-  sessionToken: String!
-  item: User!
-}
-
-type UserAuthenticationWithPasswordFailure {
-  message: String!
-}
-
-input CreateInitialUserInput {
-  name: String
-  email: String
-  password: String
 }
 
 type Query {
@@ -2573,10 +2560,7 @@ type Query {
   pageContents(where: PageContentWhereInput! = {}, orderBy: [PageContentOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PageContentWhereUniqueInput): [PageContent!]
   pageContentsCount(where: PageContentWhereInput! = {}): Int
   keystone: KeystoneMeta!
-  authenticatedItem: AuthenticatedItem
 }
-
-union AuthenticatedItem = User
 
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!

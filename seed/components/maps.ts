@@ -1,5 +1,5 @@
 import type { PrismaClient } from "@prisma/client";
-import { mapPageContent } from "../../data/data";
+import { mapPageContent } from "../../data";
 
 export type SeededMap = Awaited<ReturnType<typeof seed>>;
 

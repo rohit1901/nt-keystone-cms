@@ -1,5 +1,5 @@
 import type { PrismaClient } from "@prisma/client";
-import { analyticsData as analyticsSeedData } from "../../data/data";
+import { analyticsData as analyticsSeedData } from "../../data";
 
 export type SeededAnalyticsStat = Awaited<ReturnType<typeof seedStat>>;
 export type SeededAnalyticsSummaryItems = Awaited<

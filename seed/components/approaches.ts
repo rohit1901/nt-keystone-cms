@@ -1,6 +1,6 @@
 import type { PrismaClient } from "@prisma/client";
 import type { OurApproachContent } from "../../data/types";
-import { ourApproachContent } from "../../data/data";
+import { ourApproachContent } from "../../data";
 
 export type SeededApproachSteps = Awaited<ReturnType<typeof seedSteps>>;
 export type SeededApproach = Awaited<ReturnType<typeof seed>>;

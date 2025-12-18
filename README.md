@@ -52,7 +52,12 @@ npm install          # or yarn install
 
 ### Configuration
 
-- Configure environment-specific values in the `.env` file (database, auth secrets, etc.)
+- Configure environment-specific values in the `.env` file. Authentication now relies on Amazon Cognito, so ensure the following variables are set:
+  - `NEXTAUTH_SECRET` (or `SESSION_SECRET`) – cryptographic secret used by NextAuth.
+  - `COGNITO_CLIENT_ID` – Cognito app client identifier.
+  - `COGNITO_CLIENT_SECRET` – Cognito app client secret.
+  - `COGNITO_ISSUER` – issuer URL from your Cognito user pool (e.g. `https://cognito-idp.<region>.amazonaws.com/<userPoolId>`).
+- Continue to supply your database connection variables (see `POSTGRES_URL`, etc.) and any other environment overrides required for your deployment targets.
 
 ### Running the Project
 

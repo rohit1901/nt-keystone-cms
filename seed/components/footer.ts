@@ -1,5 +1,5 @@
 import type { PrismaClient } from "@prisma/client";
-import { footerPageContent } from "../../data/data";
+import { footerPageContent } from "../../data";
 
 export type SeededFooterLanguages = Awaited<ReturnType<typeof seedLanguages>>;
 export type SeededFooterSections = Awaited<ReturnType<typeof seedSections>>;

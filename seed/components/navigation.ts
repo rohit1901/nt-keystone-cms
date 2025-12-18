@@ -1,6 +1,6 @@
 import type { PrismaClient } from "@prisma/client";
 import Images, { type NavigationImageKey, type SeededImages } from "./images";
-import { navigationPageContent, navLinks } from "../../data/data";
+import { navigationPageContent, navLinks } from "../../data";
 
 export type SeededNavigationLinks = Awaited<ReturnType<typeof seedLinks>>;
 export type SeededNavigationCTA = Awaited<ReturnType<typeof seedCTA>>;

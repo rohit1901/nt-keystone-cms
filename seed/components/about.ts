@@ -1,5 +1,5 @@
 import type { PrismaClient } from "@prisma/client";
-import { aboutUsContent } from "../../data/data";
+import { aboutUsContent } from "../../data";
 
 export type SeededValues = Awaited<ReturnType<typeof seedValues>>;
 export type SeededAbout = Awaited<ReturnType<typeof seed>>;
@@ -22,10 +22,7 @@ const seedValues = async (prisma: PrismaClient) => {
   return values;
 };
 
-const seed = async (
-  prisma: PrismaClient,
-  seededValues?: SeededValues,
-) => {
+const seed = async (prisma: PrismaClient, seededValues?: SeededValues) => {
   console.log("Seeding about section...");
 
   const values = seededValues ?? (await seedValues(prisma));

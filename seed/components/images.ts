@@ -4,7 +4,7 @@ import type { Maybe } from "../types";
 import type { CertificationImageKey } from "./certifications";
 import type { SeededSlugs, Slug } from "./slugs";
 import type { CtaImageKeys } from "./ctas";
-import { navigationPageContent } from "../../data/data";
+import { navigationPageContent } from "../../data";
 
 export type TestimonialImageKey =
   | "testimonialField"

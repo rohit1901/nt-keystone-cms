@@ -1,7 +1,7 @@
 import type { PrismaClient, Prisma } from "@prisma/client";
 import type { PageContent as SchemaPageContent } from "../../schema";
 import type { WithId as SeedWithId } from "../types";
-import { mainPageContent } from "../../data/data";
+import { mainPageContent } from "../../data";
 
 type EntityRef = SeedWithId<unknown>;
 
