@@ -1,7 +1,28 @@
 import type { PrismaClient, Prisma } from "@prisma/client";
-import type { PageContent as SchemaPageContent } from "../../schema";
+import type {
+  CompositePageContentWithExtras,
+  Language,
+  PageContent as SchemaPageContent,
+} from "../../data";
 import type { WithId as SeedWithId } from "../types";
-import { mainPageContent } from "../../data";
+
+type PageContentConfig = CompositePageContentWithExtras<{
+  slug: string;
+  buildSection: (deps: PageContentDependencies) => SectionBuildResult;
+  language: Language;
+}>;
+
+const mainPageContent: CompositePageContentWithExtras<{
+  language: Language;
+}> = {
+  title: "Nimbus Tech",
+  description:
+    "Custom software development, cloud architecture, and scalable solutions for modern enterprises.",
+  language: {
+    label: "English",
+    value: "en-US",
+  },
+};
 
 type EntityRef = SeedWithId<unknown>;
 
@@ -30,18 +51,14 @@ type SectionBuildResult = {
   update: SectionUpdateInput;
 };
 
-type PageContentConfig = SchemaPageContent & {
-  slug: string;
-  buildSection: (deps: PageContentDependencies) => SectionBuildResult;
-};
-
-const pageContentsConfig = [
+const pageContentsConfig: PageContentConfig[] = [
   {
     slug: "home",
     title: mainPageContent.title,
     description: mainPageContent.description,
     image: mainPageContent.image,
     cta: mainPageContent.cta,
+    language: mainPageContent.language,
     buildSection: (deps: PageContentDependencies) => {
       const featureConnections = deps.features.map((feature) => ({
         id: feature.id,
@@ -118,6 +135,51 @@ type PageContentSeedOptions = {
   pageCtas?: Partial<Record<PageContentSlug, number | null>>;
 };
 
+const resolveLanguageId = async (
+  prisma: PrismaClient,
+  cache: Map<string, number>,
+  language: PageContentConfig["language"],
+) => {
+  const cacheKey = language.value;
+  const cached = cache.get(cacheKey);
+  if (cached != null) {
+    return cached;
+  }
+
+  const existing = await prisma.language.findFirst({
+    where: {
+      value: language.value,
+    },
+    select: { id: true, label: true },
+  });
+
+  if (existing) {
+    if (existing.label !== language.label) {
+      await prisma.language.update({
+        where: { id: existing.id },
+        data: { label: language.label },
+      });
+    }
+    cache.set(cacheKey, existing.id);
+    return existing.id;
+  }
+
+  const created = await prisma.language.create({
+    data: {
+      label: language.label,
+      value: language.value,
+    },
+    select: { id: true },
+  });
+
+  console.log(
+    `✓ Created language ${language.label} (${language.value}) while seeding page contents`,
+  );
+
+  cache.set(cacheKey, created.id);
+  return created.id;
+};
+
 const seed = async (
   prisma: PrismaClient,
   dependencies: PageContentDependencies,
@@ -126,9 +188,15 @@ const seed = async (
   console.log("Seeding page contents...");
 
   const results: Awaited<ReturnType<typeof prisma.pageContent.upsert>>[] = [];
+  const languageCache = new Map<string, number>();
 
   for (const config of pageContentsConfig) {
     const sectionBuild = config.buildSection(dependencies);
+    const languageId = await resolveLanguageId(
+      prisma,
+      languageCache,
+      config.language,
+    );
 
     const existingPageContent = await prisma.pageContent.findUnique({
       where: { slug: config.slug },
@@ -159,17 +227,21 @@ const seed = async (
     const imageId = options.pageImages?.[config.slug];
     const ctaId = options.pageCtas?.[config.slug];
 
+    const languageConnect = { connect: { id: languageId } };
+
     const pageContentCreateData: Prisma.PageContentCreateArgs["data"] = {
       slug: config.slug,
       title: config.title,
       description: config.description ?? "",
       sections: { connect: { id: sectionId } },
+      language: languageConnect,
     };
 
     const pageContentUpdateData: Prisma.PageContentUpdateArgs["data"] = {
       title: config.title,
       description: config.description ?? "",
       sections: { connect: { id: sectionId } },
+      language: languageConnect,
     };
 
     if (imageId != null) {
@@ -203,13 +275,16 @@ const seed = async (
 };
 
 const PageContents = {
-  data: pageContentsConfig.map(({ slug, title, description, image, cta }) => ({
-    slug,
-    title,
-    description,
-    image,
-    cta,
-  })),
+  data: pageContentsConfig.map(
+    ({ slug, title, description, image, cta, language }) => ({
+      slug,
+      title,
+      description,
+      image,
+      cta,
+      language,
+    }),
+  ),
   seed,
 };
 

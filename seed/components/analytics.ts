@@ -1,12 +1,61 @@
 import type { PrismaClient } from "@prisma/client";
-import { analyticsData as analyticsSeedData } from "../../data";
 
 export type SeededAnalyticsStat = Awaited<ReturnType<typeof seedStat>>;
 export type SeededAnalyticsSummaryItems = Awaited<
   ReturnType<typeof seedSummaryItems>
 >;
 export type SeededAnalytics = Awaited<ReturnType<typeof seed>>;
-
+const analyticsSeedData = {
+  heading: "Project Performance Overview",
+  subheading:
+    "Expert insights into deployments, uptime, and client satisfaction across key Nimbus Tech projects.",
+  stats: {
+    totalDeployments: "305",
+    deploymentChange: "+25 deployments",
+    deploymentChangePercent: "8.9",
+    changePeriod: "Last quarter",
+  },
+  tableHeadings: [
+    "Project",
+    "Deployments",
+    "Uptime",
+    "Client Sat.",
+    "Efficiency",
+    "Revenue Growth",
+  ],
+  summary: [
+    {
+      name: "Project Nimbus",
+      deployments: "120",
+      uptime: "99.9%",
+      clientSatisfaction: "+4.8",
+      efficiency: "+7.2%",
+      revenueGrowth: "+12.5%",
+      bgColor: "bg-blue-500",
+      changeType: "positive",
+    },
+    {
+      name: "Cloud Migration",
+      deployments: "85",
+      uptime: "99.7%",
+      clientSatisfaction: "+3.9",
+      efficiency: "+5.4%",
+      revenueGrowth: "+8.3%",
+      bgColor: "bg-green-500",
+      changeType: "positive",
+    },
+    {
+      name: "Enterprise App",
+      deployments: "60",
+      uptime: "98.5%",
+      clientSatisfaction: "-1.2",
+      efficiency: "-2.5%",
+      revenueGrowth: "-3.8%",
+      bgColor: "bg-yellow-400",
+      changeType: "negative",
+    },
+  ],
+};
 const tableHeadingValueMap: Record<string, string> = {
   Project: "project",
   Deployments: "deployments",

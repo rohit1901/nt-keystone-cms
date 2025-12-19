@@ -4,7 +4,6 @@ import type { Maybe } from "../types";
 import type { CertificationImageKey } from "./certifications";
 import type { SeededSlugs, Slug } from "./slugs";
 import type { CtaImageKeys } from "./ctas";
-import { navigationPageContent } from "../../data";
 
 export type TestimonialImageKey =
   | "testimonialField"
@@ -119,6 +118,22 @@ const imageSeedData: Record<ImageKeys, ImageConfig> = {
     width: 50,
     height: 50,
     type: "testimonial",
+  },
+};
+
+const navigationPageContent = {
+  title: "Nimbus Tech",
+  description:
+    "Nimbus Tech is a software development and consulting company specializing in cloud architecture, DevOps, and automation solutions. We help businesses build scalable, efficient, and secure software systems.",
+  image: {
+    src: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg", // Example image URL, replace with actual image path
+    alt: "Nimbus Tech Hero Image",
+    width: 1600,
+    height: 900,
+  },
+  cta: {
+    label: "Get started",
+    href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
   },
 };
 

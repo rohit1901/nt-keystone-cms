@@ -1,11 +1,54 @@
 import type { PrismaClient } from "@prisma/client";
-import type { OurApproachContent } from "../../data/types";
-import { ourApproachContent } from "../../data";
 
 export type SeededApproachSteps = Awaited<ReturnType<typeof seedSteps>>;
 export type SeededApproach = Awaited<ReturnType<typeof seed>>;
 
-const approachesData: OurApproachContent = ourApproachContent;
+const approachesData = {
+  title: "Our Approach: From Vision to Value",
+  description:
+    "At Nimbus Tech, we follow a structured approach to ensure your project is successful from start to finish. Our process is designed to be flexible, transparent, and focused on delivering real business value.",
+  steps: [
+    {
+      id: 1,
+      type: "done",
+      title: "Discovery: Listen & Learn",
+      description:
+        "We start by understanding your goals, challenges, and vision.",
+      activityTime: "Step 1",
+    },
+    {
+      id: 2,
+      type: "done",
+      title: "Planning: Architect for Success",
+      description:
+        "We design a scalable, future-proof solution tailored to your needs.",
+      activityTime: "Step 2",
+    },
+    {
+      id: 3,
+      type: "done",
+      title: "Development: Build with Quality",
+      description:
+        "We develop your solution using best practices and modern technologies.",
+      activityTime: "Step 3",
+    },
+    {
+      id: 4,
+      type: "in progress",
+      title: "Deployment: Launch & Deliver",
+      description:
+        "We deploy your product securely and ensure a smooth go-live.",
+      activityTime: "Step 4",
+    },
+    {
+      id: 5,
+      type: "open",
+      title: "Support: Optimize & Grow",
+      description: "We provide ongoing support and continuous improvement.",
+      activityTime: "Step 5",
+    },
+  ],
+};
 
 const seedSteps = async (prisma: PrismaClient) => {
   console.log("Seeding approach steps...");

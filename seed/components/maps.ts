@@ -1,7 +1,12 @@
 import type { PrismaClient } from "@prisma/client";
-import { mapPageContent } from "../../data";
 
 export type SeededMap = Awaited<ReturnType<typeof seed>>;
+const mapPageContent = {
+  title: "Global Reach, Local Expertise",
+  subheading: "Expert Software & Cloud Consulting, Wherever You Are",
+  description:
+    "Our team operates from Germany, collaborating with enterprises and startups worldwide to architect, build, and optimize custom software and cloud systems.",
+};
 
 const seed = async (prisma: PrismaClient) => {
   console.log("Seeding map content...");

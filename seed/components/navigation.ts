@@ -1,13 +1,34 @@
 import type { PrismaClient } from "@prisma/client";
 import Images, { type NavigationImageKey, type SeededImages } from "./images";
-import { navigationPageContent, navLinks } from "../../data";
 
 export type SeededNavigationLinks = Awaited<ReturnType<typeof seedLinks>>;
 export type SeededNavigationCTA = Awaited<ReturnType<typeof seedCTA>>;
 export type SeededNavigation = Awaited<ReturnType<typeof seed>>;
 
-const navigationData = navigationPageContent;
-const navigationLinksData = navLinks;
+const navigationData = {
+  title: "Nimbus Tech",
+  description:
+    "Nimbus Tech is a software development and consulting company specializing in cloud architecture, DevOps, and automation solutions. We help businesses build scalable, efficient, and secure software systems.",
+  image: {
+    src: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg", // Example image URL, replace with actual image path
+    alt: "Nimbus Tech Hero Image",
+    width: 1600,
+    height: 900,
+  },
+  cta: {
+    label: "Get started",
+    href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
+  },
+};
+const navigationLinksData = [
+  { label: "Services", href: "#features" },
+  { label: "About Us", href: "#about-us" },
+  { label: "Blog", href: "https://rohitkhanduri.substack.com", external: true }, // TODO: Link to Substack for now
+  {
+    label: "Contact",
+    href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
+  },
+];
 const DEFAULT_NAVIGATION_IMAGE_KEY: NavigationImageKey = "navigationPrimary";
 
 export type SeedNavigationOptions = {

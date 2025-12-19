@@ -2191,6 +2191,7 @@ type PageContent {
   image: Image
   cta: Cta
   sections: Section
+  language: Language
 }
 
 input PageContentWhereUniqueInput {
@@ -2209,6 +2210,7 @@ input PageContentWhereInput {
   image: ImageWhereInput
   cta: CtaWhereInput
   sections: SectionWhereInput
+  language: LanguageWhereInput
 }
 
 input PageContentOrderByInput {
@@ -2225,11 +2227,18 @@ input PageContentUpdateInput {
   image: ImageRelateToOneForUpdateInput
   cta: CtaRelateToOneForUpdateInput
   sections: SectionRelateToOneForUpdateInput
+  language: LanguageRelateToOneForUpdateInput
 }
 
 input SectionRelateToOneForUpdateInput {
   create: SectionCreateInput
   connect: SectionWhereUniqueInput
+  disconnect: Boolean
+}
+
+input LanguageRelateToOneForUpdateInput {
+  create: LanguageCreateInput
+  connect: LanguageWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -2245,11 +2254,17 @@ input PageContentCreateInput {
   image: ImageRelateToOneForCreateInput
   cta: CtaRelateToOneForCreateInput
   sections: SectionRelateToOneForCreateInput
+  language: LanguageRelateToOneForCreateInput
 }
 
 input SectionRelateToOneForCreateInput {
   create: SectionCreateInput
   connect: SectionWhereUniqueInput
+}
+
+input LanguageRelateToOneForCreateInput {
+  create: LanguageCreateInput
+  connect: LanguageWhereUniqueInput
 }
 
 """

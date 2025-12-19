@@ -63,10 +63,11 @@ model Image {
 }
 
 model Language {
-  id                    Int      @id @default(autoincrement())
-  label                 String
-  value                 String
-  from_Footer_languages Footer[] @relation("Footer_languages")
+  id                        Int           @id @default(autoincrement())
+  label                     String
+  value                     String
+  from_Footer_languages     Footer[]      @relation("Footer_languages")
+  from_PageContent_language PageContent[] @relation("PageContent_language")
 }
 
 model TestimonialBadge {
@@ -380,18 +381,21 @@ model Section {
 }
 
 model PageContent {
-  id          Int      @id @default(autoincrement())
-  slug        String   @unique @default("")
-  title       String   @default("")
-  description String   @default("")
-  image       Image?   @relation("PageContent_image", fields: [imageId], references: [id])
-  imageId     Int?     @map("image")
-  cta         Cta?     @relation("PageContent_cta", fields: [ctaId], references: [id])
-  ctaId       Int?     @map("cta")
-  sections    Section? @relation("PageContent_sections", fields: [sectionsId], references: [id])
-  sectionsId  Int?     @map("sections")
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique @default("")
+  title       String    @default("")
+  description String    @default("")
+  image       Image?    @relation("PageContent_image", fields: [imageId], references: [id])
+  imageId     Int?      @map("image")
+  cta         Cta?      @relation("PageContent_cta", fields: [ctaId], references: [id])
+  ctaId       Int?      @map("cta")
+  sections    Section?  @relation("PageContent_sections", fields: [sectionsId], references: [id])
+  sectionsId  Int?      @map("sections")
+  language    Language? @relation("PageContent_language", fields: [languageId], references: [id])
+  languageId  Int?      @map("language")
 
   @@index([imageId])
   @@index([ctaId])
   @@index([sectionsId])
+  @@index([languageId])
 }
