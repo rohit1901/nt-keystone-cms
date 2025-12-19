@@ -1,7 +1,9 @@
 import { type AdminConfig } from "@keystone-6/core/types";
 import { NimbusTechLogo } from "./components/NimbusTechLogo";
+import { AdminNavigation } from "./components/AdminNavigation";
 
-// Presently the Logo is the only Admin UI component that is customisable.
+// Custom admin UI components exposed to Keystone.
 export const components: AdminConfig["components"] = {
   Logo: NimbusTechLogo,
+  Navigation: AdminNavigation,
 };

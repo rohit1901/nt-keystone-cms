@@ -60,6 +60,9 @@ export const keystoneConfig = config<TypeInfo<Session>>({
       // Amazon Cognito provider routes for NextAuth
       "/api/auth/signin/cognito",
       "/api/auth/callback/cognito",
+
+      // Custom page routes
+      "/auth/signin",
     ],
 
     // adding page middleware ensures that users are redirected to the signin page if they are not signed in.
@@ -67,7 +70,7 @@ export const keystoneConfig = config<TypeInfo<Session>>({
       if (wasAccessAllowed) return;
       return {
         kind: "redirect",
-        to: "/api/auth/signin",
+        to: "/auth/signin",
       };
     },
     isAccessAllowed: async (context) => Boolean(context.session?.id),
