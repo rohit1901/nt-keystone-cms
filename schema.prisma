@@ -67,6 +67,7 @@ model Language {
   label                     String
   value                     String
   from_Footer_languages     Footer[]      @relation("Footer_languages")
+  from_About_language       About[]       @relation("About_language")
   from_PageContent_language PageContent[] @relation("PageContent_language")
 }
 
@@ -315,7 +316,11 @@ model About {
   valuesTitle               String    @default("")
   values                    Value[]   @relation("About_values")
   closing                   String    @default("")
+  language                  Language? @relation("About_language", fields: [languageId], references: [id])
+  languageId                Int?      @map("language")
   from_Section_contentAbout Section[] @relation("Section_contentAbout")
+
+  @@index([languageId])
 }
 
 model Map {

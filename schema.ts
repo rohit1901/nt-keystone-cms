@@ -53,6 +53,7 @@ export const lists: Record<string, ListConfig<any>> = {
       href: text({ validation: { isRequired: true } }),
       external: checkbox({ defaultValue: false }),
       type: relationship({ ref: "Type", many: false }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -139,6 +140,7 @@ export const lists: Record<string, ListConfig<any>> = {
     fields: {
       icon: text(),
       text: text({ validation: { isRequired: true } }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -151,6 +153,7 @@ export const lists: Record<string, ListConfig<any>> = {
       external: checkbox({ defaultValue: false }),
       icon: text(),
       additional: relationship({ ref: "HeroBannerAdditional", many: false }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -163,6 +166,7 @@ export const lists: Record<string, ListConfig<any>> = {
       subHeading: text({ validation: { isRequired: true } }),
       banner: relationship({ ref: "HeroBanner", many: false }),
       cta: relationship({ ref: "Cta", many: false }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -178,6 +182,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ui: { displayMode: "textarea" },
         validation: { isRequired: true },
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -187,6 +192,7 @@ export const lists: Record<string, ListConfig<any>> = {
     fields: {
       title: text({ validation: { isRequired: true } }),
       benefits: relationship({ ref: "Benefit", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -201,6 +207,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ui: { displayMode: "textarea" },
         validation: { isRequired: true },
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -211,6 +218,7 @@ export const lists: Record<string, ListConfig<any>> = {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
       faqs: relationship({ ref: "Faq", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -224,6 +232,7 @@ export const lists: Record<string, ListConfig<any>> = {
       description: text({ ui: { displayMode: "textarea" } }),
       image: relationship({ ref: "Image", many: false }),
       link: text(),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -235,6 +244,7 @@ export const lists: Record<string, ListConfig<any>> = {
       description: text({ ui: { displayMode: "textarea" } }),
       cta: relationship({ ref: "Cta", many: false }),
       certifications: relationship({ ref: "Certification", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -255,6 +265,7 @@ export const lists: Record<string, ListConfig<any>> = {
           { label: "Architecture", value: "ArchitectureFeatureVisualization" },
         ],
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -279,6 +290,7 @@ export const lists: Record<string, ListConfig<any>> = {
         validation: { isRequired: true },
       }),
       activityTime: text({ validation: { isRequired: true } }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -292,6 +304,7 @@ export const lists: Record<string, ListConfig<any>> = {
         validation: { isRequired: true },
       }),
       steps: relationship({ ref: "ApproachStep", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -305,6 +318,7 @@ export const lists: Record<string, ListConfig<any>> = {
       href: text({ validation: { isRequired: true } }),
       external: checkbox({ defaultValue: false }),
       icon: text(),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -317,6 +331,7 @@ export const lists: Record<string, ListConfig<any>> = {
       image: relationship({ ref: "Image", many: false }),
       cta: relationship({ ref: "Cta", many: false }),
       items: relationship({ ref: "NavigationLink", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -328,6 +343,7 @@ export const lists: Record<string, ListConfig<any>> = {
     fields: {
       title: text({ validation: { isRequired: true } }),
       items: relationship({ ref: "NavigationLink", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -345,6 +361,7 @@ export const lists: Record<string, ListConfig<any>> = {
           labelField: "label",
         },
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -358,6 +375,7 @@ export const lists: Record<string, ListConfig<any>> = {
       deploymentChange: text({ validation: { isRequired: true } }),
       deploymentChangePercent: text({ validation: { isRequired: true } }),
       changePeriod: text({ validation: { isRequired: true } }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -379,6 +397,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ],
         validation: { isRequired: true },
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -400,6 +419,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ],
       }),
       summary: relationship({ ref: "AnalyticsSummaryItem", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -415,6 +435,7 @@ export const lists: Record<string, ListConfig<any>> = {
         validation: { isRequired: true },
       }),
       icon: text({ validation: { isRequired: true } }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -433,6 +454,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ui: { displayMode: "textarea" },
         validation: { isRequired: true },
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -448,6 +470,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ui: { displayMode: "textarea" },
         validation: { isRequired: true },
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -461,6 +484,7 @@ export const lists: Record<string, ListConfig<any>> = {
       description: text({ ui: { displayMode: "textarea" } }),
       ctas: relationship({ ref: "Cta", many: true }),
       background: relationship({ ref: "Image", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 

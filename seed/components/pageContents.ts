@@ -8,7 +8,10 @@ import type { WithId as SeedWithId } from "../types";
 
 type PageContentConfig = CompositePageContentWithExtras<{
   slug: string;
-  buildSection: (deps: PageContentDependencies) => SectionBuildResult;
+  buildSection: (
+    deps: PageContentDependencies,
+    opts: PageContentSeedOptions,
+  ) => SectionBuildResult;
   language: Language;
 }>;
 
@@ -34,7 +37,7 @@ export type PageContentDependencies = {
   testimonialSection: EntityRef;
   approach: EntityRef;
   analytics: EntityRef;
-  about: EntityRef;
+  about: EntityRef[];
   faqItems: EntityRef[];
   faqSection?: EntityRef;
   ctaSection: EntityRef;
@@ -59,12 +62,14 @@ const pageContentsConfig: PageContentConfig[] = [
     image: mainPageContent.image,
     cta: mainPageContent.cta,
     language: mainPageContent.language,
-    buildSection: (deps: PageContentDependencies) => {
+    buildSection: (
+      deps: PageContentDependencies,
+      opts: PageContentSeedOptions,
+    ) => {
       const featureConnections = deps.features.map((feature) => ({
         id: feature.id,
       }));
       const faqConnections = deps.faqItems.map((faq) => ({ id: faq.id }));
-
       const create: SectionCreateInput = {
         type: "hero",
         contentHero: { connect: { id: deps.hero.id } },
@@ -77,7 +82,6 @@ const pageContentsConfig: PageContentConfig[] = [
         },
         contentApproach: { connect: { id: deps.approach.id } },
         contentAnalytics: { connect: { id: deps.analytics.id } },
-        contentAbout: { connect: { id: deps.about.id } },
         contentNavigation: { connect: { id: deps.navigation.id } },
         contentFooter: { connect: { id: deps.footer.id } },
         contentCta: { connect: { id: deps.ctaSection.id } },
@@ -96,6 +100,11 @@ const pageContentsConfig: PageContentConfig[] = [
         create.contentFaqSection = { connect: { id: deps.faqSection.id } };
       }
 
+      const aboutId = opts.pageAbout?.[mainPageContent.language.value];
+      if (aboutId) {
+        create.contentAbout = { connect: { id: aboutId } };
+      }
+
       const update: SectionUpdateInput = {
         type: "hero",
         contentHero: { connect: { id: deps.hero.id } },
@@ -108,7 +117,9 @@ const pageContentsConfig: PageContentConfig[] = [
         },
         contentApproach: { connect: { id: deps.approach.id } },
         contentAnalytics: { connect: { id: deps.analytics.id } },
-        contentAbout: { connect: { id: deps.about.id } },
+        contentAbout: {
+          set: { id: aboutId },
+        },
         contentNavigation: { connect: { id: deps.navigation.id } },
         contentFooter: { connect: { id: deps.footer.id } },
         contentCta: { connect: { id: deps.ctaSection.id } },
@@ -133,6 +144,7 @@ export type SeededPageContents = Awaited<ReturnType<typeof seed>>;
 type PageContentSeedOptions = {
   pageImages?: Partial<Record<PageContentSlug, number | null>>;
   pageCtas?: Partial<Record<PageContentSlug, number | null>>;
+  pageAbout?: Record<Language["value"], number | undefined>;
 };
 
 const resolveLanguageId = async (
@@ -191,7 +203,7 @@ const seed = async (
   const languageCache = new Map<string, number>();
 
   for (const config of pageContentsConfig) {
-    const sectionBuild = config.buildSection(dependencies);
+    const sectionBuild = config.buildSection(dependencies, options);
     const languageId = await resolveLanguageId(
       prisma,
       languageCache,

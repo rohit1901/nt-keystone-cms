@@ -82,6 +82,14 @@ async function main(prisma: PrismaClient) {
     );
     const seededApproachSteps = await Approaches.seedSteps(prisma);
     const seededApproach = await Approaches.seed(prisma, seededApproachSteps);
+    const seededNavigationLinks = await Navigation.seedLinks(prisma);
+    const seededNavigation = await Navigation.seed(
+      prisma,
+      seededImages,
+      seededNavigationLinks,
+    );
+    const seededFooterLanguages = await Footer.seedLanguages(prisma);
+    const seededFooterSections = await Footer.seedSections(prisma);
     const seededValues = await About.seedValues(prisma);
     const seededAbout = await About.seed(prisma, seededValues);
     const seededAnalyticsStat = await Analytics.seedStat(prisma);
@@ -92,14 +100,6 @@ async function main(prisma: PrismaClient) {
       seededAnalyticsStat,
       seededAnalyticsSummaryItems,
     );
-    const seededNavigationLinks = await Navigation.seedLinks(prisma);
-    const seededNavigation = await Navigation.seed(
-      prisma,
-      seededImages,
-      seededNavigationLinks,
-    );
-    const seededFooterLanguages = await Footer.seedLanguages(prisma);
-    const seededFooterSections = await Footer.seedSections(prisma);
     const seededFooter = await Footer.seed(prisma, {
       languages: seededFooterLanguages,
       sections: seededFooterSections,
@@ -132,6 +132,18 @@ async function main(prisma: PrismaClient) {
         ? {
             pageCtas: {
               home: pageContentHeroCtaId,
+            },
+            pageAbout: {
+              "en-US": seededAbout.find(
+                (a) =>
+                  a.languageId ===
+                  seededFooterLanguages.find((l) => l.value === "en-US")?.id,
+              )?.id,
+              "de-DE": seededAbout.find(
+                (a) =>
+                  a.languageId ===
+                  seededFooterLanguages.find((l) => l.value === "de-DE")?.id,
+              )?.id,
             },
           }
         : undefined;

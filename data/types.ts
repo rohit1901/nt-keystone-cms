@@ -129,6 +129,21 @@ export type AnalyticsData = {
   summary: AnalyticsSummaryItem[];
 };
 
+export type Value = {
+  label: string;
+  description: string;
+  icon: keyof typeof remixIconMap;
+};
+
+export type AboutSection = {
+  heading: string;
+  intro: string;
+  valuesTitle: string;
+  values: Value[];
+  closing: string;
+  language: Language;
+};
+
 // --- Generic Composite Helper (single extra section) ---
 
 export type CompositePageContent<

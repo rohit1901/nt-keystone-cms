@@ -1762,6 +1762,7 @@ type About {
   values(where: ValueWhereInput! = {}, orderBy: [ValueOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ValueWhereUniqueInput): [Value!]
   valuesCount(where: ValueWhereInput! = {}): Int
   closing: String
+  language: Language
 }
 
 input AboutWhereUniqueInput {
@@ -1778,6 +1779,7 @@ input AboutWhereInput {
   valuesTitle: StringFilter
   values: ValueManyRelationFilter
   closing: StringFilter
+  language: LanguageWhereInput
 }
 
 input ValueManyRelationFilter {
@@ -1800,6 +1802,7 @@ input AboutUpdateInput {
   valuesTitle: String
   values: ValueRelateToManyForUpdateInput
   closing: String
+  language: LanguageRelateToOneForUpdateInput
 }
 
 input ValueRelateToManyForUpdateInput {
@@ -1807,6 +1810,12 @@ input ValueRelateToManyForUpdateInput {
   set: [ValueWhereUniqueInput!]
   create: [ValueCreateInput!]
   connect: [ValueWhereUniqueInput!]
+}
+
+input LanguageRelateToOneForUpdateInput {
+  create: LanguageCreateInput
+  connect: LanguageWhereUniqueInput
+  disconnect: Boolean
 }
 
 input AboutUpdateArgs {
@@ -1820,11 +1829,17 @@ input AboutCreateInput {
   valuesTitle: String
   values: ValueRelateToManyForCreateInput
   closing: String
+  language: LanguageRelateToOneForCreateInput
 }
 
 input ValueRelateToManyForCreateInput {
   create: [ValueCreateInput!]
   connect: [ValueWhereUniqueInput!]
+}
+
+input LanguageRelateToOneForCreateInput {
+  create: LanguageCreateInput
+  connect: LanguageWhereUniqueInput
 }
 
 type Map {
@@ -2236,12 +2251,6 @@ input SectionRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input LanguageRelateToOneForUpdateInput {
-  create: LanguageCreateInput
-  connect: LanguageWhereUniqueInput
-  disconnect: Boolean
-}
-
 input PageContentUpdateArgs {
   where: PageContentWhereUniqueInput!
   data: PageContentUpdateInput!
@@ -2260,11 +2269,6 @@ input PageContentCreateInput {
 input SectionRelateToOneForCreateInput {
   create: SectionCreateInput
   connect: SectionWhereUniqueInput
-}
-
-input LanguageRelateToOneForCreateInput {
-  create: LanguageCreateInput
-  connect: LanguageWhereUniqueInput
 }
 
 """
