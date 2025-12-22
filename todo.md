@@ -1,6 +1,6 @@
 # TODOs
 
-- [ ] Add translations for components in german language
+- [ ] Translations - Footer, Heroes, and PageContent components in German language
 - [ ] make graphql create, update, and delete operations authenticated except for read operations.
 - [ ] deploy to AWS Amplify
 - [ ] connect Amplify to Supabase
