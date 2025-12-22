@@ -1,9 +1,10 @@
 import Images from "./images";
-import type { ImageConfig, SeededImages } from "./images";
+import type { SeededImages } from "./images";
 import type { PrismaClient } from "@prisma/client";
-import type { SeededSlugs, Slug } from "./slugs";
+import type { SeededSlugs } from "./slugs";
 import Ctas, { CTA, SeededCTAs } from "./ctas";
 import { remixIconMap } from "../../data/icons/remixicon-map";
+import { ImageConfig } from "../../data";
 
 // --- Types ---
 export type Hero = {

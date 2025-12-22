@@ -15,35 +15,50 @@ type PageContentConfig = CompositePageContentWithExtras<{
   language: Language;
 }>;
 
-const mainPageContent: CompositePageContentWithExtras<{
+const pageContentsData: CompositePageContentWithExtras<{
+  slug: string;
   language: Language;
-}> = {
-  title: "Nimbus Tech",
-  description:
-    "Custom software development, cloud architecture, and scalable solutions for modern enterprises.",
-  language: {
-    label: "English",
-    value: "en-US",
+}>[] = [
+  // English
+  {
+    slug: "home",
+    title: "Nimbus Tech",
+    description:
+      "Custom software development, cloud architecture, and scalable solutions for modern enterprises.",
+    language: {
+      label: "English",
+      value: "en-US",
+    },
   },
-};
+  // German
+  {
+    slug: "home-de",
+    title: "Nimbus Tech",
+    description:
+      "Maßgeschneiderte Softwareentwicklung, Cloud-Architektur und skalierbare Lösungen für moderne Unternehmen.",
+    language: {
+      label: "German",
+      value: "de-DE",
+    },
+  },
+];
 
 type EntityRef = SeedWithId<unknown>;
 
 export type PageContentDependencies = {
-  hero: EntityRef;
-  benefitSection: EntityRef;
+  hero?: EntityRef[];
+  benefitSection: EntityRef[];
   features: EntityRef[];
-  certificationSection: EntityRef;
-  testimonialSection: EntityRef;
-  approach: EntityRef;
-  analytics: EntityRef;
+  certificationSection: EntityRef[];
+  testimonialSection: EntityRef[];
+  approach: EntityRef[];
+  analytics: EntityRef[]; // Updated to Array
   about: EntityRef[];
-  faqItems: EntityRef[];
-  faqSection?: EntityRef;
-  ctaSection: EntityRef;
-  mapSection: EntityRef;
-  navigation: EntityRef;
-  footer: EntityRef;
+  faqSection: EntityRef[];
+  ctaSection: EntityRef[];
+  mapSection: EntityRef[];
+  navigation: EntityRef[];
+  footer: EntityRef[];
 };
 
 type SectionCreateInput = Prisma.SectionCreateArgs["data"];
@@ -54,14 +69,14 @@ type SectionBuildResult = {
   update: SectionUpdateInput;
 };
 
-const pageContentsConfig: PageContentConfig[] = [
-  {
-    slug: "home",
-    title: mainPageContent.title,
-    description: mainPageContent.description,
-    image: mainPageContent.image,
-    cta: mainPageContent.cta,
-    language: mainPageContent.language,
+const pageContentsConfig: PageContentConfig[] = pageContentsData.map(
+  (content) => ({
+    slug: content.slug,
+    title: content.title,
+    description: content.description,
+    image: content.image,
+    cta: content.cta,
+    language: content.language,
     buildSection: (
       deps: PageContentDependencies,
       opts: PageContentSeedOptions,
@@ -69,73 +84,137 @@ const pageContentsConfig: PageContentConfig[] = [
       const featureConnections = deps.features.map((feature) => ({
         id: feature.id,
       }));
-      const faqConnections = deps.faqItems.map((faq) => ({ id: faq.id }));
+      const faqSectionConnections = deps.faqSection.map((faqSection) => ({
+        id: faqSection.id,
+      }));
+      const aboutConnections = deps.about.map((about) => ({ id: about.id }));
+      const mapSectionConnections = deps.mapSection.map((mapSection) => ({
+        id: mapSection.id,
+      }));
+
+      // Find the analytic that matches the current content language
+      // We cast to any here because EntityRef hides the 'language' relation
+      // present on the runtime object returned by Analytics.seed
+      const matchingAnalytic =
+        (deps.analytics as any[]).find(
+          (a) => a.language?.value === content.language.value,
+        ) || deps.analytics[0];
+
+      if (!matchingAnalytic) {
+        throw new Error(
+          `No matching analytic found for language ${content.language.value}`,
+        );
+      }
+
+      const approachConnections = deps.approach.map((approach) => ({
+        id: approach.id,
+      }));
+
+      const benefitSectionConnections = deps.benefitSection.map(
+        (benefitSection) => ({
+          id: benefitSection.id,
+        }),
+      );
+
+      const certificationSectionConnections = deps.certificationSection.map(
+        (certificationSection) => ({
+          id: certificationSection.id,
+        }),
+      );
+
+      const ctaSectionConnections = deps.ctaSection.map((ctaSection) => ({
+        id: ctaSection.id,
+      }));
+
+      const navigationSectionConnections = deps.navigation.map(
+        (navigation) => ({
+          id: navigation.id,
+        }),
+      );
+
+      const testimonialSectionConnections = deps.testimonialSection.map(
+        (testimonialSection) => ({
+          id: testimonialSection.id,
+        }),
+      );
+
+      const footerSectionConnections = deps.footer.map((footer) => ({
+        id: footer.id,
+      }));
+
       const create: SectionCreateInput = {
         type: "hero",
-        contentHero: { connect: { id: deps.hero.id } },
-        contentBenefits: { connect: { id: deps.benefitSection.id } },
-        contentCertifications: {
-          connect: { id: deps.certificationSection.id },
-        },
-        contentTestimonials: {
-          connect: { id: deps.testimonialSection.id },
-        },
-        contentApproach: { connect: { id: deps.approach.id } },
-        contentAnalytics: { connect: { id: deps.analytics.id } },
-        contentNavigation: { connect: { id: deps.navigation.id } },
-        contentFooter: { connect: { id: deps.footer.id } },
-        contentCta: { connect: { id: deps.ctaSection.id } },
-        contentMap: { connect: { id: deps.mapSection.id } },
+        contentAnalytics: { connect: { id: matchingAnalytic.id } },
       };
 
       if (featureConnections.length) {
         create.contentFeatures = { connect: featureConnections };
       }
 
-      if (faqConnections.length) {
-        create.contentFaqs = { connect: faqConnections };
+      if (faqSectionConnections.length) {
+        create.contentFaqSection = { connect: faqSectionConnections };
       }
 
-      if (deps.faqSection) {
-        create.contentFaqSection = { connect: { id: deps.faqSection.id } };
+      if (aboutConnections.length) {
+        create.contentAbout = { connect: aboutConnections };
       }
 
-      const aboutId = opts.pageAbout?.[mainPageContent.language.value];
-      if (aboutId) {
-        create.contentAbout = { connect: { id: aboutId } };
+      if (approachConnections.length) {
+        create.contentApproach = { connect: approachConnections };
+      }
+
+      if (benefitSectionConnections.length) {
+        create.contentBenefits = { connect: benefitSectionConnections };
+      }
+
+      if (certificationSectionConnections.length) {
+        create.contentCertifications = {
+          connect: certificationSectionConnections,
+        };
+      }
+
+      if (ctaSectionConnections.length) {
+        create.contentCta = { connect: ctaSectionConnections };
+      }
+
+      if (mapSectionConnections.length) {
+        create.contentMap = { connect: mapSectionConnections };
+      }
+
+      if (navigationSectionConnections.length) {
+        create.contentNavigation = { connect: navigationSectionConnections };
+      }
+
+      if (testimonialSectionConnections.length) {
+        create.contentTestimonials = { connect: testimonialSectionConnections };
+      }
+
+      if (footerSectionConnections.length) {
+        create.contentFooter = { connect: footerSectionConnections };
       }
 
       const update: SectionUpdateInput = {
         type: "hero",
-        contentHero: { connect: { id: deps.hero.id } },
-        contentBenefits: { connect: { id: deps.benefitSection.id } },
-        contentCertifications: {
-          connect: { id: deps.certificationSection.id },
-        },
-        contentTestimonials: {
-          connect: { id: deps.testimonialSection.id },
-        },
-        contentApproach: { connect: { id: deps.approach.id } },
-        contentAnalytics: { connect: { id: deps.analytics.id } },
+        contentBenefits: { set: benefitSectionConnections },
+        contentCertifications: { set: certificationSectionConnections },
+        contentTestimonials: { set: testimonialSectionConnections },
+        contentApproach: { set: approachConnections },
+        contentAnalytics: { connect: { id: matchingAnalytic.id } },
         contentAbout: {
-          set: { id: aboutId },
+          set: aboutConnections,
         },
-        contentNavigation: { connect: { id: deps.navigation.id } },
-        contentFooter: { connect: { id: deps.footer.id } },
-        contentCta: { connect: { id: deps.ctaSection.id } },
+        contentNavigation: { set: navigationSectionConnections },
+        contentCta: { set: ctaSectionConnections },
         contentFeatures: { set: featureConnections },
-        contentFaqs: { set: faqConnections },
-        contentMap: { connect: { id: deps.mapSection.id } },
+        contentFaqSection: { set: faqSectionConnections },
+        contentMap: { set: mapSectionConnections },
+        contentFooter: { set: footerSectionConnections },
       };
-
-      update.contentFaqSection = deps.faqSection
-        ? { connect: { id: deps.faqSection.id } }
-        : { disconnect: true };
 
       return { create, update };
     },
-  },
-] satisfies readonly PageContentConfig[];
+  }),
+);
 
 type PageContentSlug = (typeof pageContentsConfig)[number]["slug"];
 

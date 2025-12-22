@@ -40,6 +40,10 @@ export const lists: Record<string, ListConfig<any>> = {
         options: [
           { label: "Certification", value: "certification" },
           { label: "CTA", value: "cta" },
+          { label: "Hero", value: "hero" },
+          { label: "Navigation", value: "navigation" },
+          { label: "Testimonial", value: "testimonial" },
+          { label: "Footer", value: "footer" },
         ],
       }),
     },
@@ -101,6 +105,7 @@ export const lists: Record<string, ListConfig<any>> = {
     fields: {
       icon: text(),
       label: text(),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -118,6 +123,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ui: { displayMode: "textarea" },
         validation: { isRequired: true },
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -129,6 +135,7 @@ export const lists: Record<string, ListConfig<any>> = {
       background: relationship({ ref: "Image", many: true }),
       testimonials: relationship({ ref: "TestimonialItem", many: true }),
       fallback: relationship({ ref: "TestimonialItem", many: false }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -319,6 +326,7 @@ export const lists: Record<string, ListConfig<any>> = {
       external: checkbox({ defaultValue: false }),
       icon: text(),
       language: relationship({ ref: "Language", many: false }),
+      type: relationship({ ref: "Type", many: false }),
     },
   }),
 
@@ -515,25 +523,24 @@ export const lists: Record<string, ListConfig<any>> = {
       }),
       // Content references based on section type
       contentHero: relationship({ ref: "Hero", many: false }),
-      contentBenefits: relationship({ ref: "BenefitSection", many: false }),
+      contentBenefits: relationship({ ref: "BenefitSection", many: true }),
       contentFeatures: relationship({ ref: "Feature", many: true }),
-      contentFaqs: relationship({ ref: "Faq", many: true }),
-      contentFaqSection: relationship({ ref: "FaqSection", many: false }),
+      contentFaqSection: relationship({ ref: "FaqSection", many: true }),
       contentTestimonials: relationship({
         ref: "TestimonialSection",
-        many: false,
+        many: true,
       }),
       contentCertifications: relationship({
         ref: "CertificationSection",
-        many: false,
+        many: true,
       }),
-      contentApproach: relationship({ ref: "Approach", many: false }),
-      contentAbout: relationship({ ref: "About", many: false }),
-      contentAnalytics: relationship({ ref: "Analytic", many: false }),
-      contentNavigation: relationship({ ref: "Navigation", many: false }),
-      contentFooter: relationship({ ref: "Footer", many: false }),
-      contentCta: relationship({ ref: "CtaSection", many: false }),
-      contentMap: relationship({ ref: "Map", many: false }),
+      contentApproach: relationship({ ref: "Approach", many: true }),
+      contentAbout: relationship({ ref: "About", many: true }),
+      contentAnalytics: relationship({ ref: "Analytic", many: true }),
+      contentNavigation: relationship({ ref: "Navigation", many: true }),
+      contentFooter: relationship({ ref: "Footer", many: true }),
+      contentCta: relationship({ ref: "CtaSection", many: true }),
+      contentMap: relationship({ ref: "Map", many: true }),
     },
   }),
 

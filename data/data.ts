@@ -11,7 +11,6 @@ import {
   HeroType,
   Language,
   NavigationSectionItem,
-  OurApproachContent,
   PageContent,
   PageContentWithSubHeading,
   Testimonial,

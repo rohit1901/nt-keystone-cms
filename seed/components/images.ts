@@ -1,24 +1,19 @@
 import "dotenv/config";
 import type { PrismaClient } from "@prisma/client";
 import type { Maybe } from "../types";
-import type { CertificationImageKey } from "./certifications";
-import type { SeededSlugs, Slug } from "./slugs";
-import type { CtaImageKeys } from "./ctas";
+import type { SeededSlugs } from "./slugs";
+import {
+  CertificationImageKey,
+  ImageConfig,
+  Slug,
+  CtaImageKeys,
+} from "../../data";
 
 export type TestimonialImageKey =
   | "testimonialField"
   | "testimonialDrone"
   | "testimonialLogo";
 
-// --- Image Types ---
-export type ImageConfig = {
-  src: string;
-  alt: string;
-  width?: Maybe<number>;
-  height?: Maybe<number>;
-  fill?: Maybe<boolean>;
-  type?: Maybe<Slug>;
-};
 export type SeededImages = Awaited<ReturnType<typeof seed>>;
 export type NavigationImageKey = "navigationPrimary";
 export type ImageKeys =

@@ -1,5 +1,5 @@
-import type { PrismaClient } from "@prisma/client";
-import { AboutSection, Value } from "../../data";
+import type { Language, PrismaClient } from "@prisma/client";
+import { AboutSection } from "../../data";
 
 export type SeededValues = Awaited<ReturnType<typeof seedValues>>;
 export type SeededAbout = Awaited<ReturnType<typeof seed>>;
@@ -95,22 +95,54 @@ const aboutData: readonly AboutSection[] = [
   },
 ];
 
-const seedValues = async (prisma: PrismaClient) => {
+const seedValues = async (
+  prisma: PrismaClient,
+  languages?: {
+    english: Pick<Language, "id" | "value">;
+    german: Pick<Language, "id" | "value">;
+  },
+) => {
   console.log("Seeding about values...");
 
-  const input: Value[] = aboutData.flatMap((a) => a.values);
-
-  // createMany does NOT return created records, only a count
-  const values = await prisma.value.createManyAndReturn({
-    data: input.map((value) => ({
+  const valuesWithLanguage = aboutData.flatMap((section) =>
+    section.values.map((value) => ({
       label: value.label,
       description: value.description,
       icon: value.icon,
+      languageValue: section.language.value,
+    })),
+  );
+
+  const foundEnglish =
+    languages?.english ??
+    (await prisma.language.findFirstOrThrow({
+      where: { value: "en-US" },
+    }));
+  const foundGerman =
+    languages?.german ??
+    (await prisma.language.findFirstOrThrow({
+      where: { value: "de-DE" },
+    }));
+
+  const seededValues = await prisma.value.createManyAndReturn({
+    data: valuesWithLanguage.map((value) => ({
+      label: value.label,
+      description: value.description,
+      icon: value.icon,
+      languageId:
+        value.languageValue === "en-US" ? foundEnglish.id : foundGerman.id,
     })),
     skipDuplicates: true,
   });
 
-  console.log(`✓ Seeded ${values.length} about values`);
+  const values = await prisma.value.findMany({
+    where: {
+      languageId: { in: [foundEnglish.id, foundGerman.id] },
+      label: { in: valuesWithLanguage.map((value) => value.label) },
+    },
+  });
+
+  console.log(`✓ Seeded ${seededValues.length} about values`);
 
   return values;
 };
@@ -118,7 +150,6 @@ const seedValues = async (prisma: PrismaClient) => {
 const seed = async (prisma: PrismaClient, seededValues?: SeededValues) => {
   console.log("Seeding about section...");
 
-  const values = seededValues ?? (await seedValues(prisma));
   const foundEnglish = await prisma.language.findFirstOrThrow({
     where: { value: "en-US" },
   });
@@ -126,29 +157,40 @@ const seed = async (prisma: PrismaClient, seededValues?: SeededValues) => {
     where: { value: "de-DE" },
   });
 
-  // Since you want to connect relations, use create in a loop or a transaction
+  const values =
+    seededValues ??
+    (await seedValues(prisma, { english: foundEnglish, german: foundGerman }));
+
   const aboutSections = await prisma.$transaction(
-    aboutData.map((data) =>
-      prisma.about.create({
+    aboutData.map((data) => {
+      const languageId =
+        data.language.value === "en-US" ? foundEnglish.id : foundGerman.id;
+
+      const sectionValues = values.filter(
+        (value) =>
+          value.languageId === languageId &&
+          data.values.some(
+            (sectionValue) => sectionValue.label === value.label,
+          ),
+      );
+
+      return prisma.about.create({
         data: {
           heading: data.heading,
           intro: data.intro,
           valuesTitle: data.valuesTitle,
           values: {
-            connect: values.filter((value) => ({ id: value.id })),
+            connect: sectionValues.map((value) => ({ id: value.id })),
           },
           closing: data.closing,
           language: {
             connect: {
-              id:
-                data.language.value === "en-US"
-                  ? foundEnglish.id
-                  : foundGerman.id,
+              id: languageId,
             },
           },
         },
-      }),
-    ),
+      });
+    }),
   );
 
   console.log(`✓ Seeded ${aboutSections.length} about sections`);
