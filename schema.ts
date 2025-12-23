@@ -327,6 +327,7 @@ export const lists: Record<string, ListConfig<any>> = {
       icon: text(),
       language: relationship({ ref: "Language", many: false }),
       type: relationship({ ref: "Type", many: false }),
+      sectionKey: relationship({ ref: "FooterSectionKey", many: false }),
     },
   }),
 
@@ -344,12 +345,32 @@ export const lists: Record<string, ListConfig<any>> = {
   }),
 
   // --- Footer ---
+  FooterSectionKey: list({
+    access: allowAll,
+    fields: {
+      label: select({
+        options: [
+          { label: "services", value: "services" },
+          { label: "company", value: "company" },
+          { label: "resources", value: "resources" },
+          { label: "social", value: "social" },
+        ],
+      }),
+    },
+  }),
 
   // FooterSection: Section in footer (e.g., Services, Company)
   FooterSection: list({
     access: allowAll,
+    ui: {
+      labelField: "id", // Forces Keystone to use ID, ignoring the relationship field
+    },
+
     fields: {
-      title: text({ validation: { isRequired: true } }),
+      title: relationship({
+        ref: "FooterSectionKey",
+        many: false,
+      }),
       items: relationship({ ref: "NavigationLink", many: true }),
       language: relationship({ ref: "Language", many: false }),
     },
@@ -359,16 +380,8 @@ export const lists: Record<string, ListConfig<any>> = {
   Footer: list({
     access: allowAll,
     fields: {
-      title: text(),
+      title: text({ validation: { isRequired: true } }),
       sections: relationship({ ref: "FooterSection", many: true }),
-      languages: relationship({
-        ref: "Language",
-        many: true,
-        ui: {
-          displayMode: "select",
-          labelField: "label",
-        },
-      }),
       language: relationship({ ref: "Language", many: false }),
     },
   }),

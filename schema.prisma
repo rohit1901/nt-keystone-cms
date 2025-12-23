@@ -89,7 +89,6 @@ model Language {
   from_NavigationLink_language       NavigationLink[]       @relation("NavigationLink_language")
   from_Navigation_language           Navigation[]           @relation("Navigation_language")
   from_FooterSection_language        FooterSection[]        @relation("FooterSection_language")
-  from_Footer_languages              Footer[]               @relation("Footer_languages")
   from_Footer_language               Footer[]               @relation("Footer_language")
   from_AnalyticsStat_language        AnalyticsStat[]        @relation("AnalyticsStat_language")
   from_AnalyticsSummaryItem_language AnalyticsSummaryItem[] @relation("AnalyticsSummaryItem_language")
@@ -310,20 +309,23 @@ model Approach {
 }
 
 model NavigationLink {
-  id                       Int             @id @default(autoincrement())
-  label                    String          @default("")
-  href                     String          @default("")
-  external                 Boolean         @default(false)
-  icon                     String          @default("")
-  language                 Language?       @relation("NavigationLink_language", fields: [languageId], references: [id])
-  languageId               Int?            @map("language")
-  type                     Type?           @relation("NavigationLink_type", fields: [typeId], references: [id])
-  typeId                   Int?            @map("type")
-  from_Navigation_items    Navigation[]    @relation("Navigation_items")
-  from_FooterSection_items FooterSection[] @relation("FooterSection_items")
+  id                       Int               @id @default(autoincrement())
+  label                    String            @default("")
+  href                     String            @default("")
+  external                 Boolean           @default(false)
+  icon                     String            @default("")
+  language                 Language?         @relation("NavigationLink_language", fields: [languageId], references: [id])
+  languageId               Int?              @map("language")
+  type                     Type?             @relation("NavigationLink_type", fields: [typeId], references: [id])
+  typeId                   Int?              @map("type")
+  sectionKey               FooterSectionKey? @relation("NavigationLink_sectionKey", fields: [sectionKeyId], references: [id])
+  sectionKeyId             Int?              @map("sectionKey")
+  from_Navigation_items    Navigation[]      @relation("Navigation_items")
+  from_FooterSection_items FooterSection[]   @relation("FooterSection_items")
 
   @@index([languageId])
   @@index([typeId])
+  @@index([sectionKeyId])
 }
 
 model Navigation {
@@ -344,14 +346,23 @@ model Navigation {
   @@index([languageId])
 }
 
-model FooterSection {
-  id                   Int              @id @default(autoincrement())
-  title                String           @default("")
-  items                NavigationLink[] @relation("FooterSection_items")
-  language             Language?        @relation("FooterSection_language", fields: [languageId], references: [id])
-  languageId           Int?             @map("language")
-  from_Footer_sections Footer[]         @relation("Footer_sections")
+model FooterSectionKey {
+  id                             Int              @id @default(autoincrement())
+  label                          String?
+  from_NavigationLink_sectionKey NavigationLink[] @relation("NavigationLink_sectionKey")
+  from_FooterSection_title       FooterSection[]  @relation("FooterSection_title")
+}
 
+model FooterSection {
+  id                   Int               @id @default(autoincrement())
+  title                FooterSectionKey? @relation("FooterSection_title", fields: [titleId], references: [id])
+  titleId              Int?              @map("title")
+  items                NavigationLink[]  @relation("FooterSection_items")
+  language             Language?         @relation("FooterSection_language", fields: [languageId], references: [id])
+  languageId           Int?              @map("language")
+  from_Footer_sections Footer[]          @relation("Footer_sections")
+
+  @@index([titleId])
   @@index([languageId])
 }
 
@@ -359,7 +370,6 @@ model Footer {
   id                         Int             @id @default(autoincrement())
   title                      String          @default("")
   sections                   FooterSection[] @relation("Footer_sections")
-  languages                  Language[]      @relation("Footer_languages")
   language                   Language?       @relation("Footer_language", fields: [languageId], references: [id])
   languageId                 Int?            @map("language")
   from_Section_contentFooter Section[]       @relation("Section_contentFooter")

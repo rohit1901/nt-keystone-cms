@@ -173,18 +173,25 @@ export type NavigationSection = {
 
 export type NavigationSectionItem = {
   icon?: keyof typeof remixIconMap;
+  sectionKey?: FooterSectionKey;
 } & CTA;
 
 // Type for a single footer section (e.g., Services, Company)
 export type FooterSection = {
-  title: string;
+  title: FooterSectionKey;
   items: NavigationSectionItem[];
+  language?: Language;
 };
 
 // Type for the overall sections object
-export type FooterSections = {
-  [key: string]: FooterSection;
+export type FooterSectionKey = "services" | "company" | "resources" | "social";
+
+export type FooterSectionKeys = {
+  label: FooterSectionKey;
+  value: FooterSectionKey;
 };
+
+export type FooterSections = Record<FooterSectionKey, FooterSection>;
 
 export type FaqItem = {
   question: string;

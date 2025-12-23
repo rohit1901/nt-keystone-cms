@@ -1349,6 +1349,7 @@ type NavigationLink {
   icon: String
   language: Language
   type: Type
+  sectionKey: FooterSectionKey
 }
 
 input NavigationLinkWhereUniqueInput {
@@ -1366,6 +1367,7 @@ input NavigationLinkWhereInput {
   icon: StringFilter
   language: LanguageWhereInput
   type: TypeWhereInput
+  sectionKey: FooterSectionKeyWhereInput
 }
 
 input NavigationLinkOrderByInput {
@@ -1383,6 +1385,13 @@ input NavigationLinkUpdateInput {
   icon: String
   language: LanguageRelateToOneForUpdateInput
   type: TypeRelateToOneForUpdateInput
+  sectionKey: FooterSectionKeyRelateToOneForUpdateInput
+}
+
+input FooterSectionKeyRelateToOneForUpdateInput {
+  create: FooterSectionKeyCreateInput
+  connect: FooterSectionKeyWhereUniqueInput
+  disconnect: Boolean
 }
 
 input NavigationLinkUpdateArgs {
@@ -1397,6 +1406,12 @@ input NavigationLinkCreateInput {
   icon: String
   language: LanguageRelateToOneForCreateInput
   type: TypeRelateToOneForCreateInput
+  sectionKey: FooterSectionKeyRelateToOneForCreateInput
+}
+
+input FooterSectionKeyRelateToOneForCreateInput {
+  create: FooterSectionKeyCreateInput
+  connect: FooterSectionKeyWhereUniqueInput
 }
 
 type Navigation {
@@ -1474,9 +1489,44 @@ input NavigationLinkRelateToManyForCreateInput {
   connect: [NavigationLinkWhereUniqueInput!]
 }
 
+type FooterSectionKey {
+  id: ID!
+  label: String
+}
+
+input FooterSectionKeyWhereUniqueInput {
+  id: ID
+}
+
+input FooterSectionKeyWhereInput {
+  AND: [FooterSectionKeyWhereInput!]
+  OR: [FooterSectionKeyWhereInput!]
+  NOT: [FooterSectionKeyWhereInput!]
+  id: IDFilter
+  label: StringNullableFilter
+}
+
+input FooterSectionKeyOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+}
+
+input FooterSectionKeyUpdateInput {
+  label: String
+}
+
+input FooterSectionKeyUpdateArgs {
+  where: FooterSectionKeyWhereUniqueInput!
+  data: FooterSectionKeyUpdateInput!
+}
+
+input FooterSectionKeyCreateInput {
+  label: String
+}
+
 type FooterSection {
   id: ID!
-  title: String
+  title: FooterSectionKey
   items(where: NavigationLinkWhereInput! = {}, orderBy: [NavigationLinkOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NavigationLinkWhereUniqueInput): [NavigationLink!]
   itemsCount(where: NavigationLinkWhereInput! = {}): Int
   language: Language
@@ -1491,18 +1541,17 @@ input FooterSectionWhereInput {
   OR: [FooterSectionWhereInput!]
   NOT: [FooterSectionWhereInput!]
   id: IDFilter
-  title: StringFilter
+  title: FooterSectionKeyWhereInput
   items: NavigationLinkManyRelationFilter
   language: LanguageWhereInput
 }
 
 input FooterSectionOrderByInput {
   id: OrderDirection
-  title: OrderDirection
 }
 
 input FooterSectionUpdateInput {
-  title: String
+  title: FooterSectionKeyRelateToOneForUpdateInput
   items: NavigationLinkRelateToManyForUpdateInput
   language: LanguageRelateToOneForUpdateInput
 }
@@ -1513,7 +1562,7 @@ input FooterSectionUpdateArgs {
 }
 
 input FooterSectionCreateInput {
-  title: String
+  title: FooterSectionKeyRelateToOneForCreateInput
   items: NavigationLinkRelateToManyForCreateInput
   language: LanguageRelateToOneForCreateInput
 }
@@ -1523,8 +1572,6 @@ type Footer {
   title: String
   sections(where: FooterSectionWhereInput! = {}, orderBy: [FooterSectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FooterSectionWhereUniqueInput): [FooterSection!]
   sectionsCount(where: FooterSectionWhereInput! = {}): Int
-  languages(where: LanguageWhereInput! = {}, orderBy: [LanguageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LanguageWhereUniqueInput): [Language!]
-  languagesCount(where: LanguageWhereInput! = {}): Int
   language: Language
 }
 
@@ -1539,7 +1586,6 @@ input FooterWhereInput {
   id: IDFilter
   title: StringFilter
   sections: FooterSectionManyRelationFilter
-  languages: LanguageManyRelationFilter
   language: LanguageWhereInput
 }
 
@@ -1547,12 +1593,6 @@ input FooterSectionManyRelationFilter {
   every: FooterSectionWhereInput
   some: FooterSectionWhereInput
   none: FooterSectionWhereInput
-}
-
-input LanguageManyRelationFilter {
-  every: LanguageWhereInput
-  some: LanguageWhereInput
-  none: LanguageWhereInput
 }
 
 input FooterOrderByInput {
@@ -1563,7 +1603,6 @@ input FooterOrderByInput {
 input FooterUpdateInput {
   title: String
   sections: FooterSectionRelateToManyForUpdateInput
-  languages: LanguageRelateToManyForUpdateInput
   language: LanguageRelateToOneForUpdateInput
 }
 
@@ -1574,13 +1613,6 @@ input FooterSectionRelateToManyForUpdateInput {
   connect: [FooterSectionWhereUniqueInput!]
 }
 
-input LanguageRelateToManyForUpdateInput {
-  disconnect: [LanguageWhereUniqueInput!]
-  set: [LanguageWhereUniqueInput!]
-  create: [LanguageCreateInput!]
-  connect: [LanguageWhereUniqueInput!]
-}
-
 input FooterUpdateArgs {
   where: FooterWhereUniqueInput!
   data: FooterUpdateInput!
@@ -1589,18 +1621,12 @@ input FooterUpdateArgs {
 input FooterCreateInput {
   title: String
   sections: FooterSectionRelateToManyForCreateInput
-  languages: LanguageRelateToManyForCreateInput
   language: LanguageRelateToOneForCreateInput
 }
 
 input FooterSectionRelateToManyForCreateInput {
   create: [FooterSectionCreateInput!]
   connect: [FooterSectionWhereUniqueInput!]
-}
-
-input LanguageRelateToManyForCreateInput {
-  create: [LanguageCreateInput!]
-  connect: [LanguageWhereUniqueInput!]
 }
 
 type AnalyticsStat {
@@ -2600,6 +2626,12 @@ type Mutation {
   updateNavigations(data: [NavigationUpdateArgs!]!): [Navigation]
   deleteNavigation(where: NavigationWhereUniqueInput!): Navigation
   deleteNavigations(where: [NavigationWhereUniqueInput!]!): [Navigation]
+  createFooterSectionKey(data: FooterSectionKeyCreateInput!): FooterSectionKey
+  createFooterSectionKeys(data: [FooterSectionKeyCreateInput!]!): [FooterSectionKey]
+  updateFooterSectionKey(where: FooterSectionKeyWhereUniqueInput!, data: FooterSectionKeyUpdateInput!): FooterSectionKey
+  updateFooterSectionKeys(data: [FooterSectionKeyUpdateArgs!]!): [FooterSectionKey]
+  deleteFooterSectionKey(where: FooterSectionKeyWhereUniqueInput!): FooterSectionKey
+  deleteFooterSectionKeys(where: [FooterSectionKeyWhereUniqueInput!]!): [FooterSectionKey]
   createFooterSection(data: FooterSectionCreateInput!): FooterSection
   createFooterSections(data: [FooterSectionCreateInput!]!): [FooterSection]
   updateFooterSection(where: FooterSectionWhereUniqueInput!, data: FooterSectionUpdateInput!): FooterSection
@@ -2736,6 +2768,9 @@ type Query {
   navigation(where: NavigationWhereUniqueInput!): Navigation
   navigations(where: NavigationWhereInput! = {}, orderBy: [NavigationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NavigationWhereUniqueInput): [Navigation!]
   navigationsCount(where: NavigationWhereInput! = {}): Int
+  footerSectionKey(where: FooterSectionKeyWhereUniqueInput!): FooterSectionKey
+  footerSectionKeys(where: FooterSectionKeyWhereInput! = {}, orderBy: [FooterSectionKeyOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FooterSectionKeyWhereUniqueInput): [FooterSectionKey!]
+  footerSectionKeysCount(where: FooterSectionKeyWhereInput! = {}): Int
   footerSection(where: FooterSectionWhereUniqueInput!): FooterSection
   footerSections(where: FooterSectionWhereInput! = {}, orderBy: [FooterSectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FooterSectionWhereUniqueInput): [FooterSection!]
   footerSectionsCount(where: FooterSectionWhereInput! = {}): Int
