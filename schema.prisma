@@ -477,8 +477,7 @@ model CtaSection {
 model Section {
   id                        Int                    @id @default(autoincrement())
   type                      String
-  contentHero               Hero?                  @relation("Section_contentHero", fields: [contentHeroId], references: [id])
-  contentHeroId             Int?                   @map("contentHero")
+  contentHero               Hero[]                 @relation("Section_contentHero")
   contentBenefits           BenefitSection[]       @relation("Section_contentBenefits")
   contentFeatures           Feature[]              @relation("Section_contentFeatures")
   contentFaqSection         FaqSection[]           @relation("Section_contentFaqSection")
@@ -492,8 +491,6 @@ model Section {
   contentCta                CtaSection[]           @relation("Section_contentCta")
   contentMap                Map[]                  @relation("Section_contentMap")
   from_PageContent_sections PageContent[]          @relation("PageContent_sections")
-
-  @@index([contentHeroId])
 }
 
 model PageContent {

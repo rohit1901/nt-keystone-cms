@@ -268,6 +268,7 @@ async function seedSection(
 
 const Ctas = {
   data: sectionsData,
+  ctas,
   seed,
   seedSection,
 };

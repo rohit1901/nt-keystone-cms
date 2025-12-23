@@ -2092,7 +2092,8 @@ input CtaRelateToManyForCreateInput {
 type Section {
   id: ID!
   type: String
-  contentHero: Hero
+  contentHero(where: HeroWhereInput! = {}, orderBy: [HeroOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: HeroWhereUniqueInput): [Hero!]
+  contentHeroCount(where: HeroWhereInput! = {}): Int
   contentBenefits(where: BenefitSectionWhereInput! = {}, orderBy: [BenefitSectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: BenefitSectionWhereUniqueInput): [BenefitSection!]
   contentBenefitsCount(where: BenefitSectionWhereInput! = {}): Int
   contentFeatures(where: FeatureWhereInput! = {}, orderBy: [FeatureOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FeatureWhereUniqueInput): [Feature!]
@@ -2129,7 +2130,7 @@ input SectionWhereInput {
   NOT: [SectionWhereInput!]
   id: IDFilter
   type: StringFilter
-  contentHero: HeroWhereInput
+  contentHero: HeroManyRelationFilter
   contentBenefits: BenefitSectionManyRelationFilter
   contentFeatures: FeatureManyRelationFilter
   contentFaqSection: FaqSectionManyRelationFilter
@@ -2142,6 +2143,12 @@ input SectionWhereInput {
   contentFooter: FooterManyRelationFilter
   contentCta: CtaSectionManyRelationFilter
   contentMap: MapManyRelationFilter
+}
+
+input HeroManyRelationFilter {
+  every: HeroWhereInput
+  some: HeroWhereInput
+  none: HeroWhereInput
 }
 
 input BenefitSectionManyRelationFilter {
@@ -2223,7 +2230,7 @@ input SectionOrderByInput {
 
 input SectionUpdateInput {
   type: String
-  contentHero: HeroRelateToOneForUpdateInput
+  contentHero: HeroRelateToManyForUpdateInput
   contentBenefits: BenefitSectionRelateToManyForUpdateInput
   contentFeatures: FeatureRelateToManyForUpdateInput
   contentFaqSection: FaqSectionRelateToManyForUpdateInput
@@ -2238,10 +2245,11 @@ input SectionUpdateInput {
   contentMap: MapRelateToManyForUpdateInput
 }
 
-input HeroRelateToOneForUpdateInput {
-  create: HeroCreateInput
-  connect: HeroWhereUniqueInput
-  disconnect: Boolean
+input HeroRelateToManyForUpdateInput {
+  disconnect: [HeroWhereUniqueInput!]
+  set: [HeroWhereUniqueInput!]
+  create: [HeroCreateInput!]
+  connect: [HeroWhereUniqueInput!]
 }
 
 input BenefitSectionRelateToManyForUpdateInput {
@@ -2335,7 +2343,7 @@ input SectionUpdateArgs {
 
 input SectionCreateInput {
   type: String
-  contentHero: HeroRelateToOneForCreateInput
+  contentHero: HeroRelateToManyForCreateInput
   contentBenefits: BenefitSectionRelateToManyForCreateInput
   contentFeatures: FeatureRelateToManyForCreateInput
   contentFaqSection: FaqSectionRelateToManyForCreateInput
@@ -2350,9 +2358,9 @@ input SectionCreateInput {
   contentMap: MapRelateToManyForCreateInput
 }
 
-input HeroRelateToOneForCreateInput {
-  create: HeroCreateInput
-  connect: HeroWhereUniqueInput
+input HeroRelateToManyForCreateInput {
+  create: [HeroCreateInput!]
+  connect: [HeroWhereUniqueInput!]
 }
 
 input BenefitSectionRelateToManyForCreateInput {

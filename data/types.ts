@@ -101,14 +101,21 @@ export type CertificationSection = {
 };
 
 export type HeroType = {
-  banner: {
-    icon?: keyof typeof remixIconMap;
-    additional?: {
-      icon: keyof typeof remixIconMap;
-      text: string;
-    };
-  } & CTA;
-  subHeading: string;
+  title: string;
+  description?: string;
+  image?: ImageConfig;
+  cta?: CTA;
+  language: { label: string; value: string };
+  hero: {
+    banner: {
+      icon?: keyof typeof remixIconMap;
+      additional?: {
+        icon: keyof typeof remixIconMap;
+        text: string;
+      };
+    } & Omit<CTA, "type" | "language">;
+    subHeading: string;
+  };
 };
 
 export type FeatureVisualization =

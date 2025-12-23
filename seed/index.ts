@@ -127,6 +127,14 @@ async function main(prisma: PrismaClient) {
           }
         : undefined;
 
+    const seededHero = await Heroes.seed(
+      prisma,
+      seededImages,
+      seededSlugs,
+      seededCtas,
+      seededLanguages,
+    );
+
     await PageContents.seed(
       prisma,
       {
@@ -142,6 +150,7 @@ async function main(prisma: PrismaClient) {
         navigation: seededNavigation,
         mapSection: seededMapSection,
         footer: seededFooter,
+        hero: seededHero,
       },
       pageContentOptions,
     );

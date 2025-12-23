@@ -535,7 +535,7 @@ export const lists: Record<string, ListConfig<any>> = {
         validation: { isRequired: true },
       }),
       // Content references based on section type
-      contentHero: relationship({ ref: "Hero", many: false }),
+      contentHero: relationship({ ref: "Hero", many: true }),
       contentBenefits: relationship({ ref: "BenefitSection", many: true }),
       contentFeatures: relationship({ ref: "Feature", many: true }),
       contentFaqSection: relationship({ ref: "FaqSection", many: true }),
