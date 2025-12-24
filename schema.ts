@@ -11,169 +11,6 @@ import {
   text,
   timestamp,
 } from "@keystone-6/core/fields";
-import { ImageConfig } from "next/dist/shared/lib/image-config";
-import { ImageProps } from "next/image";
-import { Slug } from "./seed/components/slugs";
-
-// --- TypeScript Type Definitions ---
-
-export type PageContent = {
-  title: string;
-  description?: string;
-  image?: ImageProps;
-  cta?: CTA;
-};
-
-export type CTA = {
-  label: string;
-  href: string;
-  external?: boolean;
-};
-
-export type Language = {
-  label: "English" | "German";
-  value: "de-DE" | "en-US";
-};
-
-export type PageContentWithSubHeading = CompositePageContent<
-  "subheading",
-  string
->;
-
-export type Certification = {
-  id: number;
-  title: string;
-  description: string;
-  image: ImageConfig & { type: Slug };
-  link?: string;
-};
-
-export type HeroType = {
-  banner: {
-    icon?: string;
-    additional?: {
-      icon: string;
-      text: string;
-    };
-  } & CTA;
-  subHeading: string;
-  title: string;
-  description: string;
-};
-
-export type FeatureVisualization =
-  | "OrbitFeatureVisualization"
-  | "CloudFeatureVisualization"
-  | "ArchitectureFeatureVisualization";
-
-export type Benefit = {
-  icon: string;
-  title: string;
-  description: string;
-};
-
-export type Testimonial = {
-  rating?: number;
-  badge?: {
-    icon: string;
-    label: string;
-  };
-  name: string;
-  role: string;
-  company: string;
-  image?: ImageProps;
-  content: string;
-};
-
-export type NavigationSectionItem = {
-  icon?: string;
-} & CTA;
-
-export type FooterSection = {
-  title: string;
-  items: NavigationSectionItem[];
-};
-
-export type FooterSections = {
-  [key: string]: FooterSection;
-};
-
-export type FaqItem = {
-  question: string;
-  answer: string;
-};
-
-export type ApproachStep = {
-  id: number;
-  type: "done" | "in progress" | "open";
-  title: string;
-  description: string;
-  activityTime: string;
-};
-
-export type OurApproachContent = {
-  title: string;
-  description: string;
-  steps: ApproachStep[];
-};
-
-export type AnalyticsSummaryItem = {
-  name: string;
-  deployments: string;
-  uptime: string;
-  clientSatisfaction: string;
-  efficiency: string;
-  revenueGrowth: string;
-  bgColor: string;
-  changeType: "positive" | "negative";
-};
-
-export type AnalyticsStats = {
-  totalDeployments: string;
-  deploymentChange: string;
-  deploymentChangePercent: string;
-  changePeriod: string;
-};
-
-export type AnalyticsData = {
-  heading: string;
-  subheading: string;
-  stats: AnalyticsStats;
-  tableHeadings: string[];
-  summary: AnalyticsSummaryItem[];
-};
-
-// --- Generic Composite Helper Types ---
-
-export type CompositePageContent<
-  ExtraKey extends string,
-  ExtraType,
-> = PageContent & {
-  [K in ExtraKey]: ExtraType;
-};
-
-export type CompositePageContentWithExtras<
-  Extras extends Record<string, unknown>,
-> = PageContent & Extras;
-
-export type CompositePageContentLC<
-  ExtraKey extends string,
-  ExtraType,
-> = PageContent & {
-  [K in Lowercase<ExtraKey>]: ExtraType;
-};
-
-type KeyMap = {
-  Benefit: "benefits";
-  FaqItem: "faq";
-};
-
-export type CompositePageContentWithMap<
-  T,
-  K extends keyof KeyMap,
-> = PageContent & {
-  [P in KeyMap[K]]: T;
-};
 
 // --- Keystone CMS Lists ---
 
@@ -182,6 +19,7 @@ export const lists: Record<string, ListConfig<any>> = {
   User: list({
     access: allowAll,
     fields: {
+      authId: text({ isIndexed: "unique" }),
       name: text({ validation: { isRequired: true } }),
       email: text({
         validation: { isRequired: true },
@@ -202,6 +40,11 @@ export const lists: Record<string, ListConfig<any>> = {
         options: [
           { label: "Certification", value: "certification" },
           { label: "CTA", value: "cta" },
+          { label: "Hero", value: "hero" },
+          { label: "Navigation", value: "navigation" },
+          { label: "Testimonial", value: "testimonial" },
+          { label: "Footer", value: "footer" },
+          { label: "Main", value: "main" },
         ],
       }),
     },
@@ -215,6 +58,7 @@ export const lists: Record<string, ListConfig<any>> = {
       href: text({ validation: { isRequired: true } }),
       external: checkbox({ defaultValue: false }),
       type: relationship({ ref: "Type", many: false }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -262,6 +106,7 @@ export const lists: Record<string, ListConfig<any>> = {
     fields: {
       icon: text(),
       label: text(),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -279,6 +124,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ui: { displayMode: "textarea" },
         validation: { isRequired: true },
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -290,6 +136,7 @@ export const lists: Record<string, ListConfig<any>> = {
       background: relationship({ ref: "Image", many: true }),
       testimonials: relationship({ ref: "TestimonialItem", many: true }),
       fallback: relationship({ ref: "TestimonialItem", many: false }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -301,6 +148,7 @@ export const lists: Record<string, ListConfig<any>> = {
     fields: {
       icon: text(),
       text: text({ validation: { isRequired: true } }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -313,6 +161,7 @@ export const lists: Record<string, ListConfig<any>> = {
       external: checkbox({ defaultValue: false }),
       icon: text(),
       additional: relationship({ ref: "HeroBannerAdditional", many: false }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -325,6 +174,7 @@ export const lists: Record<string, ListConfig<any>> = {
       subHeading: text({ validation: { isRequired: true } }),
       banner: relationship({ ref: "HeroBanner", many: false }),
       cta: relationship({ ref: "Cta", many: false }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -340,6 +190,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ui: { displayMode: "textarea" },
         validation: { isRequired: true },
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -349,6 +200,7 @@ export const lists: Record<string, ListConfig<any>> = {
     fields: {
       title: text({ validation: { isRequired: true } }),
       benefits: relationship({ ref: "Benefit", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -363,6 +215,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ui: { displayMode: "textarea" },
         validation: { isRequired: true },
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -373,6 +226,7 @@ export const lists: Record<string, ListConfig<any>> = {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
       faqs: relationship({ ref: "Faq", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -386,6 +240,7 @@ export const lists: Record<string, ListConfig<any>> = {
       description: text({ ui: { displayMode: "textarea" } }),
       image: relationship({ ref: "Image", many: false }),
       link: text(),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -397,6 +252,7 @@ export const lists: Record<string, ListConfig<any>> = {
       description: text({ ui: { displayMode: "textarea" } }),
       cta: relationship({ ref: "Cta", many: false }),
       certifications: relationship({ ref: "Certification", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -417,6 +273,7 @@ export const lists: Record<string, ListConfig<any>> = {
           { label: "Architecture", value: "ArchitectureFeatureVisualization" },
         ],
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -441,6 +298,7 @@ export const lists: Record<string, ListConfig<any>> = {
         validation: { isRequired: true },
       }),
       activityTime: text({ validation: { isRequired: true } }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -454,6 +312,7 @@ export const lists: Record<string, ListConfig<any>> = {
         validation: { isRequired: true },
       }),
       steps: relationship({ ref: "ApproachStep", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -467,6 +326,9 @@ export const lists: Record<string, ListConfig<any>> = {
       href: text({ validation: { isRequired: true } }),
       external: checkbox({ defaultValue: false }),
       icon: text(),
+      language: relationship({ ref: "Language", many: false }),
+      type: relationship({ ref: "Type", many: false }),
+      sectionKey: relationship({ ref: "FooterSectionKey", many: false }),
     },
   }),
 
@@ -479,17 +341,39 @@ export const lists: Record<string, ListConfig<any>> = {
       image: relationship({ ref: "Image", many: false }),
       cta: relationship({ ref: "Cta", many: false }),
       items: relationship({ ref: "NavigationLink", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
   // --- Footer ---
+  FooterSectionKey: list({
+    access: allowAll,
+    fields: {
+      label: select({
+        options: [
+          { label: "services", value: "services" },
+          { label: "company", value: "company" },
+          { label: "resources", value: "resources" },
+          { label: "social", value: "social" },
+        ],
+      }),
+    },
+  }),
 
   // FooterSection: Section in footer (e.g., Services, Company)
   FooterSection: list({
     access: allowAll,
+    ui: {
+      labelField: "id", // Forces Keystone to use ID, ignoring the relationship field
+    },
+
     fields: {
-      title: text({ validation: { isRequired: true } }),
+      title: relationship({
+        ref: "FooterSectionKey",
+        many: false,
+      }),
       items: relationship({ ref: "NavigationLink", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -497,16 +381,9 @@ export const lists: Record<string, ListConfig<any>> = {
   Footer: list({
     access: allowAll,
     fields: {
-      title: text(),
+      title: text({ validation: { isRequired: true } }),
       sections: relationship({ ref: "FooterSection", many: true }),
-      languages: relationship({
-        ref: "Language",
-        many: true,
-        ui: {
-          displayMode: "select",
-          labelField: "label",
-        },
-      }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -520,6 +397,7 @@ export const lists: Record<string, ListConfig<any>> = {
       deploymentChange: text({ validation: { isRequired: true } }),
       deploymentChangePercent: text({ validation: { isRequired: true } }),
       changePeriod: text({ validation: { isRequired: true } }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -541,6 +419,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ],
         validation: { isRequired: true },
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -562,6 +441,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ],
       }),
       summary: relationship({ ref: "AnalyticsSummaryItem", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -577,6 +457,7 @@ export const lists: Record<string, ListConfig<any>> = {
         validation: { isRequired: true },
       }),
       icon: text({ validation: { isRequired: true } }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -595,6 +476,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ui: { displayMode: "textarea" },
         validation: { isRequired: true },
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -610,6 +492,7 @@ export const lists: Record<string, ListConfig<any>> = {
         ui: { displayMode: "textarea" },
         validation: { isRequired: true },
       }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -623,6 +506,7 @@ export const lists: Record<string, ListConfig<any>> = {
       description: text({ ui: { displayMode: "textarea" } }),
       ctas: relationship({ ref: "Cta", many: true }),
       background: relationship({ ref: "Image", many: true }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 
@@ -652,26 +536,25 @@ export const lists: Record<string, ListConfig<any>> = {
         validation: { isRequired: true },
       }),
       // Content references based on section type
-      contentHero: relationship({ ref: "Hero", many: false }),
-      contentBenefits: relationship({ ref: "BenefitSection", many: false }),
+      contentHero: relationship({ ref: "Hero", many: true }),
+      contentBenefits: relationship({ ref: "BenefitSection", many: true }),
       contentFeatures: relationship({ ref: "Feature", many: true }),
-      contentFaqs: relationship({ ref: "Faq", many: true }),
-      contentFaqSection: relationship({ ref: "FaqSection", many: false }),
+      contentFaqSection: relationship({ ref: "FaqSection", many: true }),
       contentTestimonials: relationship({
         ref: "TestimonialSection",
-        many: false,
+        many: true,
       }),
       contentCertifications: relationship({
         ref: "CertificationSection",
-        many: false,
+        many: true,
       }),
-      contentApproach: relationship({ ref: "Approach", many: false }),
-      contentAbout: relationship({ ref: "About", many: false }),
-      contentAnalytics: relationship({ ref: "Analytic", many: false }),
-      contentNavigation: relationship({ ref: "Navigation", many: false }),
-      contentFooter: relationship({ ref: "Footer", many: false }),
-      contentCta: relationship({ ref: "CtaSection", many: false }),
-      contentMap: relationship({ ref: "Map", many: false }),
+      contentApproach: relationship({ ref: "Approach", many: true }),
+      contentAbout: relationship({ ref: "About", many: true }),
+      contentAnalytics: relationship({ ref: "Analytic", many: true }),
+      contentNavigation: relationship({ ref: "Navigation", many: true }),
+      contentFooter: relationship({ ref: "Footer", many: true }),
+      contentCta: relationship({ ref: "CtaSection", many: true }),
+      contentMap: relationship({ ref: "Map", many: true }),
     },
   }),
 
@@ -688,6 +571,7 @@ export const lists: Record<string, ListConfig<any>> = {
       image: relationship({ ref: "Image", many: false }),
       cta: relationship({ ref: "Cta", many: false }),
       sections: relationship({ ref: "Section", many: false }),
+      language: relationship({ ref: "Language", many: false }),
     },
   }),
 };

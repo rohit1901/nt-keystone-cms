@@ -1,21 +1,18 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
-// --- Slug Type ---
-export type Slug =
-  | "certification"
-  | "cta"
-  | "hero"
-  | "navigation"
-  | "testimonial";
+import { Slug } from "../../data";
+
 export type SeededSlugs = Awaited<ReturnType<typeof seed>>;
 
 // --- Slug data ---
 export const slugs: Slug[] = [
+  "main",
   "certification",
   "cta",
   "hero",
   "navigation",
   "testimonial",
+  "footer",
 ];
 
 const seed = async (prisma: PrismaClient) => {

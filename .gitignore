@@ -142,3 +142,7 @@ keystone.db
 *.db-journal
 migrations/
 /.zed
+admin/pages/api/.DS_Store
+data/.DS_Store
+.DS_Store
+scratch.ts

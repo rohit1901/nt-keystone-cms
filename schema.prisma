@@ -13,6 +13,7 @@ generator client {
 
 model User {
   id        Int       @id @default(autoincrement())
+  authId    String    @unique @default("")
   name      String    @default("")
   email     String    @unique @default("")
   password  String
@@ -20,10 +21,11 @@ model User {
 }
 
 model Type {
-  id              Int     @id @default(autoincrement())
-  label           String?
-  from_Cta_type   Cta[]   @relation("Cta_type")
-  from_Image_type Image[] @relation("Image_type")
+  id                       Int              @id @default(autoincrement())
+  label                    String?
+  from_Cta_type            Cta[]            @relation("Cta_type")
+  from_Image_type          Image[]          @relation("Image_type")
+  from_NavigationLink_type NavigationLink[] @relation("NavigationLink_type")
 }
 
 model Cta {
@@ -33,6 +35,8 @@ model Cta {
   external                      Boolean                @default(false)
   type                          Type?                  @relation("Cta_type", fields: [typeId], references: [id])
   typeId                        Int?                   @map("type")
+  language                      Language?              @relation("Cta_language", fields: [languageId], references: [id])
+  languageId                    Int?                   @map("language")
   from_Hero_cta                 Hero[]                 @relation("Hero_cta")
   from_CertificationSection_cta CertificationSection[] @relation("CertificationSection_cta")
   from_Navigation_cta           Navigation[]           @relation("Navigation_cta")
@@ -40,6 +44,7 @@ model Cta {
   from_PageContent_cta          PageContent[]          @relation("PageContent_cta")
 
   @@index([typeId])
+  @@index([languageId])
 }
 
 model Image {
@@ -62,17 +67,48 @@ model Image {
 }
 
 model Language {
-  id                    Int      @id @default(autoincrement())
-  label                 String
-  value                 String
-  from_Footer_languages Footer[] @relation("Footer_languages")
+  id                                 Int                    @id @default(autoincrement())
+  label                              String
+  value                              String
+  from_Cta_language                  Cta[]                  @relation("Cta_language")
+  from_TestimonialBadge_language     TestimonialBadge[]     @relation("TestimonialBadge_language")
+  from_TestimonialItem_language      TestimonialItem[]      @relation("TestimonialItem_language")
+  from_TestimonialSection_language   TestimonialSection[]   @relation("TestimonialSection_language")
+  from_HeroBannerAdditional_language HeroBannerAdditional[] @relation("HeroBannerAdditional_language")
+  from_HeroBanner_language           HeroBanner[]           @relation("HeroBanner_language")
+  from_Hero_language                 Hero[]                 @relation("Hero_language")
+  from_Benefit_language              Benefit[]              @relation("Benefit_language")
+  from_BenefitSection_language       BenefitSection[]       @relation("BenefitSection_language")
+  from_Faq_language                  Faq[]                  @relation("Faq_language")
+  from_FaqSection_language           FaqSection[]           @relation("FaqSection_language")
+  from_Certification_language        Certification[]        @relation("Certification_language")
+  from_CertificationSection_language CertificationSection[] @relation("CertificationSection_language")
+  from_Feature_language              Feature[]              @relation("Feature_language")
+  from_ApproachStep_language         ApproachStep[]         @relation("ApproachStep_language")
+  from_Approach_language             Approach[]             @relation("Approach_language")
+  from_NavigationLink_language       NavigationLink[]       @relation("NavigationLink_language")
+  from_Navigation_language           Navigation[]           @relation("Navigation_language")
+  from_FooterSection_language        FooterSection[]        @relation("FooterSection_language")
+  from_Footer_language               Footer[]               @relation("Footer_language")
+  from_AnalyticsStat_language        AnalyticsStat[]        @relation("AnalyticsStat_language")
+  from_AnalyticsSummaryItem_language AnalyticsSummaryItem[] @relation("AnalyticsSummaryItem_language")
+  from_Analytic_language             Analytic[]             @relation("Analytic_language")
+  from_Value_language                Value[]                @relation("Value_language")
+  from_About_language                About[]                @relation("About_language")
+  from_Map_language                  Map[]                  @relation("Map_language")
+  from_CtaSection_language           CtaSection[]           @relation("CtaSection_language")
+  from_PageContent_language          PageContent[]          @relation("PageContent_language")
 }
 
 model TestimonialBadge {
   id                         Int               @id @default(autoincrement())
   icon                       String            @default("")
   label                      String            @default("")
+  language                   Language?         @relation("TestimonialBadge_language", fields: [languageId], references: [id])
+  languageId                 Int?              @map("language")
   from_TestimonialItem_badge TestimonialItem[] @relation("TestimonialItem_badge")
+
+  @@index([languageId])
 }
 
 model TestimonialItem {
@@ -86,11 +122,14 @@ model TestimonialItem {
   image                                Image?               @relation("TestimonialItem_image", fields: [imageId], references: [id])
   imageId                              Int?                 @map("image")
   content                              String               @default("")
+  language                             Language?            @relation("TestimonialItem_language", fields: [languageId], references: [id])
+  languageId                           Int?                 @map("language")
   from_TestimonialSection_testimonials TestimonialSection[] @relation("TestimonialSection_testimonials")
   from_TestimonialSection_fallback     TestimonialSection[] @relation("TestimonialSection_fallback")
 
   @@index([badgeId])
   @@index([imageId])
+  @@index([languageId])
 }
 
 model TestimonialSection {
@@ -100,16 +139,23 @@ model TestimonialSection {
   testimonials                     TestimonialItem[] @relation("TestimonialSection_testimonials")
   fallback                         TestimonialItem?  @relation("TestimonialSection_fallback", fields: [fallbackId], references: [id])
   fallbackId                       Int?              @map("fallback")
+  language                         Language?         @relation("TestimonialSection_language", fields: [languageId], references: [id])
+  languageId                       Int?              @map("language")
   from_Section_contentTestimonials Section[]         @relation("Section_contentTestimonials")
 
   @@index([fallbackId])
+  @@index([languageId])
 }
 
 model HeroBannerAdditional {
   id                         Int          @id @default(autoincrement())
   icon                       String       @default("")
   text                       String       @default("")
+  language                   Language?    @relation("HeroBannerAdditional_language", fields: [languageId], references: [id])
+  languageId                 Int?         @map("language")
   from_HeroBanner_additional HeroBanner[] @relation("HeroBanner_additional")
+
+  @@index([languageId])
 }
 
 model HeroBanner {
@@ -120,9 +166,12 @@ model HeroBanner {
   icon             String                @default("")
   additional       HeroBannerAdditional? @relation("HeroBanner_additional", fields: [additionalId], references: [id])
   additionalId     Int?                  @map("additional")
+  language         Language?             @relation("HeroBanner_language", fields: [languageId], references: [id])
+  languageId       Int?                  @map("language")
   from_Hero_banner Hero[]                @relation("Hero_banner")
 
   @@index([additionalId])
+  @@index([languageId])
 }
 
 model Hero {
@@ -134,10 +183,13 @@ model Hero {
   bannerId                 Int?        @map("banner")
   cta                      Cta?        @relation("Hero_cta", fields: [ctaId], references: [id])
   ctaId                    Int?        @map("cta")
+  language                 Language?   @relation("Hero_language", fields: [languageId], references: [id])
+  languageId               Int?        @map("language")
   from_Section_contentHero Section[]   @relation("Section_contentHero")
 
   @@index([bannerId])
   @@index([ctaId])
+  @@index([languageId])
 }
 
 model Benefit {
@@ -145,22 +197,33 @@ model Benefit {
   icon                         String           @default("")
   title                        String           @default("")
   description                  String           @default("")
+  language                     Language?        @relation("Benefit_language", fields: [languageId], references: [id])
+  languageId                   Int?             @map("language")
   from_BenefitSection_benefits BenefitSection[] @relation("BenefitSection_benefits")
+
+  @@index([languageId])
 }
 
 model BenefitSection {
   id                           Int       @id @default(autoincrement())
   title                        String    @default("")
   benefits                     Benefit[] @relation("BenefitSection_benefits")
+  language                     Language? @relation("BenefitSection_language", fields: [languageId], references: [id])
+  languageId                   Int?      @map("language")
   from_Section_contentBenefits Section[] @relation("Section_contentBenefits")
+
+  @@index([languageId])
 }
 
 model Faq {
-  id                       Int          @id @default(autoincrement())
-  question                 String       @default("")
-  answer                   String       @default("")
-  from_FaqSection_faqs     FaqSection[] @relation("FaqSection_faqs")
-  from_Section_contentFaqs Section[]    @relation("Section_contentFaqs")
+  id                   Int          @id @default(autoincrement())
+  question             String       @default("")
+  answer               String       @default("")
+  language             Language?    @relation("Faq_language", fields: [languageId], references: [id])
+  languageId           Int?         @map("language")
+  from_FaqSection_faqs FaqSection[] @relation("FaqSection_faqs")
+
+  @@index([languageId])
 }
 
 model FaqSection {
@@ -168,7 +231,11 @@ model FaqSection {
   title                          String    @default("")
   description                    String    @default("")
   faqs                           Faq[]     @relation("FaqSection_faqs")
+  language                       Language? @relation("FaqSection_language", fields: [languageId], references: [id])
+  languageId                     Int?      @map("language")
   from_Section_contentFaqSection Section[] @relation("Section_contentFaqSection")
+
+  @@index([languageId])
 }
 
 model Certification {
@@ -178,9 +245,12 @@ model Certification {
   image                                    Image?                 @relation("Certification_image", fields: [imageId], references: [id])
   imageId                                  Int?                   @map("image")
   link                                     String                 @default("")
+  language                                 Language?              @relation("Certification_language", fields: [languageId], references: [id])
+  languageId                               Int?                   @map("language")
   from_CertificationSection_certifications CertificationSection[] @relation("CertificationSection_certifications")
 
   @@index([imageId])
+  @@index([languageId])
 }
 
 model CertificationSection {
@@ -190,9 +260,12 @@ model CertificationSection {
   cta                                Cta?            @relation("CertificationSection_cta", fields: [ctaId], references: [id])
   ctaId                              Int?            @map("cta")
   certifications                     Certification[] @relation("CertificationSection_certifications")
+  language                           Language?       @relation("CertificationSection_language", fields: [languageId], references: [id])
+  languageId                         Int?            @map("language")
   from_Section_contentCertifications Section[]       @relation("Section_contentCertifications")
 
   @@index([ctaId])
+  @@index([languageId])
 }
 
 model Feature {
@@ -202,7 +275,11 @@ model Feature {
   description                  String    @default("")
   longDescription              String    @default("")
   visualization                String?
+  language                     Language? @relation("Feature_language", fields: [languageId], references: [id])
+  languageId                   Int?      @map("language")
   from_Section_contentFeatures Section[] @relation("Section_contentFeatures")
+
+  @@index([languageId])
 }
 
 model ApproachStep {
@@ -212,7 +289,11 @@ model ApproachStep {
   title               String     @default("")
   description         String     @default("")
   activityTime        String     @default("")
+  language            Language?  @relation("ApproachStep_language", fields: [languageId], references: [id])
+  languageId          Int?       @map("language")
   from_Approach_steps Approach[] @relation("Approach_steps")
+
+  @@index([languageId])
 }
 
 model Approach {
@@ -220,17 +301,31 @@ model Approach {
   title                        String         @default("")
   description                  String         @default("")
   steps                        ApproachStep[] @relation("Approach_steps")
+  language                     Language?      @relation("Approach_language", fields: [languageId], references: [id])
+  languageId                   Int?           @map("language")
   from_Section_contentApproach Section[]      @relation("Section_contentApproach")
+
+  @@index([languageId])
 }
 
 model NavigationLink {
-  id                       Int             @id @default(autoincrement())
-  label                    String          @default("")
-  href                     String          @default("")
-  external                 Boolean         @default(false)
-  icon                     String          @default("")
-  from_Navigation_items    Navigation[]    @relation("Navigation_items")
-  from_FooterSection_items FooterSection[] @relation("FooterSection_items")
+  id                       Int               @id @default(autoincrement())
+  label                    String            @default("")
+  href                     String            @default("")
+  external                 Boolean           @default(false)
+  icon                     String            @default("")
+  language                 Language?         @relation("NavigationLink_language", fields: [languageId], references: [id])
+  languageId               Int?              @map("language")
+  type                     Type?             @relation("NavigationLink_type", fields: [typeId], references: [id])
+  typeId                   Int?              @map("type")
+  sectionKey               FooterSectionKey? @relation("NavigationLink_sectionKey", fields: [sectionKeyId], references: [id])
+  sectionKeyId             Int?              @map("sectionKey")
+  from_Navigation_items    Navigation[]      @relation("Navigation_items")
+  from_FooterSection_items FooterSection[]   @relation("FooterSection_items")
+
+  @@index([languageId])
+  @@index([typeId])
+  @@index([sectionKeyId])
 }
 
 model Navigation {
@@ -242,25 +337,44 @@ model Navigation {
   cta                            Cta?             @relation("Navigation_cta", fields: [ctaId], references: [id])
   ctaId                          Int?             @map("cta")
   items                          NavigationLink[] @relation("Navigation_items")
+  language                       Language?        @relation("Navigation_language", fields: [languageId], references: [id])
+  languageId                     Int?             @map("language")
   from_Section_contentNavigation Section[]        @relation("Section_contentNavigation")
 
   @@index([imageId])
   @@index([ctaId])
+  @@index([languageId])
+}
+
+model FooterSectionKey {
+  id                             Int              @id @default(autoincrement())
+  label                          String?
+  from_NavigationLink_sectionKey NavigationLink[] @relation("NavigationLink_sectionKey")
+  from_FooterSection_title       FooterSection[]  @relation("FooterSection_title")
 }
 
 model FooterSection {
-  id                   Int              @id @default(autoincrement())
-  title                String           @default("")
-  items                NavigationLink[] @relation("FooterSection_items")
-  from_Footer_sections Footer[]         @relation("Footer_sections")
+  id                   Int               @id @default(autoincrement())
+  title                FooterSectionKey? @relation("FooterSection_title", fields: [titleId], references: [id])
+  titleId              Int?              @map("title")
+  items                NavigationLink[]  @relation("FooterSection_items")
+  language             Language?         @relation("FooterSection_language", fields: [languageId], references: [id])
+  languageId           Int?              @map("language")
+  from_Footer_sections Footer[]          @relation("Footer_sections")
+
+  @@index([titleId])
+  @@index([languageId])
 }
 
 model Footer {
   id                         Int             @id @default(autoincrement())
   title                      String          @default("")
   sections                   FooterSection[] @relation("Footer_sections")
-  languages                  Language[]      @relation("Footer_languages")
+  language                   Language?       @relation("Footer_language", fields: [languageId], references: [id])
+  languageId                 Int?            @map("language")
   from_Section_contentFooter Section[]       @relation("Section_contentFooter")
+
+  @@index([languageId])
 }
 
 model AnalyticsStat {
@@ -269,7 +383,11 @@ model AnalyticsStat {
   deploymentChange        String     @default("")
   deploymentChangePercent String     @default("")
   changePeriod            String     @default("")
+  language                Language?  @relation("AnalyticsStat_language", fields: [languageId], references: [id])
+  languageId              Int?       @map("language")
   from_Analytic_stats     Analytic[] @relation("Analytic_stats")
+
+  @@index([languageId])
 }
 
 model AnalyticsSummaryItem {
@@ -282,7 +400,11 @@ model AnalyticsSummaryItem {
   revenueGrowth         String     @default("")
   bgColor               String     @default("")
   changeType            String
+  language              Language?  @relation("AnalyticsSummaryItem_language", fields: [languageId], references: [id])
+  languageId            Int?       @map("language")
   from_Analytic_summary Analytic[] @relation("Analytic_summary")
+
+  @@index([languageId])
 }
 
 model Analytic {
@@ -293,17 +415,24 @@ model Analytic {
   statsId                       Int?                   @map("stats")
   tableHeadings                 Json                   @default("[]")
   summary                       AnalyticsSummaryItem[] @relation("Analytic_summary")
+  language                      Language?              @relation("Analytic_language", fields: [languageId], references: [id])
+  languageId                    Int?                   @map("language")
   from_Section_contentAnalytics Section[]              @relation("Section_contentAnalytics")
 
   @@index([statsId])
+  @@index([languageId])
 }
 
 model Value {
-  id                Int     @id @default(autoincrement())
-  label             String  @default("")
-  description       String  @default("")
-  icon              String  @default("")
-  from_About_values About[] @relation("About_values")
+  id                Int       @id @default(autoincrement())
+  label             String    @default("")
+  description       String    @default("")
+  icon              String    @default("")
+  language          Language? @relation("Value_language", fields: [languageId], references: [id])
+  languageId        Int?      @map("language")
+  from_About_values About[]   @relation("About_values")
+
+  @@index([languageId])
 }
 
 model About {
@@ -313,7 +442,11 @@ model About {
   valuesTitle               String    @default("")
   values                    Value[]   @relation("About_values")
   closing                   String    @default("")
+  language                  Language? @relation("About_language", fields: [languageId], references: [id])
+  languageId                Int?      @map("language")
   from_Section_contentAbout Section[] @relation("Section_contentAbout")
+
+  @@index([languageId])
 }
 
 model Map {
@@ -321,7 +454,11 @@ model Map {
   title                   String    @default("")
   subheading              String    @default("")
   description             String    @default("")
+  language                Language? @relation("Map_language", fields: [languageId], references: [id])
+  languageId              Int?      @map("language")
   from_Section_contentMap Section[] @relation("Section_contentMap")
+
+  @@index([languageId])
 }
 
 model CtaSection {
@@ -330,67 +467,48 @@ model CtaSection {
   description             String    @default("")
   ctas                    Cta[]     @relation("CtaSection_ctas")
   background              Image[]   @relation("CtaSection_background")
+  language                Language? @relation("CtaSection_language", fields: [languageId], references: [id])
+  languageId              Int?      @map("language")
   from_Section_contentCta Section[] @relation("Section_contentCta")
+
+  @@index([languageId])
 }
 
 model Section {
-  id                        Int                   @id @default(autoincrement())
+  id                        Int                    @id @default(autoincrement())
   type                      String
-  contentHero               Hero?                 @relation("Section_contentHero", fields: [contentHeroId], references: [id])
-  contentHeroId             Int?                  @map("contentHero")
-  contentBenefits           BenefitSection?       @relation("Section_contentBenefits", fields: [contentBenefitsId], references: [id])
-  contentBenefitsId         Int?                  @map("contentBenefits")
-  contentFeatures           Feature[]             @relation("Section_contentFeatures")
-  contentFaqs               Faq[]                 @relation("Section_contentFaqs")
-  contentFaqSection         FaqSection?           @relation("Section_contentFaqSection", fields: [contentFaqSectionId], references: [id])
-  contentFaqSectionId       Int?                  @map("contentFaqSection")
-  contentTestimonials       TestimonialSection?   @relation("Section_contentTestimonials", fields: [contentTestimonialsId], references: [id])
-  contentTestimonialsId     Int?                  @map("contentTestimonials")
-  contentCertifications     CertificationSection? @relation("Section_contentCertifications", fields: [contentCertificationsId], references: [id])
-  contentCertificationsId   Int?                  @map("contentCertifications")
-  contentApproach           Approach?             @relation("Section_contentApproach", fields: [contentApproachId], references: [id])
-  contentApproachId         Int?                  @map("contentApproach")
-  contentAbout              About?                @relation("Section_contentAbout", fields: [contentAboutId], references: [id])
-  contentAboutId            Int?                  @map("contentAbout")
-  contentAnalytics          Analytic?             @relation("Section_contentAnalytics", fields: [contentAnalyticsId], references: [id])
-  contentAnalyticsId        Int?                  @map("contentAnalytics")
-  contentNavigation         Navigation?           @relation("Section_contentNavigation", fields: [contentNavigationId], references: [id])
-  contentNavigationId       Int?                  @map("contentNavigation")
-  contentFooter             Footer?               @relation("Section_contentFooter", fields: [contentFooterId], references: [id])
-  contentFooterId           Int?                  @map("contentFooter")
-  contentCta                CtaSection?           @relation("Section_contentCta", fields: [contentCtaId], references: [id])
-  contentCtaId              Int?                  @map("contentCta")
-  contentMap                Map?                  @relation("Section_contentMap", fields: [contentMapId], references: [id])
-  contentMapId              Int?                  @map("contentMap")
-  from_PageContent_sections PageContent[]         @relation("PageContent_sections")
-
-  @@index([contentHeroId])
-  @@index([contentBenefitsId])
-  @@index([contentFaqSectionId])
-  @@index([contentTestimonialsId])
-  @@index([contentCertificationsId])
-  @@index([contentApproachId])
-  @@index([contentAboutId])
-  @@index([contentAnalyticsId])
-  @@index([contentNavigationId])
-  @@index([contentFooterId])
-  @@index([contentCtaId])
-  @@index([contentMapId])
+  contentHero               Hero[]                 @relation("Section_contentHero")
+  contentBenefits           BenefitSection[]       @relation("Section_contentBenefits")
+  contentFeatures           Feature[]              @relation("Section_contentFeatures")
+  contentFaqSection         FaqSection[]           @relation("Section_contentFaqSection")
+  contentTestimonials       TestimonialSection[]   @relation("Section_contentTestimonials")
+  contentCertifications     CertificationSection[] @relation("Section_contentCertifications")
+  contentApproach           Approach[]             @relation("Section_contentApproach")
+  contentAbout              About[]                @relation("Section_contentAbout")
+  contentAnalytics          Analytic[]             @relation("Section_contentAnalytics")
+  contentNavigation         Navigation[]           @relation("Section_contentNavigation")
+  contentFooter             Footer[]               @relation("Section_contentFooter")
+  contentCta                CtaSection[]           @relation("Section_contentCta")
+  contentMap                Map[]                  @relation("Section_contentMap")
+  from_PageContent_sections PageContent[]          @relation("PageContent_sections")
 }
 
 model PageContent {
-  id          Int      @id @default(autoincrement())
-  slug        String   @unique @default("")
-  title       String   @default("")
-  description String   @default("")
-  image       Image?   @relation("PageContent_image", fields: [imageId], references: [id])
-  imageId     Int?     @map("image")
-  cta         Cta?     @relation("PageContent_cta", fields: [ctaId], references: [id])
-  ctaId       Int?     @map("cta")
-  sections    Section? @relation("PageContent_sections", fields: [sectionsId], references: [id])
-  sectionsId  Int?     @map("sections")
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique @default("")
+  title       String    @default("")
+  description String    @default("")
+  image       Image?    @relation("PageContent_image", fields: [imageId], references: [id])
+  imageId     Int?      @map("image")
+  cta         Cta?      @relation("PageContent_cta", fields: [ctaId], references: [id])
+  ctaId       Int?      @map("cta")
+  sections    Section?  @relation("PageContent_sections", fields: [sectionsId], references: [id])
+  sectionsId  Int?      @map("sections")
+  language    Language? @relation("PageContent_language", fields: [languageId], references: [id])
+  languageId  Int?      @map("language")
 
   @@index([imageId])
   @@index([ctaId])
   @@index([sectionsId])
+  @@index([languageId])
 }

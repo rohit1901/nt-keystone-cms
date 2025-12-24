@@ -2,28 +2,13 @@ import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import type { SeededImages } from "./images";
 import type { SeededSlugs } from "./slugs";
-
-// --- Testimonial Types ---
-export type TestimonialBadge = {
-  icon: string;
-  label: string;
-};
-
-export type TestimonialItem = {
-  rating?: number;
-  badge?: TestimonialBadge;
-  name: string;
-  role: string;
-  company: string;
-  content: string;
-  imageKey?: string;
-};
-
-export type TestimonialSection = {
-  title: string;
-  backgroundImageKeys: string[];
-  fallbackIndex: number;
-};
+import {
+  Language,
+  TestimonialBadge,
+  TestimonialItem,
+  TestimonialSection,
+} from "../../data";
+import { SeededFooterLanguages } from "./footer";
 
 export type SeededTestimonialBadges = Awaited<ReturnType<typeof seedBadges>>;
 export type SeededTestimonialItems = Awaited<ReturnType<typeof seedItems>>;
@@ -32,10 +17,26 @@ export type SeededTestimonialSections = Awaited<
 >;
 
 // --- Testimonial Badge data ---
+const english: Language = {
+  label: "English",
+  value: "en-US",
+};
+
+const german: Language = {
+  label: "German",
+  value: "de-DE",
+};
+
 export const testimonialBadges: TestimonialBadge[] = [
   {
     icon: "RiTimeLine",
     label: "Coming Soon",
+    language: english,
+  },
+  {
+    icon: "RiTimeLine",
+    label: "Bald verfügbar",
+    language: german,
   },
 ];
 
@@ -43,13 +44,29 @@ export const testimonialBadges: TestimonialBadge[] = [
 export const testimonialItems: TestimonialItem[] = [
   {
     rating: 5.0,
-    badge: testimonialBadges[0],
+    badge: testimonialBadges.find(
+      (badge) => badge.language.value === english.value,
+    ),
     name: "The Nimbus Tech Team",
     role: "Software & Cloud Experts, Germany",
     company: "Nimbus Tech",
     content:
       "As Nimbus Tech launches, we look forward to partnering with innovative organizations and delivering exceptional software and cloud solutions. Your feedback could be featured here!",
     imageKey: "testimonialLogo",
+    language: english,
+  },
+  {
+    rating: 5.0,
+    badge: testimonialBadges.find(
+      (badge) => badge.language.value === german.value,
+    ),
+    name: "The Nimbus Tech Team",
+    role: "Software & Cloud Experts, Germany",
+    company: "Nimbus Tech",
+    content:
+      "Als Nimbus Tech startet, freuen wir uns darauf, innovative Organisationen zu partnern und exzellente Software und Cloud-Lösungen zu liefern. Ihr Feedback könnte hier aufgeführt werden!",
+    imageKey: "testimonialLogo",
+    language: german,
   },
 ];
 
@@ -59,12 +76,38 @@ export const testimonialSections: TestimonialSection[] = [
     title: "Client Success Stories",
     backgroundImageKeys: ["testimonialField", "testimonialDrone"],
     fallbackIndex: 0,
+    language: english,
+  },
+  {
+    title: "Kunden Erfolge",
+    backgroundImageKeys: ["testimonialField", "testimonialDrone"],
+    fallbackIndex: 0,
+    language: german,
   },
 ];
 
-const seedBadges = async (prisma: PrismaClient) => {
+const seedBadges = async (
+  prisma: PrismaClient,
+  languages: SeededFooterLanguages,
+) => {
+  const data = testimonialBadges.map((badge) => {
+    const langId = languages.find(
+      (lang) => lang.value === badge.language.value,
+    )?.id;
+
+    if (!langId) {
+      throw new Error(`Language not seeded for badge ${badge.label}`);
+    }
+
+    return {
+      icon: badge.icon,
+      label: badge.label,
+      languageId: langId,
+    };
+  });
+
   const seededBadges = await prisma.testimonialBadge.createManyAndReturn({
-    data: testimonialBadges,
+    data,
   });
   console.log(`✓ Seeded ${seededBadges.length} testimonial badges`);
   return seededBadges;
@@ -75,6 +118,7 @@ const seedItems = async (
   badges: SeededTestimonialBadges,
   images: SeededImages,
   slugs: SeededSlugs,
+  languages: SeededFooterLanguages,
 ) => {
   // Get the testimonial slug type ID
   const testimonialTypeId = slugs.find(
@@ -83,24 +127,30 @@ const seedItems = async (
 
   const seededItems = await Promise.all(
     testimonialItems.map((item, index) => {
+      const langId = languages.find(
+        (lang) => lang.value === item.language.value,
+      )?.id;
       // Filter images by testimonial typeId, then find by src pattern
       const image = item.imageKey
-        ? images
-            .filter((img) => img.typeId === testimonialTypeId)
-            .find((img) => img.src?.includes("nimbus"))
+        ? images.find(
+            (img) =>
+              img.typeId === testimonialTypeId && img.alt.includes("logo"),
+          )
         : undefined;
 
       return prisma.testimonialItem.create({
         data: {
           rating: item.rating,
-          badge: item.badge
-            ? { connect: { id: badges[index]?.id || badges[0].id } }
-            : undefined,
+          badgeId: badges.find((badge) => badge.languageId === langId)?.id,
           name: item.name,
           role: item.role,
           company: item.company,
-          image: image ? { connect: { id: image.id } } : undefined,
+          imageId: image?.id,
           content: item.content,
+          languageId: langId,
+          badge: undefined,
+          image: undefined,
+          language: undefined,
         },
       });
     }),
@@ -111,21 +161,29 @@ const seedItems = async (
 
 const seedSections = async (
   prisma: PrismaClient,
-  items: SeededTestimonialItems,
   images: SeededImages,
   slugs: SeededSlugs,
+  languages: SeededFooterLanguages,
 ) => {
-  // Get the testimonial slug type ID
   const testimonialTypeId = slugs.find(
     (slug) => slug.label === "testimonial",
   )?.id;
 
+  if (!testimonialTypeId) {
+    throw new Error("Testimonial slug type not found");
+  }
+
+  const badges = await seedBadges(prisma, languages);
+  const items = await seedItems(prisma, badges, images, slugs, languages);
+
   const seededSections = await Promise.all(
     testimonialSections.map((section) => {
-      // Filter images by testimonial typeId, then find by src pattern
       const testimonialImages = images.filter(
         (img) => img.typeId === testimonialTypeId,
       );
+      const langId = languages.find(
+        (lang) => lang.value === section.language.value,
+      )?.id;
 
       const backgroundImages = section.backgroundImageKeys
         .map((key) => {
@@ -139,7 +197,7 @@ const seedSections = async (
         })
         .filter((img): img is NonNullable<typeof img> => img !== undefined);
 
-      const fallbackItem = items[section.fallbackIndex];
+      const fallbackItem = items.find((item) => item.languageId === langId);
 
       return prisma.testimonialSection.create({
         data: {
@@ -147,13 +205,15 @@ const seedSections = async (
           background: backgroundImages.length
             ? { connect: backgroundImages.map((img) => ({ id: img.id })) }
             : undefined,
-          fallback: fallbackItem
-            ? { connect: { id: fallbackItem.id } }
-            : undefined,
+          fallbackId: fallbackItem ? fallbackItem.id : undefined,
+          fallback: undefined,
+          languageId: langId,
+          language: undefined,
         },
       });
     }),
   );
+
   console.log(`✓ Seeded ${seededSections.length} testimonial sections`);
   return seededSections;
 };

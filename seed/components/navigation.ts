@@ -1,129 +1,274 @@
 import type { PrismaClient } from "@prisma/client";
 import Images, { type NavigationImageKey, type SeededImages } from "./images";
-import { navigationPageContent, navLinks } from "../../data/data";
+import {
+  NavigationSection,
+  NavigationSectionItem,
+  Slug,
+  Language,
+} from "../../data";
+import { SeededCTAs } from "./ctas";
+import { SeededSlugs } from "./slugs";
+import { SeededFooterLanguages } from "./footer";
 
 export type SeededNavigationLinks = Awaited<ReturnType<typeof seedLinks>>;
-export type SeededNavigationCTA = Awaited<ReturnType<typeof seedCTA>>;
 export type SeededNavigation = Awaited<ReturnType<typeof seed>>;
 
-const navigationData = navigationPageContent;
-const navigationLinksData = navLinks;
-const DEFAULT_NAVIGATION_IMAGE_KEY: NavigationImageKey = "navigationPrimary";
+const DEFAULT_NAVIGATION_SLUG: Slug = "navigation";
 
 export type SeedNavigationOptions = {
   ctaId?: number | null;
   imageId?: number | null;
 };
 
-const seedLinks = async (prisma: PrismaClient) => {
-  console.log("Seeding navigation links...");
+/**
+ * Shared link structures per language
+ */
+const navigationLinksByLanguage: Record<
+  Language["value"],
+  NavigationSectionItem[]
+> = {
+  "en-US": [
+    {
+      label: "Services",
+      href: "#features",
+      language: {
+        label: "English",
+        value: "en-US",
+      },
+      type: "navigation",
+    },
+    {
+      label: "About Us",
+      href: "#about-us",
+      language: {
+        label: "English",
+        value: "en-US",
+      },
+      type: "navigation",
+    },
+    {
+      label: "Blog",
+      href: "https://rohitkhanduri.substack.com",
+      external: true,
+      language: {
+        label: "English",
+        value: "en-US",
+      },
+      type: "navigation",
+    },
+    {
+      label: "Contact",
+      href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
+      language: {
+        label: "English",
+        value: "en-US",
+      },
+      type: "navigation",
+    },
+  ],
+  "de-DE": [
+    {
+      label: "Leistungen",
+      href: "#features",
+      language: {
+        label: "German",
+        value: "de-DE",
+      },
+      type: "navigation",
+    },
+    {
+      label: "Über uns",
+      href: "#about-us",
+      language: {
+        label: "German",
+        value: "de-DE",
+      },
+      type: "navigation",
+    },
+    {
+      label: "Blog",
+      href: "https://rohitkhanduri.substack.com",
+      external: true,
+      language: {
+        label: "German",
+        value: "de-DE",
+      },
+      type: "navigation",
+    },
+    {
+      label: "Kontakt",
+      href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
+      language: {
+        label: "German",
+        value: "de-DE",
+      },
+      type: "navigation",
+    },
+  ],
+};
+
+/**
+ * Multiple navigation sections (per language)
+ */
+const navigationSections: NavigationSection[] = [
+  {
+    title: "Nimbus Tech",
+    description:
+      "Nimbus Tech is a software development and consulting company specializing in cloud architecture, DevOps, and automation solutions. We help businesses build scalable, efficient, and secure software systems.",
+    image: {
+      src: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg",
+      alt: "Nimbus Tech Hero Image",
+      width: 1600,
+      height: 900,
+    },
+    cta: {
+      label: "Get started",
+      href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
+      language: {
+        label: "English",
+        value: "en-US",
+      },
+      type: "navigation",
+    },
+    language: {
+      label: "English",
+      value: "en-US",
+    },
+    items: navigationLinksByLanguage["en-US"],
+  },
+  {
+    title: "Nimbus Tech",
+    description:
+      "Nimbus Tech ist ein Softwareentwicklungs- und Beratungsunternehmen mit Schwerpunkt auf Cloud-Architektur, DevOps und Automatisierungslösungen. Wir helfen Unternehmen, skalierbare, effiziente und sichere Softwaresysteme aufzubauen.",
+    image: {
+      src: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg",
+      alt: "Nimbus Tech Hero Image",
+      width: 1600,
+      height: 900,
+    },
+    cta: {
+      label: "Jetzt starten",
+      href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
+      language: {
+        label: "German",
+        value: "de-DE",
+      },
+      type: "navigation",
+    },
+    language: {
+      label: "German",
+      value: "de-DE",
+    },
+    items: navigationLinksByLanguage["de-DE"],
+  },
+];
+
+const seedLinks = async (
+  prisma: PrismaClient,
+  languageId: number | null,
+  items: NavigationSectionItem[],
+  navigationSlugId: number | null,
+) => {
+  console.log(`Seeding navigation links for languageId=${languageId}...`);
 
   const links = await prisma.navigationLink.createManyAndReturn({
-    data: navigationLinksData.map((link) => ({
+    data: items.map((link) => ({
       label: link.label,
       href: link.href,
       external: link.external ?? false,
-      ...(link.icon ? { icon: link.icon } : {}),
+      languageId,
+      typeId: navigationSlugId,
+      type: undefined,
+      language: undefined,
     })),
   });
 
-  console.log(`✓ Seeded ${links.length} navigation links`);
-
-  return links;
-};
-
-const seedCTA = async (prisma: PrismaClient) => {
-  if (!navigationData.cta) return null;
-
-  console.log("Seeding navigation CTA...");
-
-  const cta = await prisma.cta.create({
-    data: {
-      label: navigationData.cta.label,
-      href: navigationData.cta.href,
-      external: navigationData.cta.external ?? false,
-    },
-  });
-
-  console.log(`✓ Seeded navigation CTA with id ${cta.id}`);
-
-  return cta;
-};
-
-const resolveNavigationImageId = (
-  images: SeededImages,
-  options: SeedNavigationOptions,
-) => {
-  if (!navigationData.image) return null;
-
-  if (options.imageId !== undefined) {
-    return options.imageId ?? null;
-  }
-
-  const key = DEFAULT_NAVIGATION_IMAGE_KEY;
-  const config = Images.data[key];
-  if (!config) return null;
-
-  const matchedImage = images.find(
-    (image) => image.src === config.src && image.alt === config.alt,
+  console.log(
+    `✓ Seeded ${links.length} navigation links for languageId=${languageId}`,
   );
 
-  return matchedImage?.id ?? null;
+  return links;
 };
 
 const seed = async (
   prisma: PrismaClient,
   images: SeededImages,
-  links?: SeededNavigationLinks,
-  options: SeedNavigationOptions = {},
+  ctas: SeededCTAs,
+  slugs: SeededSlugs,
+  languages: SeededFooterLanguages,
 ) => {
-  console.log("Seeding navigation section...");
+  console.log("Seeding navigation sections...");
 
-  const seededLinks = links ?? (await seedLinks(prisma));
+  const navigationSlug =
+    slugs.find((slug) => slug.label === DEFAULT_NAVIGATION_SLUG)?.id ?? null;
 
-  if (navigationData.image && images.length === 0) {
+  if (
+    navigationSections.some((section) => section.image) &&
+    images.length === 0
+  ) {
     throw new Error(
       "Navigation images must be seeded before creating navigation.",
     );
   }
 
-  const imageId = resolveNavigationImageId(images, options);
+  const imageId =
+    images.find((image) => image.typeId === navigationSlug)?.id ?? null;
 
-  if (navigationData.image && imageId == null) {
+  if (navigationSections.some((section) => section.image) && imageId == null) {
     throw new Error(
       "Failed to resolve navigation image id from seeded images.",
     );
   }
 
-  const ctaId =
-    options.ctaId !== undefined
-      ? (options.ctaId ?? null)
-      : navigationData.cta
-        ? ((await seedCTA(prisma))?.id ?? null)
-        : null;
+  const navigationCtas = ctas.filter((cta) => cta.typeId === navigationSlug);
 
-  const navigation = await prisma.navigation.create({
-    data: {
-      title: navigationData.title,
-      description: navigationData.description,
-      ...(imageId ? { image: { connect: { id: imageId } } } : {}),
-      ...(ctaId ? { cta: { connect: { id: ctaId } } } : {}),
-      items: {
-        connect: seededLinks.map((link) => ({ id: link.id })),
+  const seededNavigations = [];
+
+  for (const section of navigationSections) {
+    const navigationLanguageId =
+      languages.find((language) => language.value === section.language.value)
+        ?.id ?? null;
+
+    const seededLinks = await seedLinks(
+      prisma,
+      navigationLanguageId,
+      section.items,
+      navigationSlug,
+    );
+
+    const ctaId =
+      navigationCtas.find((cta) => cta.languageId === navigationLanguageId)
+        ?.id ?? null;
+
+    const navigation = await prisma.navigation.create({
+      data: {
+        title: section.title,
+        description: section.description,
+        items: {
+          connect: seededLinks.map((link) => ({ id: link.id })),
+        },
+        languageId: navigationLanguageId,
+        imageId,
+        ctaId,
+        language: undefined,
+        image: undefined,
+        cta: undefined,
       },
-    },
-  });
+    });
 
-  console.log(`✓ Seeded navigation with id ${navigation.id}`);
+    console.log(
+      `✓ Seeded navigation with id ${navigation.id} for language ${section.language.value}`,
+    );
+    seededNavigations.push(navigation);
+  }
 
-  return navigation;
+  return seededNavigations;
 };
 
 const Navigation = {
-  data: navigationData,
-  links: navigationLinksData,
+  data: navigationSections,
+  links: navigationLinksByLanguage,
   seedLinks,
-  seedCTA,
   seed,
 };
 
