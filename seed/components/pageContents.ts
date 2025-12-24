@@ -1,6 +1,7 @@
 import type { PrismaClient, Prisma } from "@prisma/client";
 import type { CompositePageContentWithExtras, Language } from "../../data";
 import type { WithId as SeedWithId } from "../types";
+import Ctas from "./ctas";
 
 // Helper type for runtime entities that have languageId
 type RuntimeEntity = SeedWithId<number> & {
@@ -36,6 +37,9 @@ const pageContentsData: CompositePageContentWithExtras<{
       label: "English",
       value: "en-US",
     },
+    cta: Ctas.data
+      .find((cta) => cta.language.value === "en-US")
+      ?.ctas.find((cta) => cta.type === "main"),
   },
   // German
   {
@@ -47,10 +51,13 @@ const pageContentsData: CompositePageContentWithExtras<{
       label: "German",
       value: "de-DE",
     },
+    cta: Ctas.data
+      .find((cta) => cta.language.value === "de-DE")
+      ?.ctas.find((cta) => cta.type === "main"),
   },
 ];
 
-type EntityRef = SeedWithId<number>;
+type EntityRef = SeedWithId<any>;
 
 export type PageContentDependencies = {
   hero: EntityRef[];
@@ -228,10 +235,24 @@ async function seed(prisma: PrismaClient, deps: PageContentDependencies) {
     pageContentsConfig.map(async (config) => {
       // Pass languageMap to buildSection
       const { create } = config.buildSection(deps, { prisma, languageMap });
-
+      const type = await prisma.type.findFirstOrThrow({
+        where: {
+          label: "main",
+        },
+      });
       const languageId = allLanguages.find(
         (lang) => lang.value === config.language.value,
       )?.id;
+      const cta = await prisma.cta.findFirstOrThrow({
+        where: {
+          type: {
+            id: type.id,
+          },
+          language: {
+            id: languageId,
+          },
+        },
+      });
       if (!languageId) {
         throw new Error(
           `Language not found for value: ${config.language.value}`,
@@ -254,6 +275,11 @@ async function seed(prisma: PrismaClient, deps: PageContentDependencies) {
           // Create the Master Section with filtered connections
           sections: {
             create: create,
+          },
+          cta: {
+            connect: {
+              id: cta.id,
+            },
           },
         },
       });

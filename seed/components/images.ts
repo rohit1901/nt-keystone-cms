@@ -25,11 +25,12 @@ export type ImageKeys =
 // --- Image Data ---
 const imageSeedData: Record<ImageKeys, ImageConfig> = {
   certIsaQbAdvanced: {
-    src: "/cpsa.a.png",
+    src: "https://d1ljophloyhryl.cloudfront.net/assets/certifications/cpsa.a.png",
     alt: "CPSA-A certification badge",
     width: 200,
     height: 200,
     type: "certification",
+    key: "certIsaQbAdvanced",
   },
   certIsaQbFoundation: {
     src: "https://app.skillsclub.com/participants/115738/credentials/217564-2301-CPSAFL-223971-EN.png?ngsw-bypass=true&v=1716371214&Expires=1837082997&Signature=duhUg5dapPCYABZlu903zk~WlmPt75Sap-7sFkFgk0Cxd51gSm7lf4XBuR4SM8fU5ephShR50oFamcrsxF23t9E5yuCjSYC0FL1Oeujv7z1BkujgoVK37pdYCYPPlfeW7DepRSYJeAlIYejTrjxq2gsHYHHpOpqBhekyMCVbJ0HPov6B0FNuQtJ9Jr8eH9kAyxwxuAV5AWtT3T5Xfhw33V6zVU55sGWvYEW5i70T24kEodo2FZgVVMOgWsJK4QgjhdlVzMAwVCKrOJshKA33CY48kdPe6DQy26PnbFIoV-j9k6124QIBwLC4X66Gw3R9pMpBLVn6ym3nppBozizmnw__&Key-Pair-Id=APKAJGVOLYFJFHV5FSSQ",
@@ -37,6 +38,7 @@ const imageSeedData: Record<ImageKeys, ImageConfig> = {
     width: 200,
     height: 200,
     type: "certification",
+    key: "certIsaQbFoundation",
   },
   certApolloProfessional: {
     src: "https://res.cloudinary.com/apollographql/image/upload/v1654200365/odyssey/certifications/graph_professional_badge.svg",
@@ -44,6 +46,7 @@ const imageSeedData: Record<ImageKeys, ImageConfig> = {
     width: 200,
     height: 200,
     type: "certification",
+    key: "certApolloProfessional",
   },
   certApolloAssociate: {
     src: "https://res.cloudinary.com/apollographql/image/upload/v1632844693/badge_sfsiin.svg",
@@ -51,13 +54,15 @@ const imageSeedData: Record<ImageKeys, ImageConfig> = {
     width: 200,
     height: 200,
     type: "certification",
+    key: "certApolloAssociate",
   },
   certGitKraken: {
-    src: "/gitkraken.svg",
+    src: "https://d1ljophloyhryl.cloudfront.net/assets/certifications/gitkraken.svg",
     alt: "GitKraken Git certification badge",
     width: 200,
     height: 200,
     type: "certification",
+    key: "certGitKraken",
   },
   certAwsDeveloper: {
     src: "https://d1.awsstatic.com/certification/badges/AWS-Certified-Developer-Associate_badge_150x150.a8973e238efb2d1b0b24f5282e1ad87eb554e6ef.png",
@@ -65,6 +70,7 @@ const imageSeedData: Record<ImageKeys, ImageConfig> = {
     width: 200,
     height: 200,
     type: "certification",
+    key: "certAwsDeveloper",
   },
   certAwsSap: {
     src: "https://images.credly.com/size/680x680/images/0e284c3f-5164-4b21-8660-0d84737941bc/image.png",
@@ -72,16 +78,10 @@ const imageSeedData: Record<ImageKeys, ImageConfig> = {
     width: 200,
     height: 200,
     type: "certification",
-  },
-  ctaBackground: {
-    src: "/images/farm-footer.webp",
-    alt: "Farm with vehicles blurred",
-    width: 1000,
-    height: 1000,
-    type: "cta",
+    key: "certAwsSap",
   },
   ctaForeground: {
-    src: "/images/farm-footer.webp",
+    src: "https://d1ljophloyhryl.cloudfront.net/assets/images/farm-footer.webp",
     alt: "Farm with vehicles",
     width: 1000,
     height: 1000,
@@ -95,20 +95,20 @@ const imageSeedData: Record<ImageKeys, ImageConfig> = {
     type: "navigation",
   },
   testimonialField: {
-    src: "/images/field.png",
+    src: "https://d1ljophloyhryl.cloudfront.net/assets/images/field.png",
     alt: "clouds background",
     fill: true,
     type: "testimonial",
   },
   testimonialDrone: {
-    src: "/images/drone.png",
+    src: "https://d1ljophloyhryl.cloudfront.net/assets/images/drone.png",
     alt: "clouds background",
     width: 1583,
     height: 554,
     type: "testimonial",
   },
   testimonialLogo: {
-    src: "/nimbus.svg",
+    src: "https://d1ljophloyhryl.cloudfront.net/assets/nimbus.svg",
     alt: "Nimbus Tech logo",
     width: 50,
     height: 50,
@@ -154,12 +154,13 @@ const seed = async (prisma: PrismaClient, slugs: SeededSlugs) => {
     );
   }
   const seededImages = await prisma.image.createManyAndReturn({
-    data: Object.entries(imageSeedData).map(([, value]) => ({
-      ...value,
+    data: Object.entries(imageSeedData).map(([, { key, ...value }]) => ({
+      ...value, // Spreads everything EXCEPT 'key'
       type: undefined,
       fill: !!value.fill,
       typeId: getTypeId(value.type, slugs),
     })),
+    skipDuplicates: true,
   });
   console.log(`✓ Seeded images with ${seededImages.length} images`);
   return seededImages;

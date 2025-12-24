@@ -31,6 +31,7 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certIsaQbAdvanced: Image.data.certIsaQbAdvanced,
         },
+        key: "certIsaQbAdvanced",
         language: {
           label: "English",
           value: "en-US",
@@ -44,6 +45,7 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certIsaQbFoundation: Image.data.certIsaQbFoundation,
         },
+        key: "certIsaQbFoundation",
         link: "https://app.skillsclub.com/credential/28340-f57d08ae92c30e28a0c2850516e8fec9616ac7473feba42e7c4a2e62585c44c0?locale=en&badge=true",
         language: {
           label: "English",
@@ -57,6 +59,7 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certApolloProfessional: Image.data.certApolloProfessional,
         },
+        key: "certApolloProfessional",
         link: "https://www.apollographql.com/tutorials/certifications/d5356f71-0760-4701-ae67-8b56c425c89a",
         language: {
           label: "English",
@@ -70,6 +73,7 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certApolloAssociate: Image.data.certApolloAssociate,
         },
+        key: "certApolloAssociate",
         link: "https://www.apollographql.com/tutorials/certifications/3ad7e4dd-4b29-46f2-8e65-6e5706e0c067",
         language: {
           label: "English",
@@ -83,6 +87,7 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certGitKraken: Image.data.certGitKraken,
         },
+        key: "certGitKraken",
         link: "https://cdn.filestackcontent.com/dq8NILlGROaJpp4bxYlC?policy=eyJjYWxsIjpbInJlYWQiXSwiZXhwaXJ5IjoxNzUwNjg3MzIwLCJwYXRoIjoiLyJ9&signature=3180d99a6f24a049042e2341f449f4e35a12688f261859fa6dfd88cac212d230",
         language: {
           label: "English",
@@ -96,6 +101,7 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certAwsDeveloper: Image.data.certAwsDeveloper,
         },
+        key: "certAwsDeveloper",
         language: {
           label: "English",
           value: "en-US",
@@ -108,6 +114,7 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certAwsSap: Image.data.certAwsSap,
         },
+        key: "certAwsSap",
         language: {
           label: "English",
           value: "en-US",
@@ -136,6 +143,7 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certIsaQbAdvanced: Image.data.certIsaQbAdvanced,
         },
+        key: "certIsaQbAdvanced",
         language: {
           label: "German",
           value: "de-DE",
@@ -149,6 +157,7 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certIsaQbFoundation: Image.data.certIsaQbFoundation,
         },
+        key: "certIsaQbFoundation",
         link: "https://app.skillsclub.com/credential/28340-f57d08ae92c30e28a0c2850516e8fec9616ac7473feba42e7c4a2e62585c44c0?locale=en&badge=true",
         language: {
           label: "German",
@@ -162,6 +171,7 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certApolloProfessional: Image.data.certApolloProfessional,
         },
+        key: "certApolloProfessional",
         link: "https://www.apollographql.com/tutorials/certifications/d5356f71-0760-4701-ae67-8b56c425c89a",
         language: {
           label: "German",
@@ -175,6 +185,7 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certApolloAssociate: Image.data.certApolloAssociate,
         },
+        key: "certApolloAssociate",
         link: "https://www.apollographql.com/tutorials/certifications/3ad7e4dd-4b29-46f2-8e65-6e5706e0c067",
         language: {
           label: "German",
@@ -188,6 +199,7 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certGitKraken: Image.data.certGitKraken,
         },
+        key: "certGitKraken",
         link: "https://cdn.filestackcontent.com/dq8NILlGROaJpp4bxYlC?policy=eyJjYWxsIjpbInJlYWQiXSwiZXhwaXJ5IjoxNzUwNjg3MzIwLCJwYXRoIjoiLyJ9&signature=3180d99a6f24a049042e2341f449f4e35a12688f261859fa6dfd88cac212d230",
         language: {
           label: "German",
@@ -201,6 +213,8 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certAwsDeveloper: Image.data.certAwsDeveloper,
         },
+        key: "certAwsDeveloper",
+        link: "https://www.aws.training/certification/aws-certified-developer-associate",
         language: {
           label: "German",
           value: "de-DE",
@@ -213,6 +227,7 @@ const certificationSectionsData: CertificationSection[] = [
         image: {
           certAwsSap: Image.data.certAwsSap,
         },
+        key: "certAwsSap",
         language: {
           label: "German",
           value: "de-DE",
@@ -248,7 +263,7 @@ async function seed(
   // Iterate over all language sections to create certifications
   for (const sectionData of certificationSectionsData) {
     const createdCerts = await prisma.certification.createManyAndReturn({
-      data: sectionData.certifications.map((cert) => ({
+      data: sectionData.certifications.map(({ key, ...cert }) => ({
         ...cert,
         image: undefined,
         language: undefined,
@@ -257,7 +272,24 @@ async function seed(
             ? englishLanguageId.id
             : germanLanguageId.id,
         // Assuming we use the same image ID logic for both languages as per original code
-        imageId: images.find((i) => i.typeId === certificationSlug.id)?.id,
+        imageId: findImageId(
+          images,
+          certificationSlug.id,
+          sectionData.certifications.flatMap((cert) => {
+            if (!cert.image) return []; // Return empty array to "filter out" this item
+
+            const v = Object.values(cert.image);
+
+            if (!cert.key) {
+              // If v[0] exists return it in an array, otherwise empty
+              return v[0] ? [v[0]] : [];
+            }
+
+            const img = cert.image[cert.key];
+            return img ? [img] : [];
+          }),
+          key,
+        ),
       })),
     });
     allCertifications.push(...createdCerts);
@@ -268,6 +300,38 @@ async function seed(
   );
   return allCertifications;
 }
+
+const findImageId = (
+  images: SeededImages,
+  typeId: number,
+  localImages: ImageConfig[],
+  key?: string,
+): number | undefined => {
+  // 1. Find the local image config that matches the provided key
+  const localImage = localImages.find((img) => img.key === key);
+
+  if (!localImage) {
+    console.warn(`No local image found with key: ${key}`);
+    return undefined;
+  }
+
+  // 2. Search through the seeded images to find a match
+  // We match based on:
+  // - The provided typeId (assuming the dictionary keys might contain the typeId)
+  // - The src and alt from the local configuration
+  const foundImage = images.find((imgData) => {
+    // Check if the image belongs to the correct type (if typeId is part of the structure)
+    // and matches the visual properties (src/alt)
+    return (
+      imgData.typeId === typeId &&
+      imgData.src === localImage.src &&
+      imgData.alt === localImage.alt
+    );
+  });
+
+  // 3. Return the ID if found, otherwise undefined
+  return foundImage ? foundImage.id : undefined;
+};
 
 async function seedSection(
   prisma: PrismaClient,

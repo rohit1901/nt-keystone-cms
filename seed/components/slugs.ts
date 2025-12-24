@@ -6,6 +6,7 @@ export type SeededSlugs = Awaited<ReturnType<typeof seed>>;
 
 // --- Slug data ---
 export const slugs: Slug[] = [
+  "main",
   "certification",
   "cta",
   "hero",

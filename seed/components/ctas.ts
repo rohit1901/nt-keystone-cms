@@ -58,7 +58,7 @@ const ctas: CTA[] = [
     label: "Contact Us",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de", // TODO: Substack for now, change later
     external: false,
-    type: "hero",
+    type: "main",
     language: {
       label: "English",
       value: "en-US",
@@ -118,7 +118,7 @@ const ctas: CTA[] = [
     label: "Kontakt",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de", // TODO: Substack for now, change later
     external: false,
-    type: "hero",
+    type: "main",
     language: {
       label: "German",
       value: "de-DE",

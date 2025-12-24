@@ -132,7 +132,10 @@ const seedItems = async (
       )?.id;
       // Filter images by testimonial typeId, then find by src pattern
       const image = item.imageKey
-        ? images.find((img) => img.typeId === testimonialTypeId)
+        ? images.find(
+            (img) =>
+              img.typeId === testimonialTypeId && img.alt.includes("logo"),
+          )
         : undefined;
 
       return prisma.testimonialItem.create({

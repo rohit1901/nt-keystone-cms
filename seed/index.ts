@@ -106,26 +106,6 @@ async function main(prisma: PrismaClient) {
     if (!primaryTestimonialSection) {
       throw new Error("Testimonial sections seeding returned no entries");
     }
-    const pageContentOptions =
-      pageContentHeroCtaId != null
-        ? {
-            pageCtas: {
-              home: pageContentHeroCtaId,
-            },
-            pageAbout: {
-              "en-US": seededAbout.find(
-                (a) =>
-                  a.languageId ===
-                  seededLanguages.find((l) => l.value === "en-US")?.id,
-              )?.id,
-              "de-DE": seededAbout.find(
-                (a) =>
-                  a.languageId ===
-                  seededLanguages.find((l) => l.value === "de-DE")?.id,
-              )?.id,
-            },
-          }
-        : undefined;
 
     const seededHero = await Heroes.seed(
       prisma,
@@ -135,25 +115,21 @@ async function main(prisma: PrismaClient) {
       seededLanguages,
     );
 
-    await PageContents.seed(
-      prisma,
-      {
-        benefitSection: seededBenefitSections,
-        features: seededFeatures,
-        certificationSection: seededCertificationSections,
-        testimonialSection: seededTestimonialSections,
-        approach: seededApproach,
-        analytics: seededAnalytics,
-        about: seededAbout,
-        faqSection: seededFAQSections,
-        ctaSection: seededCtaSections,
-        navigation: seededNavigation,
-        mapSection: seededMapSection,
-        footer: seededFooter,
-        hero: seededHero,
-      },
-      pageContentOptions,
-    );
+    await PageContents.seed(prisma, {
+      benefitSection: seededBenefitSections,
+      features: seededFeatures,
+      certificationSection: seededCertificationSections,
+      testimonialSection: seededTestimonialSections,
+      approach: seededApproach,
+      analytics: seededAnalytics,
+      about: seededAbout,
+      faqSection: seededFAQSections,
+      ctaSection: seededCtaSections,
+      navigation: seededNavigation,
+      mapSection: seededMapSection,
+      footer: seededFooter,
+      hero: seededHero,
+    });
   } catch (error) {
     console.error("\n❌ Seeding failed:", error);
     throw error;

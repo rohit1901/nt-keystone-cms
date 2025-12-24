@@ -508,6 +508,7 @@ const seedSections = async (
         type: undefined,
         language: undefined,
         sectionKey: undefined,
+        icon: link.icon,
       }),
       { skipDuplicates: true },
     ),

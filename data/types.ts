@@ -8,9 +8,11 @@ export type ImageConfig = {
   height?: Maybe<number>;
   fill?: Maybe<boolean>;
   type?: Maybe<Slug>;
+  key?: CertificationImageKey;
 };
 // --- Slug Type ---
 export type Slug =
+  | "main"
   | "certification"
   | "cta"
   | "hero"
@@ -47,7 +49,7 @@ export type FaqSection = {
   language: Language;
 };
 
-export type CtaImageKeys = "ctaBackground" | "ctaForeground";
+export type CtaImageKeys = "ctaForeground";
 export type CTA = {
   label: string;
   href: string;
@@ -90,6 +92,7 @@ export type Certification = {
   image: Partial<Record<CertificationImageKey, ImageConfig>>;
   link?: string; // Optional link for certifications that have a URL
   language: Language;
+  key?: CertificationImageKey;
 };
 
 export type CertificationSection = {

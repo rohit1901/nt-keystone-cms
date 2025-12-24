@@ -44,6 +44,7 @@ export const lists: Record<string, ListConfig<any>> = {
           { label: "Navigation", value: "navigation" },
           { label: "Testimonial", value: "testimonial" },
           { label: "Footer", value: "footer" },
+          { label: "Main", value: "main" },
         ],
       }),
     },
