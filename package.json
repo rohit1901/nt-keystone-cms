@@ -20,16 +20,16 @@
     "@radix-ui/react-separator": "1.0.3",
     "@radix-ui/react-slot": "1.0.2",
     "class-variance-authority": "^0.7.1",
+    "dotenv": "^17.2.3",
     "next-auth": "^4.24.11",
     "tailwind-merge": "^2.3.0",
     "typescript": "^5.5.0"
   },
   "devDependencies": {
+    "@tailwindcss/container-queries": "^0.1.1",
     "autoprefixer": "^10.4.16",
-    "dotenv": "^17.2.3",
     "postcss": "^8.4.33",
     "tailwindcss": "^3.4.11",
-    "@tailwindcss/container-queries": "^0.1.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0"
   }
