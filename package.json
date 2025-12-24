@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "keystone dev",
+    "dev:preinstall": "cp .env.copy .env.dev && npm install",
     "build": "keystone build",
     "start": "keystone start --with-migrations",
     "generate": "keystone prisma migrate dev",
