@@ -40,6 +40,7 @@
   "overrides": {
     "next": "$next",
     "react": "$react",
-    "react-dom": "$react-dom"
+    "react-dom": "$react-dom",
+    "esbuild": "0.24.2"
   }
 }
