@@ -3,12 +3,13 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm install --prefer-offline
+        - rm -rf node_modules .next .keystone .cache package-lock.json
+        - npm install --prefer-offline --no-audit
     build:
       commands:
         - npm run build
   artifacts:
-    baseDirectory: dist
+    baseDirectory: .next
     files:
       - "**/*"
   cache:
