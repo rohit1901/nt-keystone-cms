@@ -5,6 +5,7 @@
   "scripts": {
     "build": "keystone build",
     "start": "keystone start --with-migrations",
+    "postinstall": "keystone postinstall",
     "dev": "keystone dev",
     "dev:preinstall": "cp .env.copy .env && npm install",
     "build:dry": "NODE_ENV=production keystone build",
