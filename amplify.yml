@@ -3,7 +3,6 @@ frontend:
   phases:
     preBuild:
       commands:
-        - rm -rf node_modules .next .keystone .cache package-lock.json
         - npm install --prefer-offline --no-audit
     build:
       commands:
