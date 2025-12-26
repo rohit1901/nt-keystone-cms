@@ -3,7 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - rm -rf node_modules .keystone package-lock.json
+        - rm -rf node_modules .keystone
         - npm ci --cache .npm --prefer-offline
     build:
       commands:
