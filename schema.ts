@@ -1,4 +1,4 @@
-import { list, ListConfig } from "@keystone-6/core";
+import { graphql, list, ListConfig } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
 import {
   checkbox,
@@ -10,6 +10,7 @@ import {
   select,
   text,
   timestamp,
+  virtual,
 } from "@keystone-6/core/fields";
 
 // --- Keystone CMS Lists ---
@@ -72,6 +73,28 @@ export const lists: Record<string, ListConfig<any>> = {
       height: integer(),
       fill: checkbox({ defaultValue: false }),
       type: relationship({ ref: "Type", many: false }),
+      preview: virtual({
+        field: graphql.field({
+          type: graphql.String, // The type doesn't matter much for the UI view
+          resolve(item) {
+            // This server-side resolver isn't even used by the UI view
+            // but we return the src just in case
+            return item.src;
+          }
+        }),
+        ui: {
+          // Point to your custom view file
+          views: './admin/components/CustomImageCell',
+          createView: { fieldMode: 'hidden' }, // Hide in create form
+          itemView: { fieldMode: 'hidden' },   // Hide in edit form (optional)
+        }
+      })
+    },
+    ui: {
+      listView: {
+        // Ensure 'preview' is in your initial columns
+        initialColumns: ['id', 'alt', 'type', 'preview'],
+      }
     },
   }),
 

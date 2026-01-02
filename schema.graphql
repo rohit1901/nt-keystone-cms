@@ -261,6 +261,7 @@ type Image {
   height: Int
   fill: Boolean
   type: Type
+  preview: String
 }
 
 input ImageWhereUniqueInput {

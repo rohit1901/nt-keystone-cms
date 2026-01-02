@@ -3,7 +3,6 @@
 import { SessionProvider } from "next-auth/react";
 import { PageContainer } from "@keystone-6/core/admin-ui/components";
 import { UserProfile } from "../components/UserProfile";
-import { ThemeToggle } from "../components/ThemeToggle";
 import "../styles/globals.css";
 
 function Profile() {
