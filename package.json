@@ -12,7 +12,10 @@
     "generate": "keystone prisma migrate dev",
     "db:seed": "ts-node --transpile-only ./seed/index.ts",
     "db:reset": "keystone prisma db push --force-reset",
-    "db:reset:seed": "npm run db:reset && npm run db:seed"
+    "db:reset:seed": "npm run db:reset && npm run db:seed",
+    "schema:verify-and-update": "keystone build && keystone prisma migrate dev && keystone start",
+    "schema:verify-and-update:dev": "NODE_ENV=production keystone build && keystone prisma migrate dev && keystone start",
+    "schema:verify-and-update:prod": "keystone build && keystone prisma migrate deploy && keystone start"
   },
   "dependencies": {
     "@keystone-6/auth": "^8.0.0",
