@@ -1,3 +1,5 @@
+// NOTE: This file contains reference data for Nimbus Tech website. should be strictly used for reference purposes only.
+// @ts-nocheck
 import {
   AnalyticsData,
   Benefit,
@@ -343,34 +345,34 @@ export const featuresContent: CompositePageContentWithExtras<{
   longDescription: string;
   visualization: FeatureVisualization;
 }>[] = [
-  {
-    id: "software-development",
-    title: "Software development",
-    description:
-      "Custom applications tailored to your business needs, from web to mobile.",
-    longDescription:
-      "Our team specializes in creating custom software solutions that streamline your operations, enhance productivity, and drive growth. Whether you need a web application, mobile app, or cloud-based solution, we have the expertise to deliver results that exceed your expectations.",
-    visualization: "OrbitFeatureVisualization",
-  },
-  {
-    id: "cloud-development",
-    title: "Cloud Development",
-    description:
-      "Seamless cloud migration and scalable solutions leveraging AWS, Azure, or GCP",
-    longDescription:
-      "Our cloud development services help you migrate to the cloud effortlessly, ensuring your applications are optimized for performance, security, and scalability. We specialize in AWS, Azure, and GCP, providing tailored solutions that meet your unique requirements.",
-    visualization: "CloudFeatureVisualization",
-  },
-  {
-    id: "architecture-consulting",
-    title: "Architecture & Consulting",
-    description:
-      "Robust system design and technical consulting for future-proof infrastructure.",
-    longDescription:
-      "Our architecture and consulting services ensure your systems are designed for scalability, reliability, and performance. We work closely with you to understand your business goals and provide tailored solutions that align with your vision .",
-    visualization: "ArchitectureFeatureVisualization",
-  },
-];
+    {
+      id: "software-development",
+      title: "Software development",
+      description:
+        "Custom applications tailored to your business needs, from web to mobile.",
+      longDescription:
+        "Our team specializes in creating custom software solutions that streamline your operations, enhance productivity, and drive growth. Whether you need a web application, mobile app, or cloud-based solution, we have the expertise to deliver results that exceed your expectations.",
+      visualization: "OrbitFeatureVisualization",
+    },
+    {
+      id: "cloud-development",
+      title: "Cloud Development",
+      description:
+        "Seamless cloud migration and scalable solutions leveraging AWS, Azure, or GCP",
+      longDescription:
+        "Our cloud development services help you migrate to the cloud effortlessly, ensuring your applications are optimized for performance, security, and scalability. We specialize in AWS, Azure, and GCP, providing tailored solutions that meet your unique requirements.",
+      visualization: "CloudFeatureVisualization",
+    },
+    {
+      id: "architecture-consulting",
+      title: "Architecture & Consulting",
+      description:
+        "Robust system design and technical consulting for future-proof infrastructure.",
+      longDescription:
+        "Our architecture and consulting services ensure your systems are designed for scalability, reliability, and performance. We work closely with you to understand your business goals and provide tailored solutions that align with your vision .",
+      visualization: "ArchitectureFeatureVisualization",
+    },
+  ];
 
 export const faqs: FaqItem[] = [
   {

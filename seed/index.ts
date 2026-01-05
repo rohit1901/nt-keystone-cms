@@ -37,7 +37,7 @@ import Maps from "./components/maps";
 
 const prisma = new PrismaClient();
 
-async function main(prisma: PrismaClient) {
+async function seedAll(prisma: PrismaClient) {
   console.log("\n🌱 Starting Keystone CMS database seed...\n");
 
   try {
@@ -48,7 +48,7 @@ async function main(prisma: PrismaClient) {
     const heroSlug = seededSlugs.find((slug) => slug.label === "hero");
     const pageContentHeroCtaId = heroSlug
       ? seededCtas.find((cta) => cta.typeId === heroSlug.id && !cta.external)
-          ?.id
+        ?.id
       : undefined;
     const seededCtaSections = await Ctas.seedSection(
       prisma,
@@ -137,7 +137,143 @@ async function main(prisma: PrismaClient) {
     await prisma.$disconnect();
   }
 }
-main(prisma).catch((error) => {
+
+async function seedComponent(component: string, prisma: PrismaClient) {
+  try {
+    switch (component) {
+      case "slugs":
+        await Slugs.seed(prisma);
+        break;
+      case "images":
+        const seededSlugs = await Slugs.seed(prisma);
+        await Images.seed(prisma, seededSlugs);
+        break;
+      case "ctas":
+        const seededSlugsForCtas = await Slugs.seed(prisma);
+        const seededLanguagesForCtas = await Footer.seedLanguages(prisma);
+        await Ctas.seed(prisma, seededSlugsForCtas, seededLanguagesForCtas);
+        break;
+      case "heroes":
+        const seededSlugsForHeroes = await Slugs.seed(prisma);
+        const seededImagesForHeroes = await Images.seed(prisma, seededSlugsForHeroes);
+        const seededLanguagesForHeroes = await Footer.seedLanguages(prisma);
+        const seededCtasForHeroes = await Ctas.seed(prisma, seededSlugsForHeroes, seededLanguagesForHeroes);
+        await Heroes.seed(prisma, seededImagesForHeroes, seededSlugsForHeroes, seededCtasForHeroes, seededLanguagesForHeroes);
+        break;
+      case "benefits":
+        const seededSlugsForBenefits = await Slugs.seed(prisma);
+        const seededImagesForBenefits = await Images.seed(prisma, seededSlugsForBenefits);
+        const seededLanguagesForBenefits = await Footer.seedLanguages(prisma);
+        const seededCtasForBenefits = await Ctas.seed(prisma, seededSlugsForBenefits, seededLanguagesForBenefits);
+        await Benefits.seedSection(prisma, seededImagesForBenefits, seededSlugsForBenefits, seededCtasForBenefits);
+        break;
+      case "approaches":
+        const seededLanguagesForApproaches = await Footer.seedLanguages(prisma);
+        await Approaches.seed(prisma, seededLanguagesForApproaches);
+        break;
+      case "about":
+        const seededValues = await About.seedValues(prisma);
+        await About.seed(prisma, seededValues);
+        break;
+      case "analytics":
+        await Analytics.seed(prisma);
+        break;
+      case "navigation":
+        const seededSlugsForNavigation = await Slugs.seed(prisma);
+        const seededImagesForNavigation = await Images.seed(prisma, seededSlugsForNavigation);
+        const seededLanguagesForNavigation = await Footer.seedLanguages(prisma);
+        const seededCtasForNavigation = await Ctas.seed(prisma, seededSlugsForNavigation, seededLanguagesForNavigation);
+        await Navigation.seed(prisma, seededImagesForNavigation, seededCtasForNavigation, seededSlugsForNavigation, seededLanguagesForNavigation);
+        break;
+      case "footer":
+        const seededSlugsForFooter = await Slugs.seed(prisma);
+        const seededLanguagesForFooter = await Footer.seedLanguages(prisma);
+        await Footer.seed(prisma, {
+          languages: seededLanguagesForFooter,
+          slugs: seededSlugsForFooter,
+        });
+        break;
+      case "faqs":
+        const seededLanguagesForFAQs = await Footer.seedLanguages(prisma);
+        await FAQs.seedSections(prisma, seededLanguagesForFAQs);
+        break;
+      case "features":
+        const seededLanguagesForFeatures = await Footer.seedLanguages(prisma);
+        await Features.seed(prisma, seededLanguagesForFeatures);
+        break;
+      case "testimonials":
+        const seededSlugsForTestimonials = await Slugs.seed(prisma);
+        const seededImagesForTestimonials = await Images.seed(prisma, seededSlugsForTestimonials);
+        const seededLanguagesForTestimonials = await Footer.seedLanguages(prisma);
+        await Testimonials.seedSections(prisma, seededImagesForTestimonials, seededSlugsForTestimonials, seededLanguagesForTestimonials);
+        break;
+      case "maps":
+        const seededLanguagesForMaps = await Footer.seedLanguages(prisma);
+        await Maps.seed(prisma, seededLanguagesForMaps);
+        break;
+      case "pageContents":
+        const seededSlugsForPageContents = await Slugs.seed(prisma);
+        const seededImagesForPageContents = await Images.seed(prisma, seededSlugsForPageContents);
+        const seededLanguagesForPageContents = await Footer.seedLanguages(prisma);
+        const seededCtasForPageContents = await Ctas.seed(prisma, seededSlugsForPageContents, seededLanguagesForPageContents);
+        const seededCtaSectionsForPageContents = await Ctas.seedSection(prisma, seededSlugsForPageContents, seededCtasForPageContents, seededImagesForPageContents, seededLanguagesForPageContents);
+        const seededCertificationSectionsForPageContents = await Certifications.seedSection(prisma, seededSlugsForPageContents, seededCtasForPageContents, seededImagesForPageContents);
+        const seededBenefitSectionsForPageContents = await Benefits.seedSection(prisma, seededImagesForPageContents, seededSlugsForPageContents, seededCtasForPageContents);
+        const seededApproachForPageContents = await Approaches.seed(prisma, seededLanguagesForPageContents);
+        const seededNavigationForPageContents = await Navigation.seed(prisma, seededImagesForPageContents, seededCtasForPageContents, seededSlugsForPageContents, seededLanguagesForPageContents);
+        const seededValuesForPageContents = await About.seedValues(prisma);
+        const seededAboutForPageContents = await About.seed(prisma, seededValuesForPageContents);
+        const seededAnalyticsForPageContents = await Analytics.seed(prisma);
+        const seededFooterForPageContents = await Footer.seed(prisma, {
+          languages: seededLanguagesForPageContents,
+          slugs: seededSlugsForPageContents,
+        });
+        const seededFAQSectionsForPageContents = await FAQs.seedSections(prisma, seededLanguagesForPageContents);
+        const seededFeaturesForPageContents = await Features.seed(prisma, seededLanguagesForPageContents);
+        const seededTestimonialSectionsForPageContents = await Testimonials.seedSections(prisma, seededImagesForPageContents, seededSlugsForPageContents, seededLanguagesForPageContents);
+        const seededMapSectionForPageContents = await Maps.seed(prisma, seededLanguagesForPageContents);
+        const seededHeroForPageContents = await Heroes.seed(prisma, seededImagesForPageContents, seededSlugsForPageContents, seededCtasForPageContents, seededLanguagesForPageContents);
+        await PageContents.seed(prisma, {
+          benefitSection: seededBenefitSectionsForPageContents,
+          features: seededFeaturesForPageContents,
+          certificationSection: seededCertificationSectionsForPageContents,
+          testimonialSection: seededTestimonialSectionsForPageContents,
+          approach: seededApproachForPageContents,
+          analytics: seededAnalyticsForPageContents,
+          about: seededAboutForPageContents,
+          faqSection: seededFAQSectionsForPageContents,
+          ctaSection: seededCtaSectionsForPageContents,
+          navigation: seededNavigationForPageContents,
+          mapSection: seededMapSectionForPageContents,
+          footer: seededFooterForPageContents,
+          hero: seededHeroForPageContents,
+        });
+        break;
+      default:
+        console.log(`Unknown component: ${component}`);
+        break;
+    }
+  } catch (error) {
+    console.error("\n❌ Seeding failed:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+  const component = args[0];
+
+  if (component) {
+    console.log(`\n🌱 Seeding component: ${component}...\n`);
+    await seedComponent(component, prisma);
+  } else {
+    await seedAll(prisma);
+  }
+}
+
+main().catch((error) => {
   console.error("Fatal error:", error);
   process.exit(1);
 });

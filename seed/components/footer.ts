@@ -19,406 +19,406 @@ const footerData: CompositePageContentWithExtras<{
   sections: FooterSections;
   language: Language;
 }>[] = [
-  {
-    title: "Footer",
-    sections: {
-      services: {
-        title: "services",
-        items: [
-          {
-            label: "Software Development",
-            href: "#features",
-            language: {
-              value: "en-US",
-              label: "English",
+    {
+      title: "Footer",
+      sections: {
+        services: {
+          title: "services",
+          items: [
+            {
+              label: "Software Development",
+              href: "#features",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "services",
             },
-            type: "footer",
-            sectionKey: "services",
-          },
-          {
-            label: "Cloud Architecture",
-            href: "#features",
-            language: {
-              value: "en-US",
-              label: "English",
+            {
+              label: "Cloud Architecture",
+              href: "#features",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "services",
             },
-            type: "footer",
-            sectionKey: "services",
-          },
-          {
-            label: "DevOps & Automation",
-            href: "#features",
-            language: {
-              value: "en-US",
-              label: "English",
+            {
+              label: "DevOps & Automation",
+              href: "#features",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "services",
             },
-            type: "footer",
-            sectionKey: "services",
-          },
-          {
-            label: "Software Architecture",
-            href: "#features",
-            language: {
-              value: "en-US",
-              label: "English",
+            {
+              label: "Software Architecture",
+              href: "#features",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "services",
             },
-            type: "footer",
-            sectionKey: "services",
-          },
-          {
-            label: "Technology Assessment",
-            href: "#features",
-            language: {
-              value: "en-US",
-              label: "English",
+            {
+              label: "Technology Assessment",
+              href: "#features",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "services",
             },
-            type: "footer",
-            sectionKey: "services",
-          },
-        ],
+          ],
+        },
+        company: {
+          title: "company",
+          items: [
+            {
+              label: "About Nimbus Tech",
+              href: "#about-us",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "company",
+            },
+            {
+              label: "Blog",
+              href: "https://rohitkhanduri.substack.com",
+              external: true,
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "company",
+            },
+            {
+              label: "Our Values",
+              href: "#our-values",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "company",
+            },
+            {
+              label: "News & Updates",
+              href: "https://rohitkhanduri.substack.com",
+              external: true,
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "company",
+            },
+          ],
+        },
+        resources: {
+          title: "resources",
+          items: [
+            {
+              label: "Contact",
+              href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "resources",
+            },
+            {
+              label: "Support",
+              href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "resources",
+            },
+            {
+              label: "Privacy Policy",
+              href: "/privacy-policy",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "resources",
+            },
+            {
+              label: "Terms of Service",
+              href: "/terms",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "resources",
+            },
+          ],
+        },
+        social: {
+          title: "social",
+          items: [
+            {
+              label: "GitHub",
+              href: "https://rohit1901.github.com",
+              external: true,
+              icon: "RiGithubFill",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "social",
+            },
+            {
+              label: "LinkedIn",
+              href: "#",
+              external: true,
+              icon: "RiLinkedinBoxFill",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "social",
+            },
+            {
+              label: "Xing",
+              href: "#",
+              external: true,
+              icon: "RiXingFill",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "social",
+            },
+            // German translations
+          ],
+        },
       },
-      company: {
-        title: "company",
-        items: [
-          {
-            label: "About Nimbus Tech",
-            href: "#about-us",
-            language: {
-              value: "en-US",
-              label: "English",
-            },
-            type: "footer",
-            sectionKey: "company",
-          },
-          {
-            label: "Blog",
-            href: "https://rohitkhanduri.substack.com",
-            external: true,
-            language: {
-              value: "en-US",
-              label: "English",
-            },
-            type: "footer",
-            sectionKey: "company",
-          },
-          {
-            label: "Our Values",
-            href: "#our-values",
-            language: {
-              value: "en-US",
-              label: "English",
-            },
-            type: "footer",
-            sectionKey: "company",
-          },
-          {
-            label: "News & Updates",
-            href: "https://rohitkhanduri.substack.com",
-            external: true,
-            language: {
-              value: "en-US",
-              label: "English",
-            },
-            type: "footer",
-            sectionKey: "company",
-          },
-        ],
-      },
-      resources: {
-        title: "resources",
-        items: [
-          {
-            label: "Contact",
-            href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
-            language: {
-              value: "en-US",
-              label: "English",
-            },
-            type: "footer",
-            sectionKey: "resources",
-          },
-          {
-            label: "Support",
-            href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
-            language: {
-              value: "en-US",
-              label: "English",
-            },
-            type: "footer",
-            sectionKey: "resources",
-          },
-          {
-            label: "Privacy Policy",
-            href: "#",
-            language: {
-              value: "en-US",
-              label: "English",
-            },
-            type: "footer",
-            sectionKey: "resources",
-          },
-          {
-            label: "Terms of Service",
-            href: "#",
-            language: {
-              value: "en-US",
-              label: "English",
-            },
-            type: "footer",
-            sectionKey: "resources",
-          },
-        ],
-      },
-      social: {
-        title: "social",
-        items: [
-          {
-            label: "GitHub",
-            href: "https://rohit1901.github.com",
-            external: true,
-            icon: "RiGithubFill",
-            language: {
-              value: "en-US",
-              label: "English",
-            },
-            type: "footer",
-            sectionKey: "social",
-          },
-          {
-            label: "LinkedIn",
-            href: "#",
-            external: true,
-            icon: "RiLinkedinBoxFill",
-            language: {
-              value: "en-US",
-              label: "English",
-            },
-            type: "footer",
-            sectionKey: "social",
-          },
-          {
-            label: "Xing",
-            href: "#",
-            external: true,
-            icon: "RiXingFill",
-            language: {
-              value: "en-US",
-              label: "English",
-            },
-            type: "footer",
-            sectionKey: "social",
-          },
-          // German translations
-        ],
-      },
-    },
-    language: {
-      value: "en-US",
-      label: "English",
-    },
-  },
-  // Add another footer object if needed, e.g., for a different region or variant
-  {
-    title: "Footer - DE",
-    sections: {
-      services: {
-        title: "services",
-        items: [
-          // German translations
-          {
-            label: "Softwareentwicklung",
-            href: "#features",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "services",
-          },
-          {
-            label: "Cloud-Architektur",
-            href: "#features",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "services",
-          },
-          {
-            label: "DevOps & Automatisierung",
-            href: "#features",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "services",
-          },
-          {
-            label: "Software-Architektur",
-            href: "#features",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "services",
-          },
-          {
-            label: "Technologiebewertung",
-            href: "#features",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "services",
-          },
-        ],
-      },
-      company: {
-        title: "company",
-        items: [
-          // German translations
-          {
-            label: "Über Nimbus Tech",
-            href: "#about-us",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "company",
-          },
-          {
-            label: "Blog",
-            href: "https://rohitkhanduri.substack.com",
-            external: true,
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "company",
-          },
-          {
-            label: "Unsere Werte",
-            href: "#our-values",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "company",
-          },
-          {
-            label: "Neuigkeiten & Updates",
-            href: "https://rohitkhanduri.substack.com",
-            external: true,
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "company",
-          },
-        ],
-      },
-      resources: {
-        title: "resources",
-        items: [
-          // German translations
-          {
-            label: "Kontakt",
-            href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "resources",
-          },
-          {
-            label: "Support",
-            href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "resources",
-          },
-          {
-            label: "Datenschutz",
-            href: "#",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "resources",
-          },
-          {
-            label: "Nutzungsbedingungen",
-            href: "#",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "resources",
-          },
-        ],
-      },
-      social: {
-        title: "social",
-        items: [
-          {
-            label: "GitHub",
-            href: "https://rohit1901.github.com",
-            external: true,
-            icon: "RiGithubFill",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "social",
-          },
-          {
-            label: "LinkedIn",
-            href: "#",
-            external: true,
-            icon: "RiLinkedinBoxFill",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "social",
-          },
-          {
-            label: "Xing",
-            href: "#",
-            external: true,
-            icon: "RiXingFill",
-            language: {
-              value: "de-DE",
-              label: "German",
-            },
-            type: "footer",
-            sectionKey: "social",
-          },
-        ],
+      language: {
+        value: "en-US",
+        label: "English",
       },
     },
-    language: {
-      value: "de-DE",
-      label: "German",
+    // Add another footer object if needed, e.g., for a different region or variant
+    {
+      title: "Footer - DE",
+      sections: {
+        services: {
+          title: "services",
+          items: [
+            // German translations
+            {
+              label: "Softwareentwicklung",
+              href: "#features",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "services",
+            },
+            {
+              label: "Cloud-Architektur",
+              href: "#features",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "services",
+            },
+            {
+              label: "DevOps & Automatisierung",
+              href: "#features",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "services",
+            },
+            {
+              label: "Software-Architektur",
+              href: "#features",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "services",
+            },
+            {
+              label: "Technologiebewertung",
+              href: "#features",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "services",
+            },
+          ],
+        },
+        company: {
+          title: "company",
+          items: [
+            // German translations
+            {
+              label: "Über Nimbus Tech",
+              href: "#about-us",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "company",
+            },
+            {
+              label: "Blog",
+              href: "https://rohitkhanduri.substack.com",
+              external: true,
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "company",
+            },
+            {
+              label: "Unsere Werte",
+              href: "#our-values",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "company",
+            },
+            {
+              label: "Neuigkeiten & Updates",
+              href: "https://rohitkhanduri.substack.com",
+              external: true,
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "company",
+            },
+          ],
+        },
+        resources: {
+          title: "resources",
+          items: [
+            // German translations
+            {
+              label: "Kontakt",
+              href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "resources",
+            },
+            {
+              label: "Support",
+              href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "resources",
+            },
+            {
+              label: "Datenschutz",
+              href: "/privacy-policy",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "resources",
+            },
+            {
+              label: "Nutzungsbedingungen",
+              href: "/terms",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "resources",
+            },
+          ],
+        },
+        social: {
+          title: "social",
+          items: [
+            {
+              label: "GitHub",
+              href: "https://rohit1901.github.com",
+              external: true,
+              icon: "RiGithubFill",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "social",
+            },
+            {
+              label: "LinkedIn",
+              href: "#",
+              external: true,
+              icon: "RiLinkedinBoxFill",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "social",
+            },
+            {
+              label: "Xing",
+              href: "#",
+              external: true,
+              icon: "RiXingFill",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "social",
+            },
+          ],
+        },
+      },
+      language: {
+        value: "de-DE",
+        label: "German",
+      },
     },
-  },
-];
+  ];
 
 const footerSectionKeys: FooterSectionKeys[] = [
   {

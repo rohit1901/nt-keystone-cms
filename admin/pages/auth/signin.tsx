@@ -176,7 +176,7 @@ export default function SignInPage({ error, callbackUrl }: SignInPageProps) {
                       >
                         <span className="flex w-full items-center justify-center gap-3 text-base font-medium">
                           <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white transition group-hover:border-slate-300">
-                            <Image
+                            <img
                               src={provider.imageSrc}
                               alt={provider.name}
                               width={24}
