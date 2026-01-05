@@ -138,8 +138,62 @@ async function seedAll(prisma: PrismaClient) {
   }
 }
 
-async function seedComponent(component: string, prisma: PrismaClient) {
+export async function seedComponent(component: string, prisma: PrismaClient, action: "seed" | "delete" = "seed") {
   try {
+    if (action === "delete") {
+      switch (component) {
+        case "slugs":
+          await prisma.type.deleteMany();
+          break;
+        case "images":
+          await prisma.image.deleteMany();
+          break;
+        case "ctas":
+          await prisma.cta.deleteMany();
+          break;
+        case "heroes":
+          await prisma.hero.deleteMany();
+          break;
+        case "benefits":
+          await prisma.benefit.deleteMany();
+          break;
+        case "approaches":
+          await prisma.approach.deleteMany();
+          break;
+        case "about":
+          await prisma.about.deleteMany();
+          break;
+        case "analytics":
+          await prisma.analytic.deleteMany();
+          break;
+        case "navigation":
+          await prisma.navigation.deleteMany();
+          break;
+        case "footer":
+          await prisma.footer.deleteMany();
+          break;
+        case "faqs":
+          await prisma.faq.deleteMany();
+          break;
+        case "features":
+          await prisma.feature.deleteMany();
+          break;
+        case "testimonials":
+          await prisma.testimonialItem.deleteMany();
+          break;
+        case "maps":
+          await prisma.map.deleteMany();
+          break;
+        case "pageContents":
+          await prisma.pageContent.deleteMany();
+          break;
+        default:
+          console.log(`Unknown component: ${component}`);
+          break;
+      }
+      return;
+    }
+
     switch (component) {
       case "slugs":
         await Slugs.seed(prisma);
