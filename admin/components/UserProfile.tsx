@@ -18,9 +18,10 @@ import {
 type UserProfileProps = ComponentProps<"div">;
 type SessionStatus = "loading" | "authenticated" | "unauthenticated";
 
-type KeystoneSession = Session & {
+export type KeystoneSession = Session & {
   keystone?: {
     authId?: string | null;
+    userGroup?: string;
   };
 };
 

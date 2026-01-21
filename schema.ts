@@ -18,9 +18,17 @@ import {
 export const lists: Record<string, ListConfig<any>> = {
   // --- REQUIRED: User List for Authentication ---
   User: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: ({ session }) => session?.userGroup === "cms-admin",  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       authId: text({ isIndexed: "unique" }),
+      userGroup: text({ validation: { isRequired: false } }),
       name: text({ validation: { isRequired: true } }),
       email: text({
         validation: { isRequired: true },
@@ -35,7 +43,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // --- Core Content Types ---
   Type: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       label: select({
         options: [
@@ -53,7 +68,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // CTA: Call-to-action links
   Cta: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       label: text({ validation: { isRequired: true } }),
       href: text({ validation: { isRequired: true } }),
@@ -65,7 +87,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Image: Image metadata and configuration
   Image: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       src: text({ validation: { isRequired: true } }),
       alt: text({ validation: { isRequired: true } }),
@@ -102,7 +131,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Language: Language selector options
   Language: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       label: select({
         options: [
@@ -125,7 +161,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // TestimonialBadge: Badge displayed on testimonials
   TestimonialBadge: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       icon: text(),
       label: text(),
@@ -135,7 +178,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // TestimonialItem: Individual testimonial
   TestimonialItem: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       rating: float(),
       badge: relationship({ ref: "TestimonialBadge", many: false }),
@@ -153,7 +203,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // TestimonialSection: Testimonial section with background and fallback
   TestimonialSection: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       title: text(),
       background: relationship({ ref: "Image", many: true }),
@@ -167,7 +224,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // HeroBannerAdditional: Additional content for hero banner
   HeroBannerAdditional: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       icon: text(),
       text: text({ validation: { isRequired: true } }),
@@ -177,7 +241,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // HeroBanner: Hero banner configuration
   HeroBanner: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       label: text({ validation: { isRequired: true } }),
       href: text({ validation: { isRequired: true } }),
@@ -190,7 +261,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Hero: Complete hero section
   Hero: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ validation: { isRequired: true } }),
@@ -205,7 +283,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Benefit: Feature or benefit item
   Benefit: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       icon: text({ validation: { isRequired: true } }),
       title: text({ validation: { isRequired: true } }),
@@ -219,7 +304,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // BenefitSection: Collection of benefits with title
   BenefitSection: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       title: text({ validation: { isRequired: true } }),
       benefits: relationship({ ref: "Benefit", many: true }),
@@ -231,7 +323,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Faq: Frequently asked question item
   Faq: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       question: text({ validation: { isRequired: true } }),
       answer: text({
@@ -244,7 +343,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // FaqSection: Collection of FAQs with title and description
   FaqSection: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
@@ -257,7 +363,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Certification: Certification or credential
   Certification: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
@@ -269,7 +382,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // CertificationSection: Collection of certifications
   CertificationSection: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
@@ -283,7 +403,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Feature: Product or service feature
   Feature: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       featureId: integer({ validation: { isRequired: true } }),
       title: text({ validation: { isRequired: true } }),
@@ -304,7 +431,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // ApproachStep: Individual step in approach/process
   ApproachStep: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       stepId: integer({ validation: { isRequired: true } }),
       type: select({
@@ -327,7 +461,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Approach: Complete approach/process section
   Approach: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({
@@ -343,7 +484,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // NavigationLink: Navigation menu item
   NavigationLink: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       label: text({ validation: { isRequired: true } }),
       href: text({ validation: { isRequired: true } }),
@@ -357,7 +505,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Navigation: Navigation section
   Navigation: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
@@ -370,7 +525,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // --- Footer ---
   FooterSectionKey: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       label: select({
         options: [
@@ -385,7 +547,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // FooterSection: Section in footer (e.g., Services, Company)
   FooterSection: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     ui: {
       labelField: "id", // Forces Keystone to use ID, ignoring the relationship field
     },
@@ -402,7 +571,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Footer: Complete footer configuration
   Footer: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       title: text({ validation: { isRequired: true } }),
       sections: relationship({ ref: "FooterSection", many: true }),
@@ -414,7 +590,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // AnalyticsStat: Analytics statistics summary
   AnalyticsStat: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       totalDeployments: text({ validation: { isRequired: true } }),
       deploymentChange: text({ validation: { isRequired: true } }),
@@ -426,7 +609,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // AnalyticsSummaryItem: Individual analytics summary row
   AnalyticsSummaryItem: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       name: text({ validation: { isRequired: true } }),
       deployments: text({ validation: { isRequired: true } }),
@@ -448,7 +638,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Analytic: Complete analytics section
   Analytic: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       heading: text({ validation: { isRequired: true } }),
       subheading: text({ validation: { isRequired: true } }),
@@ -472,7 +669,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Value: Company value item
   Value: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       label: text({ validation: { isRequired: true } }),
       description: text({
@@ -486,7 +690,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // About: About us section
   About: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       heading: text({ validation: { isRequired: true } }),
       intro: text({
@@ -507,7 +718,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Map: Map section
   Map: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       title: text({ validation: { isRequired: true } }),
       subheading: text({ validation: { isRequired: true } }),
@@ -523,7 +741,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // CtaSection: Call-to-action section with background
   CtaSection: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
@@ -537,7 +762,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Section: Dynamic section for page composition
   Section: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       type: select({
         options: [
@@ -583,7 +815,14 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // PageContent: Complete page configuration
   PageContent: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: allowAll,  // Read for all logged-in
+        create: ({ session }) => session?.userGroup === "cms-admin",
+        update: ({ session }) => session?.userGroup === "cms-admin",
+        delete: ({ session }) => session?.userGroup === "cms-admin",
+      }
+    },
     fields: {
       slug: text({
         validation: { isRequired: true },

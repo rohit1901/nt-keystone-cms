@@ -26,6 +26,7 @@ const cognitoIssuer = requireEnv("COGNITO_ISSUER");
 type KeystoneAuthSession = DefaultSession & {
   keystone: {
     authId: string | null;
+    userGroup?: string;
   };
 };
 
@@ -47,17 +48,29 @@ export const nextAuthOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async jwt({ token, account }) {
+      // Extract the user group from the Cognito token
+      if (account?.access_token) {
+        // Decode the JWT token to extract the user group
+        const decodedToken = JSON.parse(
+          Buffer.from(account.access_token.split(".")[1], "base64").toString()
+        );
+        token.userGroup = decodedToken["cognito:groups"]?.find((group: string) => group === process.env.CMS_AUTH_GROUP);
+      }
+      return token;
+    },
     async session({
       session,
       token,
     }: {
       session: DefaultSession;
-      token: DefaultJWT;
+      token: DefaultJWT & { userGroup?: string };
     }): Promise<KeystoneAuthSession> {
       return {
         ...session,
         keystone: {
           authId: token.sub ?? null,
+          userGroup: token.userGroup,
         },
       };
     },
@@ -93,20 +106,19 @@ export const nextAuthSessionStrategy = {
       nextAuthOptions,
     )) as KeystoneAuthSession | null;
     if (!nextAuthSession) return;
-
     const authId = nextAuthSession.keystone?.authId;
     if (!authId) return;
 
     const author = await context.sudo().query.User.findOne({
       where: { authId } as any,
-      query: "id",
+      query: "id userGroup",
     });
     if (!author) return;
 
-    return { id: author.id };
+    return { id: author.id, userGroup: author.userGroup };
   },
 
   // we don't need these as next-auth handle start and end for us
-  async start() {},
-  async end() {},
+  async start() { },
+  async end() { },
 };
