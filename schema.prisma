@@ -49,56 +49,73 @@ model Cta {
 }
 
 model Image {
-  id                                 Int                  @id @default(autoincrement())
-  src                                String               @default("")
-  alt                                String               @default("")
+  id                                 Int                      @id @default(autoincrement())
+  src                                String                   @default("")
+  alt                                String                   @default("")
   width                              Int?
   height                             Int?
-  fill                               Boolean              @default(false)
-  type                               Type?                @relation("Image_type", fields: [typeId], references: [id])
-  typeId                             Int?                 @map("type")
-  from_TestimonialItem_image         TestimonialItem[]    @relation("TestimonialItem_image")
-  from_TestimonialSection_background TestimonialSection[] @relation("TestimonialSection_background")
-  from_Certification_image           Certification[]      @relation("Certification_image")
-  from_Navigation_image              Navigation[]         @relation("Navigation_image")
-  from_CtaSection_background         CtaSection[]         @relation("CtaSection_background")
-  from_PageContent_image             PageContent[]        @relation("PageContent_image")
+  fill                               Boolean                  @default(false)
+  type                               Type?                    @relation("Image_type", fields: [typeId], references: [id])
+  typeId                             Int?                     @map("type")
+  from_TestimonialItem_image         TestimonialItem[]        @relation("TestimonialItem_image")
+  from_TestimonialSection_background TestimonialSection[]     @relation("TestimonialSection_background")
+  from_Certification_image           Certification[]          @relation("Certification_image")
+  from_Navigation_image              Navigation[]             @relation("Navigation_image")
+  from_CtaSection_background         CtaSection[]             @relation("CtaSection_background")
+  from_PageContent_image             PageContent[]            @relation("PageContent_image")
+  from_ResumeBasicInformation_image  ResumeBasicInformation[] @relation("ResumeBasicInformation_image")
+  from_ResumeWork_image              ResumeWork[]             @relation("ResumeWork_image")
+  from_ResumeProject_image           ResumeProject[]          @relation("ResumeProject_image")
 
   @@index([typeId])
 }
 
 model Language {
-  id                                 Int                    @id @default(autoincrement())
-  label                              String
-  value                              String
-  from_Cta_language                  Cta[]                  @relation("Cta_language")
-  from_TestimonialBadge_language     TestimonialBadge[]     @relation("TestimonialBadge_language")
-  from_TestimonialItem_language      TestimonialItem[]      @relation("TestimonialItem_language")
-  from_TestimonialSection_language   TestimonialSection[]   @relation("TestimonialSection_language")
-  from_HeroBannerAdditional_language HeroBannerAdditional[] @relation("HeroBannerAdditional_language")
-  from_HeroBanner_language           HeroBanner[]           @relation("HeroBanner_language")
-  from_Hero_language                 Hero[]                 @relation("Hero_language")
-  from_Benefit_language              Benefit[]              @relation("Benefit_language")
-  from_BenefitSection_language       BenefitSection[]       @relation("BenefitSection_language")
-  from_Faq_language                  Faq[]                  @relation("Faq_language")
-  from_FaqSection_language           FaqSection[]           @relation("FaqSection_language")
-  from_Certification_language        Certification[]        @relation("Certification_language")
-  from_CertificationSection_language CertificationSection[] @relation("CertificationSection_language")
-  from_Feature_language              Feature[]              @relation("Feature_language")
-  from_ApproachStep_language         ApproachStep[]         @relation("ApproachStep_language")
-  from_Approach_language             Approach[]             @relation("Approach_language")
-  from_NavigationLink_language       NavigationLink[]       @relation("NavigationLink_language")
-  from_Navigation_language           Navigation[]           @relation("Navigation_language")
-  from_FooterSection_language        FooterSection[]        @relation("FooterSection_language")
-  from_Footer_language               Footer[]               @relation("Footer_language")
-  from_AnalyticsStat_language        AnalyticsStat[]        @relation("AnalyticsStat_language")
-  from_AnalyticsSummaryItem_language AnalyticsSummaryItem[] @relation("AnalyticsSummaryItem_language")
-  from_Analytic_language             Analytic[]             @relation("Analytic_language")
-  from_Value_language                Value[]                @relation("Value_language")
-  from_About_language                About[]                @relation("About_language")
-  from_Map_language                  Map[]                  @relation("Map_language")
-  from_CtaSection_language           CtaSection[]           @relation("CtaSection_language")
-  from_PageContent_language          PageContent[]          @relation("PageContent_language")
+  id                                   Int                      @id @default(autoincrement())
+  label                                String                   @unique
+  value                                String                   @unique
+  from_Cta_language                    Cta[]                    @relation("Cta_language")
+  from_TestimonialBadge_language       TestimonialBadge[]       @relation("TestimonialBadge_language")
+  from_TestimonialItem_language        TestimonialItem[]        @relation("TestimonialItem_language")
+  from_TestimonialSection_language     TestimonialSection[]     @relation("TestimonialSection_language")
+  from_HeroBannerAdditional_language   HeroBannerAdditional[]   @relation("HeroBannerAdditional_language")
+  from_HeroBanner_language             HeroBanner[]             @relation("HeroBanner_language")
+  from_Hero_language                   Hero[]                   @relation("Hero_language")
+  from_Benefit_language                Benefit[]                @relation("Benefit_language")
+  from_BenefitSection_language         BenefitSection[]         @relation("BenefitSection_language")
+  from_Faq_language                    Faq[]                    @relation("Faq_language")
+  from_FaqSection_language             FaqSection[]             @relation("FaqSection_language")
+  from_Certification_language          Certification[]          @relation("Certification_language")
+  from_CertificationSection_language   CertificationSection[]   @relation("CertificationSection_language")
+  from_Feature_language                Feature[]                @relation("Feature_language")
+  from_ApproachStep_language           ApproachStep[]           @relation("ApproachStep_language")
+  from_Approach_language               Approach[]               @relation("Approach_language")
+  from_NavigationLink_language         NavigationLink[]         @relation("NavigationLink_language")
+  from_Navigation_language             Navigation[]             @relation("Navigation_language")
+  from_FooterSection_language          FooterSection[]          @relation("FooterSection_language")
+  from_Footer_language                 Footer[]                 @relation("Footer_language")
+  from_AnalyticsStat_language          AnalyticsStat[]          @relation("AnalyticsStat_language")
+  from_AnalyticsSummaryItem_language   AnalyticsSummaryItem[]   @relation("AnalyticsSummaryItem_language")
+  from_Analytic_language               Analytic[]               @relation("Analytic_language")
+  from_Value_language                  Value[]                  @relation("Value_language")
+  from_About_language                  About[]                  @relation("About_language")
+  from_Map_language                    Map[]                    @relation("Map_language")
+  from_CtaSection_language             CtaSection[]             @relation("CtaSection_language")
+  from_PageContent_language            PageContent[]            @relation("PageContent_language")
+  from_ResumeLocation_language         ResumeLocation[]         @relation("ResumeLocation_language")
+  from_ResumeProfile_language          ResumeProfile[]          @relation("ResumeProfile_language")
+  from_ResumeBasicInformation_language ResumeBasicInformation[] @relation("ResumeBasicInformation_language")
+  from_ResumeWork_language             ResumeWork[]             @relation("ResumeWork_language")
+  from_ResumeVolunteer_language        ResumeVolunteer[]        @relation("ResumeVolunteer_language")
+  from_ResumeEducation_language        ResumeEducation[]        @relation("ResumeEducation_language")
+  from_ResumeAward_language            ResumeAward[]            @relation("ResumeAward_language")
+  from_ResumePublication_language      ResumePublication[]      @relation("ResumePublication_language")
+  from_ResumeSkill_language            ResumeSkill[]            @relation("ResumeSkill_language")
+  from_ResumeLanguage_uiLanguage       ResumeLanguage[]         @relation("ResumeLanguage_uiLanguage")
+  from_ResumeInterest_language         ResumeInterest[]         @relation("ResumeInterest_language")
+  from_ResumeReference_language        ResumeReference[]        @relation("ResumeReference_language")
+  from_ResumeProject_language          ResumeProject[]          @relation("ResumeProject_language")
+  from_Resume_language                 Resume[]                 @relation("Resume_language")
 }
 
 model TestimonialBadge {
@@ -249,6 +266,7 @@ model Certification {
   language                                 Language?              @relation("Certification_language", fields: [languageId], references: [id])
   languageId                               Int?                   @map("language")
   from_CertificationSection_certifications CertificationSection[] @relation("CertificationSection_certifications")
+  from_Resume_certificates                 Resume[]               @relation("Resume_certificates")
 
   @@index([imageId])
   @@index([languageId])
@@ -511,5 +529,221 @@ model PageContent {
   @@index([imageId])
   @@index([ctaId])
   @@index([sectionsId])
+  @@index([languageId])
+}
+
+model ResumeLocation {
+  id                                   Int                      @id @default(autoincrement())
+  address                              String                   @default("")
+  postalCode                           String                   @default("")
+  city                                 String                   @default("")
+  countryCode                          String                   @default("")
+  region                               String                   @default("")
+  language                             Language?                @relation("ResumeLocation_language", fields: [languageId], references: [id])
+  languageId                           Int?                     @map("language")
+  from_ResumeBasicInformation_location ResumeBasicInformation[] @relation("ResumeBasicInformation_location")
+
+  @@index([languageId])
+}
+
+model ResumeProfile {
+  id                                   Int                      @id @default(autoincrement())
+  network                              String
+  username                             String                   @default("")
+  url                                  String                   @default("")
+  language                             Language?                @relation("ResumeProfile_language", fields: [languageId], references: [id])
+  languageId                           Int?                     @map("language")
+  from_ResumeBasicInformation_profiles ResumeBasicInformation[] @relation("ResumeBasicInformation_profiles")
+
+  @@index([languageId])
+}
+
+model ResumeBasicInformation {
+  id                           Int             @id @default(autoincrement())
+  name                         String          @default("")
+  label                        String          @default("")
+  image                        Image?          @relation("ResumeBasicInformation_image", fields: [imageId], references: [id])
+  imageId                      Int?            @map("image")
+  email                        String          @default("")
+  phone                        String          @default("")
+  url                          String          @default("")
+  summary                      String          @default("")
+  location                     ResumeLocation? @relation("ResumeBasicInformation_location", fields: [locationId], references: [id])
+  locationId                   Int?            @map("location")
+  profiles                     ResumeProfile[] @relation("ResumeBasicInformation_profiles")
+  language                     Language?       @relation("ResumeBasicInformation_language", fields: [languageId], references: [id])
+  languageId                   Int?            @map("language")
+  from_Resume_basicInformation Resume[]        @relation("Resume_basicInformation")
+
+  @@index([imageId])
+  @@index([locationId])
+  @@index([languageId])
+}
+
+model ResumeWork {
+  id               Int       @id @default(autoincrement())
+  name             String    @default("")
+  position         String    @default("")
+  url              String    @default("")
+  startDate        DateTime
+  endDate          DateTime?
+  summary          String    @default("")
+  highlights       String?
+  image            Image?    @relation("ResumeWork_image", fields: [imageId], references: [id])
+  imageId          Int?      @map("image")
+  language         Language? @relation("ResumeWork_language", fields: [languageId], references: [id])
+  languageId       Int?      @map("language")
+  from_Resume_work Resume[]  @relation("Resume_work")
+
+  @@index([imageId])
+  @@index([languageId])
+}
+
+model ResumeVolunteer {
+  id                    Int       @id @default(autoincrement())
+  organization          String    @default("")
+  position              String    @default("")
+  url                   String    @default("")
+  startDate             DateTime?
+  endDate               DateTime?
+  summary               String    @default("")
+  highlights            String    @default("")
+  language              Language? @relation("ResumeVolunteer_language", fields: [languageId], references: [id])
+  languageId            Int?      @map("language")
+  from_Resume_volunteer Resume[]  @relation("Resume_volunteer")
+
+  @@index([languageId])
+}
+
+model ResumeEducation {
+  id                    Int       @id @default(autoincrement())
+  institution           String    @default("")
+  url                   String    @default("")
+  area                  String    @default("")
+  studyType             String    @default("")
+  startDate             DateTime?
+  endDate               DateTime?
+  score                 String    @default("")
+  courses               String    @default("")
+  language              Language? @relation("ResumeEducation_language", fields: [languageId], references: [id])
+  languageId            Int?      @map("language")
+  from_Resume_education Resume[]  @relation("Resume_education")
+
+  @@index([languageId])
+}
+
+model ResumeAward {
+  id                 Int       @id @default(autoincrement())
+  title              String    @default("")
+  date               DateTime?
+  awarder            String    @default("")
+  summary            String    @default("")
+  url                String    @default("")
+  language           Language? @relation("ResumeAward_language", fields: [languageId], references: [id])
+  languageId         Int?      @map("language")
+  from_Resume_awards Resume[]  @relation("Resume_awards")
+
+  @@index([languageId])
+}
+
+model ResumePublication {
+  id                       Int       @id @default(autoincrement())
+  name                     String    @default("")
+  publisher                String    @default("")
+  releaseDate              DateTime?
+  url                      String    @default("")
+  summary                  String    @default("")
+  language                 Language? @relation("ResumePublication_language", fields: [languageId], references: [id])
+  languageId               Int?      @map("language")
+  from_Resume_publications Resume[]  @relation("Resume_publications")
+
+  @@index([languageId])
+}
+
+model ResumeSkill {
+  id                 Int       @id @default(autoincrement())
+  name               String    @default("")
+  level              String?
+  keywords           String    @default("")
+  language           Language? @relation("ResumeSkill_language", fields: [languageId], references: [id])
+  languageId         Int?      @map("language")
+  from_Resume_skills Resume[]  @relation("Resume_skills")
+
+  @@index([languageId])
+}
+
+model ResumeLanguage {
+  id                          Int       @id @default(autoincrement())
+  language                    String    @default("")
+  fluency                     String?
+  uiLanguage                  Language? @relation("ResumeLanguage_uiLanguage", fields: [uiLanguageId], references: [id])
+  uiLanguageId                Int?      @map("uiLanguage")
+  from_Resume_resumeLanguages Resume[]  @relation("Resume_resumeLanguages")
+
+  @@index([uiLanguageId])
+}
+
+model ResumeInterest {
+  id                    Int       @id @default(autoincrement())
+  name                  String    @default("")
+  keywords              String    @default("")
+  language              Language? @relation("ResumeInterest_language", fields: [languageId], references: [id])
+  languageId            Int?      @map("language")
+  from_Resume_interests Resume[]  @relation("Resume_interests")
+
+  @@index([languageId])
+}
+
+model ResumeReference {
+  id                     Int       @id @default(autoincrement())
+  name                   String    @default("")
+  reference              String    @default("")
+  language               Language? @relation("ResumeReference_language", fields: [languageId], references: [id])
+  languageId             Int?      @map("language")
+  from_Resume_references Resume[]  @relation("Resume_references")
+
+  @@index([languageId])
+}
+
+model ResumeProject {
+  id                   Int       @id @default(autoincrement())
+  name                 String    @default("")
+  startDate            DateTime?
+  endDate              DateTime?
+  description          String    @default("")
+  highlights           String    @default("")
+  url                  String    @default("")
+  image                Image?    @relation("ResumeProject_image", fields: [imageId], references: [id])
+  imageId              Int?      @map("image")
+  language             Language? @relation("ResumeProject_language", fields: [languageId], references: [id])
+  languageId           Int?      @map("language")
+  from_Resume_projects Resume[]  @relation("Resume_projects")
+
+  @@index([imageId])
+  @@index([languageId])
+}
+
+model Resume {
+  id                 Int                     @id @default(autoincrement())
+  title              String                  @default("")
+  basicInformation   ResumeBasicInformation? @relation("Resume_basicInformation", fields: [basicInformationId], references: [id])
+  basicInformationId Int?                    @map("basicInformation")
+  work               ResumeWork[]            @relation("Resume_work")
+  volunteer          ResumeVolunteer[]       @relation("Resume_volunteer")
+  education          ResumeEducation[]       @relation("Resume_education")
+  awards             ResumeAward[]           @relation("Resume_awards")
+  certificates       Certification[]         @relation("Resume_certificates")
+  publications       ResumePublication[]     @relation("Resume_publications")
+  skills             ResumeSkill[]           @relation("Resume_skills")
+  resumeLanguages    ResumeLanguage[]        @relation("Resume_resumeLanguages")
+  interests          ResumeInterest[]        @relation("Resume_interests")
+  references         ResumeReference[]       @relation("Resume_references")
+  projects           ResumeProject[]         @relation("Resume_projects")
+  language           Language?               @relation("Resume_language", fields: [languageId], references: [id])
+  languageId         Int?                    @map("language")
+  createdAt          DateTime?               @default(now())
+  updatedAt          DateTime?               @updatedAt
+
+  @@index([basicInformationId])
   @@index([languageId])
 }
