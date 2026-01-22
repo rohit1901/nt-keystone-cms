@@ -3,6 +3,7 @@ import { allowAll } from "@keystone-6/core/access";
 import {
   checkbox,
   float,
+  image,
   integer,
   multiselect,
   password,
@@ -12,20 +13,22 @@ import {
   timestamp,
   virtual,
 } from "@keystone-6/core/fields";
-
+// --- Access Control ---
+type AccessOperation = ListConfig<any>["access"];
+const crud: AccessOperation = {
+  operation: {
+    query: allowAll,  // Read for all logged-in
+    create: ({ session }) => session?.userGroup === "cms-admin",
+    update: ({ session }) => session?.userGroup === "cms-admin",
+    delete: ({ session }) => session?.userGroup === "cms-admin",
+  }
+}
 // --- Keystone CMS Lists ---
 
 export const lists: Record<string, ListConfig<any>> = {
   // --- REQUIRED: User List for Authentication ---
   User: list({
-    access: {
-      operation: {
-        query: ({ session }) => session?.userGroup === "cms-admin",  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       authId: text({ isIndexed: "unique" }),
       userGroup: text({ validation: { isRequired: false } }),
@@ -43,14 +46,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // --- Core Content Types ---
   Type: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       label: select({
         options: [
@@ -68,14 +64,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // CTA: Call-to-action links
   Cta: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       label: text({ validation: { isRequired: true } }),
       href: text({ validation: { isRequired: true } }),
@@ -87,14 +76,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Image: Image metadata and configuration
   Image: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       src: text({ validation: { isRequired: true } }),
       alt: text({ validation: { isRequired: true } }),
@@ -131,14 +113,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Language: Language selector options
   Language: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       label: select({
         options: [
@@ -161,14 +136,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // TestimonialBadge: Badge displayed on testimonials
   TestimonialBadge: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       icon: text(),
       label: text(),
@@ -178,14 +146,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // TestimonialItem: Individual testimonial
   TestimonialItem: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       rating: float(),
       badge: relationship({ ref: "TestimonialBadge", many: false }),
@@ -203,14 +164,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // TestimonialSection: Testimonial section with background and fallback
   TestimonialSection: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       title: text(),
       background: relationship({ ref: "Image", many: true }),
@@ -224,14 +178,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // HeroBannerAdditional: Additional content for hero banner
   HeroBannerAdditional: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       icon: text(),
       text: text({ validation: { isRequired: true } }),
@@ -241,14 +188,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // HeroBanner: Hero banner configuration
   HeroBanner: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       label: text({ validation: { isRequired: true } }),
       href: text({ validation: { isRequired: true } }),
@@ -261,14 +201,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Hero: Complete hero section
   Hero: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ validation: { isRequired: true } }),
@@ -283,14 +216,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Benefit: Feature or benefit item
   Benefit: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       icon: text({ validation: { isRequired: true } }),
       title: text({ validation: { isRequired: true } }),
@@ -304,14 +230,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // BenefitSection: Collection of benefits with title
   BenefitSection: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       title: text({ validation: { isRequired: true } }),
       benefits: relationship({ ref: "Benefit", many: true }),
@@ -323,14 +242,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Faq: Frequently asked question item
   Faq: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       question: text({ validation: { isRequired: true } }),
       answer: text({
@@ -343,14 +255,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // FaqSection: Collection of FAQs with title and description
   FaqSection: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
@@ -363,14 +268,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Certification: Certification or credential
   Certification: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
@@ -382,14 +280,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // CertificationSection: Collection of certifications
   CertificationSection: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
@@ -403,14 +294,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Feature: Product or service feature
   Feature: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       featureId: integer({ validation: { isRequired: true } }),
       title: text({ validation: { isRequired: true } }),
@@ -431,14 +315,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // ApproachStep: Individual step in approach/process
   ApproachStep: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       stepId: integer({ validation: { isRequired: true } }),
       type: select({
@@ -461,14 +338,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Approach: Complete approach/process section
   Approach: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({
@@ -484,14 +354,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // NavigationLink: Navigation menu item
   NavigationLink: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       label: text({ validation: { isRequired: true } }),
       href: text({ validation: { isRequired: true } }),
@@ -505,14 +368,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Navigation: Navigation section
   Navigation: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
@@ -525,14 +381,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // --- Footer ---
   FooterSectionKey: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       label: select({
         options: [
@@ -547,14 +396,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // FooterSection: Section in footer (e.g., Services, Company)
   FooterSection: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     ui: {
       labelField: "id", // Forces Keystone to use ID, ignoring the relationship field
     },
@@ -571,14 +413,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Footer: Complete footer configuration
   Footer: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       title: text({ validation: { isRequired: true } }),
       sections: relationship({ ref: "FooterSection", many: true }),
@@ -590,14 +425,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // AnalyticsStat: Analytics statistics summary
   AnalyticsStat: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       totalDeployments: text({ validation: { isRequired: true } }),
       deploymentChange: text({ validation: { isRequired: true } }),
@@ -609,14 +437,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // AnalyticsSummaryItem: Individual analytics summary row
   AnalyticsSummaryItem: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       name: text({ validation: { isRequired: true } }),
       deployments: text({ validation: { isRequired: true } }),
@@ -638,14 +459,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Analytic: Complete analytics section
   Analytic: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       heading: text({ validation: { isRequired: true } }),
       subheading: text({ validation: { isRequired: true } }),
@@ -669,14 +483,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Value: Company value item
   Value: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       label: text({ validation: { isRequired: true } }),
       description: text({
@@ -690,14 +497,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // About: About us section
   About: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       heading: text({ validation: { isRequired: true } }),
       intro: text({
@@ -718,14 +518,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Map: Map section
   Map: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       title: text({ validation: { isRequired: true } }),
       subheading: text({ validation: { isRequired: true } }),
@@ -741,14 +534,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // CtaSection: Call-to-action section with background
   CtaSection: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       title: text({ validation: { isRequired: true } }),
       description: text({ ui: { displayMode: "textarea" } }),
@@ -762,14 +548,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // Section: Dynamic section for page composition
   Section: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       type: select({
         options: [
@@ -815,14 +594,7 @@ export const lists: Record<string, ListConfig<any>> = {
 
   // PageContent: Complete page configuration
   PageContent: list({
-    access: {
-      operation: {
-        query: allowAll,  // Read for all logged-in
-        create: ({ session }) => session?.userGroup === "cms-admin",
-        update: ({ session }) => session?.userGroup === "cms-admin",
-        delete: ({ session }) => session?.userGroup === "cms-admin",
-      }
-    },
+    access: crud,
     fields: {
       slug: text({
         validation: { isRequired: true },
@@ -836,4 +608,240 @@ export const lists: Record<string, ListConfig<any>> = {
       language: relationship({ ref: "Language", many: false }),
     },
   }),
+  // --- Resume ---
+  // ResumeLocation: Physical location information
+  ResumeLocation: list({
+    access: allowAll,
+    fields: {
+      address: text(),
+      postalCode: text(),
+      city: text({ validation: { isRequired: true } }),
+      countryCode: text(),
+      region: text(),
+      language: relationship({ ref: "Language", many: false }),
+    },
+  }),
+  // ResumeProfile: Social media profile (replaces your Profile type)
+  ResumeProfile: list({
+    access: allowAll,
+    fields: {
+      network: select({
+        options: [
+          { label: "LinkedIn", value: "LinkedIn" },
+          { label: "GitHub", value: "GitHub" },
+          { label: "Twitter", value: "Twitter" },
+          { label: "Instagram", value: "Instagram" },
+          { label: "Literal", value: "Literal" },
+          { label: "Other", value: "Other" },
+        ],
+        validation: { isRequired: true },
+      }),
+      username: text({ validation: { isRequired: true } }),
+      url: text({ validation: { isRequired: true } }),
+      language: relationship({ ref: "Language", many: false }),
+    },
+  }),
+  // ResumeBasicInformation: Basic personal information
+  ResumeBasicInformation: list({
+    access: allowAll,
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      label: text({ validation: { isRequired: true } }),
+      image: relationship({ ref: "Image", many: false }), // Reusing existing Image
+      email: text({ validation: { isRequired: true, match: { regex: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/, explanation: "The pattern ensures the email address is valid." } } }),
+      phone: text({
+        validation: {
+          match: {
+            regex: /^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
+            explanation: "The pattern ensures the phone number contains exactly 10 digits for the phone number itself (3-3-4 format), with an optional 1-2 digit international prefix."
+          }
+        }
+      }),
+      url: text(),
+      summary: text({ ui: { displayMode: "textarea" } }),
+      location: relationship({ ref: "ResumeLocation", many: false }),
+      profiles: relationship({ ref: "ResumeProfile", many: true }),
+      language: relationship({ ref: "Language", many: false }),
+    },
+  }),
+  // --- Work Experience ---
+  ResumeWork: list({
+    access: allowAll,
+    fields: {
+      name: text({ validation: { isRequired: true } }), // Company name
+      position: text({ validation: { isRequired: true } }),
+      url: text(),
+      startDate: timestamp({ validation: { isRequired: true } }),
+      endDate: timestamp(),
+      summary: text({ ui: { displayMode: "textarea" } }),
+      highlights: text({
+        ui: { displayMode: "textarea" },
+        db: { isNullable: true },
+      }), // Store as newline-separated or JSON string
+      image: relationship({ ref: "Image", many: false }),
+      language: relationship({ ref: "Language", many: false }),
+    },
+  }),
+  // --- Volunteer Experience ---
+
+  ResumeVolunteer: list({
+    access: allowAll,
+    fields: {
+      organization: text({ validation: { isRequired: true } }),
+      position: text({ validation: { isRequired: true } }),
+      url: text(),
+      startDate: timestamp(),
+      endDate: timestamp(),
+      summary: text({ ui: { displayMode: "textarea" } }),
+      highlights: text({ ui: { displayMode: "textarea" } }),
+      language: relationship({ ref: "Language", many: false }),
+    },
+  }),
+  // --- Education ---
+
+  ResumeEducation: list({
+    access: allowAll,
+    fields: {
+      institution: text({ validation: { isRequired: true } }),
+      url: text(),
+      area: text(), // Field of study
+      studyType: text(), // e.g., Bachelor, Master
+      startDate: timestamp(),
+      endDate: timestamp(),
+      score: text(), // GPA or grade
+      courses: text({ ui: { displayMode: "textarea" } }), // Newline-separated
+      language: relationship({ ref: "Language", many: false }),
+    },
+  }),
+  // --- Awards ---
+
+  ResumeAward: list({
+    access: allowAll,
+    fields: {
+      title: text({ validation: { isRequired: true } }),
+      date: timestamp(),
+      awarder: text({ validation: { isRequired: true } }),
+      summary: text({ ui: { displayMode: "textarea" } }),
+      url: text(),
+      language: relationship({ ref: "Language", many: false }),
+    },
+  }),
+  // --- Publications ---
+
+  ResumePublication: list({
+    access: allowAll,
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      publisher: text({ validation: { isRequired: true } }),
+      releaseDate: timestamp(),
+      url: text(),
+      summary: text({ ui: { displayMode: "textarea" } }),
+      language: relationship({ ref: "Language", many: false }),
+    },
+  }),
+
+  // --- Skills ---
+
+  ResumeSkill: list({
+    access: allowAll,
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      level: select({
+        options: [
+          { label: "Beginner", value: "Beginner" },
+          { label: "Intermediate", value: "Intermediate" },
+          { label: "Advanced", value: "Advanced" },
+          { label: "Expert", value: "Expert" },
+          { label: "Master", value: "Master" },
+        ],
+      }),
+      keywords: text({ ui: { displayMode: "textarea" } }), // Comma or newline-separated
+      language: relationship({ ref: "Language", many: false }),
+    },
+  }),
+
+  // --- Languages ---
+
+  ResumeLanguage: list({
+    access: allowAll,
+    fields: {
+      language: text({ validation: { isRequired: true } }),
+      fluency: select({
+        options: [
+          { label: "Elementary", value: "Elementary" },
+          { label: "Limited Working", value: "Limited Working" },
+          { label: "Professional Working", value: "Professional Working" },
+          { label: "Full Professional", value: "Full Professional" },
+          { label: "Native", value: "Native" },
+        ],
+      }),
+      uiLanguage: relationship({ ref: "Language", many: false }), // Renamed to avoid conflict
+    },
+  }),
+
+  // --- Interests ---
+
+  ResumeInterest: list({
+    access: allowAll,
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      keywords: text({ ui: { displayMode: "textarea" } }),
+      language: relationship({ ref: "Language", many: false }),
+    },
+  }),
+
+  // --- References ---
+
+  ResumeReference: list({
+    access: allowAll,
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      reference: text({
+        ui: { displayMode: "textarea" },
+        validation: { isRequired: true },
+      }),
+      language: relationship({ ref: "Language", many: false }),
+    },
+  }),
+
+  // --- Projects ---
+
+  ResumeProject: list({
+    access: allowAll,
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      startDate: timestamp(),
+      endDate: timestamp(),
+      description: text({
+        ui: { displayMode: "textarea" },
+        validation: { isRequired: true },
+      }),
+      highlights: text({ ui: { displayMode: "textarea" } }),
+      url: text(),
+      image: relationship({ ref: "Image", many: false }),
+      language: relationship({ ref: "Language", many: false }),
+    },
+  }),
+  Resume: list({
+    access: allowAll,
+    fields: {
+      title: text({ validation: { isRequired: true } }),
+      basicInformation: relationship({ ref: "ResumeBasicInformation", many: false }),
+      work: relationship({ ref: "ResumeWork", many: true }),
+      volunteer: relationship({ ref: "ResumeVolunteer", many: true }),
+      education: relationship({ ref: "ResumeEducation", many: true }),
+      awards: relationship({ ref: "ResumeAward", many: true }),
+      certificates: relationship({ ref: "Certification", many: true }),
+      publications: relationship({ ref: "ResumePublication", many: true }),
+      skills: relationship({ ref: "ResumeSkill", many: true }),
+      languages: relationship({ ref: "ResumeLanguage", many: true }),
+      interests: relationship({ ref: "ResumeInterest", many: true }),
+      references: relationship({ ref: "ResumeReference", many: true }),
+      projects: relationship({ ref: "ResumeProject", many: true }),
+      language: relationship({ ref: "Language", many: false }),
+      createdAt: timestamp({ defaultValue: { kind: "now" } }),
+      updatedAt: timestamp({ db: { updatedAt: true } }),
+    },
+  }),
+
 };
