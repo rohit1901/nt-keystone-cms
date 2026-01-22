@@ -116,10 +116,10 @@ const navigationSections: NavigationSection[] = [
     description:
       "Nimbus Tech is a software development and consulting company specializing in cloud architecture, DevOps, and automation solutions. We help businesses build scalable, efficient, and secure software systems.",
     image: {
-      src: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg",
-      alt: "Nimbus Tech Hero Image",
-      width: 1600,
-      height: 900,
+      src: "https://d1ljophloyhryl.cloudfront.net/assets/nimbus.logo.svg",
+      alt: "Nimbus Tech Navbar Logo",
+      width: 50,
+      height: 50,
     },
     cta: {
       label: "Get started",
@@ -141,10 +141,11 @@ const navigationSections: NavigationSection[] = [
     description:
       "Nimbus Tech ist ein Softwareentwicklungs- und Beratungsunternehmen mit Schwerpunkt auf Cloud-Architektur, DevOps und Automatisierungslösungen. Wir helfen Unternehmen, skalierbare, effiziente und sichere Softwaresysteme aufzubauen.",
     image: {
-      src: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg",
-      alt: "Nimbus Tech Hero Image",
-      width: 1600,
-      height: 900,
+      src: "https://d1ljophloyhryl.cloudfront.net/assets/nimbus.logo.svg",
+      alt: "Nimbus Tech Navbar Logo",
+      width: 50,
+      height: 50,
+      type: "navigation",
     },
     cta: {
       label: "Jetzt starten",

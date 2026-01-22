@@ -88,10 +88,10 @@ const imageSeedData: Record<ImageKeys, ImageConfig> = {
     type: "cta",
   },
   navigationPrimary: {
-    src: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg", // Example image URL, replace with actual image path
-    alt: "Nimbus Tech Hero Image",
-    width: 1600,
-    height: 900,
+    src: "https://d1ljophloyhryl.cloudfront.net/assets/nimbus.logo.svg",
+    alt: "Nimbus Tech Navbar Logo",
+    width: 50,
+    height: 50,
     type: "navigation",
   },
   testimonialField: {
