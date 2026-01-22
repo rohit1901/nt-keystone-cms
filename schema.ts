@@ -119,15 +119,19 @@ export const lists: Record<string, ListConfig<any>> = {
         options: [
           { label: "English", value: "English" },
           { label: "German", value: "German" },
+          { label: "Hindi", value: "Hindi" },
         ],
         validation: { isRequired: true },
+        isIndexed: "unique",
       }),
       value: select({
         options: [
           { label: "en-US", value: "en-US" },
           { label: "de-DE", value: "de-DE" },
+          { label: "en-IN", value: "en-IN" },
         ],
         validation: { isRequired: true },
+        isIndexed: "unique",
       }),
     },
   }),
@@ -834,7 +838,7 @@ export const lists: Record<string, ListConfig<any>> = {
       certificates: relationship({ ref: "Certification", many: true }),
       publications: relationship({ ref: "ResumePublication", many: true }),
       skills: relationship({ ref: "ResumeSkill", many: true }),
-      languages: relationship({ ref: "ResumeLanguage", many: true }),
+      resumeLanguages: relationship({ ref: "ResumeLanguage", many: true }),
       interests: relationship({ ref: "ResumeInterest", many: true }),
       references: relationship({ ref: "ResumeReference", many: true }),
       projects: relationship({ ref: "ResumeProject", many: true }),

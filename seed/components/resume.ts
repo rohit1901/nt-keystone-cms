@@ -1,3 +1,6 @@
+import "dotenv/config";
+import { PrismaClient } from "@prisma/client";
+
 // Helper function to convert date strings to ISO format
 const parseDate = (dateStr: string): string => {
   const [month, year] = dateStr.split('-');
@@ -17,7 +20,6 @@ export const RESUME_DATA = {
     name: "Rohit Khanduri",
     label: "Software Architect",
     email: "rohit.khanduri@hotmail.com",
-    phone: null, // Add if available
     url: "https://www.rohit.khanduri.de",
     summary: `As a seasoned software architect with over a decade of experience in software development,
     I bring a wealth of expertise in crafting innovative solutions that bridge the gap between technical and creative aspects of software design.
@@ -85,7 +87,7 @@ export const RESUME_DATA = {
       position: "Software Architect",
       url: "https://www.adesso.de/",
       startDate: parseDate("08-2020"),
-      endDate: null, // Current position
+      endDate: parseDate("03-2025"), // Current position
       summary: `As a Software Architect and a Consultant, I am responsible for the design and implementation of Software Solutions for our clients. I am also responsible for the technical leadership of the development team and occassionally review the architecture of the existing systems.`,
       highlights: `A part of the Adesso Talent Pool as a high potential employee
 Successfully led the development of new microservice architectures for clients
@@ -209,8 +211,6 @@ Conducted food distribution drives`,
       studyType: "Master",
       startDate: parseDate("10-2017"),
       endDate: parseDate("09-2019"),
-      score: null,
-      courses: null,
       language: "en-US",
     },
     {
@@ -220,8 +220,6 @@ Conducted food distribution drives`,
       studyType: "Bachelor",
       startDate: parseDate("08-2008"),
       endDate: parseDate("06-2012"),
-      score: null,
-      courses: null,
       language: "en-US",
     },
   ],
@@ -236,7 +234,6 @@ Conducted food distribution drives`,
                 for their exceptional work performance and strong work ethics.
                 This exclusive promotion initiative aimed to identify and appreciate individuals with
                 the potential to propel the company forward, offering unique opportunities for networking and professional growth within adesso.`,
-      url: null,
       language: "en-US",
     },
     {
@@ -245,7 +242,6 @@ Conducted food distribution drives`,
       awarder: "SSA Infosystems Pvt. Ltd.",
       summary: `Certificate of Appreciation is an award that is granted to employees
                 who've worked exceptionally well and have won accolades from the client.`,
-      url: null,
       language: "en-US",
     },
     {
@@ -253,7 +249,6 @@ Conducted food distribution drives`,
       date: parseDate("07-2017"),
       awarder: "SSA Infosystems Pvt. Ltd.",
       summary: "Round of Applause is an award that is granted to employees who've worked exceptionally well in a particular month.",
-      url: null,
       language: "en-US",
     },
     {
@@ -261,7 +256,6 @@ Conducted food distribution drives`,
       date: parseDate("08-2015"),
       awarder: "Virtusa Corp.",
       summary: "Top Talent for the successful completion of the project.",
-      url: null,
       language: "en-US",
     },
   ],
@@ -289,12 +283,12 @@ Conducted food distribution drives`,
     {
       language: "German",
       fluency: "Elementary",
-      uiLanguage: "en-US",
+      uiLanguage: "de-DE",
     },
     {
       language: "Hindi",
       fluency: "Native",
-      uiLanguage: "en-US",
+      uiLanguage: "en-IN",
     },
   ],
 
@@ -374,3 +368,220 @@ Conducted food distribution drives`,
     },
   ],
 };
+
+const seedResumeLanguages = async (prisma: PrismaClient) => {
+  const allLanguages = await prisma.language.createManyAndReturn({
+    data: RESUME_DATA.languages.map(lang => ({ value: lang.uiLanguage, label: lang.language })),
+    skipDuplicates: true,
+  });
+
+  // Bulk create resume languages with foreign keys
+  const languages = await prisma.resumeLanguage.createManyAndReturn({
+    data: RESUME_DATA.languages.map((language) => ({
+      language: language.language,
+      fluency: language.fluency,
+      uiLanguageId: allLanguages.find(l => l.value === language.uiLanguage)?.id,
+    })),
+  });
+
+
+  console.log("Resume Languages seeded:", languages);
+  return languages;
+};
+
+const seedResumePublications = async (prisma: PrismaClient, allLanguages: {
+  id: number;
+  label: string;
+  value: string;
+}[]) => {
+  const allPublications = await prisma.resumePublication.createManyAndReturn({
+    data: RESUME_DATA.publications.map(pub => ({
+      ...pub, languageId: allLanguages.find(l => l.value === pub.language)?.id, language: undefined
+    })),
+    skipDuplicates: true,
+  });
+
+  console.log("Resume Publications seeded:", allPublications);
+  return allPublications;
+};
+
+const seedAwards = async (prisma: PrismaClient, allLanguages: {
+  id: number;
+  label: string;
+  value: string;
+}[]) => {
+  const allAwards = await prisma.resumeAward.createManyAndReturn({
+    data: RESUME_DATA.awards.map(award => ({
+      ...award, languageId: allLanguages.find(l => l.value === award.language)?.id, language: undefined
+    })),
+    skipDuplicates: true,
+  });
+
+  console.log("Resume Awards seeded:", allAwards);
+  return allAwards;
+};
+
+
+const seedResumeEducation = async (prisma: PrismaClient, allLanguages: {
+  id: number;
+  label: string;
+  value: string;
+}[]) => {
+  const allEducation = await prisma.resumeEducation.createManyAndReturn({
+    data: RESUME_DATA.education.map(edu => ({
+      ...edu, languageId: allLanguages.find(l => l.value === edu.language)?.id, language: undefined
+    })),
+    skipDuplicates: true,
+  });
+
+  console.log("Resume Education seeded:", allEducation);
+  return allEducation;
+};
+
+const seedVolunteer = async (prisma: PrismaClient, allLanguages: {
+  id: number;
+  label: string;
+  value: string;
+}[]) => {
+  const allVolunteer = await prisma.resumeVolunteer.createManyAndReturn({
+    data: RESUME_DATA.volunteer.map(vol => ({
+      ...vol, languageId: allLanguages.find(l => l.value === vol.language)?.id, language: undefined
+    })),
+    skipDuplicates: true,
+  });
+
+  console.log("Resume Volunteer seeded:", allVolunteer);
+  return allVolunteer;
+};
+
+const seedResumeExperience = async (prisma: PrismaClient, allLanguages: {
+  id: number;
+  label: string;
+  value: string;
+}[]) => {
+  const allExperience = await prisma.resumeWork.createManyAndReturn({
+    data: RESUME_DATA.work.map(exp => ({
+      ...exp, languageId: allLanguages.find(l => l.value === exp.language)?.id, language: undefined
+    })),
+    skipDuplicates: true,
+  });
+
+  console.log("Resume Work Experience seeded:", allExperience);
+  return allExperience;
+};
+
+const seedResumeProfiles = async (prisma: PrismaClient, allLanguages: {
+  id: number;
+  label: string;
+  value: string;
+}[]) => {
+  const allProfiles = await prisma.resumeProfile.createManyAndReturn({
+    data: RESUME_DATA.profiles.map(profile => ({
+      ...profile, languageId: allLanguages.find(l => l.value === profile.language)?.id, language: undefined
+    })),
+    skipDuplicates: true,
+  });
+
+  console.log("Resume Profiles seeded:", allProfiles);
+  return allProfiles;
+};
+
+const seedResumeLocations = async (prisma: PrismaClient, allLanguages: {
+  id: number;
+  label: string;
+  value: string;
+}[]) => {
+  const allLocations = await prisma.resumeLocation.create({
+    data: {
+      ...RESUME_DATA.location,
+      languageId: allLanguages.find(l => l.value === RESUME_DATA.location.language)?.id,
+      language: undefined
+    }
+  });
+
+  console.log("Resume Locations seeded:", allLocations);
+  return allLocations;
+};
+
+const seedResumeBasicInfo = async (prisma: PrismaClient, allLanguages: {
+  id: number;
+  label: string;
+  value: string;
+}[]) => {
+  const allLocations = await prisma.resumeLocation.findFirstOrThrow();
+  const resumeProfiles = await prisma.resumeProfile.findMany();
+  const allBasicInfo = await prisma.resumeBasicInformation.create({
+    data: {
+      ...RESUME_DATA.basicInformation,
+      languageId: allLanguages.find(l => l.value === RESUME_DATA.basicInformation.language)?.id,
+      language: undefined,
+      locationId: allLocations.id,
+      location: undefined,
+      profiles: {
+        connect: resumeProfiles.map(profile => ({ id: profile.id }))
+      },
+    }
+  });
+
+  console.log("Resume Basic Info seeded:", allBasicInfo);
+  return allBasicInfo;
+};
+
+const seedResume = async (prisma: PrismaClient) => {
+  const resumeLanguages = await seedResumeLanguages(prisma);
+  const allLanguages = await prisma.language.findMany();
+  if (!allLanguages) throw new Error("Languages not found");
+  const allPublications = await seedResumePublications(prisma, allLanguages);
+  const allAwards = await seedAwards(prisma, allLanguages);
+  const allEducation = await seedResumeEducation(prisma, allLanguages);
+  const allVolunteer = await seedVolunteer(prisma, allLanguages);
+  const allExperience = await seedResumeExperience(prisma, allLanguages);
+  const allProfiles = await seedResumeProfiles(prisma, allLanguages);
+  const allLocations = await seedResumeLocations(prisma, allLanguages);
+  const allCertifications = await prisma.certification.findMany();
+  const allBasicInfo = await seedResumeBasicInfo(prisma, allLanguages);
+  const allResumes = await prisma.resume.create({
+    data: {
+      ...RESUME_DATA.resume,
+      language: {
+        connect: { id: allLanguages.find(language => language.value === RESUME_DATA.resume.language)?.id }
+      },
+      resumeLanguages: {
+        connect: resumeLanguages.map(language => ({ id: language.id }))
+      },
+      work: {
+        connect: allExperience.map(work => ({ id: work.id }))
+      },
+      volunteer: {
+        connect: allVolunteer.map(volunteer => ({ id: volunteer.id }))
+      },
+      education: {
+        connect: allEducation.map(education => ({ id: education.id }))
+      },
+      publications: {
+        connect: allPublications.map(publication => ({ id: publication.id }))
+      },
+      awards: {
+        connect: allAwards.map(award => ({ id: award.id }))
+      },
+      certificates: {
+        connect: allCertifications.map(certification => ({ id: certification.id }))
+      },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      basicInformation: {
+        connect: { id: allBasicInfo.id }
+      }
+    }
+  });
+
+  console.log("Resume seeded:", allResumes);
+  return allResumes;
+};
+
+const Resume = {
+  data: RESUME_DATA,
+  seed: seedResume,
+};
+
+export default Resume;

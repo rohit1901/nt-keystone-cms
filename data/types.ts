@@ -67,8 +67,8 @@ export type CtaSection = {
 };
 
 export type Language = {
-  label: "English" | "German";
-  value: "de-DE" | "en-US";
+  label: "English" | "German" | "Hindi";
+  value: "de-DE" | "en-US" | "en-IN";
 };
 
 export type PageContentWithSubHeading = CompositePageContent<

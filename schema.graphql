@@ -337,6 +337,8 @@ type Language {
 
 input LanguageWhereUniqueInput {
   id: ID
+  label: String
+  value: String
 }
 
 input LanguageWhereInput {
@@ -3328,8 +3330,8 @@ type Resume {
   publicationsCount(where: ResumePublicationWhereInput! = {}): Int
   skills(where: ResumeSkillWhereInput! = {}, orderBy: [ResumeSkillOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeSkillWhereUniqueInput): [ResumeSkill!]
   skillsCount(where: ResumeSkillWhereInput! = {}): Int
-  languages(where: ResumeLanguageWhereInput! = {}, orderBy: [ResumeLanguageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeLanguageWhereUniqueInput): [ResumeLanguage!]
-  languagesCount(where: ResumeLanguageWhereInput! = {}): Int
+  resumeLanguages(where: ResumeLanguageWhereInput! = {}, orderBy: [ResumeLanguageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeLanguageWhereUniqueInput): [ResumeLanguage!]
+  resumeLanguagesCount(where: ResumeLanguageWhereInput! = {}): Int
   interests(where: ResumeInterestWhereInput! = {}, orderBy: [ResumeInterestOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeInterestWhereUniqueInput): [ResumeInterest!]
   interestsCount(where: ResumeInterestWhereInput! = {}): Int
   references(where: ResumeReferenceWhereInput! = {}, orderBy: [ResumeReferenceOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeReferenceWhereUniqueInput): [ResumeReference!]
@@ -3359,7 +3361,7 @@ input ResumeWhereInput {
   certificates: CertificationManyRelationFilter
   publications: ResumePublicationManyRelationFilter
   skills: ResumeSkillManyRelationFilter
-  languages: ResumeLanguageManyRelationFilter
+  resumeLanguages: ResumeLanguageManyRelationFilter
   interests: ResumeInterestManyRelationFilter
   references: ResumeReferenceManyRelationFilter
   projects: ResumeProjectManyRelationFilter
@@ -3445,7 +3447,7 @@ input ResumeUpdateInput {
   certificates: CertificationRelateToManyForUpdateInput
   publications: ResumePublicationRelateToManyForUpdateInput
   skills: ResumeSkillRelateToManyForUpdateInput
-  languages: ResumeLanguageRelateToManyForUpdateInput
+  resumeLanguages: ResumeLanguageRelateToManyForUpdateInput
   interests: ResumeInterestRelateToManyForUpdateInput
   references: ResumeReferenceRelateToManyForUpdateInput
   projects: ResumeProjectRelateToManyForUpdateInput
@@ -3545,7 +3547,7 @@ input ResumeCreateInput {
   certificates: CertificationRelateToManyForCreateInput
   publications: ResumePublicationRelateToManyForCreateInput
   skills: ResumeSkillRelateToManyForCreateInput
-  languages: ResumeLanguageRelateToManyForCreateInput
+  resumeLanguages: ResumeLanguageRelateToManyForCreateInput
   interests: ResumeInterestRelateToManyForCreateInput
   references: ResumeReferenceRelateToManyForCreateInput
   projects: ResumeProjectRelateToManyForCreateInput

@@ -72,8 +72,8 @@ model Image {
 
 model Language {
   id                                   Int                      @id @default(autoincrement())
-  label                                String
-  value                                String
+  label                                String                   @unique
+  value                                String                   @unique
   from_Cta_language                    Cta[]                    @relation("Cta_language")
   from_TestimonialBadge_language       TestimonialBadge[]       @relation("TestimonialBadge_language")
   from_TestimonialItem_language        TestimonialItem[]        @relation("TestimonialItem_language")
@@ -673,12 +673,12 @@ model ResumeSkill {
 }
 
 model ResumeLanguage {
-  id                    Int       @id @default(autoincrement())
-  language              String    @default("")
-  fluency               String?
-  uiLanguage            Language? @relation("ResumeLanguage_uiLanguage", fields: [uiLanguageId], references: [id])
-  uiLanguageId          Int?      @map("uiLanguage")
-  from_Resume_languages Resume[]  @relation("Resume_languages")
+  id                          Int       @id @default(autoincrement())
+  language                    String    @default("")
+  fluency                     String?
+  uiLanguage                  Language? @relation("ResumeLanguage_uiLanguage", fields: [uiLanguageId], references: [id])
+  uiLanguageId                Int?      @map("uiLanguage")
+  from_Resume_resumeLanguages Resume[]  @relation("Resume_resumeLanguages")
 
   @@index([uiLanguageId])
 }
@@ -735,7 +735,7 @@ model Resume {
   certificates       Certification[]         @relation("Resume_certificates")
   publications       ResumePublication[]     @relation("Resume_publications")
   skills             ResumeSkill[]           @relation("Resume_skills")
-  languages          ResumeLanguage[]        @relation("Resume_languages")
+  resumeLanguages    ResumeLanguage[]        @relation("Resume_resumeLanguages")
   interests          ResumeInterest[]        @relation("Resume_interests")
   references         ResumeReference[]       @relation("Resume_references")
   projects           ResumeProject[]         @relation("Resume_projects")

@@ -34,6 +34,7 @@ import FAQs from "./components/faqs";
 import Features from "./components/features";
 import Testimonials from "./components/testimonials";
 import Maps from "./components/maps";
+import Resume from "./components/resume";
 
 const prisma = new PrismaClient();
 
@@ -302,6 +303,9 @@ export async function seedComponent(component: string, prisma: PrismaClient, act
           footer: seededFooterForPageContents,
           hero: seededHeroForPageContents,
         });
+        break;
+      case "resume":
+        await Resume.seed(prisma);
         break;
       default:
         console.log(`Unknown component: ${component}`);
