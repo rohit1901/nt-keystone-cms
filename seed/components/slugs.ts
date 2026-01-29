@@ -13,6 +13,7 @@ export const slugs: Slug[] = [
   "navigation",
   "testimonial",
   "footer",
+  "resume"
 ];
 
 const seed = async (prisma: PrismaClient) => {

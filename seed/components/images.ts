@@ -14,13 +14,19 @@ export type TestimonialImageKey =
   | "testimonialDrone"
   | "testimonialLogo";
 
+export type ResumeImageKey =
+  | "resumeAvatar"
+  | "resumePhoto";
+
 export type SeededImages = Awaited<ReturnType<typeof seed>>;
 export type NavigationImageKey = "navigationPrimary";
 export type ImageKeys =
   | CertificationImageKey
   | CtaImageKeys
   | NavigationImageKey
-  | TestimonialImageKey;
+  | TestimonialImageKey
+  | TestimonialImageKey
+  | ResumeImageKey;
 
 // --- Image Data ---
 const imageSeedData: Record<ImageKeys, ImageConfig> = {
@@ -113,6 +119,20 @@ const imageSeedData: Record<ImageKeys, ImageConfig> = {
     width: 50,
     height: 50,
     type: "testimonial",
+  },
+  resumeAvatar: {
+    src: "https://d1ljophloyhryl.cloudfront.net/assets/resume/avatar.png",
+    alt: "Resume Avatar",
+    width: 150,
+    height: 150,
+    type: "resume",
+  },
+  resumePhoto: {
+    src: "https://d1ljophloyhryl.cloudfront.net/assets/resume/profile-pic.jpeg",
+    alt: "Resume Photo",
+    width: 150,
+    height: 150,
+    type: "resume",
   },
 };
 

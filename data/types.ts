@@ -18,7 +18,8 @@ export type Slug =
   | "hero"
   | "navigation"
   | "testimonial"
-  | "footer";
+  | "footer"
+  | "resume";
 
 export type PageContent = {
   title: string;

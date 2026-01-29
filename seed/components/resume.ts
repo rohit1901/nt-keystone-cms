@@ -510,6 +510,9 @@ const seedResumeBasicInfo = async (prisma: PrismaClient, allLanguages: {
 }[]) => {
   const allLocations = await prisma.resumeLocation.findFirstOrThrow();
   const resumeProfiles = await prisma.resumeProfile.findMany();
+  const slug = await prisma.type.findFirstOrThrow({ where: { label: "resume" } });
+  const allImages = await prisma.image.findMany();
+  const resumeImage = allImages.filter(image => image.typeId === slug.id).find(image => image.alt.includes("Avatar"));
   const allBasicInfo = await prisma.resumeBasicInformation.create({
     data: {
       ...RESUME_DATA.basicInformation,
@@ -520,6 +523,8 @@ const seedResumeBasicInfo = async (prisma: PrismaClient, allLanguages: {
       profiles: {
         connect: resumeProfiles.map(profile => ({ id: profile.id }))
       },
+      imageId: resumeImage?.id,
+      image: undefined
     }
   });
 
@@ -530,6 +535,7 @@ const seedResumeBasicInfo = async (prisma: PrismaClient, allLanguages: {
 const seedResume = async (prisma: PrismaClient) => {
   const resumeLanguages = await seedResumeLanguages(prisma);
   const allLanguages = await prisma.language.findMany();
+  const resumeLanguageId = allLanguages.find(language => language.value === RESUME_DATA.resume.language)?.id;
   if (!allLanguages) throw new Error("Languages not found");
   const allPublications = await seedResumePublications(prisma, allLanguages);
   const allAwards = await seedAwards(prisma, allLanguages);
@@ -540,11 +546,12 @@ const seedResume = async (prisma: PrismaClient) => {
   const allLocations = await seedResumeLocations(prisma, allLanguages);
   const allCertifications = await prisma.certification.findMany();
   const allBasicInfo = await seedResumeBasicInfo(prisma, allLanguages);
+
   const allResumes = await prisma.resume.create({
     data: {
       ...RESUME_DATA.resume,
       language: {
-        connect: { id: allLanguages.find(language => language.value === RESUME_DATA.resume.language)?.id }
+        connect: { id: resumeLanguageId }
       },
       resumeLanguages: {
         connect: resumeLanguages.map(language => ({ id: language.id }))
@@ -565,7 +572,7 @@ const seedResume = async (prisma: PrismaClient) => {
         connect: allAwards.map(award => ({ id: award.id }))
       },
       certificates: {
-        connect: allCertifications.map(certification => ({ id: certification.id }))
+        connect: allCertifications.filter(certification => certification.languageId === resumeLanguageId).map(certification => ({ id: certification.id }))
       },
       createdAt: new Date(),
       updatedAt: new Date(),
