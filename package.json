@@ -18,9 +18,9 @@
     "db:clear": "ts-node --transpile-only ./seed/clear.ts"
   },
   "dependencies": {
-    "@keystone-6/auth": "^8.0.0",
-    "@keystone-6/core": "^6.0.0",
-    "@keystone-6/fields-document": "^9.0.0",
+    "@keystone-6/auth": "^8.1.0",
+    "@keystone-6/core": "^6.5.1",
+    "@keystone-6/fields-document": "^9.1.1",
     "@radix-ui/react-label": "2.0.2",
     "@radix-ui/react-separator": "1.0.3",
     "@radix-ui/react-slot": "1.0.2",
