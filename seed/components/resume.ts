@@ -459,12 +459,33 @@ const seedResumeExperience = async (prisma: PrismaClient, allLanguages: {
   label: string;
   value: string;
 }[]) => {
-  const allExperience = await prisma.resumeWork.createManyAndReturn({
-    data: RESUME_DATA.work.map(exp => ({
-      ...exp, languageId: allLanguages.find(l => l.value === exp.language)?.id, language: undefined
-    })),
-    skipDuplicates: true,
-  });
+  const allExperience: { id: number }[] = [];
+
+  for (const exp of RESUME_DATA.work) {
+    const languageId = allLanguages.find(l => l.value === exp.language)?.id;
+    const highlightValues = (exp.highlights || "")
+      .split("\n")
+      .map(h => h.trim())
+      .filter(Boolean);
+
+    const created = await prisma.resumeWork.create({
+      data: {
+        name: exp.name,
+        position: exp.position,
+        url: exp.url,
+        startDate: exp.startDate,
+        endDate: exp.endDate,
+        summary: exp.summary,
+        language: undefined,
+        languageId,
+        highlights: {
+          create: highlightValues.map(value => ({ value })),
+        },
+      },
+    });
+
+    allExperience.push(created);
+  }
 
   console.log("Resume Work Experience seeded:", allExperience);
   return allExperience;
@@ -586,9 +607,31 @@ const seedResume = async (prisma: PrismaClient) => {
   return allResumes;
 };
 
+const clearResumeData = async (prisma: PrismaClient) => {
+  // Delete all resume-related lists comprehensively
+  await prisma.resume.deleteMany({});
+  await prisma.resumeBasicInformation.deleteMany({});
+  await prisma.resumeWork.deleteMany({});
+  await prisma.resumeVolunteer.deleteMany({});
+  await prisma.resumeEducation.deleteMany({});
+  await prisma.resumeAward.deleteMany({});
+  await prisma.resumePublication.deleteMany({});
+  await prisma.resumeSkill.deleteMany({});
+  await prisma.resumeLanguage.deleteMany({});
+  await prisma.resumeInterest.deleteMany({});
+  await prisma.resumeReference.deleteMany({});
+  await prisma.resumeProject.deleteMany({});
+  await prisma.resumeLocation.deleteMany({});
+  await prisma.resumeProfile.deleteMany({});
+  await prisma.resumeHighlight.deleteMany({});
+
+  console.log("Cleared all Resume-related data.");
+};
+
 const Resume = {
   data: RESUME_DATA,
   seed: seedResume,
+  clear: clearResumeData,
 };
 
 export default Resume;

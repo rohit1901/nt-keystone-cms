@@ -2718,6 +2718,41 @@ input ResumeProfileRelateToManyForCreateInput {
   connect: [ResumeProfileWhereUniqueInput!]
 }
 
+type ResumeHighlight {
+  id: ID!
+  value: String
+}
+
+input ResumeHighlightWhereUniqueInput {
+  id: ID
+}
+
+input ResumeHighlightWhereInput {
+  AND: [ResumeHighlightWhereInput!]
+  OR: [ResumeHighlightWhereInput!]
+  NOT: [ResumeHighlightWhereInput!]
+  id: IDFilter
+  value: StringFilter
+}
+
+input ResumeHighlightOrderByInput {
+  id: OrderDirection
+  value: OrderDirection
+}
+
+input ResumeHighlightUpdateInput {
+  value: String
+}
+
+input ResumeHighlightUpdateArgs {
+  where: ResumeHighlightWhereUniqueInput!
+  data: ResumeHighlightUpdateInput!
+}
+
+input ResumeHighlightCreateInput {
+  value: String
+}
+
 type ResumeWork {
   id: ID!
   name: String
@@ -2726,7 +2761,8 @@ type ResumeWork {
   startDate: DateTime
   endDate: DateTime
   summary: String
-  highlights: String
+  highlights(where: ResumeHighlightWhereInput! = {}, orderBy: [ResumeHighlightOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeHighlightWhereUniqueInput): [ResumeHighlight!]
+  highlightsCount(where: ResumeHighlightWhereInput! = {}): Int
   image: Image
   language: Language
 }
@@ -2746,7 +2782,7 @@ input ResumeWorkWhereInput {
   startDate: DateTimeFilter
   endDate: DateTimeNullableFilter
   summary: StringFilter
-  highlights: StringNullableFilter
+  highlights: ResumeHighlightManyRelationFilter
   image: ImageWhereInput
   language: LanguageWhereInput
 }
@@ -2762,6 +2798,12 @@ input DateTimeFilter {
   not: DateTimeFilter
 }
 
+input ResumeHighlightManyRelationFilter {
+  every: ResumeHighlightWhereInput
+  some: ResumeHighlightWhereInput
+  none: ResumeHighlightWhereInput
+}
+
 input ResumeWorkOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -2770,7 +2812,6 @@ input ResumeWorkOrderByInput {
   startDate: OrderDirection
   endDate: OrderDirection
   summary: OrderDirection
-  highlights: OrderDirection
 }
 
 input ResumeWorkUpdateInput {
@@ -2780,9 +2821,16 @@ input ResumeWorkUpdateInput {
   startDate: DateTime
   endDate: DateTime
   summary: String
-  highlights: String
+  highlights: ResumeHighlightRelateToManyForUpdateInput
   image: ImageRelateToOneForUpdateInput
   language: LanguageRelateToOneForUpdateInput
+}
+
+input ResumeHighlightRelateToManyForUpdateInput {
+  disconnect: [ResumeHighlightWhereUniqueInput!]
+  set: [ResumeHighlightWhereUniqueInput!]
+  create: [ResumeHighlightCreateInput!]
+  connect: [ResumeHighlightWhereUniqueInput!]
 }
 
 input ResumeWorkUpdateArgs {
@@ -2797,9 +2845,14 @@ input ResumeWorkCreateInput {
   startDate: DateTime
   endDate: DateTime
   summary: String
-  highlights: String
+  highlights: ResumeHighlightRelateToManyForCreateInput
   image: ImageRelateToOneForCreateInput
   language: LanguageRelateToOneForCreateInput
+}
+
+input ResumeHighlightRelateToManyForCreateInput {
+  create: [ResumeHighlightCreateInput!]
+  connect: [ResumeHighlightWhereUniqueInput!]
 }
 
 type ResumeVolunteer {
@@ -3839,6 +3892,12 @@ type Mutation {
   updateResumeBasicInformations(data: [ResumeBasicInformationUpdateArgs!]!): [ResumeBasicInformation]
   deleteResumeBasicInformation(where: ResumeBasicInformationWhereUniqueInput!): ResumeBasicInformation
   deleteResumeBasicInformations(where: [ResumeBasicInformationWhereUniqueInput!]!): [ResumeBasicInformation]
+  createResumeHighlight(data: ResumeHighlightCreateInput!): ResumeHighlight
+  createResumeHighlights(data: [ResumeHighlightCreateInput!]!): [ResumeHighlight]
+  updateResumeHighlight(where: ResumeHighlightWhereUniqueInput!, data: ResumeHighlightUpdateInput!): ResumeHighlight
+  updateResumeHighlights(data: [ResumeHighlightUpdateArgs!]!): [ResumeHighlight]
+  deleteResumeHighlight(where: ResumeHighlightWhereUniqueInput!): ResumeHighlight
+  deleteResumeHighlights(where: [ResumeHighlightWhereUniqueInput!]!): [ResumeHighlight]
   createResumeWork(data: ResumeWorkCreateInput!): ResumeWork
   createResumeWorks(data: [ResumeWorkCreateInput!]!): [ResumeWork]
   updateResumeWork(where: ResumeWorkWhereUniqueInput!, data: ResumeWorkUpdateInput!): ResumeWork
@@ -4020,6 +4079,9 @@ type Query {
   resumeBasicInformation(where: ResumeBasicInformationWhereUniqueInput!): ResumeBasicInformation
   resumeBasicInformations(where: ResumeBasicInformationWhereInput! = {}, orderBy: [ResumeBasicInformationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeBasicInformationWhereUniqueInput): [ResumeBasicInformation!]
   resumeBasicInformationsCount(where: ResumeBasicInformationWhereInput! = {}): Int
+  resumeHighlight(where: ResumeHighlightWhereUniqueInput!): ResumeHighlight
+  resumeHighlights(where: ResumeHighlightWhereInput! = {}, orderBy: [ResumeHighlightOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeHighlightWhereUniqueInput): [ResumeHighlight!]
+  resumeHighlightsCount(where: ResumeHighlightWhereInput! = {}): Int
   resumeWork(where: ResumeWorkWhereUniqueInput!): ResumeWork
   resumeWorks(where: ResumeWorkWhereInput! = {}, orderBy: [ResumeWorkOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeWorkWhereUniqueInput): [ResumeWork!]
   resumeWorksCount(where: ResumeWorkWhereInput! = {}): Int

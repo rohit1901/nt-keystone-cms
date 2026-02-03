@@ -669,6 +669,12 @@ export const lists: Record<string, ListConfig<any>> = {
       language: relationship({ ref: "Language", many: false }),
     },
   }),
+  ResumeHighlight: list({
+    access: allowAll,
+    fields: {
+      value: text({ validation: { isRequired: true } }),
+    },
+  }),
   // --- Work Experience ---
   ResumeWork: list({
     access: allowAll,
@@ -679,10 +685,15 @@ export const lists: Record<string, ListConfig<any>> = {
       startDate: timestamp({ validation: { isRequired: true } }),
       endDate: timestamp(),
       summary: text({ ui: { displayMode: "textarea" } }),
-      highlights: text({
-        ui: { displayMode: "textarea" },
-        db: { isNullable: true },
-      }), // Store as newline-separated or JSON string
+      highlights: relationship({
+        ref: "ResumeHighlight",
+        many: true,
+        ui: {
+          displayMode: 'cards',
+          cardFields: ['value'],
+          inlineEdit: { fields: ['value'] },
+        },
+      }),
       image: relationship({ ref: "Image", many: false }),
       language: relationship({ ref: "Language", many: false }),
     },
