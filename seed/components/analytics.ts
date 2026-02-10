@@ -194,6 +194,21 @@ const seedStat = async (
 ) => {
   console.log(`Seeding analytics stats for ${statsData.language.value}...`);
 
+  // Check if stat already exists for this language
+  const existingStat = await prisma.analyticsStat.findFirst({
+    where: {
+      languageId: languageId,
+      totalDeployments: statsData.totalDeployments,
+    },
+  });
+
+  if (existingStat) {
+    console.log(
+      `✓ Analytics stats for ${statsData.language.value} already exist (id: ${existingStat.id}), skipping`,
+    );
+    return existingStat;
+  }
+
   const stat = await prisma.analyticsStat.create({
     data: {
       totalDeployments: statsData.totalDeployments,
@@ -206,7 +221,7 @@ const seedStat = async (
     },
   });
 
-  console.log(`✓ Seeded analytics stats with id ${stat.id}`);
+  console.log(`✓ Created analytics stats with id ${stat.id}`);
 
   return stat;
 };
@@ -218,9 +233,25 @@ const seedSummaryItems = async (
 ) => {
   console.log(`Seeding analytics summary items...`);
 
-  const summaryItems = await Promise.all(
-    summaryData.map((item) =>
-      prisma.analyticsSummaryItem.create({
+  // Check for existing summary items
+  const existingItems = await prisma.analyticsSummaryItem.findMany({
+    where: {
+      languageId: languageId,
+      name: { in: summaryData.map((item) => item.name) },
+    },
+  });
+
+  const existingNames = new Set(existingItems.map((item) => item.name));
+
+  // Only create items that don't exist
+  const itemsToCreate = summaryData.filter(
+    (item) => !existingNames.has(item.name),
+  );
+
+  const newItems = [];
+  if (itemsToCreate.length > 0) {
+    for (const item of itemsToCreate) {
+      const summaryItem = await prisma.analyticsSummaryItem.create({
         data: {
           name: item.name,
           deployments: item.deployments,
@@ -234,13 +265,27 @@ const seedSummaryItems = async (
             connect: { id: languageId },
           },
         },
-      }),
-    ),
-  );
+      });
+      newItems.push(summaryItem);
+    }
+    console.log(`✓ Created ${newItems.length} new analytics summary items`);
+  } else {
+    console.log(
+      `✓ All analytics summary items already exist for this language, skipping creation`,
+    );
+  }
 
-  console.log(`✓ Seeded ${summaryItems.length} analytics summary items`);
+  // Return all items (existing + newly created)
+  const allItems = await prisma.analyticsSummaryItem.findMany({
+    where: {
+      languageId: languageId,
+      name: { in: summaryData.map((item) => item.name) },
+    },
+  });
 
-  return summaryItems;
+  console.log(`✓ Total analytics summary items: ${allItems.length}`);
+
+  return allItems;
 };
 
 const seed = async (prisma: PrismaClient) => {
@@ -257,6 +302,25 @@ const seed = async (prisma: PrismaClient) => {
 
     console.log(`Processing Analytics data for ${locale}`);
 
+    // Check if analytic section already exists for this language
+    const existingAnalytic = await prisma.analytic.findFirst({
+      where: {
+        languageId: languageId,
+      },
+      include: {
+        stats: true,
+        summary: true,
+      },
+    });
+
+    if (existingAnalytic) {
+      console.log(
+        `✓ Analytics section for ${locale} already exists (id: ${existingAnalytic.id}), skipping`,
+      );
+      seededAnalytics.push(existingAnalytic);
+      continue;
+    }
+
     const stat = await seedStat(prisma, data.stats, languageId);
     const summaryItems = await seedSummaryItems(
       prisma,
@@ -271,7 +335,6 @@ const seed = async (prisma: PrismaClient) => {
         stats: {
           connect: { id: stat.id },
         },
-        // FIX: Remove JSON.stringify to pass the array directly
         tableHeadings: resolveTableHeadingValues(data.tableHeadings),
         summary: {
           connect: summaryItems.map((item) => ({ id: item.id })),
@@ -282,11 +345,27 @@ const seed = async (prisma: PrismaClient) => {
       },
     });
 
-    console.log(`✓ Seeded analytics section with id ${analytic.id}`);
+    console.log(`✓ Created analytics section with id ${analytic.id}`);
     seededAnalytics.push(analytic);
   }
 
+  console.log(`✓ Total analytics sections: ${seededAnalytics.length}`);
+
   return seededAnalytics;
+};
+
+const clear = async (prisma: PrismaClient) => {
+  console.log("Clearing analytics sections...");
+  const analyticsResult = await prisma.analytic.deleteMany({});
+  console.log(`Deleted ${analyticsResult.count} analytics section(s).`);
+
+  console.log("Clearing analytics stats...");
+  const statsResult = await prisma.analyticsStat.deleteMany({});
+  console.log(`Deleted ${statsResult.count} analytics stat(s).`);
+
+  console.log("Clearing analytics summary items...");
+  const summaryResult = await prisma.analyticsSummaryItem.deleteMany({});
+  console.log(`Deleted ${summaryResult.count} analytics summary item(s).`);
 };
 
 const Analytics = {
@@ -294,6 +373,7 @@ const Analytics = {
   seedStat,
   seedSummaryItems,
   seed,
+  clear,
 };
 
 export default Analytics;

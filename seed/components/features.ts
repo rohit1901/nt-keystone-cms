@@ -89,24 +89,69 @@ export const features: Feature[] = [
 ];
 
 const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
-  // Using createManyAndReturn to efficiently seed multiple objects in one query
-  const seededFeatures = await prisma.feature.createManyAndReturn({
-    data: features.map((feature) => ({
-      ...feature,
-      language: undefined,
-      languageId: languages.find(
-        (language) => language.value === feature.language.value,
-      )?.id,
-    })),
-    skipDuplicates: true, // Optional: Prevents errors if run multiple times
+  // Get all existing features to check for duplicates
+  const existingFeatures = await prisma.feature.findMany({
+    select: { id: true, featureId: true, title: true, languageId: true },
   });
-  console.log(`✓ Seeded ${seededFeatures.length} features`);
+
+  // Create unique keys based on featureId + languageId
+  const existingFeatureKeys = new Set(
+    existingFeatures.map((feature) => `${feature.featureId}|${feature.languageId}`)
+  );
+
+  // Filter out features that already exist
+  const featuresToCreate = features
+    .map((feature) => {
+      const languageId = languages.find(
+        (language) => language.value === feature.language.value,
+      )?.id;
+
+      if (!languageId) {
+        console.warn(`! Language not found: ${feature.language.value}`);
+        return null;
+      }
+
+      return {
+        featureId: feature.featureId,
+        title: feature.title,
+        description: feature.description,
+        longDescription: feature.longDescription,
+        visualization: feature.visualization,
+        languageId,
+        key: `${feature.featureId}|${languageId}`,
+      };
+    })
+    .filter((feature): feature is NonNullable<typeof feature> => feature !== null)
+    .filter(({ key }) => !existingFeatureKeys.has(key));
+
+  let newFeaturesCount = 0;
+  let seededFeatures = [...existingFeatures];
+
+  if (featuresToCreate.length > 0) {
+    const newFeatures = await prisma.feature.createManyAndReturn({
+      data: featuresToCreate.map(({ key, ...data }) => data),
+    });
+    newFeaturesCount = newFeatures.length;
+    seededFeatures = [...existingFeatures, ...newFeatures];
+    console.log(`✓ Created ${newFeaturesCount} new feature(s)`);
+  } else {
+    console.log(`✓ All features already exist, skipping creation`);
+  }
+
+  console.log(`✓ Total features in database: ${seededFeatures.length}`);
   return seededFeatures;
+};
+
+const clear = async (prisma: PrismaClient) => {
+  console.log('Clearing all features...');
+  const result = await prisma.feature.deleteMany({});
+  console.log(`✓ Deleted ${result.count} feature(s)`);
 };
 
 const Features = {
   data: features,
   seed,
+  clear,
 };
 
 export default Features;

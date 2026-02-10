@@ -1534,6 +1534,7 @@ input FooterSectionKeyCreateInput {
 
 type FooterSection {
   id: ID!
+  displayLabel: String
   title: FooterSectionKey
   items(where: NavigationLinkWhereInput! = {}, orderBy: [NavigationLinkOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NavigationLinkWhereUniqueInput): [NavigationLink!]
   itemsCount(where: NavigationLinkWhereInput! = {}): Int

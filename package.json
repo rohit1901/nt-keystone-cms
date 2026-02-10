@@ -10,12 +10,15 @@
     "dev:preinstall": "cp .env.copy .env && npm install",
     "build:dry": "NODE_ENV=production keystone build",
     "generate": "keystone prisma migrate dev",
+    "db:push": "keystone prisma db push",
     "db:seed": "ts-node --transpile-only ./seed/index.ts",
+    "db:seed:all": "ts-node --transpile-only ./seed/index.ts --all",
+    "db:clear": "ts-node --transpile-only ./seed/clear.ts",
     "db:reset": "keystone prisma db push --force-reset",
     "db:reset:seed": "npm run db:reset && npm run db:seed",
-    "schema:verify-and-update:dev": "NODE_ENV=production keystone build && keystone prisma migrate dev && keystone start",
-    "schema:verify-and-update:prod": "keystone build && keystone prisma migrate deploy && keystone start",
-    "db:clear": "ts-node --transpile-only ./seed/clear.ts"
+    "db:fresh": "npm run db:reset && npm run db:seed:all",
+    "schema:verify:dev": "NODE_ENV=production keystone build && keystone prisma migrate dev && keystone start",
+    "schema:verify:prod": "keystone build && keystone prisma migrate deploy && keystone start"
   },
   "dependencies": {
     "@keystone-6/auth": "^8.1.0",

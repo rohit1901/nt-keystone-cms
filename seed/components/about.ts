@@ -124,17 +124,43 @@ const seedValues = async (
       where: { value: "de-DE" },
     }));
 
-  const seededValues = await prisma.value.createManyAndReturn({
-    data: valuesWithLanguage.map((value) => ({
-      label: value.label,
-      description: value.description,
-      icon: value.icon,
-      languageId:
-        value.languageValue === "en-US" ? foundEnglish.id : foundGerman.id,
-    })),
-    skipDuplicates: true,
+  // Check for existing values
+  const existingValues = await prisma.value.findMany({
+    where: {
+      languageId: { in: [foundEnglish.id, foundGerman.id] },
+      label: { in: valuesWithLanguage.map((value) => value.label) },
+    },
   });
 
+  const existingKeys = new Set(
+    existingValues.map((v) => `${v.label}-${v.languageId}`),
+  );
+
+  // Only create values that don't exist
+  const valuesToCreate = valuesWithLanguage.filter((value) => {
+    const languageId =
+      value.languageValue === "en-US" ? foundEnglish.id : foundGerman.id;
+    const key = `${value.label}-${languageId}`;
+    return !existingKeys.has(key);
+  });
+
+  let seededValues = [];
+  if (valuesToCreate.length > 0) {
+    seededValues = await prisma.value.createManyAndReturn({
+      data: valuesToCreate.map((value) => ({
+        label: value.label,
+        description: value.description,
+        icon: value.icon,
+        languageId:
+          value.languageValue === "en-US" ? foundEnglish.id : foundGerman.id,
+      })),
+    });
+    console.log(`✓ Created ${seededValues.length} new about values`);
+  } else {
+    console.log(`✓ All about values already exist, skipping creation`);
+  }
+
+  // Return all values (existing + newly created)
   const values = await prisma.value.findMany({
     where: {
       languageId: { in: [foundEnglish.id, foundGerman.id] },
@@ -142,7 +168,7 @@ const seedValues = async (
     },
   });
 
-  console.log(`✓ Seeded ${seededValues.length} about values`);
+  console.log(`✓ Total about values: ${values.length}`);
 
   return values;
 };
@@ -161,20 +187,44 @@ const seed = async (prisma: PrismaClient, seededValues?: SeededValues) => {
     seededValues ??
     (await seedValues(prisma, { english: foundEnglish, german: foundGerman }));
 
-  const aboutSections = await prisma.$transaction(
-    aboutData.map((data) => {
-      const languageId =
-        data.language.value === "en-US" ? foundEnglish.id : foundGerman.id;
+  // Check for existing about sections
+  const existingAboutSections = await prisma.about.findMany({
+    where: {
+      languageId: { in: [foundEnglish.id, foundGerman.id] },
+    },
+    include: {
+      values: true,
+    },
+  });
 
-      const sectionValues = values.filter(
-        (value) =>
-          value.languageId === languageId &&
-          data.values.some(
-            (sectionValue) => sectionValue.label === value.label,
-          ),
+  const existingLanguageIds = new Set(
+    existingAboutSections.map((section) => section.languageId),
+  );
+
+  const aboutSections = [];
+
+  for (const data of aboutData) {
+    const languageId =
+      data.language.value === "en-US" ? foundEnglish.id : foundGerman.id;
+
+    const sectionValues = values.filter(
+      (value) =>
+        value.languageId === languageId &&
+        data.values.some((sectionValue) => sectionValue.label === value.label),
+    );
+
+    // Check if about section already exists for this language
+    const existingSection = existingAboutSections.find(
+      (section) => section.languageId === languageId,
+    );
+
+    if (existingSection) {
+      console.log(
+        `✓ About section for ${data.language.value} already exists (id: ${existingSection.id}), skipping`,
       );
-
-      return prisma.about.create({
+      aboutSections.push(existingSection);
+    } else {
+      const newSection = await prisma.about.create({
         data: {
           heading: data.heading,
           intro: data.intro,
@@ -190,18 +240,33 @@ const seed = async (prisma: PrismaClient, seededValues?: SeededValues) => {
           },
         },
       });
-    }),
-  );
+      console.log(
+        `✓ Created about section for ${data.language.value} (id: ${newSection.id})`,
+      );
+      aboutSections.push(newSection);
+    }
+  }
 
-  console.log(`✓ Seeded ${aboutSections.length} about sections`);
+  console.log(`✓ Total about sections: ${aboutSections.length}`);
 
   return aboutSections;
+};
+
+const clear = async (prisma: PrismaClient) => {
+  console.log("Clearing about sections...");
+  const aboutResult = await prisma.about.deleteMany({});
+  console.log(`Deleted ${aboutResult.count} about section(s).`);
+
+  console.log("Clearing about values...");
+  const valuesResult = await prisma.value.deleteMany({});
+  console.log(`Deleted ${valuesResult.count} value(s).`);
 };
 
 const About = {
   data: aboutData,
   seedValues,
   seed,
+  clear,
 };
 
 export default About;

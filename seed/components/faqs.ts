@@ -181,15 +181,51 @@ export const faqSections: FaqSection[] = [
 ];
 
 const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
-  // Create all FAQs at once
-  const seededFaqs = await prisma.faq.createManyAndReturn({
-    data: faqs.map((faq) => ({
-      ...faq,
-      language: undefined,
-      languageId: languages.find((l) => l.value === faq.language.value)?.id,
-    })),
+  // Get all existing FAQs to check for duplicates
+  const existingFaqs = await prisma.faq.findMany({
+    select: { id: true, question: true, answer: true, languageId: true },
   });
-  console.log(`✓ Seeded ${seededFaqs.length} FAQs`);
+
+  // Create unique keys based on question + languageId
+  const existingFaqKeys = new Set(
+    existingFaqs.map((faq) => `${faq.question}|${faq.languageId}`)
+  );
+
+  // Filter out FAQs that already exist
+  const faqsToCreate = faqs
+    .map((faq) => {
+      const languageId = languages.find((l) => l.value === faq.language.value)?.id;
+
+      if (!languageId) {
+        console.warn(`! Language not found: ${faq.language.value}`);
+        return null;
+      }
+
+      return {
+        question: faq.question,
+        answer: faq.answer,
+        languageId,
+        key: `${faq.question}|${languageId}`,
+      };
+    })
+    .filter((faq): faq is NonNullable<typeof faq> => faq !== null)
+    .filter(({ key }) => !existingFaqKeys.has(key));
+
+  let newFaqsCount = 0;
+  let seededFaqs = [...existingFaqs];
+
+  if (faqsToCreate.length > 0) {
+    const newFaqs = await prisma.faq.createManyAndReturn({
+      data: faqsToCreate.map(({ key, ...data }) => data),
+    });
+    newFaqsCount = newFaqs.length;
+    seededFaqs = [...existingFaqs, ...newFaqs];
+    console.log(`✓ Created ${newFaqsCount} new FAQ(s)`);
+  } else {
+    console.log(`✓ All FAQs already exist, skipping creation`);
+  }
+
+  console.log(`✓ Total FAQs in database: ${seededFaqs.length}`);
   return seededFaqs;
 };
 
@@ -197,37 +233,86 @@ const seedSections = async (
   prisma: PrismaClient,
   languages: SeededFooterLanguages,
 ) => {
+  // First seed all FAQs
   const allSeededFaqs = await seed(prisma, languages);
-  const seededFaqSections = await Promise.all(
-    faqSections.map((section) => {
-      const lang = languages.find((l) => l.value === section.language.value);
-      // Filter the seeded FAQs (which have IDs) to find matches for this section's language
-      const relevantFaqs = allSeededFaqs.filter(
-        (f) => f.languageId === lang?.id,
-      );
 
-      return prisma.faqSection.create({
-        data: {
-          title: section.title,
-          description: section.description,
-          // Include language field if your schema supports it on FaqSection
-          language: undefined,
-          languageId: lang?.id,
-          faqs: {
-            connect: relevantFaqs.map((faq) => ({ id: faq.id })),
-          },
-        },
-      });
-    }),
+  // Get all existing FAQ sections to check for duplicates
+  const existingSections = await prisma.faqSection.findMany({
+    select: { id: true, title: true, languageId: true },
+  });
+
+  // Create unique keys based on title + languageId
+  const existingSectionKeys = new Set(
+    existingSections.map((section) => `${section.title}|${section.languageId}`)
   );
-  console.log(`✓ Seeded ${seededFaqSections.length} FAQ sections`);
-  return seededFaqSections;
+
+  // Filter out sections that already exist
+  const sectionsToCreate = faqSections.filter((section) => {
+    const languageId = languages.find((l) => l.value === section.language.value)?.id;
+    const key = `${section.title}|${languageId}`;
+    return !existingSectionKeys.has(key);
+  });
+
+  let newSectionsCount = 0;
+  const seededSections = [...existingSections];
+
+  if (sectionsToCreate.length > 0) {
+    const newSections = await Promise.all(
+      sectionsToCreate.map((section) => {
+        const lang = languages.find((l) => l.value === section.language.value);
+
+        if (!lang) {
+          console.warn(`! Language not found: ${section.language.value}`);
+          return null;
+        }
+
+        // Filter the seeded FAQs to find matches for this section's language
+        const relevantFaqs = allSeededFaqs.filter(
+          (f) => f.languageId === lang.id,
+        );
+
+        return prisma.faqSection.create({
+          data: {
+            title: section.title,
+            description: section.description,
+            languageId: lang.id,
+            faqs: {
+              connect: relevantFaqs.map((faq) => ({ id: faq.id })),
+            },
+          },
+        });
+      })
+    );
+
+    const validSections = newSections.filter(
+      (section): section is NonNullable<typeof section> => section !== null
+    );
+    newSectionsCount = validSections.length;
+    seededSections.push(...validSections);
+    console.log(`✓ Created ${newSectionsCount} new FAQ section(s)`);
+  } else {
+    console.log(`✓ All FAQ sections already exist, skipping creation`);
+  }
+
+  console.log(`✓ Total FAQ sections in database: ${seededSections.length}`);
+  return seededSections;
+};
+
+const clear = async (prisma: PrismaClient) => {
+  console.log('Clearing all FAQ sections...');
+  const sectionsResult = await prisma.faqSection.deleteMany({});
+  console.log(`✓ Deleted ${sectionsResult.count} FAQ section(s)`);
+
+  console.log('Clearing all FAQs...');
+  const faqsResult = await prisma.faq.deleteMany({});
+  console.log(`✓ Deleted ${faqsResult.count} FAQ(s)`);
 };
 
 const FAQs = {
   data: faqSections,
   seed,
   seedSections,
+  clear,
 };
 
 export default FAQs;

@@ -73,6 +73,11 @@ export const lists: Record<string, ListConfig<any>> = {
       type: relationship({ ref: "Type", many: false }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['label', 'href', 'type', 'language'],
+      },
+    },
   }),
 
   // Image: Image metadata and configuration
@@ -147,6 +152,11 @@ export const lists: Record<string, ListConfig<any>> = {
       label: text(),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['label', 'icon', 'language'],
+      },
+    },
   }),
 
   // TestimonialItem: Individual testimonial
@@ -165,6 +175,11 @@ export const lists: Record<string, ListConfig<any>> = {
       }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['name', 'role', 'company', 'language'],
+      },
+    },
   }),
 
   // TestimonialSection: Testimonial section with background and fallback
@@ -177,6 +192,11 @@ export const lists: Record<string, ListConfig<any>> = {
       fallback: relationship({ ref: "TestimonialItem", many: false }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'language'],
+      },
+    },
   }),
 
   // --- Hero Related ---
@@ -188,6 +208,11 @@ export const lists: Record<string, ListConfig<any>> = {
       icon: text(),
       text: text({ validation: { isRequired: true } }),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['text', 'icon', 'language'],
+      },
     },
   }),
 
@@ -202,6 +227,11 @@ export const lists: Record<string, ListConfig<any>> = {
       additional: relationship({ ref: "HeroBannerAdditional", many: false }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['label', 'href', 'language'],
+      },
+    },
   }),
 
   // Hero: Complete hero section
@@ -214,6 +244,11 @@ export const lists: Record<string, ListConfig<any>> = {
       banner: relationship({ ref: "HeroBanner", many: false }),
       cta: relationship({ ref: "Cta", many: false }),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'subHeading', 'language'],
+      },
     },
   }),
 
@@ -231,6 +266,11 @@ export const lists: Record<string, ListConfig<any>> = {
       }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'icon', 'language'],
+      },
+    },
   }),
 
   // BenefitSection: Collection of benefits with title
@@ -240,6 +280,11 @@ export const lists: Record<string, ListConfig<any>> = {
       title: text({ validation: { isRequired: true } }),
       benefits: relationship({ ref: "Benefit", many: true }),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'language'],
+      },
     },
   }),
 
@@ -256,6 +301,11 @@ export const lists: Record<string, ListConfig<any>> = {
       }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['question', 'language'],
+      },
+    },
   }),
 
   // FaqSection: Collection of FAQs with title and description
@@ -266,6 +316,11 @@ export const lists: Record<string, ListConfig<any>> = {
       description: text({ ui: { displayMode: "textarea" } }),
       faqs: relationship({ ref: "Faq", many: true }),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'language'],
+      },
     },
   }),
 
@@ -281,6 +336,11 @@ export const lists: Record<string, ListConfig<any>> = {
       link: text(),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'link', 'language'],
+      },
+    },
   }),
 
   // CertificationSection: Collection of certifications
@@ -292,6 +352,11 @@ export const lists: Record<string, ListConfig<any>> = {
       cta: relationship({ ref: "Cta", many: false }),
       certifications: relationship({ ref: "Certification", many: true }),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'language'],
+      },
     },
   }),
 
@@ -313,6 +378,11 @@ export const lists: Record<string, ListConfig<any>> = {
         ],
       }),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['featureId', 'title', 'language'],
+      },
     },
   }),
 
@@ -339,6 +409,11 @@ export const lists: Record<string, ListConfig<any>> = {
       activityTime: text({ validation: { isRequired: true } }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['stepId', 'title', 'type', 'language'],
+      },
+    },
   }),
 
   // Approach: Complete approach/process section
@@ -352,6 +427,11 @@ export const lists: Record<string, ListConfig<any>> = {
       }),
       steps: relationship({ ref: "ApproachStep", many: true }),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'language'],
+      },
     },
   }),
 
@@ -369,6 +449,11 @@ export const lists: Record<string, ListConfig<any>> = {
       type: relationship({ ref: "Type", many: false }),
       sectionKey: relationship({ ref: "FooterSectionKey", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['label', 'href', 'type', 'language'],
+      },
+    },
   }),
 
   // Navigation: Navigation section
@@ -381,6 +466,11 @@ export const lists: Record<string, ListConfig<any>> = {
       cta: relationship({ ref: "Cta", many: false }),
       items: relationship({ ref: "NavigationLink", many: true }),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'language'],
+      },
     },
   }),
 
@@ -403,10 +493,29 @@ export const lists: Record<string, ListConfig<any>> = {
   FooterSection: list({
     access: crud,
     ui: {
-      labelField: "id", // Forces Keystone to use ID, ignoring the relationship field
+      labelField: "displayLabel",
+      listView: {
+        initialColumns: ['displayLabel', 'language'],
+      },
     },
-
     fields: {
+      displayLabel: virtual({
+        field: graphql.field({
+          type: graphql.String,
+          async resolve(item, args, context) {
+            const footerSection = await context.query.FooterSection.findOne({
+              where: { id: item.id.toString() },
+              query: 'title { label }',
+            });
+            return footerSection?.title?.label || `Footer Section ${item.id}`;
+          },
+        }),
+        ui: {
+          createView: { fieldMode: 'hidden' },
+          itemView: { fieldMode: 'hidden' },
+          listView: { fieldMode: 'read' },
+        },
+      }),
       title: relationship({
         ref: "FooterSectionKey",
         many: false,
@@ -424,6 +533,11 @@ export const lists: Record<string, ListConfig<any>> = {
       sections: relationship({ ref: "FooterSection", many: true }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'language'],
+      },
+    },
   }),
 
   // --- Analytics ---
@@ -437,6 +551,11 @@ export const lists: Record<string, ListConfig<any>> = {
       deploymentChangePercent: text({ validation: { isRequired: true } }),
       changePeriod: text({ validation: { isRequired: true } }),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['totalDeployments', 'changePeriod', 'language'],
+      },
     },
   }),
 
@@ -460,6 +579,11 @@ export const lists: Record<string, ListConfig<any>> = {
       }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['name', 'deployments', 'changeType', 'language'],
+      },
+    },
   }),
 
   // Analytic: Complete analytics section
@@ -482,6 +606,11 @@ export const lists: Record<string, ListConfig<any>> = {
       summary: relationship({ ref: "AnalyticsSummaryItem", many: true }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['heading', 'subheading', 'language'],
+      },
+    },
   }),
 
   // --- About ---
@@ -497,6 +626,11 @@ export const lists: Record<string, ListConfig<any>> = {
       }),
       icon: text({ validation: { isRequired: true } }),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['label', 'icon', 'language'],
+      },
     },
   }),
 
@@ -517,6 +651,11 @@ export const lists: Record<string, ListConfig<any>> = {
       }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['heading', 'valuesTitle', 'language'],
+      },
+    },
   }),
 
   // --- Map ---
@@ -533,6 +672,11 @@ export const lists: Record<string, ListConfig<any>> = {
       }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'subheading', 'language'],
+      },
+    },
   }),
 
   // --- CTA Section ---
@@ -546,6 +690,11 @@ export const lists: Record<string, ListConfig<any>> = {
       ctas: relationship({ ref: "Cta", many: true }),
       background: relationship({ ref: "Image", many: true }),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'language'],
+      },
     },
   }),
 
@@ -612,11 +761,16 @@ export const lists: Record<string, ListConfig<any>> = {
       sections: relationship({ ref: "Section", many: false }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['slug', 'title', 'language'],
+      },
+    },
   }),
   // --- Resume ---
   // ResumeLocation: Physical location information
   ResumeLocation: list({
-    access: allowAll,
+    access: crud,
     fields: {
       address: text(),
       postalCode: text(),
@@ -624,6 +778,11 @@ export const lists: Record<string, ListConfig<any>> = {
       countryCode: text(),
       region: text(),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['city', 'countryCode', 'language'],
+      },
     },
   }),
   // ResumeProfile: Social media profile (replaces your Profile type)
@@ -677,9 +836,9 @@ export const lists: Record<string, ListConfig<any>> = {
   }),
   // --- Work Experience ---
   ResumeWork: list({
-    access: allowAll,
+    access: crud,
     fields: {
-      name: text({ validation: { isRequired: true } }), // Company name
+      name: text({ validation: { isRequired: true } }),
       position: text({ validation: { isRequired: true } }),
       url: text(),
       startDate: timestamp({ validation: { isRequired: true } }),
@@ -689,19 +848,24 @@ export const lists: Record<string, ListConfig<any>> = {
         ref: "ResumeHighlight",
         many: true,
         ui: {
-          displayMode: 'cards',
-          cardFields: ['value'],
-          inlineEdit: { fields: ['value'] },
-        },
+          displayMode: "cards",
+          cardFields: ["value"],
+          inlineEdit: { fields: ["value"] },
+        }
       }),
       image: relationship({ ref: "Image", many: false }),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['name', 'position', 'startDate', 'language'],
+      },
     },
   }),
   // --- Volunteer Experience ---
 
   ResumeVolunteer: list({
-    access: allowAll,
+    access: crud,
     fields: {
       organization: text({ validation: { isRequired: true } }),
       position: text({ validation: { isRequired: true } }),
@@ -712,11 +876,16 @@ export const lists: Record<string, ListConfig<any>> = {
       highlights: text({ ui: { displayMode: "textarea" } }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['organization', 'position', 'language'],
+      },
+    },
   }),
   // --- Education ---
 
   ResumeEducation: list({
-    access: allowAll,
+    access: crud,
     fields: {
       institution: text({ validation: { isRequired: true } }),
       url: text(),
@@ -728,11 +897,16 @@ export const lists: Record<string, ListConfig<any>> = {
       courses: text({ ui: { displayMode: "textarea" } }), // Newline-separated
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['institution', 'area', 'studyType', 'language'],
+      },
+    },
   }),
   // --- Awards ---
 
   ResumeAward: list({
-    access: allowAll,
+    access: crud,
     fields: {
       title: text({ validation: { isRequired: true } }),
       date: timestamp(),
@@ -741,11 +915,16 @@ export const lists: Record<string, ListConfig<any>> = {
       url: text(),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'awarder', 'date', 'language'],
+      },
+    },
   }),
   // --- Publications ---
 
   ResumePublication: list({
-    access: allowAll,
+    access: crud,
     fields: {
       name: text({ validation: { isRequired: true } }),
       publisher: text({ validation: { isRequired: true } }),
@@ -754,12 +933,17 @@ export const lists: Record<string, ListConfig<any>> = {
       summary: text({ ui: { displayMode: "textarea" } }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['name', 'publisher', 'releaseDate', 'language'],
+      },
+    },
   }),
 
   // --- Skills ---
 
   ResumeSkill: list({
-    access: allowAll,
+    access: crud,
     fields: {
       name: text({ validation: { isRequired: true } }),
       level: select({
@@ -774,12 +958,17 @@ export const lists: Record<string, ListConfig<any>> = {
       keywords: text({ ui: { displayMode: "textarea" } }), // Comma or newline-separated
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['name', 'level', 'language'],
+      },
+    },
   }),
 
   // --- Languages ---
 
   ResumeLanguage: list({
-    access: allowAll,
+    access: crud,
     fields: {
       language: text({ validation: { isRequired: true } }),
       fluency: select({
@@ -793,23 +982,33 @@ export const lists: Record<string, ListConfig<any>> = {
       }),
       uiLanguage: relationship({ ref: "Language", many: false }), // Renamed to avoid conflict
     },
+    ui: {
+      listView: {
+        initialColumns: ['language', 'fluency', 'uiLanguage'],
+      },
+    },
   }),
 
   // --- Interests ---
 
   ResumeInterest: list({
-    access: allowAll,
+    access: crud,
     fields: {
       name: text({ validation: { isRequired: true } }),
       keywords: text({ ui: { displayMode: "textarea" } }),
       language: relationship({ ref: "Language", many: false }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['name', 'language'],
+      },
     },
   }),
 
   // --- References ---
 
   ResumeReference: list({
-    access: allowAll,
+    access: crud,
     fields: {
       name: text({ validation: { isRequired: true } }),
       reference: text({
@@ -818,12 +1017,17 @@ export const lists: Record<string, ListConfig<any>> = {
       }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['name', 'language'],
+      },
+    },
   }),
 
   // --- Projects ---
 
   ResumeProject: list({
-    access: allowAll,
+    access: crud,
     fields: {
       name: text({ validation: { isRequired: true } }),
       startDate: timestamp(),
@@ -837,9 +1041,14 @@ export const lists: Record<string, ListConfig<any>> = {
       image: relationship({ ref: "Image", many: false }),
       language: relationship({ ref: "Language", many: false }),
     },
+    ui: {
+      listView: {
+        initialColumns: ['name', 'startDate', 'language'],
+      },
+    },
   }),
   Resume: list({
-    access: allowAll,
+    access: crud,
     fields: {
       title: text({ validation: { isRequired: true } }),
       basicInformation: relationship({ ref: "ResumeBasicInformation", many: false }),
@@ -857,6 +1066,11 @@ export const lists: Record<string, ListConfig<any>> = {
       language: relationship({ ref: "Language", many: false }),
       createdAt: timestamp({ defaultValue: { kind: "now" } }),
       updatedAt: timestamp({ db: { updatedAt: true } }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ['title', 'language', 'createdAt', 'updatedAt'],
+      },
     },
   }),
 
