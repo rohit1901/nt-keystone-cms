@@ -109,7 +109,7 @@ const footerData: CompositePageContentWithExtras<{
           items: [
             {
               label: "LinkedIn",
-              href: "https://www.linkedin.com/company/nimbus-tech-de",
+              href: "#",
               external: true,
               icon: "RiLinkedinBoxFill",
               language: {
@@ -230,7 +230,7 @@ const footerData: CompositePageContentWithExtras<{
           items: [
             {
               label: "LinkedIn",
-              href: "https://www.linkedin.com/company/nimbus-tech-de",
+              href: "#",
               external: true,
               icon: "RiLinkedinBoxFill",
               language: {
