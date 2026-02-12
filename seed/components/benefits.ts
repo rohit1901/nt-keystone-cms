@@ -12,26 +12,27 @@ export type SeededBenefitSections = Awaited<ReturnType<typeof seedSection>>;
 // --- Data ---
 const benefitsSectionsData: BenefitSection[] = [
   {
-    title: "Your Benefits with Nimbus Tech",
+    title: "Why SMEs and Startups choose Nimbus Tech",
     language: {
       label: "English",
       value: "en-US",
     },
     benefits: [
       {
-        icon: "RiAwardFill",
-        title: "Certified Experts",
-        description: "We are experienced and certified AWS cloud specialists.",
+        icon: "RiMoneyEuroBoxFill",
+        title: "Transparent Costs",
+        description:
+          "We design your AWS environment so that costs remain predictable and under control – no hidden surprises.",
         language: {
           label: "English",
           value: "en-US",
         },
       },
       {
-        icon: "RiMoneyEuroBoxFill",
-        title: "Full Cost Control",
+        icon: "RiAwardFill",
+        title: "AWS-Certified Experts",
         description:
-          "We ensure transparent and predictable costs for your cloud project.",
+          "You work directly with experienced, AWS-certified architects and engineers – not a rotating team of juniors.",
         language: {
           label: "English",
           value: "en-US",
@@ -39,9 +40,9 @@ const benefitsSectionsData: BenefitSection[] = [
       },
       {
         icon: "RiFlashlightFill",
-        title: "Fast Implementation",
+        title: "Fast, Pragmatic Delivery",
         description:
-          "We implement your individual cloud project efficiently and quickly.",
+          "We focus on lean, practical solutions that can go live quickly and evolve with your business.",
         language: {
           label: "English",
           value: "en-US",
@@ -50,27 +51,27 @@ const benefitsSectionsData: BenefitSection[] = [
     ],
   },
   {
-    title: "Ihre Vorteile mit Nimbus Tech",
+    title: "Warum KMU und Start-ups mit Nimbus Tech arbeiten",
     language: {
       label: "German",
       value: "de-DE",
     },
     benefits: [
       {
-        icon: "RiAwardFill",
-        title: "Zertifizierte Experten",
+        icon: "RiMoneyEuroBoxFill",
+        title: "Klare Kosten",
         description:
-          "Wir sind erfahrene und zertifizierte AWS-Cloud-Spezialisten.",
+          "Wir gestalten Ihre AWS-Umgebung so, dass Kosten planbar bleiben und Sie jederzeit den Überblick behalten.",
         language: {
           label: "German",
           value: "de-DE",
         },
       },
       {
-        icon: "RiMoneyEuroBoxFill",
-        title: "Volle Kostenkontrolle",
+        icon: "RiAwardFill",
+        title: "Zertifizierte AWS-Experten",
         description:
-          "Wir sorgen für transparente und planbare Kosten bei Ihrem Cloud-Projekt.",
+          "Sie arbeiten direkt mit erfahrenen, AWS-zertifizierten Architekt:innen und Engineer:innen zusammen.",
         language: {
           label: "German",
           value: "de-DE",
@@ -78,9 +79,9 @@ const benefitsSectionsData: BenefitSection[] = [
       },
       {
         icon: "RiFlashlightFill",
-        title: "Schnelle Umsetzung",
+        title: "Schnelle, praxisnahe Umsetzung",
         description:
-          "Wir setzen Ihr individuelles Cloud-Projekt effizient und schnell um.",
+          "Wir setzen schlanke, praxistaugliche Lösungen um, die schnell live gehen und mit Ihrem Geschäft mitwachsen.",
         language: {
           label: "German",
           value: "de-DE",

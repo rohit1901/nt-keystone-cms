@@ -40,12 +40,12 @@ const getBannerCta = (langValue: string) =>
 const heroesData: HeroType[] = [
   // English Hero
   {
-    title: "Nimbus Tech",
+    title: "AWS Cloud Consulting for SMEs & Startups",
     description:
-      "Custom software development, cloud architecture, and scalable solutions for modern enterprises.",
+      "Nimbus Tech helps small and medium-sized businesses and startups in the DACH region make the most of AWS. We plan, build, and optimize your cloud setup – transparent, understandable, and focused on your goals.",
     language: { label: "English", value: "en-US" },
     hero: {
-      subHeading: "Expert Software & Cloud Solutions",
+      subHeading: "AWS expertise for your business",
       banner: {
         ...getBannerCta("en-US"),
         additional: {

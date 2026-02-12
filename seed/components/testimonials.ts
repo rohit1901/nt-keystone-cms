@@ -48,10 +48,10 @@ export const testimonialItems: TestimonialItem[] = [
       (badge) => badge.language.value === english.value,
     ),
     name: "The Nimbus Tech Team",
-    role: "Software & Cloud Experts, Germany",
+    role: "AWS Cloud & Software Experts, Germany",
     company: "Nimbus Tech",
     content:
-      "As Nimbus Tech launches, we look forward to partnering with innovative organizations and delivering exceptional software and cloud solutions. Your feedback could be featured here!",
+      "As Nimbus Tech launches, we look forward to partnering with SMEs and startups to deliver clear, effective AWS cloud solutions. Your feedback could be featured here!",
     imageKey: "testimonialLogo",
     language: english,
   },
@@ -60,11 +60,11 @@ export const testimonialItems: TestimonialItem[] = [
     badge: testimonialBadges.find(
       (badge) => badge.language.value === german.value,
     ),
-    name: "The Nimbus Tech Team",
-    role: "Software & Cloud Experts, Germany",
+    name: "Das Nimbus Tech Team",
+    role: "AWS-Cloud- & Software-Expert:innen, Deutschland",
     company: "Nimbus Tech",
     content:
-      "Als Nimbus Tech startet, freuen wir uns darauf, innovative Organisationen zu partnern und exzellente Software und Cloud-Lösungen zu liefern. Ihr Feedback könnte hier aufgeführt werden!",
+      "Zum Start von Nimbus Tech freuen wir uns darauf, gemeinsam mit KMU und Start-ups klare, wirksame AWS-Cloud-Lösungen umzusetzen. Ihr Feedback könnte hier erscheinen!",
     imageKey: "testimonialLogo",
     language: german,
   },
@@ -79,7 +79,7 @@ export const testimonialSections: TestimonialSection[] = [
     language: english,
   },
   {
-    title: "Kunden Erfolge",
+    title: "Kundenerfahrungen",
     backgroundImageKeys: ["testimonialField", "testimonialDrone"],
     fallbackIndex: 0,
     language: german,

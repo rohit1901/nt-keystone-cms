@@ -16,7 +16,7 @@ const certificationSectionsData: CertificationSection[] = [
   {
     title: "Our Certifications",
     description:
-      "Nimbus Tech is certified in various technologies and methodologies, ensuring the highest quality standards in our projects.",
+      "Nimbus Tech is certified in AWS and software architecture, ensuring high quality and reliable AWS cloud solutions.",
     cta: Ctas.data
       .find((cta) => cta.language.value === "en-US")
       ?.ctas.find((cta) => cta.type === "certification"),
@@ -128,7 +128,7 @@ const certificationSectionsData: CertificationSection[] = [
   {
     title: "Unsere Zertifizierungen",
     description:
-      "Nimbus Tech ist in verschiedenen Technologien und Methoden zertifiziert, um höchste Qualitätsstandards in unseren Projekten zu gewährleisten.",
+      "Nimbus Tech ist in AWS und Software-Architektur zertifiziert – für hochwertige und verlässliche AWS-Cloud-Lösungen.",
     cta: Ctas.data
       .find((cta) => cta.language.value === "de-DE")
       ?.ctas.find((cta) => cta.type === "certification"),

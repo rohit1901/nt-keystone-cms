@@ -8,7 +8,7 @@ const aboutData: readonly AboutSection[] = [
   {
     heading: "About Nimbus Tech",
     intro:
-      "With over 14 years of experience in software development, architecture, and cloud, Nimbus Tech is your trusted partner for robust, scalable, and innovative digital solutions. Co-founded in Germany by experienced software architects, we combine deep technical expertise with a passion for solving complex challenges and delivering real business value.",
+      "Nimbus Tech is an AWS-focused cloud consulting and software engineering company based in Germany. With more than 14 years of experience in software development and architecture, we help SMEs and startups in the DACH region design, migrate, and operate reliable systems on AWS – always with clear communication and business value in mind.",
     valuesTitle: "Our Values",
     values: [
       {
@@ -43,7 +43,7 @@ const aboutData: readonly AboutSection[] = [
       },
     ],
     closing:
-      "At Nimbus Tech, we are passionate about guiding you through every step of your digital transformation journey.",
+      "At Nimbus Tech, we combine deep AWS expertise with a practical, no-nonsense approach so your cloud projects stay understandable, transparent, and aligned with your business goals.",
     language: {
       label: "English",
       value: "en-US",
@@ -52,7 +52,7 @@ const aboutData: readonly AboutSection[] = [
   {
     heading: "Über Nimbus Tech",
     intro:
-      "Mit über 14 Jahren Erfahrung in Softwareentwicklung, Architektur und Cloud ist Nimbus Tech Ihr verlässlicher Partner für robuste, skalierbare und innovative digitale Lösungen. Gegründet in Deutschland von erfahrenen Softwarearchitekt:innen verbinden wir tiefgehende technische Expertise mit der Leidenschaft, komplexe Herausforderungen zu meistern und messbaren Geschäftswert zu schaffen.",
+      "Nimbus Tech ist ein auf AWS spezialisiertes Cloud-Beratungs- und Software-Engineering-Unternehmen mit Sitz in Deutschland. Mit über 14 Jahren Erfahrung in Entwicklung und Architektur unterstützen wir KMU und Start-ups in der DACH-Region dabei, zuverlässige Systeme auf AWS zu planen, zu migrieren und zu betreiben – mit klarer Kommunikation und echtem Geschäftsnutzen.",
     valuesTitle: "Unsere Werte",
     values: [
       {
@@ -87,7 +87,7 @@ const aboutData: readonly AboutSection[] = [
       },
     ],
     closing:
-      "Bei Nimbus Tech begleiten wir Sie engagiert auf Ihrem Weg der digitalen Transformation.",
+      "Bei Nimbus Tech verbinden wir tiefes AWS-Know-how mit einem pragmatischen Ansatz, damit Ihre Cloud-Projekte verständlich, transparent und eng an Ihren Geschäftszielen ausgerichtet bleiben.",
     language: {
       label: "German",
       value: "de-DE",

@@ -28,7 +28,7 @@ const footerData: CompositePageContentWithExtras<{
           title: "services",
           items: [
             {
-              label: "Software Development",
+              label: "AWS Cloud Consulting",
               href: "#features",
               language: {
                 value: "en-US",
@@ -38,7 +38,7 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "services",
             },
             {
-              label: "Cloud Architecture",
+              label: "AWS Migration & Modernization",
               href: "#features",
               language: {
                 value: "en-US",
@@ -48,7 +48,7 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "services",
             },
             {
-              label: "DevOps & Automation",
+              label: "DevOps & Automation on AWS",
               href: "#features",
               language: {
                 value: "en-US",
@@ -56,73 +56,6 @@ const footerData: CompositePageContentWithExtras<{
               },
               type: "footer",
               sectionKey: "services",
-            },
-            {
-              label: "Software Architecture",
-              href: "#features",
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "services",
-            },
-            {
-              label: "Technology Assessment",
-              href: "#features",
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "services",
-            },
-          ],
-        },
-        company: {
-          title: "company",
-          items: [
-            {
-              label: "About Nimbus Tech",
-              href: "#about-us",
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "company",
-            },
-            {
-              label: "Blog",
-              href: "https://rohitkhanduri.substack.com",
-              external: true,
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "company",
-            },
-            {
-              label: "Our Values",
-              href: "#our-values",
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "company",
-            },
-            {
-              label: "News & Updates",
-              href: "https://rohitkhanduri.substack.com",
-              external: true,
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "company",
             },
           ],
         },
@@ -175,20 +108,8 @@ const footerData: CompositePageContentWithExtras<{
           title: "social",
           items: [
             {
-              label: "GitHub",
-              href: "https://rohit1901.github.com",
-              external: true,
-              icon: "RiGithubFill",
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "social",
-            },
-            {
               label: "LinkedIn",
-              href: "#",
+              href: "https://www.linkedin.com/company/nimbus-tech-de",
               external: true,
               icon: "RiLinkedinBoxFill",
               language: {
@@ -199,10 +120,10 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "social",
             },
             {
-              label: "Xing",
-              href: "#",
+              label: "GitHub",
+              href: "https://github.com/nimbus-tech",
               external: true,
-              icon: "RiXingFill",
+              icon: "RiGithubFill",
               language: {
                 value: "en-US",
                 label: "English",
@@ -210,7 +131,18 @@ const footerData: CompositePageContentWithExtras<{
               type: "footer",
               sectionKey: "social",
             },
-            // German translations
+            {
+              label: "Blog",
+              href: "https://rohitkhanduri.substack.com",
+              external: true,
+              icon: "RiArticleFill",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "social",
+            },
           ],
         },
       },
@@ -226,9 +158,8 @@ const footerData: CompositePageContentWithExtras<{
         services: {
           title: "services",
           items: [
-            // German translations
             {
-              label: "Softwareentwicklung",
+              label: "AWS-Cloud-Beratung",
               href: "#features",
               language: {
                 value: "de-DE",
@@ -238,7 +169,7 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "services",
             },
             {
-              label: "Cloud-Architektur",
+              label: "AWS-Migration & Modernisierung",
               href: "#features",
               language: {
                 value: "de-DE",
@@ -248,7 +179,7 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "services",
             },
             {
-              label: "DevOps & Automatisierung",
+              label: "DevOps & Automatisierung auf AWS",
               href: "#features",
               language: {
                 value: "de-DE",
@@ -256,81 +187,12 @@ const footerData: CompositePageContentWithExtras<{
               },
               type: "footer",
               sectionKey: "services",
-            },
-            {
-              label: "Software-Architektur",
-              href: "#features",
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "services",
-            },
-            {
-              label: "Technologiebewertung",
-              href: "#features",
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "services",
-            },
-          ],
-        },
-        company: {
-          title: "company",
-          items: [
-            // German translations
-            {
-              label: "Über Nimbus Tech",
-              href: "#about-us",
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "company",
-            },
-            {
-              label: "Blog",
-              href: "https://rohitkhanduri.substack.com",
-              external: true,
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "company",
-            },
-            {
-              label: "Unsere Werte",
-              href: "#our-values",
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "company",
-            },
-            {
-              label: "Neuigkeiten & Updates",
-              href: "https://rohitkhanduri.substack.com",
-              external: true,
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "company",
             },
           ],
         },
         resources: {
           title: "resources",
           items: [
-            // German translations
             {
               label: "Kontakt",
               href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
@@ -342,17 +204,7 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "resources",
             },
             {
-              label: "Support",
-              href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "resources",
-            },
-            {
-              label: "Datenschutz",
+              label: "Datenschutzerklärung",
               href: "/privacy-policy",
               language: {
                 value: "de-DE",
@@ -362,7 +214,7 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "resources",
             },
             {
-              label: "Nutzungsbedingungen",
+              label: "Impressum",
               href: "/terms",
               language: {
                 value: "de-DE",
@@ -377,20 +229,8 @@ const footerData: CompositePageContentWithExtras<{
           title: "social",
           items: [
             {
-              label: "GitHub",
-              href: "https://rohit1901.github.com",
-              external: true,
-              icon: "RiGithubFill",
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "social",
-            },
-            {
               label: "LinkedIn",
-              href: "#",
+              href: "https://www.linkedin.com/company/nimbus-tech-de",
               external: true,
               icon: "RiLinkedinBoxFill",
               language: {
@@ -401,10 +241,22 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "social",
             },
             {
-              label: "Xing",
-              href: "#",
+              label: "GitHub",
+              href: "https://github.com/nimbus-tech",
               external: true,
-              icon: "RiXingFill",
+              icon: "RiGithubFill",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "social",
+            },
+            {
+              label: "Blog",
+              href: "https://rohitkhanduri.substack.com",
+              external: true,
+              icon: "RiArticleFill",
               language: {
                 value: "de-DE",
                 label: "German",
@@ -426,10 +278,6 @@ const footerSectionKeys: FooterSectionKeys[] = [
   {
     label: "services",
     value: "services",
-  },
-  {
-    label: "company",
-    value: "company",
   },
   {
     label: "resources",
@@ -472,9 +320,8 @@ const seedSections = async (
 
   // creating all NavigationItems in FooterSections
   const items: NavigationSectionItem[] = sectionsData.flatMap((section) => {
-    const { company, resources, services, social } = section;
+    const { resources, services, social } = section;
     return [
-      ...company.items,
       ...resources.items,
       ...services.items,
       ...social.items,
@@ -539,9 +386,8 @@ const seedSections = async (
   // creating all FooterSections
   const sections: FooterSection[] = footerData.flatMap(
     ({ sections, language }) => {
-      const { company, resources, services, social } = sections;
+      const { resources, services, social } = sections;
       return [
-        { ...company, language },
         { ...resources, language },
         { ...services, language },
         { ...social, language },

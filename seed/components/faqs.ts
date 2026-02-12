@@ -9,72 +9,54 @@ export type SeededFaqSections = Awaited<ReturnType<typeof seedSections>>;
 export const faqs: FAQ[] = [
   // English FAQs (en-US)
   {
-    question: "What cloud platforms do you support?",
+    question: "Who is Nimbus Tech a good fit for?",
     answer:
-      "We specialize in AWS but also work with Azure, Google Cloud, and multi-cloud architectures.",
+      "We primarily work with small and medium-sized businesses and startups that want to use AWS more effectively – for new products, migrations, or to stabilize and optimize existing setups.",
     language: {
       label: "English",
       value: "en-US",
     },
   },
   {
-    question: "How long does a typical project take?",
+    question: "Do you only work with AWS?",
     answer:
-      "Project timelines vary based on complexity, but we typically deliver MVPs within 8-12 weeks.",
+      "Our clear focus is AWS. We may connect to other platforms or tools if needed, but our consulting, architecture, and operations work is centered on AWS.",
     language: {
       label: "English",
       value: "en-US",
     },
   },
   {
-    question: "Do you provide ongoing support?",
+    question: "How does a typical engagement start?",
     answer:
-      "Yes, we offer maintenance, monitoring, and support packages tailored to your needs.",
+      "We usually start with a free 15-minute call to understand your situation. After that, we can offer a short assessment or architecture review and then define a concrete project scope with timeline and budget.",
     language: {
       label: "English",
       value: "en-US",
     },
   },
   {
-    question: "What industries do you serve?",
+    question: "Can you help if we already use AWS?",
     answer:
-      "We work with clients across various industries including fintech, healthcare, e-commerce, and SaaS.",
+      "Yes. Many clients come to us with an existing AWS setup that has grown over time. We review your environment, highlight risks and opportunities, and then help you clean up, secure, and optimize costs.",
     language: {
       label: "English",
       value: "en-US",
     },
   },
   {
-    question: "Can you help migrate existing applications to the cloud?",
+    question: "How do you charge for your services?",
     answer:
-      "Absolutely! We have extensive experience in cloud migration strategies and implementations.",
+      "We offer fixed-price packages for assessments and clearly scoped projects, and transparent day rates for ongoing support. Together we choose the model that fits your budget and decision process.",
     language: {
       label: "English",
       value: "en-US",
     },
   },
   {
-    question: "What is your development approach?",
+    question: "Do you provide ongoing support after a project?",
     answer:
-      "We follow agile methodologies with iterative development, continuous feedback, and regular deliverables.",
-    language: {
-      label: "English",
-      value: "en-US",
-    },
-  },
-  {
-    question: "Do you offer consulting services?",
-    answer:
-      "Yes, we provide architecture reviews, technology assessments, and strategic consulting services.",
-    language: {
-      label: "English",
-      value: "en-US",
-    },
-  },
-  {
-    question: "How do you ensure code quality?",
-    answer:
-      "We implement automated testing, code reviews, CI/CD pipelines, and follow industry best practices.",
+      "If you wish, we stay on as your AWS partner for monitoring, incident response, and continuous improvements. We can also train your internal team so they become more self-sufficient over time.",
     language: {
       label: "English",
       value: "en-US",
@@ -82,73 +64,54 @@ export const faqs: FAQ[] = [
   },
   // German FAQs (de-DE)
   {
-    question: "Welche Cloud-Plattformen unterstützen Sie?",
+    question: "Für welche Unternehmen ist Nimbus Tech geeignet?",
     answer:
-      "Wir sind auf AWS spezialisiert, arbeiten aber auch mit Azure, Google Cloud und Multi-Cloud-Architekturen.",
+      "Wir arbeiten vor allem mit kleinen und mittelständischen Unternehmen sowie Start-ups, die AWS gezielt einsetzen möchten – für neue Produkte, Migrationen oder die Stabilisierung bestehender Umgebungen.",
     language: {
       label: "German",
       value: "de-DE",
     },
   },
   {
-    question: "Wie lange dauert ein typisches Projekt?",
+    question: "Arbeiten Sie ausschließlich mit AWS?",
     answer:
-      "Die Projektlaufzeiten variieren je nach Komplexität, aber wir liefern MVPs typischerweise innerhalb von 8-12 Wochen.",
+      "Unser klarer Schwerpunkt ist AWS. Wo nötig binden wir andere Plattformen oder Tools an, aber unsere Beratung, Architektur und der Betrieb sind auf AWS ausgerichtet.",
     language: {
       label: "German",
       value: "de-DE",
     },
   },
   {
-    question: "Bieten Sie laufenden Support an?",
+    question: "Wie startet eine Zusammenarbeit typischerweise?",
     answer:
-      "Ja, wir bieten auf Ihre Bedürfnisse zugeschnittene Wartungs-, Überwachungs- und Supportpakete an.",
+      "In der Regel beginnen wir mit einem kostenlosen 15-minütigen Gespräch, um Ihre Situation zu verstehen. Darauf folgt bei Bedarf ein kompaktes Assessment oder Architektur-Review, aus dem wir ein konkretes Projektangebot mit Umfang, Zeitplan und Budget ableiten.",
     language: {
       label: "German",
       value: "de-DE",
     },
   },
   {
-    question: "Welche Branchen bedienen Sie?",
+    question: "Unterstützen Sie auch bestehende AWS-Setups?",
     answer:
-      "Wir arbeiten mit Kunden aus verschiedenen Branchen, darunter Fintech, Gesundheitswesen, E-Commerce und SaaS.",
+      "Ja. Viele Kund:innen kommen mit gewachsenen AWS-Umgebungen zu uns. Wir analysieren Ihre Umgebung, zeigen Risiken und Chancen auf und helfen anschließend bei Aufräumen, Absicherung und Kostenoptimierung.",
     language: {
       label: "German",
       value: "de-DE",
     },
   },
   {
-    question:
-      "Können Sie bei der Migration bestehender Anwendungen in die Cloud helfen?",
+    question: "Wie berechnen Sie Ihre Leistungen?",
     answer:
-      "Absolut! Wir verfügen über umfangreiche Erfahrung mit Cloud-Migrationsstrategien und deren Umsetzung.",
+      "Für Assessments und klar umrissene Projekte bieten wir Festpreise an, für laufende Unterstützung transparente Tagessätze. Gemeinsam wählen wir das Modell, das zu Ihrem Budget und Entscheidungsprozess passt.",
     language: {
       label: "German",
       value: "de-DE",
     },
   },
   {
-    question: "Was ist Ihr Entwicklungsansatz?",
+    question: "Bieten Sie laufende Betreuung an?",
     answer:
-      "Wir folgen agilen Methoden mit iterativer Entwicklung, kontinuierlichem Feedback und regelmäßigen Lieferungen.",
-    language: {
-      label: "German",
-      value: "de-DE",
-    },
-  },
-  {
-    question: "Bieten Sie Beratungsdienste an?",
-    answer:
-      "Ja, wir bieten Architektur-Reviews, Technologie-Bewertungen und strategische Beratungsdienste an.",
-    language: {
-      label: "German",
-      value: "de-DE",
-    },
-  },
-  {
-    question: "Wie stellen Sie die Codequalität sicher?",
-    answer:
-      "Wir setzen auf automatisierte Tests, Code-Reviews, CI/CD-Pipelines und befolgen Best Practices der Branche.",
+      "Auf Wunsch bleiben wir als AWS-Partner an Ihrer Seite – für Monitoring, Incident-Response und kontinuierliche Verbesserungen. Außerdem können wir Ihr internes Team gezielt weiterbilden.",
     language: {
       label: "German",
       value: "de-DE",
@@ -161,7 +124,7 @@ export const faqSections: FaqSection[] = [
   {
     title: "Frequently Asked Questions",
     description:
-      "Find answers to common questions about our cloud engineering services, development approach, and how we can help your business succeed.",
+      "Find answers to common questions about our AWS cloud consulting, migration projects, and how we work with SMEs and startups.",
     faqs: faqs.filter((faq) => faq.language.value === "en-US"),
     language: {
       label: "English",
@@ -169,9 +132,9 @@ export const faqSections: FaqSection[] = [
     },
   },
   {
-    title: "Häufig gestellte Fragen",
+    title: "Häufige Fragen",
     description:
-      "Finden Sie Antworten auf häufig gestellte Fragen zu unseren Cloud-Engineering-Diensten, unserem Entwicklungsansatz und wie wir Ihnen helfen können, Ihr Unternehmen erfolgreich zu gestalten.",
+      "Antworten auf typische Fragen zu unserer AWS-Cloud-Beratung, Migrationsprojekten und der Zusammenarbeit mit KMU und Start-ups.",
     faqs: faqs.filter((faq) => faq.language.value === "de-DE"),
     language: {
       label: "German",

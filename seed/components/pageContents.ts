@@ -32,7 +32,7 @@ const pageContentsData: CompositePageContentWithExtras<{
       slug: "home",
       title: "Nimbus Tech",
       description:
-        "Custom software development, cloud architecture, and scalable solutions for modern enterprises.",
+        "AWS cloud consulting and solutions for SMEs and startups. We design, implement, and optimize your AWS environment so your business can grow securely and cost-effectively.",
       language: {
         label: "English",
         value: "en-US",
@@ -46,7 +46,7 @@ const pageContentsData: CompositePageContentWithExtras<{
       slug: "home-de",
       title: "Nimbus Tech",
       description:
-        "Maßgeschneiderte Softwareentwicklung, Cloud-Architektur und skalierbare Lösungen für moderne Unternehmen.",
+        "AWS-Cloud-Beratung und -Lösungen für KMU und Start-ups. Wir planen, implementieren und optimieren Ihre AWS-Umgebung, damit Ihr Unternehmen sicher und kosteneffizient wachsen kann.",
       language: {
         label: "German",
         value: "de-DE",

@@ -25,7 +25,7 @@ const backgrounds: ImageConfig[] = [
 const ctas: CTA[] = [
   // English CTAs
   {
-    label: "Start now",
+    label: "Book a free consultation",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
     external: false,
     type: "cta",
@@ -35,7 +35,7 @@ const ctas: CTA[] = [
     },
   },
   {
-    label: "Schedule a discovery call",
+    label: "Request an AWS assessment",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de", // TODO: add link to calendars
     external: false,
     type: "cta",
@@ -55,7 +55,7 @@ const ctas: CTA[] = [
     },
   },
   {
-    label: "Contact Us",
+    label: "Free 15-minute consultation",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de", // TODO: Substack for now, change later
     external: false,
     type: "main",
@@ -75,7 +75,7 @@ const ctas: CTA[] = [
     },
   },
   {
-    label: "Get started",
+    label: "Contact Us",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
     language: {
       label: "English",
@@ -85,7 +85,7 @@ const ctas: CTA[] = [
   },
   // German CTAs
   {
-    label: "Jetzt starten",
+    label: "Kostenloses Erstgespräch buchen",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
     external: false,
     type: "cta",
@@ -95,7 +95,7 @@ const ctas: CTA[] = [
     },
   },
   {
-    label: "Termin vereinbaren",
+    label: "AWS-Assessment anfragen",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de", // TODO: add link to calendars
     external: false,
     type: "cta",
@@ -115,7 +115,7 @@ const ctas: CTA[] = [
     },
   },
   {
-    label: "Kontakt",
+    label: "Kostenloses Erstgespräch",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de", // TODO: Substack for now, change later
     external: false,
     type: "main",
@@ -135,7 +135,7 @@ const ctas: CTA[] = [
     },
   },
   {
-    label: "Los geht's",
+    label: "Erstgespräch",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
     language: {
       label: "German",

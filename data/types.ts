@@ -195,7 +195,7 @@ export type FooterSection = {
 };
 
 // Type for the overall sections object
-export type FooterSectionKey = "services" | "company" | "resources" | "social";
+export type FooterSectionKey = "services" | "resources" | "social";
 
 export type FooterSectionKeys = {
   label: FooterSectionKey;

@@ -10,9 +10,9 @@ export type SeededAnalytics = Awaited<ReturnType<typeof seed>>;
 const analyticsSeedData: AnalyticsData[] = [
   // English (en-US)
   {
-    heading: "Project Performance Overview",
+    heading: "Typical Project Outcomes",
     subheading:
-      "Expert insights into deployments, uptime, and client satisfaction across key Nimbus Tech projects.",
+      "Examples of how structured AWS consulting can improve reliability, speed, and cost efficiency.",
     stats: {
       totalDeployments: "305",
       deploymentChange: "+25 deployments",
@@ -60,20 +60,6 @@ const analyticsSeedData: AnalyticsData[] = [
           value: "en-US",
         },
       },
-      {
-        name: "Enterprise App",
-        deployments: "60",
-        uptime: "98.5%",
-        clientSatisfaction: "-1.2",
-        efficiency: "-2.5%",
-        revenueGrowth: "-3.8%",
-        bgColor: "bg-yellow-400",
-        changeType: "negative",
-        language: {
-          label: "English",
-          value: "en-US",
-        },
-      },
     ],
     language: {
       label: "English",
@@ -82,9 +68,9 @@ const analyticsSeedData: AnalyticsData[] = [
   },
   // German (de-DE)
   {
-    heading: "Projekt-Leistungsübersicht",
+    heading: "Typische Projektergebnisse",
     subheading:
-      "Experteneinblicke in Deployments, Betriebszeit und Kundenzufriedenheit bei wichtigen Nimbus Tech-Projekten.",
+      "Beispiele dafür, wie strukturierte AWS-Beratung Zuverlässigkeit, Geschwindigkeit und Kosteneffizienz verbessert.",
     stats: {
       totalDeployments: "305",
       deploymentChange: "+25 Deployments",
@@ -105,7 +91,7 @@ const analyticsSeedData: AnalyticsData[] = [
     ],
     summary: [
       {
-        name: "Project Nimbus",
+        name: "Projekt Nimbus",
         deployments: "120",
         uptime: "99.9%",
         clientSatisfaction: "+4.8",
@@ -127,20 +113,6 @@ const analyticsSeedData: AnalyticsData[] = [
         revenueGrowth: "+8.3%",
         bgColor: "bg-green-500",
         changeType: "positive",
-        language: {
-          label: "German",
-          value: "de-DE",
-        },
-      },
-      {
-        name: "Unternehmens-App",
-        deployments: "60",
-        uptime: "98.5%",
-        clientSatisfaction: "-1.2",
-        efficiency: "-2.5%",
-        revenueGrowth: "-3.8%",
-        bgColor: "bg-yellow-400",
-        changeType: "negative",
         language: {
           label: "German",
           value: "de-DE",

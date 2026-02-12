@@ -9,7 +9,7 @@ const approachesData: ApproachData[] = [
   {
     title: "Our Approach: From Vision to Value",
     description:
-      "At Nimbus Tech, we follow a structured approach to ensure your project is successful from start to finish. Our process is designed to be flexible, transparent, and focused on delivering real business value.",
+      "We follow a structured yet flexible approach to ensure your AWS projects deliver clear business value – from first conversation to long-term operation.",
     language: {
       label: "English",
       value: "en-US",
@@ -20,7 +20,7 @@ const approachesData: ApproachData[] = [
         type: "done",
         title: "Discovery: Listen & Learn",
         description:
-          "We start by understanding your goals, challenges, and vision.",
+          "We start by understanding your goals, challenges, and current AWS or on-premise setup.",
         activityTime: "Step 1",
         language: { label: "English", value: "en-US" },
       },
@@ -29,7 +29,7 @@ const approachesData: ApproachData[] = [
         type: "done",
         title: "Planning: Architect for Success",
         description:
-          "We design a scalable, future-proof solution tailored to your needs.",
+          "We design a scalable, secure AWS architecture and define a realistic roadmap.",
         activityTime: "Step 2",
         language: { label: "English", value: "en-US" },
       },
@@ -38,7 +38,7 @@ const approachesData: ApproachData[] = [
         type: "done",
         title: "Development: Build with Quality",
         description:
-          "We develop your solution using best practices and modern technologies.",
+          "We implement infrastructure, automation, and applications using best practices.",
         activityTime: "Step 3",
         language: { label: "English", value: "en-US" },
       },
@@ -47,7 +47,7 @@ const approachesData: ApproachData[] = [
         type: "in progress",
         title: "Deployment: Launch & Deliver",
         description:
-          "We deploy your product securely and ensure a smooth go-live.",
+          "We deploy your solution securely and coordinate a smooth go-live.",
         activityTime: "Step 4",
         language: { label: "English", value: "en-US" },
       },
@@ -55,16 +55,16 @@ const approachesData: ApproachData[] = [
         id: 5,
         type: "open",
         title: "Support: Optimize & Grow",
-        description: "We provide ongoing support and continuous improvement.",
+        description: "We provide ongoing support, optimization, and knowledge transfer for your team.",
         activityTime: "Step 5",
         language: { label: "English", value: "en-US" },
       },
     ],
   },
   {
-    title: "Unser Ansatz: Von der Vision zum Wert",
+    title: "Unser Vorgehen: Von der Idee zum Nutzen",
     description:
-      "Bei Nimbus Tech folgen wir einem strukturierten Ansatz, um den Erfolg Ihres Projekts von Anfang bis Ende sicherzustellen. Unser Prozess ist flexibel, transparent und darauf ausgerichtet, echten geschäftlichen Mehrwert zu liefern.",
+      "Unser strukturierter, aber flexibler Ansatz stellt sicher, dass Ihre AWS-Projekte echten Geschäftsnutzen liefern – vom ersten Gespräch bis zum laufenden Betrieb.",
     language: {
       label: "German",
       value: "de-DE",
@@ -73,45 +73,45 @@ const approachesData: ApproachData[] = [
       {
         id: 1,
         type: "done",
-        title: "Discovery: Zuhören & Verstehen",
+        title: "Verstehen: Ziele & Ist-Situation",
         description:
-          "Wir beginnen damit, Ihre Ziele, Herausforderungen und Visionen zu verstehen.",
+          "Wir starten mit Ihren Zielen, Herausforderungen und Ihrer aktuellen AWS- oder On-Premise-Landschaft.",
         activityTime: "Schritt 1",
         language: { label: "German", value: "de-DE" },
       },
       {
         id: 2,
         type: "done",
-        title: "Planung: Architektur für den Erfolg",
+        title: "Planen: Architektur & Roadmap",
         description:
-          "Wir entwerfen eine skalierbare, zukunftssichere Lösung, die auf Ihre Bedürfnisse zugeschnitten ist.",
+          "Wir entwerfen eine skalierbare, sichere AWS-Architektur und definieren eine realistische Roadmap.",
         activityTime: "Schritt 2",
         language: { label: "German", value: "de-DE" },
       },
       {
         id: 3,
         type: "done",
-        title: "Entwicklung: Bauen mit Qualität",
+        title: "Umsetzen: Bauen mit Qualität",
         description:
-          "Wir entwickeln Ihre Lösung unter Verwendung von Best Practices und modernen Technologien.",
+          "Wir implementieren Infrastruktur, Automatisierung und Anwendungen nach Best Practices.",
         activityTime: "Schritt 3",
         language: { label: "German", value: "de-DE" },
       },
       {
         id: 4,
         type: "in progress",
-        title: "Deployment: Start & Lieferung",
+        title: "Go-Live: Sicher starten",
         description:
-          "Wir stellen Ihr Produkt sicher bereit und sorgen für einen reibungslosen Go-Live.",
+          "Wir koordinieren einen sicheren Go-Live und begleiten die Inbetriebnahme.",
         activityTime: "Schritt 4",
         language: { label: "German", value: "de-DE" },
       },
       {
         id: 5,
         type: "open",
-        title: "Support: Optimieren & Wachsen",
+        title: "Betreiben: Optimieren & Wachsen",
         description:
-          "Wir bieten laufenden Support und kontinuierliche Verbesserung.",
+          "Wir unterstützen Sie beim laufenden Betrieb, bei Optimierungen und beim Wissenstransfer in Ihr Team.",
         activityTime: "Schritt 5",
         language: { label: "German", value: "de-DE" },
       },

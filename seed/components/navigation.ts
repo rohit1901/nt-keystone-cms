@@ -114,7 +114,7 @@ const navigationSections: NavigationSection[] = [
   {
     title: "Nimbus Tech",
     description:
-      "Nimbus Tech is a software development and consulting company specializing in cloud architecture, DevOps, and automation solutions. We help businesses build scalable, efficient, and secure software systems.",
+      "Nimbus Tech is an AWS-focused cloud consulting and software engineering company. We help SMEs and startups design, migrate, and operate scalable, secure systems on AWS without unnecessary complexity.",
     image: {
       src: "https://d1ljophloyhryl.cloudfront.net/assets/nimbus.logo.svg",
       alt: "Nimbus Tech Navbar Logo",
@@ -122,7 +122,7 @@ const navigationSections: NavigationSection[] = [
       height: 50,
     },
     cta: {
-      label: "Get started",
+      label: "Contact Us",
       href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
       language: {
         label: "English",
@@ -139,7 +139,7 @@ const navigationSections: NavigationSection[] = [
   {
     title: "Nimbus Tech",
     description:
-      "Nimbus Tech ist ein Softwareentwicklungs- und Beratungsunternehmen mit Schwerpunkt auf Cloud-Architektur, DevOps und Automatisierungslösungen. Wir helfen Unternehmen, skalierbare, effiziente und sichere Softwaresysteme aufzubauen.",
+      "Nimbus Tech ist ein auf AWS fokussiertes Cloud-Beratungs- und Software-Engineering-Unternehmen. Wir helfen KMU und Start-ups, skalierbare und sichere Systeme auf AWS zu entwerfen, zu migrieren und zu betreiben – ohne unnötige Komplexität.",
     image: {
       src: "https://d1ljophloyhryl.cloudfront.net/assets/nimbus.logo.svg",
       alt: "Nimbus Tech Navbar Logo",
@@ -148,7 +148,7 @@ const navigationSections: NavigationSection[] = [
       type: "navigation",
     },
     cta: {
-      label: "Jetzt starten",
+      label: "Erstgespräch",
       href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
       language: {
         label: "German",
