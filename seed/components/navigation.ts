@@ -23,10 +23,10 @@ export type SeedNavigationOptions = {
 /**
  * Shared link structures per language
  */
-const navigationLinksByLanguage: Record<
+const navigationLinksByLanguage: Partial<Record<
   Language["value"],
   NavigationSectionItem[]
-> = {
+>> = {
   "en-US": [
     {
       label: "Services",
@@ -114,7 +114,7 @@ const navigationSections: NavigationSection[] = [
   {
     title: "Nimbus Tech",
     description:
-      "Nimbus Tech is a software development and consulting company specializing in cloud architecture, DevOps, and automation solutions. We help businesses build scalable, efficient, and secure software systems.",
+      "Nimbus Tech is an AWS-focused cloud consulting and software engineering company. We help SMEs and startups design, migrate, and operate scalable, secure systems on AWS without unnecessary complexity.",
     image: {
       src: "https://d1ljophloyhryl.cloudfront.net/assets/nimbus.logo.svg",
       alt: "Nimbus Tech Navbar Logo",
@@ -122,7 +122,7 @@ const navigationSections: NavigationSection[] = [
       height: 50,
     },
     cta: {
-      label: "Get started",
+      label: "Contact Us",
       href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
       language: {
         label: "English",
@@ -134,12 +134,12 @@ const navigationSections: NavigationSection[] = [
       label: "English",
       value: "en-US",
     },
-    items: navigationLinksByLanguage["en-US"],
+    items: navigationLinksByLanguage["en-US"]!,
   },
   {
     title: "Nimbus Tech",
     description:
-      "Nimbus Tech ist ein Softwareentwicklungs- und Beratungsunternehmen mit Schwerpunkt auf Cloud-Architektur, DevOps und Automatisierungslösungen. Wir helfen Unternehmen, skalierbare, effiziente und sichere Softwaresysteme aufzubauen.",
+      "Nimbus Tech ist ein auf AWS fokussiertes Cloud-Beratungs- und Software-Engineering-Unternehmen. Wir helfen KMU und Start-ups, skalierbare und sichere Systeme auf AWS zu entwerfen, zu migrieren und zu betreiben – ohne unnötige Komplexität.",
     image: {
       src: "https://d1ljophloyhryl.cloudfront.net/assets/nimbus.logo.svg",
       alt: "Nimbus Tech Navbar Logo",
@@ -148,7 +148,7 @@ const navigationSections: NavigationSection[] = [
       type: "navigation",
     },
     cta: {
-      label: "Jetzt starten",
+      label: "Erstgespräch",
       href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
       language: {
         label: "German",
@@ -160,7 +160,7 @@ const navigationSections: NavigationSection[] = [
       label: "German",
       value: "de-DE",
     },
-    items: navigationLinksByLanguage["de-DE"],
+    items: navigationLinksByLanguage["de-DE"]!,
   },
 ];
 
@@ -172,23 +172,59 @@ const seedLinks = async (
 ) => {
   console.log(`Seeding navigation links for languageId=${languageId}...`);
 
-  const links = await prisma.navigationLink.createManyAndReturn({
-    data: items.map((link) => ({
-      label: link.label,
-      href: link.href,
-      external: link.external ?? false,
-      languageId,
+  // Check for existing navigation links
+  const existingLinks = await prisma.navigationLink.findMany({
+    where: {
+      languageId: languageId,
       typeId: navigationSlugId,
-      type: undefined,
-      language: undefined,
-    })),
+    },
+  });
+
+  const existingLinkKeys = new Set(
+    existingLinks.map((link) => `${link.label}-${link.href}`),
+  );
+
+  // Filter out items that already exist
+  const linksToCreate = items.filter((item) => {
+    const key = `${item.label}-${item.href}`;
+    return !existingLinkKeys.has(key);
+  });
+
+  let newLinks = [];
+  if (linksToCreate.length > 0) {
+    newLinks = await prisma.navigationLink.createManyAndReturn({
+      data: linksToCreate.map((link) => ({
+        label: link.label,
+        href: link.href,
+        external: link.external ?? false,
+        languageId,
+        typeId: navigationSlugId,
+        type: undefined,
+        language: undefined,
+      })),
+    });
+    console.log(
+      `✓ Created ${newLinks.length} new navigation links for languageId=${languageId}`,
+    );
+  } else {
+    console.log(
+      `✓ All navigation links already exist for languageId=${languageId}, skipping creation`,
+    );
+  }
+
+  // Return all links (existing + newly created)
+  const allLinks = await prisma.navigationLink.findMany({
+    where: {
+      languageId: languageId,
+      typeId: navigationSlugId,
+    },
   });
 
   console.log(
-    `✓ Seeded ${links.length} navigation links for languageId=${languageId}`,
+    `✓ Total navigation links for languageId=${languageId}: ${allLinks.length}`,
   );
 
-  return links;
+  return allLinks;
 };
 
 const seed = async (
@@ -223,12 +259,41 @@ const seed = async (
 
   const navigationCtas = ctas.filter((cta) => cta.typeId === navigationSlug);
 
+  // Check for existing navigation sections
+  const existingNavigations = await prisma.navigation.findMany({
+    where: {
+      languageId: {
+        in: languages.map((lang) => lang.id),
+      },
+    },
+    include: {
+      items: true,
+    },
+  });
+
+  const existingLanguageIds = new Set(
+    existingNavigations.map((nav) => nav.languageId),
+  );
+
   const seededNavigations = [];
 
   for (const section of navigationSections) {
     const navigationLanguageId =
       languages.find((language) => language.value === section.language.value)
         ?.id ?? null;
+
+    // Check if navigation already exists for this language
+    const existingNavigation = existingNavigations.find(
+      (nav) => nav.languageId === navigationLanguageId,
+    );
+
+    if (existingNavigation) {
+      console.log(
+        `✓ Navigation for ${section.language.value} already exists (id: ${existingNavigation.id}), skipping`,
+      );
+      seededNavigations.push(existingNavigation);
+      continue;
+    }
 
     const seededLinks = await seedLinks(
       prisma,
@@ -258,12 +323,24 @@ const seed = async (
     });
 
     console.log(
-      `✓ Seeded navigation with id ${navigation.id} for language ${section.language.value}`,
+      `✓ Created navigation with id ${navigation.id} for language ${section.language.value}`,
     );
     seededNavigations.push(navigation);
   }
 
+  console.log(`✓ Total navigation sections: ${seededNavigations.length}`);
+
   return seededNavigations;
+};
+
+const clear = async (prisma: PrismaClient) => {
+  console.log("Clearing navigation sections...");
+  const navigationResult = await prisma.navigation.deleteMany({});
+  console.log(`Deleted ${navigationResult.count} navigation section(s).`);
+
+  console.log("Clearing navigation links...");
+  const linksResult = await prisma.navigationLink.deleteMany({});
+  console.log(`Deleted ${linksResult.count} navigation link(s).`);
 };
 
 const Navigation = {
@@ -271,6 +348,7 @@ const Navigation = {
   links: navigationLinksByLanguage,
   seedLinks,
   seed,
+  clear,
 };
 
 export default Navigation;

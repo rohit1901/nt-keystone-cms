@@ -25,7 +25,7 @@ const backgrounds: ImageConfig[] = [
 const ctas: CTA[] = [
   // English CTAs
   {
-    label: "Start now",
+    label: "Book a free consultation",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
     external: false,
     type: "cta",
@@ -35,7 +35,7 @@ const ctas: CTA[] = [
     },
   },
   {
-    label: "Schedule a discovery call",
+    label: "Request an AWS assessment",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de", // TODO: add link to calendars
     external: false,
     type: "cta",
@@ -55,7 +55,7 @@ const ctas: CTA[] = [
     },
   },
   {
-    label: "Contact Us",
+    label: "Free 15-minute consultation",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de", // TODO: Substack for now, change later
     external: false,
     type: "main",
@@ -75,7 +75,7 @@ const ctas: CTA[] = [
     },
   },
   {
-    label: "Get started",
+    label: "Contact Us",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
     language: {
       label: "English",
@@ -85,7 +85,7 @@ const ctas: CTA[] = [
   },
   // German CTAs
   {
-    label: "Jetzt starten",
+    label: "Kostenloses Erstgespräch buchen",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
     external: false,
     type: "cta",
@@ -95,7 +95,7 @@ const ctas: CTA[] = [
     },
   },
   {
-    label: "Termin vereinbaren",
+    label: "AWS-Assessment anfragen",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de", // TODO: add link to calendars
     external: false,
     type: "cta",
@@ -115,7 +115,7 @@ const ctas: CTA[] = [
     },
   },
   {
-    label: "Kontakt",
+    label: "Kostenloses Erstgespräch",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de", // TODO: Substack for now, change later
     external: false,
     type: "main",
@@ -135,7 +135,7 @@ const ctas: CTA[] = [
     },
   },
   {
-    label: "Los geht's",
+    label: "Erstgespräch",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
     language: {
       label: "German",
@@ -175,24 +175,54 @@ async function seed(
   slugs: SeededSlugs,
   languages: SeededFooterLanguages,
 ) {
-  const seededCtas = await prisma.cta.createManyAndReturn({
-    data: ctas.map((cta) => {
+  // Get all existing CTAs to check for duplicates
+  const existingCtas = await prisma.cta.findMany();
+
+  // Create a unique key for each CTA (label + href + languageId + typeId)
+  const existingCtaKeys = new Set(
+    existingCtas.map(cta => `${cta.label}|${cta.href}|${cta.languageId}|${cta.typeId}`)
+  );
+
+  // Prepare data for CTAs that don't already exist
+  const ctasToCreate = ctas
+    .map((cta) => {
       const typeId = slugs.find((slug) => slug.label === cta.type)?.id;
       if (!typeId) {
         throw new Error(`Type not found for CTA: ${cta.label}`);
       }
+      const languageId = languages.find(
+        (language) => language.value === cta.language.value,
+      )?.id;
+
       return {
-        ...cta,
-        language: undefined,
-        languageId: languages.find(
-          (language) => language.value === cta.language.value,
-        )?.id,
-        type: undefined,
-        typeId,
+        original: cta,
+        data: {
+          label: cta.label,
+          href: cta.href,
+          external: cta.external,
+          languageId,
+          typeId,
+        },
+        key: `${cta.label}|${cta.href}|${languageId}|${typeId}`,
       };
-    }),
-  });
-  console.log(`✓ Seeded ctas with ${seededCtas.length} ctas`);
+    })
+    .filter(({ key }) => !existingCtaKeys.has(key));
+
+  let newCtasCount = 0;
+  let seededCtas = [...existingCtas];
+
+  if (ctasToCreate.length > 0) {
+    const newCtas = await prisma.cta.createManyAndReturn({
+      data: ctasToCreate.map(({ data }) => data),
+    });
+    newCtasCount = newCtas.length;
+    seededCtas = [...existingCtas, ...newCtas];
+    console.log(`✓ Created ${newCtasCount} new CTA(s)`);
+  } else {
+    console.log(`✓ All CTAs already exist, skipping creation`);
+  }
+
+  console.log(`✓ Total CTAs in database: ${seededCtas.length}`);
   return seededCtas;
 }
 
@@ -221,49 +251,85 @@ async function seedSection(
     ctaImageIds.includes(background.id),
   );
 
-  // Map over sectionsData to create multiple sections (en-US, de-DE)
-  const sections = await Promise.all(
-    sectionsData.map(async (sectionData) => {
-      const sectionLang = languages.find(
-        (lang) => lang.label === sectionData.language.label,
-      );
-      // Filter CTAs by Type AND Language
-      const foundCtaCTAs = ctas.filter(
-        (cta) =>
-          cta.typeId === foundCtaSlug.id && cta.languageId === sectionLang?.id,
-      );
+  // Get existing CTA sections to check for duplicates
+  const existingSections = await prisma.ctaSection.findMany({
+    select: { id: true, title: true, languageId: true },
+  });
 
-      if (!foundCtaCTAs.length) {
-        console.warn(
-          `! No CTA records found for language ${sectionData.language}`,
-        );
-      }
-
-      return prisma.ctaSection.create({
-        data: {
-          title: sectionData.title,
-          description: sectionData.description,
-          background: {
-            connect: backgroundsToConnect.map((b) => ({
-              id: b.id,
-            })),
-          },
-          ctas: {
-            connect: foundCtaCTAs.map((cta) => ({ id: cta.id })),
-          },
-          // Add missing property here
-          language: {
-            connect: {
-              id: sectionLang?.id,
-            },
-          },
-        },
-      });
-    }),
+  const existingSectionKeys = new Set(
+    existingSections.map(section => `${section.title}|${section.languageId}`)
   );
 
-  console.log(`✓ Seeded ${sections.length} CTA sections`);
+  // Map over sectionsData to create multiple sections (en-US, de-DE)
+  const sectionsToCreate = sectionsData.filter((sectionData) => {
+    const sectionLang = languages.find(
+      (lang) => lang.label === sectionData.language.label,
+    );
+    const key = `${sectionData.title}|${sectionLang?.id}`;
+    return !existingSectionKeys.has(key);
+  });
+
+  let newSectionsCount = 0;
+  const sections = [...existingSections];
+
+  if (sectionsToCreate.length > 0) {
+    const newSections = await Promise.all(
+      sectionsToCreate.map(async (sectionData) => {
+        const sectionLang = languages.find(
+          (lang) => lang.label === sectionData.language.label,
+        );
+        // Filter CTAs by Type AND Language
+        const foundCtaCTAs = ctas.filter(
+          (cta) =>
+            cta.typeId === foundCtaSlug.id && cta.languageId === sectionLang?.id,
+        );
+
+        if (!foundCtaCTAs.length) {
+          console.warn(
+            `! No CTA records found for language ${sectionData.language.label}`,
+          );
+        }
+
+        return prisma.ctaSection.create({
+          data: {
+            title: sectionData.title,
+            description: sectionData.description,
+            background: {
+              connect: backgroundsToConnect.map((b) => ({
+                id: b.id,
+              })),
+            },
+            ctas: {
+              connect: foundCtaCTAs.map((cta) => ({ id: cta.id })),
+            },
+            language: {
+              connect: {
+                id: sectionLang?.id,
+              },
+            },
+          },
+        });
+      }),
+    );
+    newSectionsCount = newSections.length;
+    sections.push(...newSections);
+    console.log(`✓ Created ${newSectionsCount} new CTA section(s)`);
+  } else {
+    console.log(`✓ All CTA sections already exist, skipping creation`);
+  }
+
+  console.log(`✓ Total CTA sections in database: ${sections.length}`);
   return sections;
+}
+
+async function clear(prisma: PrismaClient) {
+  console.log('Clearing all CTA sections...');
+  const sectionsResult = await prisma.ctaSection.deleteMany({});
+  console.log(`✓ Deleted ${sectionsResult.count} CTA section(s)`);
+
+  console.log('Clearing all CTAs...');
+  const ctasResult = await prisma.cta.deleteMany({});
+  console.log(`✓ Deleted ${ctasResult.count} CTA(s)`);
 }
 
 const Ctas = {
@@ -271,6 +337,7 @@ const Ctas = {
   ctas,
   seed,
   seedSection,
+  clear,
 };
 
 export default Ctas;

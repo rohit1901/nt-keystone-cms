@@ -10,8 +10,10 @@ import {
 } from "../../data";
 import { FooterSections, CompositePageContentWithExtras } from "../../data";
 import { SeededSlugs } from "./slugs";
+import Languages, { SeededLanguages } from "./languages";
 
-export type SeededFooterLanguages = Awaited<ReturnType<typeof seedLanguages>>;
+// Re-export for backward compatibility
+export type SeededFooterLanguages = SeededLanguages;
 export type SeededFooterSections = Awaited<ReturnType<typeof seedSections>>;
 export type SeededFooter = Awaited<ReturnType<typeof seed>>;
 
@@ -26,7 +28,7 @@ const footerData: CompositePageContentWithExtras<{
           title: "services",
           items: [
             {
-              label: "Software Development",
+              label: "AWS Cloud Consulting",
               href: "#features",
               language: {
                 value: "en-US",
@@ -36,7 +38,7 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "services",
             },
             {
-              label: "Cloud Architecture",
+              label: "AWS Migration & Modernization",
               href: "#features",
               language: {
                 value: "en-US",
@@ -46,7 +48,7 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "services",
             },
             {
-              label: "DevOps & Automation",
+              label: "DevOps & Automation on AWS",
               href: "#features",
               language: {
                 value: "en-US",
@@ -54,73 +56,6 @@ const footerData: CompositePageContentWithExtras<{
               },
               type: "footer",
               sectionKey: "services",
-            },
-            {
-              label: "Software Architecture",
-              href: "#features",
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "services",
-            },
-            {
-              label: "Technology Assessment",
-              href: "#features",
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "services",
-            },
-          ],
-        },
-        company: {
-          title: "company",
-          items: [
-            {
-              label: "About Nimbus Tech",
-              href: "#about-us",
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "company",
-            },
-            {
-              label: "Blog",
-              href: "https://rohitkhanduri.substack.com",
-              external: true,
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "company",
-            },
-            {
-              label: "Our Values",
-              href: "#our-values",
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "company",
-            },
-            {
-              label: "News & Updates",
-              href: "https://rohitkhanduri.substack.com",
-              external: true,
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "company",
             },
           ],
         },
@@ -173,20 +108,8 @@ const footerData: CompositePageContentWithExtras<{
           title: "social",
           items: [
             {
-              label: "GitHub",
-              href: "https://rohit1901.github.com",
-              external: true,
-              icon: "RiGithubFill",
-              language: {
-                value: "en-US",
-                label: "English",
-              },
-              type: "footer",
-              sectionKey: "social",
-            },
-            {
               label: "LinkedIn",
-              href: "#",
+              href: "https://www.linkedin.com/company/nimbus-tech-de",
               external: true,
               icon: "RiLinkedinBoxFill",
               language: {
@@ -197,10 +120,10 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "social",
             },
             {
-              label: "Xing",
-              href: "#",
+              label: "GitHub",
+              href: "https://github.com/nimbus-tech",
               external: true,
-              icon: "RiXingFill",
+              icon: "RiGithubFill",
               language: {
                 value: "en-US",
                 label: "English",
@@ -208,7 +131,18 @@ const footerData: CompositePageContentWithExtras<{
               type: "footer",
               sectionKey: "social",
             },
-            // German translations
+            {
+              label: "Blog",
+              href: "https://rohitkhanduri.substack.com",
+              external: true,
+              icon: "RiArticleFill",
+              language: {
+                value: "en-US",
+                label: "English",
+              },
+              type: "footer",
+              sectionKey: "social",
+            },
           ],
         },
       },
@@ -224,9 +158,8 @@ const footerData: CompositePageContentWithExtras<{
         services: {
           title: "services",
           items: [
-            // German translations
             {
-              label: "Softwareentwicklung",
+              label: "AWS-Cloud-Beratung",
               href: "#features",
               language: {
                 value: "de-DE",
@@ -236,7 +169,7 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "services",
             },
             {
-              label: "Cloud-Architektur",
+              label: "AWS-Migration & Modernisierung",
               href: "#features",
               language: {
                 value: "de-DE",
@@ -246,7 +179,7 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "services",
             },
             {
-              label: "DevOps & Automatisierung",
+              label: "DevOps & Automatisierung auf AWS",
               href: "#features",
               language: {
                 value: "de-DE",
@@ -254,81 +187,12 @@ const footerData: CompositePageContentWithExtras<{
               },
               type: "footer",
               sectionKey: "services",
-            },
-            {
-              label: "Software-Architektur",
-              href: "#features",
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "services",
-            },
-            {
-              label: "Technologiebewertung",
-              href: "#features",
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "services",
-            },
-          ],
-        },
-        company: {
-          title: "company",
-          items: [
-            // German translations
-            {
-              label: "Über Nimbus Tech",
-              href: "#about-us",
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "company",
-            },
-            {
-              label: "Blog",
-              href: "https://rohitkhanduri.substack.com",
-              external: true,
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "company",
-            },
-            {
-              label: "Unsere Werte",
-              href: "#our-values",
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "company",
-            },
-            {
-              label: "Neuigkeiten & Updates",
-              href: "https://rohitkhanduri.substack.com",
-              external: true,
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "company",
             },
           ],
         },
         resources: {
           title: "resources",
           items: [
-            // German translations
             {
               label: "Kontakt",
               href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
@@ -340,17 +204,7 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "resources",
             },
             {
-              label: "Support",
-              href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "resources",
-            },
-            {
-              label: "Datenschutz",
+              label: "Datenschutzerklärung",
               href: "/privacy-policy",
               language: {
                 value: "de-DE",
@@ -360,7 +214,7 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "resources",
             },
             {
-              label: "Nutzungsbedingungen",
+              label: "Impressum",
               href: "/terms",
               language: {
                 value: "de-DE",
@@ -375,20 +229,8 @@ const footerData: CompositePageContentWithExtras<{
           title: "social",
           items: [
             {
-              label: "GitHub",
-              href: "https://rohit1901.github.com",
-              external: true,
-              icon: "RiGithubFill",
-              language: {
-                value: "de-DE",
-                label: "German",
-              },
-              type: "footer",
-              sectionKey: "social",
-            },
-            {
               label: "LinkedIn",
-              href: "#",
+              href: "https://www.linkedin.com/company/nimbus-tech-de",
               external: true,
               icon: "RiLinkedinBoxFill",
               language: {
@@ -399,10 +241,22 @@ const footerData: CompositePageContentWithExtras<{
               sectionKey: "social",
             },
             {
-              label: "Xing",
-              href: "#",
+              label: "GitHub",
+              href: "https://github.com/nimbus-tech",
               external: true,
-              icon: "RiXingFill",
+              icon: "RiGithubFill",
+              language: {
+                value: "de-DE",
+                label: "German",
+              },
+              type: "footer",
+              sectionKey: "social",
+            },
+            {
+              label: "Blog",
+              href: "https://rohitkhanduri.substack.com",
+              external: true,
+              icon: "RiArticleFill",
               language: {
                 value: "de-DE",
                 label: "German",
@@ -426,10 +280,6 @@ const footerSectionKeys: FooterSectionKeys[] = [
     value: "services",
   },
   {
-    label: "company",
-    value: "company",
-  },
-  {
     label: "resources",
     value: "resources",
   },
@@ -439,25 +289,10 @@ const footerSectionKeys: FooterSectionKeys[] = [
   },
 ];
 
+// Deprecated: Use Languages.seed() instead
 const seedLanguages = async (prisma: PrismaClient) => {
-  console.log("Seeding footer languages...");
-  const languageData = [
-    {
-      label: "English",
-      value: "en-US",
-    },
-    {
-      label: "German",
-      value: "de-DE",
-    },
-  ];
-  const languages = await prisma.language.createManyAndReturn({
-    data: languageData,
-  });
-
-  console.log(`✓ Seeded ${languages.length} footer languages`);
-
-  return languages;
+  console.log("Seeding footer languages (via Languages component)...");
+  return await Languages.seed(prisma);
 };
 
 const seedFooterSectionKeys = async (prisma: PrismaClient) => {
@@ -482,19 +317,41 @@ const seedSections = async (
   const typeId = slugs.find((slug) => slug.label === "footer")?.id;
   const seededKeys = await seedFooterSectionKeys(prisma);
   const sectionsData = footerData.map((footer) => footer.sections);
+
   // creating all NavigationItems in FooterSections
   const items: NavigationSectionItem[] = sectionsData.flatMap((section) => {
-    const { company, resources, services, social } = section;
+    const { resources, services, social } = section;
     return [
-      ...company.items,
       ...resources.items,
       ...services.items,
       ...social.items,
     ];
   });
-  const seededSectionItems = await prisma.navigationLink.createManyAndReturn({
-    data: items.map(
-      (link) => ({
+
+  // Check for existing navigation links
+  const existingLinks = await prisma.navigationLink.findMany({
+    where: {
+      typeId: typeId,
+      languageId: { in: languages.map((lang) => lang.id) },
+    },
+  });
+
+  const existingLinkKeys = new Set(
+    existingLinks.map((link) => `${link.label}-${link.href}-${link.languageId}`),
+  );
+
+  const linksToCreate = items.filter((link) => {
+    const languageId = languages.find(
+      (language) => language.label === link.language.label,
+    )?.id;
+    const key = `${link.label}-${link.href}-${languageId}`;
+    return !existingLinkKeys.has(key);
+  });
+
+  let seededSectionItems = [];
+  if (linksToCreate.length > 0) {
+    seededSectionItems = await prisma.navigationLink.createManyAndReturn({
+      data: linksToCreate.map((link) => ({
         label: link.label,
         href: link.href,
         external: link.external ?? false,
@@ -509,59 +366,101 @@ const seedSections = async (
         language: undefined,
         sectionKey: undefined,
         icon: link.icon,
-      }),
-      { skipDuplicates: true },
-    ),
+      })),
+    });
+    console.log(`✓ Created ${seededSectionItems.length} new footer section items`);
+  } else {
+    console.log(`✓ All footer section items already exist, skipping creation`);
+  }
+
+  // Get all footer navigation links
+  const allSectionItems = await prisma.navigationLink.findMany({
+    where: {
+      typeId: typeId,
+      languageId: { in: languages.map((lang) => lang.id) },
+    },
   });
 
-  console.log(`✓ Seeded ${seededSectionItems.length} footer section items`);
+  console.log(`✓ Total footer section items: ${allSectionItems.length}`);
+
   // creating all FooterSections
   const sections: FooterSection[] = footerData.flatMap(
     ({ sections, language }) => {
-      const { company, resources, services, social } = sections;
+      const { resources, services, social } = sections;
       return [
-        { ...company, language },
         { ...resources, language },
         { ...services, language },
         { ...social, language },
       ];
     },
   );
-  const seededSections = await Promise.all(
-    sections.map(async (section) => {
-      const titleId = seededKeys.find((key) => key.label === section.title)?.id;
-      const languageId = languages.find(
-        (language) => language.label === section.language?.label,
-      )?.id;
 
-      const connectedItems = seededSectionItems
-        .filter((item) => {
-          const itemSectionKey = seededKeys.find(
-            (key) => key.label === section.title.toLowerCase(), // lowercase
-          );
-          const itemLanguage = languages.find(
-            (language) => language.label === section.language?.label,
-          );
-          return (
-            item.sectionKeyId === itemSectionKey?.id &&
-            item.languageId === itemLanguage?.id
-          );
-        })
-        .map((item) => ({ id: item.id }));
+  // Check for existing footer sections
+  const existingFooterSections = await prisma.footerSection.findMany({
+    where: {
+      languageId: { in: languages.map((lang) => lang.id) },
+    },
+  });
 
-      return await prisma.footerSection.create({
-        data: {
-          titleId,
-          languageId,
-          items: {
-            connect: connectedItems,
-          },
-        },
-      });
-    }),
+  const existingFooterSectionKeys = new Set(
+    existingFooterSections.map((section) => `${section.titleId}-${section.languageId}`),
   );
 
-  console.log(`✓ Seeded ${seededSections.length} footer sections`);
+  const seededSections = [];
+
+  for (const section of sections) {
+    const titleId = seededKeys.find((key) => key.label === section.title)?.id;
+    const languageId = languages.find(
+      (language) => language.label === section.language?.label,
+    )?.id;
+
+    const sectionKey = `${titleId}-${languageId}`;
+
+    // Check if section already exists
+    const existingSection = existingFooterSections.find(
+      (s) => s.titleId === titleId && s.languageId === languageId,
+    );
+
+    if (existingSection) {
+      console.log(
+        `✓ Footer section "${section.title}" for language ${section.language?.label} already exists (id: ${existingSection.id}), skipping`,
+      );
+      seededSections.push(existingSection);
+      continue;
+    }
+
+    const connectedItems = allSectionItems
+      .filter((item) => {
+        const itemSectionKey = seededKeys.find(
+          (key) => key.label === section.title.toLowerCase(),
+        );
+        const itemLanguage = languages.find(
+          (language) => language.label === section.language?.label,
+        );
+        return (
+          item.sectionKeyId === itemSectionKey?.id &&
+          item.languageId === itemLanguage?.id
+        );
+      })
+      .map((item) => ({ id: item.id }));
+
+    const newSection = await prisma.footerSection.create({
+      data: {
+        titleId,
+        languageId,
+        items: {
+          connect: connectedItems,
+        },
+      },
+    });
+
+    console.log(
+      `✓ Created footer section "${section.title}" for language ${section.language?.label} (id: ${newSection.id})`,
+    );
+    seededSections.push(newSection);
+  }
+
+  console.log(`✓ Total footer sections: ${seededSections.length}`);
   return seededSections;
 };
 
@@ -578,31 +477,94 @@ const seed = async (
     options.languages,
     options.slugs,
   );
-  const footers = await Promise.all(
-    footerData.map(async (data) => {
-      const languageId = options.languages.find(
-        (language) => language.value === data.language.value,
-      )?.id;
 
-      // Filter sections that match the current footer's language
-      const connectedSections = seededSections
-        .filter((section) => section.languageId === languageId)
-        .map((section) => ({ id: section.id }));
+  // Check for existing footers
+  const existingFooters = await prisma.footer.findMany({
+    where: {
+      languageId: { in: options.languages.map((lang) => lang.id) },
+    },
+    include: {
+      sections: true,
+    },
+  });
 
-      return await prisma.footer.create({
-        data: {
-          title: data.title,
-          languageId,
-          sections: {
-            connect: connectedSections,
-          },
-        },
-      });
-    }),
+  const existingLanguageIds = new Set(
+    existingFooters.map((footer) => footer.languageId),
   );
 
-  console.log(`✓ Seeded ${footers.length} footers`);
+  const footers = [];
+
+  for (const data of footerData) {
+    const languageId = options.languages.find(
+      (language) => language.value === data.language.value,
+    )?.id;
+
+    if (!languageId) {
+      console.warn(`⚠️  Language not found for ${data.language.value}, skipping footer`);
+      continue;
+    }
+
+    // Check if footer already exists for this language
+    const existingFooter = existingFooters.find(
+      (footer) => footer.languageId === languageId,
+    );
+
+    if (existingFooter) {
+      console.log(
+        `✓ Footer for ${data.language.value} already exists (id: ${existingFooter.id}), skipping`,
+      );
+      footers.push(existingFooter);
+      continue;
+    }
+
+    // Filter sections that match the current footer's language
+    const connectedSections = seededSections
+      .filter((section) => section.languageId === languageId)
+      .map((section) => ({ id: section.id }));
+
+    const footer = await prisma.footer.create({
+      data: {
+        title: data.title,
+        language: {
+          connect: { id: languageId },
+        },
+        sections: {
+          connect: connectedSections,
+        },
+      },
+    });
+
+    console.log(`✓ Created footer for ${data.language.value} (id: ${footer.id})`);
+    footers.push(footer);
+  }
+
+  console.log(`✓ Total footers: ${footers.length}`);
   return footers;
+};
+
+const clear = async (prisma: PrismaClient) => {
+  console.log("Clearing all footers...");
+  const footerResult = await prisma.footer.deleteMany({});
+  console.log(`Deleted ${footerResult.count} footer(s).`);
+
+  console.log("Clearing all footer sections...");
+  const footerSectionResult = await prisma.footerSection.deleteMany({});
+  console.log(`Deleted ${footerSectionResult.count} footer section(s).`);
+
+  console.log("Clearing footer navigation links...");
+  const footerSlug = await prisma.type.findFirst({
+    where: { label: "footer" },
+  });
+  if (footerSlug) {
+    const linksResult = await prisma.navigationLink.deleteMany({
+      where: { typeId: footerSlug.id },
+    });
+    console.log(`Deleted ${linksResult.count} footer navigation link(s).`);
+  }
+
+  console.log("Clearing footer section keys...");
+  const keysResult = await prisma.footerSectionKey.deleteMany({});
+  console.log(`Deleted ${keysResult.count} footer section key(s).`);
 };
 
 const Footer = {
@@ -610,6 +572,7 @@ const Footer = {
   seedLanguages,
   seedSections,
   seed,
+  clear,
 };
 
 export default Footer;

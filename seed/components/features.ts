@@ -9,12 +9,12 @@ export const features: Feature[] = [
   // English (en-US)
   {
     featureId: 1,
-    title: "Software development",
+    title: "AWS Cloud Consulting",
     description:
-      "Custom applications tailored to your business needs, from web to mobile.",
+      "Strategic AWS guidance for SMEs and startups – from first cloud projects to mature environments.",
     longDescription:
-      "Our team specializes in creating custom software solutions that streamline your operations, enhance productivity, and drive growth. Whether you need a web application, mobile app, or cloud-based solution, we have the expertise to deliver results that exceed your expectations.",
-    visualization: "OrbitFeatureVisualization",
+      "We help you define a clear AWS strategy, choose the right services, and design an architecture that fits your business goals. Together, we create a roadmap that balances speed, risk, and budget so you can grow safely in the cloud.",
+    visualization: "ArchitectureFeatureVisualization",
     language: {
       label: "English",
       value: "en-US",
@@ -22,11 +22,11 @@ export const features: Feature[] = [
   },
   {
     featureId: 2,
-    title: "Cloud Development",
+    title: "AWS Migration & Modernization",
     description:
-      "Seamless cloud migration and scalable solutions leveraging AWS, Azure, or GCP",
+      "Securely move existing systems to AWS and modernize step by step without disrupting your business.",
     longDescription:
-      "Our cloud development services help you migrate to the cloud effortlessly, ensuring your applications are optimized for performance, security, and scalability. We specialize in AWS, Azure, and GCP, providing tailored solutions that meet your unique requirements.",
+      "Whether you are lifting and shifting, re-platforming, or re-architecting, we plan and execute your AWS migration with minimal downtime. We modernize where it adds value – using containers, serverless, and managed services to reduce operational effort and costs.",
     visualization: "CloudFeatureVisualization",
     language: {
       label: "English",
@@ -35,12 +35,12 @@ export const features: Feature[] = [
   },
   {
     featureId: 3,
-    title: "Architecture & Consulting",
+    title: "DevOps & Automation on AWS",
     description:
-      "Robust system design and technical consulting for future-proof infrastructure.",
+      "Reliable CI/CD pipelines, infrastructure as code, and monitoring tailored to your team and stack.",
     longDescription:
-      "Our architecture and consulting services ensure your systems are designed for scalability, reliability, and performance. We work closely with you to understand your business goals and provide tailored solutions that align with your vision.",
-    visualization: "ArchitectureFeatureVisualization",
+      "We set up or improve your deployment pipelines, infrastructure as code (Terraform/CDK), and observability so your team can ship changes safely and frequently. You get an automated AWS foundation that supports your product instead of slowing it down.",
+    visualization: "CloudFeatureVisualization",
     language: {
       label: "English",
       value: "en-US",
@@ -49,11 +49,11 @@ export const features: Feature[] = [
   // German (de-DE)
   {
     featureId: 1,
-    title: "Softwareentwicklung",
+    title: "AWS-Cloud-Beratung",
     description:
-      "Maßgeschneiderte Anwendungen für Ihre Geschäftsanforderungen, von Web bis Mobile.",
+      "Strategische AWS-Beratung für KMU und Start-ups – von den ersten Cloud-Schritten bis zu gewachsenen Umgebungen.",
     longDescription:
-      "Unser Team ist darauf spezialisiert, maßgeschneiderte Softwarelösungen zu entwickeln, die Ihre Abläufe optimieren, die Produktivität steigern und das Wachstum vorantreiben. Egal, ob Sie eine Webanwendung, eine mobile App oder eine Cloud-basierte Lösung benötigen – wir verfügen über das Fachwissen, um Ergebnisse zu liefern, die Ihre Erwartungen übertreffen.",
+      "Wir entwickeln gemeinsam mit Ihnen eine klare AWS-Strategie, wählen passende Services aus und entwerfen eine Architektur, die zu Ihren Geschäftsanforderungen passt. So entsteht eine Roadmap, die Geschwindigkeit, Risiko und Budget sinnvoll ausbalanciert.",
     visualization: "OrbitFeatureVisualization",
     language: {
       label: "German",
@@ -62,11 +62,11 @@ export const features: Feature[] = [
   },
   {
     featureId: 2,
-    title: "Cloud-Entwicklung",
+    title: "AWS-Migration & Modernisierung",
     description:
-      "Nahtlose Cloud-Migration und skalierbare Lösungen mit AWS, Azure oder GCP.",
+      "Sichere Migration bestehender Systeme nach AWS und schrittweise Modernisierung ohne Betriebsunterbrechung.",
     longDescription:
-      "Unsere Cloud-Entwicklungsdienste helfen Ihnen, mühelos in die Cloud zu migrieren und stellen sicher, dass Ihre Anwendungen auf Leistung, Sicherheit und Skalierbarkeit optimiert sind. Wir sind auf AWS, Azure und GCP spezialisiert und bieten maßgeschneiderte Lösungen, die Ihren individuellen Anforderungen entsprechen.",
+      "Ob Lift-and-Shift, Re-Platforming oder Re-Architektur – wir planen und begleiten Ihre AWS-Migration mit minimaler Downtime. Wir modernisieren dort, wo es echten Mehrwert bringt, etwa mit Containern, Serverless und Managed Services.",
     visualization: "CloudFeatureVisualization",
     language: {
       label: "German",
@@ -75,11 +75,11 @@ export const features: Feature[] = [
   },
   {
     featureId: 3,
-    title: "Architektur & Beratung",
+    title: "DevOps & Automatisierung auf AWS",
     description:
-      "Robustes Systemdesign und technische Beratung für zukunftssichere Infrastrukturen.",
+      "Zuverlässige CI/CD-Pipelines, Infrastructure as Code und Monitoring, abgestimmt auf Ihr Team.",
     longDescription:
-      "Unsere Architektur- und Beratungsdienste stellen sicher, dass Ihre Systeme auf Skalierbarkeit, Zuverlässigkeit und Leistung ausgelegt sind. Wir arbeiten eng mit Ihnen zusammen, um Ihre Geschäftsziele zu verstehen und maßgeschneiderte Lösungen anzubieten, die Ihrer Vision entsprechen.",
+      "Wir richten Deployment-Pipelines, Infrastructure as Code (z.B. Terraform/CDK) und Observability ein oder verbessern bestehende Lösungen. So kann Ihr Team Änderungen häufiger und sicherer ausrollen.",
     visualization: "ArchitectureFeatureVisualization",
     language: {
       label: "German",
@@ -89,24 +89,69 @@ export const features: Feature[] = [
 ];
 
 const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
-  // Using createManyAndReturn to efficiently seed multiple objects in one query
-  const seededFeatures = await prisma.feature.createManyAndReturn({
-    data: features.map((feature) => ({
-      ...feature,
-      language: undefined,
-      languageId: languages.find(
-        (language) => language.value === feature.language.value,
-      )?.id,
-    })),
-    skipDuplicates: true, // Optional: Prevents errors if run multiple times
+  // Get all existing features to check for duplicates
+  const existingFeatures = await prisma.feature.findMany({
+    select: { id: true, featureId: true, title: true, languageId: true },
   });
-  console.log(`✓ Seeded ${seededFeatures.length} features`);
+
+  // Create unique keys based on featureId + languageId
+  const existingFeatureKeys = new Set(
+    existingFeatures.map((feature) => `${feature.featureId}|${feature.languageId}`)
+  );
+
+  // Filter out features that already exist
+  const featuresToCreate = features
+    .map((feature) => {
+      const languageId = languages.find(
+        (language) => language.value === feature.language.value,
+      )?.id;
+
+      if (!languageId) {
+        console.warn(`! Language not found: ${feature.language.value}`);
+        return null;
+      }
+
+      return {
+        featureId: feature.featureId,
+        title: feature.title,
+        description: feature.description,
+        longDescription: feature.longDescription,
+        visualization: feature.visualization,
+        languageId,
+        key: `${feature.featureId}|${languageId}`,
+      };
+    })
+    .filter((feature): feature is NonNullable<typeof feature> => feature !== null)
+    .filter(({ key }) => !existingFeatureKeys.has(key));
+
+  let newFeaturesCount = 0;
+  let seededFeatures = [...existingFeatures];
+
+  if (featuresToCreate.length > 0) {
+    const newFeatures = await prisma.feature.createManyAndReturn({
+      data: featuresToCreate.map(({ key, ...data }) => data),
+    });
+    newFeaturesCount = newFeatures.length;
+    seededFeatures = [...existingFeatures, ...newFeatures];
+    console.log(`✓ Created ${newFeaturesCount} new feature(s)`);
+  } else {
+    console.log(`✓ All features already exist, skipping creation`);
+  }
+
+  console.log(`✓ Total features in database: ${seededFeatures.length}`);
   return seededFeatures;
+};
+
+const clear = async (prisma: PrismaClient) => {
+  console.log('Clearing all features...');
+  const result = await prisma.feature.deleteMany({});
+  console.log(`✓ Deleted ${result.count} feature(s)`);
 };
 
 const Features = {
   data: features,
   seed,
+  clear,
 };
 
 export default Features;

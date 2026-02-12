@@ -27,35 +27,35 @@ const pageContentsData: CompositePageContentWithExtras<{
   slug: string;
   language: Language;
 }>[] = [
-  // English
-  {
-    slug: "home",
-    title: "Nimbus Tech",
-    description:
-      "Custom software development, cloud architecture, and scalable solutions for modern enterprises.",
-    language: {
-      label: "English",
-      value: "en-US",
+    // English
+    {
+      slug: "home",
+      title: "Nimbus Tech",
+      description:
+        "AWS cloud consulting and solutions for SMEs and startups. We design, implement, and optimize your AWS environment so your business can grow securely and cost-effectively.",
+      language: {
+        label: "English",
+        value: "en-US",
+      },
+      cta: Ctas.data
+        .find((cta) => cta.language.value === "en-US")
+        ?.ctas.find((cta) => cta.type === "main"),
     },
-    cta: Ctas.data
-      .find((cta) => cta.language.value === "en-US")
-      ?.ctas.find((cta) => cta.type === "main"),
-  },
-  // German
-  {
-    slug: "home-de",
-    title: "Nimbus Tech",
-    description:
-      "Maßgeschneiderte Softwareentwicklung, Cloud-Architektur und skalierbare Lösungen für moderne Unternehmen.",
-    language: {
-      label: "German",
-      value: "de-DE",
+    // German
+    {
+      slug: "home-de",
+      title: "Nimbus Tech",
+      description:
+        "AWS-Cloud-Beratung und -Lösungen für KMU und Start-ups. Wir planen, implementieren und optimieren Ihre AWS-Umgebung, damit Ihr Unternehmen sicher und kosteneffizient wachsen kann.",
+      language: {
+        label: "German",
+        value: "de-DE",
+      },
+      cta: Ctas.data
+        .find((cta) => cta.language.value === "de-DE")
+        ?.ctas.find((cta) => cta.type === "main"),
     },
-    cta: Ctas.data
-      .find((cta) => cta.language.value === "de-DE")
-      ?.ctas.find((cta) => cta.type === "main"),
-  },
-];
+  ];
 
 type EntityRef = SeedWithId<any>;
 
@@ -220,6 +220,8 @@ const pageContentsConfig: PageContentConfig[] = pageContentsData.map(
 export type SeededPageContents = Awaited<ReturnType<typeof seed>>;
 
 async function seed(prisma: PrismaClient, deps: PageContentDependencies) {
+  console.log("Seeding page contents...");
+
   // Pre-fetch languages to map value ('en-US') to ID
   const allLanguages = await prisma.language.findMany();
   // Only use this version if your database IDs are actually Integers (1, 2, 3...)
@@ -231,64 +233,110 @@ async function seed(prisma: PrismaClient, deps: PageContentDependencies) {
     {} as Record<string, number>, // <--- This must match the variable type
   );
 
-  const seededContents = await Promise.all(
-    pageContentsConfig.map(async (config) => {
-      // Pass languageMap to buildSection
-      const { create } = config.buildSection(deps, { prisma, languageMap });
-      const type = await prisma.type.findFirstOrThrow({
-        where: {
-          label: "main",
-        },
-      });
-      const languageId = allLanguages.find(
-        (lang) => lang.value === config.language.value,
-      )?.id;
-      const cta = await prisma.cta.findFirstOrThrow({
-        where: {
-          type: {
-            id: type.id,
-          },
-          language: {
-            id: languageId,
-          },
-        },
-      });
-      if (!languageId) {
-        throw new Error(
-          `Language not found for value: ${config.language.value}`,
-        );
-      }
+  // Check for existing page contents
+  const existingPageContents = await prisma.pageContent.findMany({
+    where: {
+      slug: { in: pageContentsConfig.map(c => c.slug) },
+    },
+    include: {
+      sections: true,
+    },
+  });
 
-      return prisma.pageContent.create({
-        data: {
-          slug: config.slug,
-          title: config.title,
-          description: config.description,
-          // Connect Page Language
-          language: {
-            connect: {
-              id: allLanguages.find(
-                (lang) => lang.value === config.language.value,
-              )?.id,
-            },
-          },
-          // Create the Master Section with filtered connections
-          sections: {
-            create: create,
-          },
-          cta: {
-            connect: {
-              id: cta.id,
-            },
+  const existingSlugs = new Set(existingPageContents.map(pc => pc.slug));
+
+  const seededContents = [];
+
+  for (const config of pageContentsConfig) {
+    // Check if page content already exists for this slug
+    const existingContent = existingPageContents.find(
+      (pc) => pc.slug === config.slug,
+    );
+
+    if (existingContent) {
+      console.log(
+        `✓ Page content for slug "${config.slug}" already exists (id: ${existingContent.id}), skipping`,
+      );
+      seededContents.push(existingContent);
+      continue;
+    }
+
+    // Pass languageMap to buildSection
+    const { create } = config.buildSection(deps, { prisma, languageMap });
+    const type = await prisma.type.findFirstOrThrow({
+      where: {
+        label: "main",
+      },
+    });
+    const languageId = allLanguages.find(
+      (lang) => lang.value === config.language.value,
+    )?.id;
+
+    if (!languageId) {
+      throw new Error(
+        `Language not found for value: ${config.language.value}`,
+      );
+    }
+
+    const cta = await prisma.cta.findFirstOrThrow({
+      where: {
+        type: {
+          id: type.id,
+        },
+        language: {
+          id: languageId,
+        },
+      },
+    });
+
+    const pageContent = await prisma.pageContent.create({
+      data: {
+        slug: config.slug,
+        title: config.title,
+        description: config.description,
+        // Connect Page Language
+        language: {
+          connect: {
+            id: allLanguages.find(
+              (lang) => lang.value === config.language.value,
+            )?.id,
           },
         },
-      });
-    }),
-  );
+        // Create the Master Section with filtered connections
+        sections: {
+          create: create,
+        },
+        cta: {
+          connect: {
+            id: cta.id,
+          },
+        },
+      },
+    });
 
-  console.log(`✓ Seeded ${seededContents.length} Page Contents`);
+    console.log(
+      `✓ Created page content for slug "${config.slug}" (id: ${pageContent.id})`,
+    );
+    seededContents.push(pageContent);
+  }
+
+  console.log(`✓ Total page contents: ${seededContents.length}`);
   return seededContents;
 }
+
+const clear = async (prisma: PrismaClient) => {
+  console.log("Clearing all page contents...");
+
+  // Delete sections first (they depend on page contents)
+  const sectionsResult = await prisma.section.deleteMany({});
+  console.log(`Deleted ${sectionsResult.count} section(s).`);
+
+  // Then delete page contents
+  const pageContentsResult = await prisma.pageContent.deleteMany({});
+  console.log(`Deleted ${pageContentsResult.count} page content(s).`);
+
+  console.log("✓ Cleared all page contents and sections.");
+};
 
 const PageContents = {
   data: pageContentsConfig.map(
@@ -302,6 +350,7 @@ const PageContents = {
     }),
   ),
   seed,
+  clear,
 };
 
 export default PageContents;

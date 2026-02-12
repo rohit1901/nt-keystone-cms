@@ -141,7 +141,7 @@ const navigationPageContent = {
   description:
     "Nimbus Tech is a software development and consulting company specializing in cloud architecture, DevOps, and automation solutions. We help businesses build scalable, efficient, and secure software systems.",
   image: {
-    src: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg", // Example image URL, replace with actual image path
+    src: "https://nimbus-tech.de/images/nimbus-tech-hero-image.jpg",
     alt: "Nimbus Tech Hero Image",
     width: 1600,
     height: 900,
@@ -164,30 +164,60 @@ const seed = async (prisma: PrismaClient, slugs: SeededSlugs) => {
     ({ label }) => label === "certification",
   )?.id;
   if (!certificationSlugId) throw new Error("Certification slug not found");
+
   const navigationSlugExists = slugs.some(
     ({ label }) => label === "navigation",
   );
   if (!navigationSlugExists) throw new Error("Navigation slug not found");
+
   if (!navigationPageContent.image) {
     throw new Error(
       "Navigation image data is required in navigationPageContent.image before seeding.",
     );
   }
-  const seededImages = await prisma.image.createManyAndReturn({
-    data: Object.entries(imageSeedData).map(([, { key, ...value }]) => ({
-      ...value, // Spreads everything EXCEPT 'key'
+
+  // Get all existing images by src to check for duplicates
+  const existingImages = await prisma.image.findMany();
+
+  const existingImageSrcs = new Set(existingImages.map(img => img.src));
+
+  // Prepare data for images that don't already exist
+  const imagesToCreate = Object.entries(imageSeedData)
+    .filter(([, { src }]) => !existingImageSrcs.has(src))
+    .map(([, { key, ...value }]) => ({
+      ...value,
       type: undefined,
       fill: !!value.fill,
       typeId: getTypeId(value.type, slugs),
-    })),
-    skipDuplicates: true,
-  });
-  console.log(`✓ Seeded images with ${seededImages.length} images`);
+    }));
+
+  let newImagesCount = 0;
+  let seededImages = [...existingImages];
+
+  if (imagesToCreate.length > 0) {
+    const newImages = await prisma.image.createManyAndReturn({
+      data: imagesToCreate,
+    });
+    newImagesCount = newImages.length;
+    seededImages = [...existingImages, ...newImages];
+    console.log(`✓ Created ${newImagesCount} new image(s)`);
+  } else {
+    console.log(`✓ All images already exist, skipping creation`);
+  }
+
+  console.log(`✓ Total images in database: ${seededImages.length}`);
   return seededImages;
+};
+
+const clear = async (prisma: PrismaClient) => {
+  console.log('Clearing all images...');
+  const result = await prisma.image.deleteMany({});
+  console.log(`✓ Deleted ${result.count} image(s)`);
 };
 
 const Images = {
   seed,
+  clear,
   data: imageSeedData,
 };
 

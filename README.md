@@ -19,7 +19,10 @@ This repository delivers the content platform behind the Nimbus Tech website, ex
   - [6. Seed baseline content](#6-seed-baseline-content)
   - [7. Run the Keystone development server](#7-run-the-keystone-development-server)
 - [Working with Docker Compose](#working-with-docker-compose)
-- [Database & Seeding Details](#database--seeding-details)
+- [Database & Seeding](#database--seeding)
+  - [Seeding System Overview](#seeding-system-overview)
+  - [Seeding Commands](#seeding-commands)
+  - [Clearing Data](#clearing-data)
 - [Available npm scripts](#available-npm-scripts)
 - [Makefile shortcuts](#makefile-shortcuts)
 - [Project structure](#project-structure)
@@ -160,12 +163,80 @@ make status
 
 For log streaming, interactive psql access, and cleanup commands see the [Makefile shortcuts](#makefile-shortcuts) section.
 
-## Database & Seeding Details
+## Database & Seeding
 
-- The seed runner (`seed/index.ts`) orchestrates modular seeders from `seed/components` to insert hero sections, testimonials, features, maps, and more.
-- The script regenerates relationships such as CTAs, languages, and navigation to ensure referential integrity.
-- Before re-running seeds on an existing dataset, consider wiping the database with `npm run db:reset` or `npm run db:reset:seed`.
-- Use the seed modules as a blueprint for adding new content domains; each module exports reusable data and a `seed` function.
+### Seeding System Overview
+
+The refactored seeding system provides a robust, idempotent way to populate your database with content:
+
+- ✅ **Idempotent Operations**: Safe to run multiple times without creating duplicates
+- 🔄 **Smart Caching**: Dependencies are seeded only once per run
+- 🎯 **Automatic Dependency Resolution**: Components auto-seed their prerequisites
+- 📦 **Modular Design**: Seed individual components or everything at once
+- 🧹 **Clean Clear Operations**: Comprehensive data cleanup utilities
+
+The seed runner (`seed/index.ts`) orchestrates 19 modular seeders from `seed/components/`:
+- `slugs`, `languages`, `images`, `ctas`
+- `certifications`, `heroes`, `benefits`, `approaches`
+- `about`, `analytics`, `navigation`, `footer`
+- `faqs`, `features`, `testimonials`, `maps`
+- `pageContents`, `resume`, `legalPages`
+
+**📚 For comprehensive documentation, see [seed/README.md](seed/README.md) and [seed/SCRIPTS.md](seed/SCRIPTS.md)**
+
+### Seeding Commands
+
+**Seed everything (recommended for fresh database):**
+```bash
+npm run db:seed
+# or explicitly:
+npm run db:seed:all
+```
+
+**Seed specific component(s):**
+```bash
+# Single component
+npm run db:seed about
+
+# Multiple components (dependencies auto-seeded)
+npm run db:seed about analytics navigation
+
+# Complex component with many dependencies
+npm run db:seed pageContents
+```
+
+**Available components:**
+`slugs`, `languages`, `images`, `ctas`, `certifications`, `heroes`, `benefits`, `approaches`, `about`, `analytics`, `navigation`, `footer`, `faqs`, `features`, `testimonials`, `maps`, `pageContents`, `resume`, `legalPages`
+
+### Clearing Data
+
+**Clear specific components:**
+```bash
+# By flag
+npm run db:clear -- --about
+npm run db:clear -- --analytics
+npm run db:clear -- --navigation
+
+# By component name
+npm run db:clear -- about analytics navigation
+
+# Clear all
+npm run db:clear -- --all
+```
+
+**Clear foundational data:**
+```bash
+npm run db:clear -- --images
+npm run db:clear -- --types
+npm run db:clear -- --ctas
+npm run db:clear -- --languages
+```
+
+**Common workflow (clear and re-seed):**
+```bash
+npm run db:clear -- --analytics
+npm run db:seed analytics
+```
 
 ## Available npm scripts
 
@@ -173,13 +244,40 @@ The most common scripts are summarised below:
 
 | Script | Purpose |
 | --- | --- |
+| **Development** | |
 | `npm run dev` | Start Keystone in development mode with the Admin UI and GraphQL API. |
 | `npm run build` | Produce a production build of the Keystone application. |
 | `npm run start` | Launch the built Keystone server (after `npm run build`). |
-| `npm run generate` | Run Prisma migrations and regenerate the Prisma client. |
-| `npm run db:seed` | Execute the TypeScript seed runner to populate demo data. |
+| **Database Management** | |
+| `npm run db:push` | Push schema changes to database without migrations. |
+| `npm run db:seed` | Seed all components (idempotent, safe to re-run). |
+| `npm run db:seed:all` | Explicitly seed all components with `--all` flag. |
+| `npm run db:clear` | Clear seeded data (use `-- --[component]` or `-- --all`). |
 | `npm run db:reset` | Force-reset the database schema via Prisma. |
-| `npm run db:reset:seed` | Reset the schema and immediately seed fresh demo content. |
+| `npm run db:reset:seed` | Reset the schema and seed all components. |
+| `npm run db:fresh` | Complete fresh database (alias for reset:seed). |
+| **Schema Management** | |
+| `npm run generate` | Run Prisma migrations and regenerate the Prisma client. |
+| `npm run schema:verify:dev` | Verify schema, migrate, and start (development). |
+| `npm run schema:verify:prod` | Verify schema, migrate, and start (production). |
+
+**Seeding Examples:**
+```bash
+# Seed everything
+npm run db:seed
+
+# Seed specific components
+npm run db:seed about analytics navigation
+
+# Clear and re-seed
+npm run db:clear -- --analytics
+npm run db:seed analytics
+
+# Complete fresh start
+npm run db:fresh
+```
+
+For detailed seeding documentation, see [seed/README.md](seed/README.md) and [seed/SCRIPTS.md](seed/SCRIPTS.md).
 
 ## Makefile shortcuts
 
@@ -201,7 +299,12 @@ A simplified layout of notable directories:
 ```/dev/null/project-structure.txt#L1-10
 admin/                  # Custom Admin UI components, pages, and theming
 data/                   # Static data used by seeds (do not edit directly)
-seed/                   # Modular seeders and seed orchestrator
+seed/                   # Modular seeders, orchestrator, and documentation
+  ├── components/       # Individual component seed modules
+  ├── index.ts          # Main seed orchestrator with caching
+  ├── clear.ts          # Data cleanup utilities
+  ├── README.md         # Comprehensive seeding guide
+  └── SCRIPTS.md        # Quick reference for all commands
 schema.ts               # Keystone list definitions and relationships
 keystone.ts             # Keystone configuration entry point
 session.ts              # NextAuth session strategy helper
@@ -236,7 +339,9 @@ Authentication is delegated to Amazon Cognito via NextAuth:
 - **Prisma client errors:** delete `node_modules/.prisma`, run `npm run generate`, and restart the dev server.
 - **Cannot sign in:** confirm Cognito credentials and callback URLs match your local host configuration.
 - **Database connection refused:** ensure PostgreSQL is running (`docker compose ps`) and that `DATABASE_URL` matches your credentials.
-- **Seed conflicts:** use `npm run db:reset:seed` to rebuild the schema from scratch when experimenting.
+- **Seed conflicts:** the new seeding system is idempotent and handles duplicates automatically. If issues persist, use `npm run db:fresh` to rebuild from scratch.
+- **Component not found:** ensure you're using valid component names. Run `npm run db:seed` without arguments to see available components.
+- **Dependency errors:** the system auto-seeds dependencies. If you see "not found" errors, try `npm run db:seed --all` to ensure all prerequisites exist.
 
 ## Contributing
 

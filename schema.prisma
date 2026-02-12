@@ -580,20 +580,26 @@ model ResumeBasicInformation {
   @@index([languageId])
 }
 
+model ResumeHighlight {
+  id                         Int          @id @default(autoincrement())
+  value                      String       @default("")
+  from_ResumeWork_highlights ResumeWork[] @relation("ResumeWork_highlights")
+}
+
 model ResumeWork {
-  id               Int       @id @default(autoincrement())
-  name             String    @default("")
-  position         String    @default("")
-  url              String    @default("")
+  id               Int               @id @default(autoincrement())
+  name             String            @default("")
+  position         String            @default("")
+  url              String            @default("")
   startDate        DateTime
   endDate          DateTime?
-  summary          String    @default("")
-  highlights       String?
-  image            Image?    @relation("ResumeWork_image", fields: [imageId], references: [id])
-  imageId          Int?      @map("image")
-  language         Language? @relation("ResumeWork_language", fields: [languageId], references: [id])
-  languageId       Int?      @map("language")
-  from_Resume_work Resume[]  @relation("Resume_work")
+  summary          String            @default("")
+  highlights       ResumeHighlight[] @relation("ResumeWork_highlights")
+  image            Image?            @relation("ResumeWork_image", fields: [imageId], references: [id])
+  imageId          Int?              @map("image")
+  language         Language?         @relation("ResumeWork_language", fields: [languageId], references: [id])
+  languageId       Int?              @map("language")
+  from_Resume_work Resume[]          @relation("Resume_work")
 
   @@index([imageId])
   @@index([languageId])

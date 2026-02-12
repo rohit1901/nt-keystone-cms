@@ -5,8 +5,10 @@ import type { PrismaClient } from "@prisma/client";
 import { SeededSlugs } from "./slugs";
 import Ctas from "./ctas";
 import { CertificationSection, ImageConfig } from "../../data";
+import { SeededFooterLanguages } from "./footer";
 
 export type SeededCertifications = Awaited<ReturnType<typeof seed>>;
+export type SeededCertificationSections = Awaited<ReturnType<typeof seedSection>>;
 
 // --- Certifications Data ---
 const certificationSectionsData: CertificationSection[] = [
@@ -14,7 +16,7 @@ const certificationSectionsData: CertificationSection[] = [
   {
     title: "Our Certifications",
     description:
-      "Nimbus Tech is certified in various technologies and methodologies, ensuring the highest quality standards in our projects.",
+      "Nimbus Tech is certified in AWS and software architecture, ensuring high quality and reliable AWS cloud solutions.",
     cta: Ctas.data
       .find((cta) => cta.language.value === "en-US")
       ?.ctas.find((cta) => cta.type === "certification"),
@@ -126,7 +128,7 @@ const certificationSectionsData: CertificationSection[] = [
   {
     title: "Unsere Zertifizierungen",
     description:
-      "Nimbus Tech ist in verschiedenen Technologien und Methoden zertifiziert, um höchste Qualitätsstandards in unseren Projekten zu gewährleisten.",
+      "Nimbus Tech ist in AWS und Software-Architektur zertifiziert – für hochwertige und verlässliche AWS-Cloud-Lösungen.",
     cta: Ctas.data
       .find((cta) => cta.language.value === "de-DE")
       ?.ctas.find((cta) => cta.type === "certification"),
@@ -237,70 +239,6 @@ const certificationSectionsData: CertificationSection[] = [
   },
 ];
 
-async function seed(
-  prisma: PrismaClient,
-  slugs: SeededSlugs,
-  ctas: SeededCTAs,
-  images: SeededImages,
-) {
-  console.log("Seeding certifications...");
-  const certificationSlug = slugs.find(
-    (slug) => slug.label === "certification",
-  );
-  if (!certificationSlug) {
-    throw new Error(`Slug not found for label: certification`);
-  }
-  const englishLanguageId = await prisma.language.findFirstOrThrow({
-    where: { value: "en-US" },
-    select: { id: true },
-  });
-  const germanLanguageId = await prisma.language.findFirstOrThrow({
-    where: { value: "de-DE" },
-    select: { id: true },
-  });
-  const allCertifications = [];
-
-  // Iterate over all language sections to create certifications
-  for (const sectionData of certificationSectionsData) {
-    const createdCerts = await prisma.certification.createManyAndReturn({
-      data: sectionData.certifications.map(({ key, ...cert }) => ({
-        ...cert,
-        image: undefined,
-        language: undefined,
-        languageId:
-          sectionData.language.value === "en-US"
-            ? englishLanguageId.id
-            : germanLanguageId.id,
-        // Assuming we use the same image ID logic for both languages as per original code
-        imageId: findImageId(
-          images,
-          certificationSlug.id,
-          sectionData.certifications.flatMap((cert) => {
-            if (!cert.image) return []; // Return empty array to "filter out" this item
-
-            const v = Object.values(cert.image);
-
-            if (!cert.key) {
-              // If v[0] exists return it in an array, otherwise empty
-              return v[0] ? [v[0]] : [];
-            }
-
-            const img = cert.image[cert.key];
-            return img ? [img] : [];
-          }),
-          key,
-        ),
-      })),
-    });
-    allCertifications.push(...createdCerts);
-  }
-
-  console.log(
-    `✓ Seeded certifications with ${allCertifications.length} certifications across all languages`,
-  );
-  return allCertifications;
-}
-
 const findImageId = (
   images: SeededImages,
   typeId: number,
@@ -316,12 +254,7 @@ const findImageId = (
   }
 
   // 2. Search through the seeded images to find a match
-  // We match based on:
-  // - The provided typeId (assuming the dictionary keys might contain the typeId)
-  // - The src and alt from the local configuration
   const foundImage = images.find((imgData) => {
-    // Check if the image belongs to the correct type (if typeId is part of the structure)
-    // and matches the visual properties (src/alt)
     return (
       imgData.typeId === typeId &&
       imgData.src === localImage.src &&
@@ -333,13 +266,106 @@ const findImageId = (
   return foundImage ? foundImage.id : undefined;
 };
 
+async function seed(
+  prisma: PrismaClient,
+  slugs: SeededSlugs,
+  images: SeededImages,
+  languages: SeededFooterLanguages,
+) {
+  console.log("Seeding certifications...");
+  const certificationSlug = slugs.find(
+    (slug) => slug.label === "certification",
+  );
+  if (!certificationSlug) {
+    throw new Error(`Slug not found for label: certification`);
+  }
+
+  // Get all existing certifications to check for duplicates
+  const existingCertifications = await prisma.certification.findMany({
+    select: { id: true, title: true, description: true, languageId: true, imageId: true, link: true },
+  });
+
+  // Create unique keys based on title + languageId
+  const existingCertificationKeys = new Set(
+    existingCertifications.map((cert) => `${cert.title}|${cert.languageId}`)
+  );
+
+  // Flatten all certifications from all sections
+  const allCertifications = certificationSectionsData.flatMap((sectionData) =>
+    sectionData.certifications.map((cert) => ({
+      ...cert,
+      sectionLanguage: sectionData.language,
+    }))
+  );
+
+  // Get all local images for finding image IDs
+  const localImages = certificationSectionsData.flatMap((section) =>
+    section.certifications.flatMap((cert) => {
+      if (!cert.image || !cert.key) return [];
+      const img = cert.image[cert.key];
+      return img ? [img] : [];
+    })
+  );
+
+  // Filter out certifications that already exist
+  const certificationsToCreate = allCertifications
+    .map((cert) => {
+      const languageId = languages.find(
+        (l) => l.value === cert.language.value
+      )?.id;
+
+      if (!languageId) {
+        console.warn(`! Language not found: ${cert.language.value}`);
+        return null;
+      }
+
+      const imageId = findImageId(
+        images,
+        certificationSlug.id,
+        localImages,
+        cert.key,
+      );
+
+      return {
+        title: cert.title,
+        description: cert.description,
+        link: cert.link,
+        imageId,
+        languageId,
+        key: `${cert.title}|${languageId}`,
+      };
+    })
+    .filter((cert): cert is NonNullable<typeof cert> => cert !== null)
+    .filter(({ key }) => !existingCertificationKeys.has(key));
+
+  let newCertificationsCount = 0;
+  let seededCertifications = [...existingCertifications];
+
+  if (certificationsToCreate.length > 0) {
+    const newCertifications = await prisma.certification.createManyAndReturn({
+      data: certificationsToCreate.map(({ key, ...data }) => data),
+    });
+    newCertificationsCount = newCertifications.length;
+    seededCertifications = [...existingCertifications, ...newCertifications];
+    console.log(`✓ Created ${newCertificationsCount} new certification(s)`);
+  } else {
+    console.log(`✓ All certifications already exist, skipping creation`);
+  }
+
+  console.log(`✓ Total certifications in database: ${seededCertifications.length}`);
+  return seededCertifications;
+}
+
 async function seedSection(
   prisma: PrismaClient,
   slugs: SeededSlugs,
   ctas: SeededCTAs,
   images: SeededImages,
+  languages: SeededFooterLanguages,
 ) {
-  const certifications = await seed(prisma, slugs, ctas, images);
+  // First seed all certifications
+  const allCertifications = await seed(prisma, slugs, images, languages);
+
   console.log("Seeding certification sections...");
   const certificationCtaType = slugs.find(
     (slug) => slug.label === "certification",
@@ -348,68 +374,100 @@ async function seedSection(
     throw new Error(`Slug not found for label: certification`);
   }
 
-  const englishLanguageId = await prisma.language.findFirstOrThrow({
-    where: { value: "en-US" },
-    select: { id: true },
+  // Get all existing certification sections to check for duplicates
+  const existingSections = await prisma.certificationSection.findMany({
+    select: { id: true, title: true, languageId: true },
   });
-  const germanLanguageId = await prisma.language.findFirstOrThrow({
-    where: { value: "de-DE" },
-    select: { id: true },
-  });
-  const englishCertifications = certifications.filter(
-    (cert) => cert.languageId === englishLanguageId.id,
-  );
-  const germanCertifications = certifications.filter(
-    (cert) => cert.languageId === germanLanguageId.id,
+
+  // Create unique keys based on title + languageId
+  const existingSectionKeys = new Set(
+    existingSections.map((section) => `${section.title}|${section.languageId}`)
   );
 
-  const createdSections = [];
-
-  for (const sectionData of certificationSectionsData) {
-    const languageId =
-      sectionData.language.value === "en-US"
-        ? englishLanguageId.id
-        : germanLanguageId.id;
-    const foundCtaId = ctas.find(
-      (cta) => cta.typeId === certificationCtaType.id,
+  // Filter out sections that already exist
+  const sectionsToCreate = certificationSectionsData.filter((sectionData) => {
+    const languageId = languages.find(
+      (l) => l.value === sectionData.language.value
     )?.id;
+    const key = `${sectionData.title}|${languageId}`;
+    return !existingSectionKeys.has(key);
+  });
 
-    if (!foundCtaId) {
-      throw new Error(`CTA not found for certification`);
-    }
+  let newSectionsCount = 0;
+  const seededSections = [...existingSections];
 
-    // Filter created certifications to find the ones matching this section's language
-    // matching by language.value (e.g., 'en-US' or 'de-DE')
-    const matchingCertifications =
-      sectionData.language.value === "en-US"
-        ? englishCertifications
-        : germanCertifications;
+  if (sectionsToCreate.length > 0) {
+    const newSections = await Promise.all(
+      sectionsToCreate.map(async (sectionData) => {
+        const languageId = languages.find(
+          (l) => l.value === sectionData.language.value
+        )?.id;
 
-    const section = await prisma.certificationSection.create({
-      data: {
-        ...sectionData,
-        languageId,
-        language: undefined,
-        certifications: {
-          connect: matchingCertifications.map((cert) => ({ id: cert.id })),
-        },
-        ctaId: foundCtaId,
-        cta: undefined,
-      },
-    });
-    createdSections.push(section);
-    console.log(
-      `✓ Seeded certification section (${sectionData.language.value}) with id: ${section.id}`,
+        if (!languageId) {
+          console.warn(`! Language not found: ${sectionData.language.value}`);
+          return null;
+        }
+
+        const foundCtaId = ctas.find(
+          (cta) => cta.typeId === certificationCtaType.id && cta.languageId === languageId,
+        )?.id;
+
+        if (!foundCtaId) {
+          console.warn(`! CTA not found for certification section (${sectionData.language.value})`);
+        }
+
+        // Filter certifications to find the ones matching this section's language
+        const matchingCertifications = allCertifications.filter(
+          (cert) => cert.languageId === languageId
+        );
+
+        const section = await prisma.certificationSection.create({
+          data: {
+            title: sectionData.title,
+            description: sectionData.description,
+            languageId,
+            certifications: {
+              connect: matchingCertifications.map((cert) => ({ id: cert.id })),
+            },
+            ctaId: foundCtaId,
+          },
+        });
+
+        console.log(
+          `✓ Created certification section (${sectionData.language.value}) with id: ${section.id}`,
+        );
+        return section;
+      })
     );
+
+    const validSections = newSections.filter(
+      (section): section is NonNullable<typeof section> => section !== null
+    );
+    newSectionsCount = validSections.length;
+    seededSections.push(...validSections);
+  } else {
+    console.log(`✓ All certification sections already exist, skipping creation`);
   }
 
-  return createdSections;
+  console.log(`✓ Total certification sections in database: ${seededSections.length}`);
+  return seededSections;
 }
+
+const clear = async (prisma: PrismaClient) => {
+  console.log('Clearing all certification sections...');
+  const sectionsResult = await prisma.certificationSection.deleteMany({});
+  console.log(`✓ Deleted ${sectionsResult.count} certification section(s)`);
+
+  console.log('Clearing all certifications...');
+  const certificationsResult = await prisma.certification.deleteMany({});
+  console.log(`✓ Deleted ${certificationsResult.count} certification(s)`);
+};
 
 const Certifications = {
   data: certificationSectionsData,
   seed,
   seedSection,
+  clear,
 };
 
 export default Certifications;

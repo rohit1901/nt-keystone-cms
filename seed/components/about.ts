@@ -8,7 +8,7 @@ const aboutData: readonly AboutSection[] = [
   {
     heading: "About Nimbus Tech",
     intro:
-      "With over 14 years of experience in software development, architecture, and cloud, Nimbus Tech is your trusted partner for robust, scalable, and innovative digital solutions. Co-founded in Germany by experienced software architects, we combine deep technical expertise with a passion for solving complex challenges and delivering real business value.",
+      "Nimbus Tech is an AWS-focused cloud consulting and software engineering company based in Germany. With more than 14 years of experience in software development and architecture, we help SMEs and startups in the DACH region design, migrate, and operate reliable systems on AWS – always with clear communication and business value in mind.",
     valuesTitle: "Our Values",
     values: [
       {
@@ -43,7 +43,7 @@ const aboutData: readonly AboutSection[] = [
       },
     ],
     closing:
-      "At Nimbus Tech, we are passionate about guiding you through every step of your digital transformation journey.",
+      "At Nimbus Tech, we combine deep AWS expertise with a practical, no-nonsense approach so your cloud projects stay understandable, transparent, and aligned with your business goals.",
     language: {
       label: "English",
       value: "en-US",
@@ -52,7 +52,7 @@ const aboutData: readonly AboutSection[] = [
   {
     heading: "Über Nimbus Tech",
     intro:
-      "Mit über 14 Jahren Erfahrung in Softwareentwicklung, Architektur und Cloud ist Nimbus Tech Ihr verlässlicher Partner für robuste, skalierbare und innovative digitale Lösungen. Gegründet in Deutschland von erfahrenen Softwarearchitekt:innen verbinden wir tiefgehende technische Expertise mit der Leidenschaft, komplexe Herausforderungen zu meistern und messbaren Geschäftswert zu schaffen.",
+      "Nimbus Tech ist ein auf AWS spezialisiertes Cloud-Beratungs- und Software-Engineering-Unternehmen mit Sitz in Deutschland. Mit über 14 Jahren Erfahrung in Entwicklung und Architektur unterstützen wir KMU und Start-ups in der DACH-Region dabei, zuverlässige Systeme auf AWS zu planen, zu migrieren und zu betreiben – mit klarer Kommunikation und echtem Geschäftsnutzen.",
     valuesTitle: "Unsere Werte",
     values: [
       {
@@ -87,7 +87,7 @@ const aboutData: readonly AboutSection[] = [
       },
     ],
     closing:
-      "Bei Nimbus Tech begleiten wir Sie engagiert auf Ihrem Weg der digitalen Transformation.",
+      "Bei Nimbus Tech verbinden wir tiefes AWS-Know-how mit einem pragmatischen Ansatz, damit Ihre Cloud-Projekte verständlich, transparent und eng an Ihren Geschäftszielen ausgerichtet bleiben.",
     language: {
       label: "German",
       value: "de-DE",
@@ -124,17 +124,43 @@ const seedValues = async (
       where: { value: "de-DE" },
     }));
 
-  const seededValues = await prisma.value.createManyAndReturn({
-    data: valuesWithLanguage.map((value) => ({
-      label: value.label,
-      description: value.description,
-      icon: value.icon,
-      languageId:
-        value.languageValue === "en-US" ? foundEnglish.id : foundGerman.id,
-    })),
-    skipDuplicates: true,
+  // Check for existing values
+  const existingValues = await prisma.value.findMany({
+    where: {
+      languageId: { in: [foundEnglish.id, foundGerman.id] },
+      label: { in: valuesWithLanguage.map((value) => value.label) },
+    },
   });
 
+  const existingKeys = new Set(
+    existingValues.map((v) => `${v.label}-${v.languageId}`),
+  );
+
+  // Only create values that don't exist
+  const valuesToCreate = valuesWithLanguage.filter((value) => {
+    const languageId =
+      value.languageValue === "en-US" ? foundEnglish.id : foundGerman.id;
+    const key = `${value.label}-${languageId}`;
+    return !existingKeys.has(key);
+  });
+
+  let seededValues = [];
+  if (valuesToCreate.length > 0) {
+    seededValues = await prisma.value.createManyAndReturn({
+      data: valuesToCreate.map((value) => ({
+        label: value.label,
+        description: value.description,
+        icon: value.icon,
+        languageId:
+          value.languageValue === "en-US" ? foundEnglish.id : foundGerman.id,
+      })),
+    });
+    console.log(`✓ Created ${seededValues.length} new about values`);
+  } else {
+    console.log(`✓ All about values already exist, skipping creation`);
+  }
+
+  // Return all values (existing + newly created)
   const values = await prisma.value.findMany({
     where: {
       languageId: { in: [foundEnglish.id, foundGerman.id] },
@@ -142,7 +168,7 @@ const seedValues = async (
     },
   });
 
-  console.log(`✓ Seeded ${seededValues.length} about values`);
+  console.log(`✓ Total about values: ${values.length}`);
 
   return values;
 };
@@ -161,20 +187,44 @@ const seed = async (prisma: PrismaClient, seededValues?: SeededValues) => {
     seededValues ??
     (await seedValues(prisma, { english: foundEnglish, german: foundGerman }));
 
-  const aboutSections = await prisma.$transaction(
-    aboutData.map((data) => {
-      const languageId =
-        data.language.value === "en-US" ? foundEnglish.id : foundGerman.id;
+  // Check for existing about sections
+  const existingAboutSections = await prisma.about.findMany({
+    where: {
+      languageId: { in: [foundEnglish.id, foundGerman.id] },
+    },
+    include: {
+      values: true,
+    },
+  });
 
-      const sectionValues = values.filter(
-        (value) =>
-          value.languageId === languageId &&
-          data.values.some(
-            (sectionValue) => sectionValue.label === value.label,
-          ),
+  const existingLanguageIds = new Set(
+    existingAboutSections.map((section) => section.languageId),
+  );
+
+  const aboutSections = [];
+
+  for (const data of aboutData) {
+    const languageId =
+      data.language.value === "en-US" ? foundEnglish.id : foundGerman.id;
+
+    const sectionValues = values.filter(
+      (value) =>
+        value.languageId === languageId &&
+        data.values.some((sectionValue) => sectionValue.label === value.label),
+    );
+
+    // Check if about section already exists for this language
+    const existingSection = existingAboutSections.find(
+      (section) => section.languageId === languageId,
+    );
+
+    if (existingSection) {
+      console.log(
+        `✓ About section for ${data.language.value} already exists (id: ${existingSection.id}), skipping`,
       );
-
-      return prisma.about.create({
+      aboutSections.push(existingSection);
+    } else {
+      const newSection = await prisma.about.create({
         data: {
           heading: data.heading,
           intro: data.intro,
@@ -190,18 +240,33 @@ const seed = async (prisma: PrismaClient, seededValues?: SeededValues) => {
           },
         },
       });
-    }),
-  );
+      console.log(
+        `✓ Created about section for ${data.language.value} (id: ${newSection.id})`,
+      );
+      aboutSections.push(newSection);
+    }
+  }
 
-  console.log(`✓ Seeded ${aboutSections.length} about sections`);
+  console.log(`✓ Total about sections: ${aboutSections.length}`);
 
   return aboutSections;
+};
+
+const clear = async (prisma: PrismaClient) => {
+  console.log("Clearing about sections...");
+  const aboutResult = await prisma.about.deleteMany({});
+  console.log(`Deleted ${aboutResult.count} about section(s).`);
+
+  console.log("Clearing about values...");
+  const valuesResult = await prisma.value.deleteMany({});
+  console.log(`Deleted ${valuesResult.count} value(s).`);
 };
 
 const About = {
   data: aboutData,
   seedValues,
   seed,
+  clear,
 };
 
 export default About;
