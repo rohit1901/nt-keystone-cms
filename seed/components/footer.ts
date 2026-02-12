@@ -121,7 +121,7 @@ const footerData: CompositePageContentWithExtras<{
             },
             {
               label: "GitHub",
-              href: "https://github.com/nimbus-tech",
+              href: "https://github.com/Nimbus-Tech-GmbH",
               external: true,
               icon: "RiGithubFill",
               language: {
@@ -242,7 +242,7 @@ const footerData: CompositePageContentWithExtras<{
             },
             {
               label: "GitHub",
-              href: "https://github.com/nimbus-tech",
+              href: "https://github.com/Nimbus-Tech-GmbH",
               external: true,
               icon: "RiGithubFill",
               language: {
