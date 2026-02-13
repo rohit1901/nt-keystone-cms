@@ -128,7 +128,7 @@ const imageSeedData: Record<ImageKeys, ImageConfig> = {
     type: "resume",
   },
   resumePhoto: {
-    src: "https://d1ljophloyhryl.cloudfront.net/assets/resume/profile-pic.jpeg",
+    src: "https://d1ljophloyhryl.cloudfront.net/assets/images/rohit.JPG",
     alt: "Resume Photo",
     width: 150,
     height: 150,
