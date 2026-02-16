@@ -163,80 +163,182 @@ make status
 
 For log streaming, interactive psql access, and cleanup commands see the [Makefile shortcuts](#makefile-shortcuts) section.
 
-## Database & Seeding
+## Database & Seeding - Complete CLI Guide
 
-### Seeding System Overview
+The Keystone CMS seed system provides powerful tools to populate and manage your database with comprehensive help flags and documentation.
 
-The refactored seeding system provides a robust, idempotent way to populate your database with content:
+### Quick Reference
 
-- ✅ **Idempotent Operations**: Safe to run multiple times without creating duplicates
-- 🔄 **Smart Caching**: Dependencies are seeded only once per run
-- 🎯 **Automatic Dependency Resolution**: Components auto-seed their prerequisites
-- 📦 **Modular Design**: Seed individual components or everything at once
-- 🧹 **Clean Clear Operations**: Comprehensive data cleanup utilities
-
-The seed runner (`seed/index.ts`) orchestrates 19 modular seeders from `seed/components/`:
-- `slugs`, `languages`, `images`, `ctas`
-- `certifications`, `heroes`, `benefits`, `approaches`
-- `about`, `analytics`, `navigation`, `footer`
-- `faqs`, `features`, `testimonials`, `maps`
-- `pageContents`, `resume`, `legalPages`
-
-**📚 For comprehensive documentation, see [seed/README.md](seed/README.md) and [seed/SCRIPTS.md](seed/SCRIPTS.md)**
-
-### Seeding Commands
-
-**Seed everything (recommended for fresh database):**
 ```bash
+# Get help
+npm run db:help              # Quick overview
+npm run db:seed:help         # Full seed documentation
+npm run db:clear:help        # Full clear documentation
+
+# Seed everything (recommended for initial setup)
 npm run db:seed
-# or explicitly:
 npm run db:seed:all
+
+# Seed specific components
+npm run db:seed:resume
+npm run db:seed heroes benefits testimonials
+
+# Clear data
+npm run db:clear:all
+npm run db:clear:resume
+npm run db:clear -- --footer
+
+# Fresh database
+npm run db:fresh             # Reset + seed all
 ```
 
-**Seed specific component(s):**
+### Key Features
+
+✅ **Dependency-aware** - Components are seeded in the correct order automatically  
+✅ **Selective seeding** - Seed only the components you need  
+✅ **Safe clearing** - Remove specific data without affecting other components  
+✅ **Help flags** - Built-in documentation with `--help`  
+✅ **Idempotent** - Safe to run multiple times without creating duplicates
+
+### Understanding npm `--` Requirement
+
+When passing flags to npm scripts, you must use `--` separator:
+
 ```bash
-# Single component
-npm run db:seed about
+# ✅ WORKS - Using shortcuts (recommended)
+npm run db:seed:help
+npm run db:clear:resume
 
-# Multiple components (dependencies auto-seeded)
-npm run db:seed about analytics navigation
+# ✅ WORKS - Using -- before flags
+npm run db:seed -- --help
+npm run db:clear -- --resume
 
-# Complex component with many dependencies
-npm run db:seed pageContents
+# ✅ WORKS - Component names (no -- needed)
+npm run db:seed resume
+npm run db:clear resume analytics
+
+# ❌ DOESN'T WORK - Missing --
+npm run db:seed --help       # ❌
+npm run db:clear --resume    # ❌
 ```
 
-**Available components:**
-`slugs`, `languages`, `images`, `ctas`, `certifications`, `heroes`, `benefits`, `approaches`, `about`, `analytics`, `navigation`, `footer`, `faqs`, `features`, `testimonials`, `maps`, `pageContents`, `resume`, `legalPages`
+**Why?** npm interprets `--` as a separator between npm options and script arguments. Everything after `--` is passed to your script. Component names (without dashes) don't need `--`.
 
-### Clearing Data
+### Available Components
 
-**Clear specific components:**
+Components are seeded in dependency order:
+
+1. `slugs` - URL routes and slugs
+2. `languages` - Language configurations
+3. `images` - Image assets
+4. `ctas` - Call-to-action buttons and sections
+5. `certifications` - Certification data
+6. `heroes` - Hero sections
+7. `benefits` - Benefit sections
+8. `approaches` - Approach workflows
+9. `about` - About sections
+10. `analytics` - Analytics dashboards
+11. `navigation` - Navigation menus
+12. `footer` - Footer sections
+13. `faqs` - FAQ sections
+14. `features` - Feature sections
+15. `testimonials` - Testimonial sections
+16. `maps` - Map sections
+17. `pageContents` - Page content (requires all above)
+18. `resume` - Resume/CV data
+19. `legalPages` - Legal pages
+
+### Common Workflows
+
+**Fresh Database Setup:**
 ```bash
-# By flag
-npm run db:clear -- --about
-npm run db:clear -- --analytics
-npm run db:clear -- --navigation
-
-# By component name
-npm run db:clear -- about analytics navigation
-
-# Clear all
-npm run db:clear -- --all
+npm run db:fresh             # Complete reset + seed all
 ```
 
-**Clear foundational data:**
+**Update Single Component:**
 ```bash
-npm run db:clear -- --images
-npm run db:clear -- --types
-npm run db:clear -- --ctas
-npm run db:clear -- --languages
+npm run db:clear:resume      # Clear resume
+npm run db:seed:resume       # Re-seed resume
 ```
 
-**Common workflow (clear and re-seed):**
+**Development Workflow:**
 ```bash
-npm run db:clear -- --analytics
-npm run db:seed analytics
+# 1. Make changes to seed data in ./seed/components/resume.ts
+# 2. Clear old data
+npm run db:clear:resume
+
+# 3. Re-seed with new data
+npm run db:seed:resume
+
+# 4. Verify in Keystone Admin UI
+npm run dev
 ```
+
+**Testing Different Content:**
+```bash
+# Clear specific sections
+npm run db:clear:content
+
+# Re-seed with updated data
+npm run db:seed:content
+```
+
+### Component-Specific Flags
+
+The clear command supports component-specific flags:
+
+```bash
+npm run db:clear -- --footer       # Footer sections
+npm run db:clear -- --navigation   # Navigation menus
+npm run db:clear -- --resume       # Resume data
+npm run db:clear -- --analytics    # Analytics data
+npm run db:clear -- --about        # About sections
+npm run db:clear -- --images       # All images
+npm run db:clear -- --pages privacy-policy terms  # Specific pages
+```
+
+### Troubleshooting
+
+**Component Not Found:**
+```bash
+npm run db:seed:help  # See all available components
+```
+
+**Prisma Client Errors:**
+```bash
+rm -rf node_modules/.prisma
+npm run generate
+# Restart your IDE
+```
+
+**Clear Not Working:**
+```bash
+# Use shortcut (recommended)
+npm run db:clear:resume
+
+# Or use -- with flags
+npm run db:clear -- --resume
+
+# Component names don't need --
+npm run db:clear resume
+```
+
+**Help Not Showing:**
+```bash
+# Use shortcut (recommended)
+npm run db:seed:help
+
+# Or use -- with flag
+npm run db:seed -- --help
+```
+
+### Documentation
+
+📚 **Comprehensive guides available:**
+- [seed/README.md](seed/README.md) - Complete CLI guide with all options
+- [seed/NPM_USAGE_GUIDE.md](seed/NPM_USAGE_GUIDE.md) - Understanding npm `--` requirement
+- [seed/QUICK_REFERENCE.md](seed/QUICK_REFERENCE.md) - Quick command reference
+- [seed/SCRIPTS.md](seed/SCRIPTS.md) - Detailed script documentation
 
 ## Available npm scripts
 

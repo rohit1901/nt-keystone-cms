@@ -364,9 +364,106 @@ async function clearFooter(prisma: PrismaClient): Promise<void> {
   console.log(`Deleted ${keysResult.count} footer section key(s).`);
 }
 
+/**
+ * Display help information
+ */
+function displayHelp() {
+  console.log(`
+╔════════════════════════════════════════════════════════════════════════════╗
+║                   🗑️  Keystone CMS Database Clear Tool                     ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+DESCRIPTION:
+  Clear seeded data from your Keystone CMS database. Use this to remove
+  specific components or all seeded data.
+
+USAGE:
+  npm run db:clear [COMPONENTS...]
+  npm run db:clear -- [OPTIONS]
+
+OPTIONS:
+  --all, -a              Clear all default components
+  --help, -h             Display this help message
+
+NOTE: When using flags with npm run, you must use -- before the flags:
+  npm run db:clear -- --resume
+  npm run db:clear:resume  (shortcut without --)
+
+COMPONENT-SPECIFIC FLAGS:
+  --footer               Clear all footer data (sections, links, keys)
+  --page-contents        Clear all page contents and sections
+  --resume               Clear all resume/CV data
+  --navigation           Clear all navigation menus and links
+  --analytics            Clear all analytics data (stats, summaries)
+  --about                Clear all about sections and values
+  --approaches           Clear all approach workflows and steps
+  --maps                 Clear all map sections
+  --features             Clear all feature sections
+  --certifications       Clear all certification sections
+  --faqs                 Clear all FAQ sections
+  --benefits             Clear all benefit sections
+  --heroes               Clear all hero sections
+  --testimonials         Clear all testimonial sections
+  --languages            Clear all language configurations
+  --ctas                 Clear all CTA buttons and sections
+  --types                Clear all type records (slugs)
+  --images               Clear all image assets
+  --pages <slug...>      Clear specific page contents by slug
+
+COMPONENTS (by name):
+  You can also clear components by name (module-based clearing):
+${DEFAULT_COMPONENTS.map(c => `    • ${c}`).join('\n')}
+
+EXAMPLES:
+  # Clear all default components
+  npm run db:clear:all
+  npm run db:clear -- --all
+
+  # Clear specific component by flag (requires --)
+  npm run db:clear:resume
+  npm run db:clear -- --resume
+  npm run db:clear -- --footer
+  npm run db:clear -- --navigation
+
+  # Clear specific component by name (no -- needed)
+  npm run db:clear resume
+  npm run db:clear images slugs
+
+  # Clear multiple components
+  npm run db:clear resume analytics navigation
+
+  # Clear specific pages by slug (requires --)
+  npm run db:clear -- --pages privacy-policy terms-of-service
+
+  # Get help
+  npm run db:clear:help
+  npm run db:clear -- --help
+
+NOTES:
+  ⚠️  CAUTION: This operation deletes data from the database!
+  • Always backup your database before clearing data
+  • Some components have dependencies that must be cleared in order
+  • Use --all to clear all default components
+  • Component-specific flags provide more control over deletion
+
+RELATED COMMANDS:
+  npm run db:seed          Seed database with initial data
+  npm run db:reset         Reset database schema (deletes ALL data)
+  npm run db:fresh         Reset database and re-seed all components
+
+For more information, see: ./seed/SCRIPTS.md
+`);
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const prisma = new PrismaClient();
+
+  // Check for help flag
+  if (args.includes('--help') || args.includes('-h')) {
+    displayHelp();
+    process.exit(0);
+  }
 
   // Check for --footer flag
   const footerFlag = args.includes('--footer');
@@ -661,7 +758,7 @@ async function main() {
   }
 
   // Determine target components to clear
-  const isAll = args.includes('--all');
+  const isAll = args.includes('--all') || args.includes('-a');
   const explicitNames = args.filter(a => !a.startsWith('-'));
 
   const componentsToClear = isAll
@@ -671,29 +768,9 @@ async function main() {
       : [];
 
   if (componentsToClear.length === 0) {
-    console.log('No components specified to clear.');
-    console.log('Usage:');
-    console.log('  ts-node --transpile-only ./seed/clear.ts <componentName> [moreNames...]');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --all');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --pages <slug1> [slug2...]');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --images');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --types');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --ctas');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --languages');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --testimonials');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --heroes');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --benefits');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --faqs');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --certifications');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --features');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --maps');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --approaches');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --about');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --analytics');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --navigation');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --footer');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --resume');
-    console.log('  ts-node --transpile-only ./seed/clear.ts --page-contents');
+    console.log('❌ No components specified to clear.');
+    console.log('\nUse --help to see available options:');
+    console.log('  npm run db:clear --help');
     process.exit(0);
   }
 

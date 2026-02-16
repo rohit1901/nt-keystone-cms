@@ -49,7 +49,7 @@ import LegalPages from "./components/legalPages";
 const prisma = new PrismaClient();
 
 // Define seeding order - components that depend on others should come later
-const SEED_ORDER = [
+export const SEED_ORDER = [
   "slugs",
   "languages",
   "images",
@@ -498,14 +498,207 @@ async function seedAll(prisma: PrismaClient) {
 }
 
 /**
+ * Display help information
+ */
+function displayHelp() {
+  console.log(`
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    🌱 Keystone CMS Database Seed Tool                      ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+DESCRIPTION:
+  Seed your Keystone CMS database with initial data. Components are seeded
+  in the correct dependency order automatically.
+
+USAGE:
+  npm run db:seed [COMPONENTS...]
+  npm run db:seed -- [OPTIONS]
+  npm run db:seed:all
+
+OPTIONS:
+  --all, -a          Seed all components (default if no components specified)
+  --help, -h         Display this help message
+
+NOTE: When using flags with npm run, you must use -- before the flags:
+  npm run db:seed -- --help
+  npm run db:seed:help  (shortcut without --)
+
+COMPONENTS:
+  Available components to seed (in dependency order):
+${SEED_ORDER.map(c => `    • ${c.padEnd(20)} ${getComponentDescription(c)}`).join('\n')}
+
+EXAMPLES:
+  # Seed all components (recommended for initial setup)
+  npm run db:seed
+  npm run db:seed:all
+  npm run db:seed -- --all
+
+  # Seed specific component(s)
+  npm run db:seed slugs
+  npm run db:seed images ctas heroes
+  npm run db:seed:resume
+
+  # Get help
+  npm run db:seed:help
+  npm run db:seed -- --help
+  npm run db:seed -- -h
+
+NOTES:
+  • Dependencies are automatically seeded when needed
+  • Components are always seeded in the correct order
+  • Existing data is NOT deleted (use db:clear to remove data)
+  • For a fresh database, use: npm run db:fresh
+
+RELATED COMMANDS:
+  npm run db:clear         Clear seeded data
+  npm run db:reset         Reset database schema
+  npm run db:fresh         Reset database and seed all components
+
+For more information, see: ./seed/README.md
+`);
+}
+
+/**
+ * Display comprehensive database commands help
+ */
+function displayDatabaseHelp() {
+  console.log(`
+╔════════════════════════════════════════════════════════════════════════════╗
+║                  📚 Keystone CMS Database Commands Reference               ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+QUICK REFERENCE:
+  For detailed documentation, see: ./seed/SCRIPTS.md
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🌱 SEEDING COMMANDS                                                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  npm run db:seed              Seed all components (default)
+  npm run db:seed:all          Explicitly seed all components
+  npm run db:seed:help         Show detailed seed help
+
+  npm run db:seed <component>  Seed specific component(s)
+    Examples:
+      npm run db:seed slugs
+      npm run db:seed about analytics navigation
+      npm run db:seed:resume
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🗑️  CLEARING COMMANDS                                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  npm run db:clear:all         Clear all seeded data
+  npm run db:clear:help        Show detailed clear help
+
+  npm run db:clear -- <flags>  Clear specific components
+    Examples:
+      npm run db:clear -- --about
+      npm run db:clear -- --analytics --navigation
+      npm run db:clear -- --pages home terms
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🔄 DATABASE MANAGEMENT                                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  npm run db:push              Push schema without migrations
+  npm run db:reset             Reset database (⚠️  DELETES ALL DATA)
+  npm run db:fresh             Reset + seed all (complete fresh start)
+  npm run db:reset:seed        Alias for db:fresh
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 📋 SCHEMA MANAGEMENT                                                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  npm run generate             Generate migrations (development)
+  npm run schema:verify:dev    Verify schema (development)
+  npm run schema:verify:prod   Verify schema (production)
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🎯 COMMON WORKFLOWS                                                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Initial Setup:
+    npm run db:push && npm run db:seed
+
+  After Schema Changes:
+    npm run generate && npm run db:push
+
+  Fresh Start:
+    npm run db:fresh
+
+  Update Specific Content:
+    npm run db:clear -- --about
+    npm run db:seed about
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 📦 AVAILABLE COMPONENTS                                                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+${SEED_ORDER.map(c => `  • ${c.padEnd(20)} ${getComponentDescription(c)}`).join('\n')}
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 📖 DOCUMENTATION                                                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Detailed Guide:     ./seed/SCRIPTS.md
+  Full README:        ./seed/README.md
+  Seed Help:          npm run db:seed:help
+  Clear Help:         npm run db:clear:help
+
+For step-by-step workflows and advanced usage, see ./seed/SCRIPTS.md
+`);
+}
+
+/**
+ * Get component description for help text
+ */
+function getComponentDescription(component: SeedComponent): string {
+  const descriptions: Record<SeedComponent, string> = {
+    slugs: "URL slugs and routes",
+    languages: "Language configurations",
+    images: "Image assets",
+    ctas: "Call-to-action buttons and sections",
+    certifications: "Certification sections",
+    heroes: "Hero sections",
+    benefits: "Benefit sections",
+    approaches: "Approach workflows",
+    about: "About sections and values",
+    analytics: "Analytics dashboards",
+    navigation: "Navigation menus",
+    footer: "Footer sections",
+    faqs: "FAQ sections",
+    features: "Feature sections",
+    testimonials: "Testimonial sections",
+    maps: "Map sections",
+    pageContents: "Page content (requires all dependencies)",
+    resume: "Resume/CV data",
+    legalPages: "Legal pages (privacy, terms, etc.)",
+  };
+  return descriptions[component] || "";
+}
+
+/**
  * Main entry point
  */
 async function main() {
   const args = process.argv.slice(2);
 
   try {
+    // Check for database help flag
+    if (args.includes("--db-help")) {
+      displayDatabaseHelp();
+      process.exit(0);
+    }
+
+    // Check for help flag
+    if (args.includes("--help") || args.includes("-h")) {
+      displayHelp();
+      process.exit(0);
+    }
+
     // Check for --all flag or no arguments (default to all)
-    if (args.length === 0 || args.includes("--all")) {
+    if (args.length === 0 || args.includes("--all") || args.includes("-a")) {
       await seedAll(prisma);
     } else {
       // Seed specific component(s)
@@ -515,6 +708,7 @@ async function main() {
         console.log("⚠️  No valid components specified. Use --all to seed everything.");
         console.log("\nAvailable components:");
         SEED_ORDER.forEach(c => console.log(`  - ${c}`));
+        console.log("\nUse --help for more information.");
         process.exit(1);
       }
 
@@ -527,6 +721,7 @@ async function main() {
         console.error(`❌ Invalid component(s): ${invalidComponents.join(", ")}`);
         console.log("\nAvailable components:");
         SEED_ORDER.forEach(c => console.log(`  - ${c}`));
+        console.log("\nUse --help for more information.");
         process.exit(1);
       }
 

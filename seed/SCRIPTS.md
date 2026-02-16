@@ -1,16 +1,36 @@
 # Database Scripts Quick Reference
 
 > **Quick reference guide for all database and seeding commands**
+>
+> **💡 TIP:** Run `npm run db:help` anytime to see this guide in your terminal!
 
 ---
 
 ## 📋 Table of Contents
 
+- [Quick Help](#quick-help)
 - [Seeding Commands](#seeding-commands)
 - [Clearing Commands](#clearing-commands)
 - [Database Management](#database-management)
 - [Schema Management](#schema-management)
 - [Common Workflows](#common-workflows)
+
+---
+
+## Quick Help
+
+### Get Help Anytime
+
+```bash
+# Show comprehensive database commands reference
+npm run db:help
+
+# Show detailed seeding help
+npm run db:seed:help
+
+# Show detailed clearing help
+npm run db:clear:help
+```
 
 ---
 
@@ -398,6 +418,7 @@ Components are always seeded in dependency order, regardless of how you specify 
 
 | Task | Command |
 |------|---------|
+| Show help | `npm run db:help` |
 | Fresh database | `npm run db:fresh` |
 | Seed all | `npm run db:seed` |
 | Seed one | `npm run db:seed [component]` |

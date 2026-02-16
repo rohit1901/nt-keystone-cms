@@ -22,16 +22,16 @@ export const RESUME_DATA = [
       name: "Rohit Khanduri",
       label: "Software Architect",
       email: "rohit.khanduri@hotmail.com",
-      url: "https://www.rohit.khanduri.de",
-      summary: `Software architect with more than a decade of experience designing and delivering microservice-based systems across banking, public sector, and loyalty programs. I cover the full software development lifecycle and work hands-on with cloud-native architectures, modern frontend stacks, and event-driven backends. My background includes leading international teams in Europe and Asia, operating in agile environments, and aligning architecture with business strategy. With a Master's degree in Applied Mathematics for Network and Data Science and a Bachelor's in Information Technology, I combine analytical thinking with pragmatic engineering.`,
+      url: "https://www.linkedin.com/in/rohit-khanduri-9098b84a/",
+      summary: "I'm a seasoned Software Architect with over a decade of expertise in Software Development, System Design, and Team Leadership. Specializing in building scalable, high-performance applications using modern technologies including Node.js, React, TypeScript, GraphQL, and cloud platforms. Passionate about solving complex problems, mentoring teams, and driving innovation through best practices in software architecture and design patterns.",
       language: "en-US",
     },
 
     // Location
     location: {
-      address: "Friedrichsdorf, Germany",
+      address: "Frankfurt, Hesse, Germany",
       postalCode: "",
-      city: "Friedrichsdorf",
+      city: "Frankfurt",
       countryCode: "DE",
       region: "Hessen",
       language: "en-US",
@@ -213,7 +213,7 @@ Provided support to community members`,
         area: "Applied Mathematics for Network and Data Science",
         studyType: "Master of Science",
         startDate: parseDate("09-2017"),
-        endDate: parseDate("09-2019"),
+        endDate: parseDate("09-2022"),
         language: "en-US",
       },
       {
@@ -221,8 +221,8 @@ Provided support to community members`,
         url: "https://www.aktu.ac.in/",
         area: "Information Technology",
         studyType: "Bachelor of Technology",
-        startDate: parseDate("08-2008"),
-        endDate: parseDate("06-2012"),
+        startDate: parseDate("08-2007"),
+        endDate: parseDate("06-2011"),
         language: "en-US",
       },
     ],
@@ -283,67 +283,138 @@ Provided support to community members`,
       {
         name: "Frontend Development",
         level: "Expert",
-        keywords: "React, Angular, Vue.js, TypeScript, JavaScript, HTML5, CSS3, Tailwind CSS, Material UI, Flutter",
+        keywords: "React, Next.js, TypeScript, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS, Styled Components, Material UI, Ant Design, Redux, Redux Toolkit, Zustand, React Query, SWR, Webpack, Vite, Remix, Astro, Web Components, Progressive Web Apps (PWA), Server-Side Rendering (SSR), Static Site Generation (SSG), Incremental Static Regeneration (ISR)",
         language: "en-US",
       },
       {
         name: "Backend Development",
         level: "Expert",
-        keywords: "Node.js, Express, NestJS, Java, Spring Boot, Python, Django, FastAPI, REST APIs",
-        language: "en-US",
-      },
-      {
-        name: "Mobile Development",
-        level: "Advanced",
-        keywords: "Flutter, React Native, iOS, Android",
+        keywords: "Node.js, Express.js, NestJS, Fastify, tRPC, GraphQL, Apollo Server, Prisma, TypeORM, Drizzle ORM, REST APIs, gRPC, WebSockets, Socket.io, Message Queues, RabbitMQ, Apache Kafka, Bull Queue, BullMQ, Authentication (JWT, OAuth2, SAML), API Design, Rate Limiting, Caching Strategies",
         language: "en-US",
       },
       {
         name: "Cloud & DevOps",
         level: "Advanced",
-        keywords: "AWS, Azure, Google Cloud, Docker, Kubernetes, CI/CD, Jenkins, GitLab CI, GitHub Actions, Terraform, Ansible, Prometheus, Grafana, ELK Stack, ArgoCD, Helm",
+        keywords: "AWS (EC2, ECS, EKS, Lambda, S3, CloudFront, RDS, DynamoDB, SQS, SNS, API Gateway, CloudWatch), Azure, Google Cloud Platform, Docker, Kubernetes, Helm, ArgoCD, CI/CD Pipelines, GitHub Actions, GitLab CI, Jenkins, CircleCI, Terraform, Infrastructure as Code, Ansible, Nginx, Load Balancing, Auto Scaling, Monitoring (Prometheus, Grafana, Datadog, New Relic), Logging (ELK Stack, CloudWatch Logs), CDN Configuration",
         language: "en-US",
       },
       {
-        name: "Architecture & Design",
-        level: "Expert",
-        keywords: "Microservices, Event-Driven Architecture, Domain-Driven Design, CQRS, API Gateway, Service Mesh, Micro-frontends, Design Patterns, Clean Architecture, Hexagonal Architecture, SOLID Principles, System Design, Scalability, Performance Optimization, Security Best Practices, Load Balancing, Caching Strategies",
-        language: "en-US",
-      },
-      {
-        name: "Databases",
+        name: "Database & Data Management",
         level: "Advanced",
-        keywords: "PostgreSQL, MongoDB, MySQL, Redis, Elasticsearch",
+        keywords: "PostgreSQL, MongoDB, MySQL, Redis, DynamoDB, Elasticsearch, TimescaleDB, Database Design, Query Optimization, Indexing Strategies, Replication, Sharding, Database Migration, Data Modeling, NoSQL vs SQL, ACID Transactions, CAP Theorem, Database Security, Backup and Recovery",
         language: "en-US",
       },
       {
-        name: "Testing",
-        level: "Advanced",
-        keywords: "Jest, Mocha, Chai, Cypress, Selenium, JUnit, Mockito, Test-Driven Development, Integration Testing",
-        language: "en-US",
-      },
-      {
-        name: "Methodologies",
+        name: "Architecture & System Design",
         level: "Expert",
-        keywords: "Agile, Scrum, Kanban, SAFe, Lean, DevOps, GitFlow, Trunk-Based Development, Code Review, Pair Programming, Continuous Integration, Continuous Deployment, Infrastructure as Code",
+        keywords: "Microservices Architecture, Event-Driven Architecture, Domain-Driven Design (DDD), CQRS, Event Sourcing, API Gateway Pattern, Service Mesh (Istio), Micro-frontends, Clean Architecture, Hexagonal Architecture, SOLID Principles, Design Patterns (Factory, Strategy, Observer, Singleton), High Availability, Fault Tolerance, Circuit Breaker Pattern, Saga Pattern, Distributed Systems, Scalability, Performance Optimization, Security Best Practices, Load Balancing Strategies",
         language: "en-US",
       },
       {
-        name: "Data Science & Analytics",
+        name: "Testing & Quality Assurance",
+        level: "Advanced",
+        keywords: "Jest, Vitest, Testing Library, Cypress, Playwright, Selenium, Puppeteer, Test-Driven Development (TDD), Behavior-Driven Development (BDD), Unit Testing, Integration Testing, End-to-End Testing, Performance Testing, Load Testing (k6, Artillery), Mutation Testing, Code Coverage, Visual Regression Testing, Contract Testing (Pact), API Testing (Postman, Insomnia)",
+        language: "en-US",
+      },
+      {
+        name: "AI & Machine Learning",
         level: "Intermediate",
-        keywords: "Python, NumPy, Pandas, Scikit-learn, TensorFlow, Data Analysis, Machine Learning, Statistical Modeling, Data Visualization, Matplotlib",
+        keywords: "OpenAI API, Anthropic Claude API, LangChain, Vector Databases (Pinecone, Weaviate), RAG (Retrieval-Augmented Generation), Prompt Engineering, Natural Language Processing, Chatbot Development, AI Integration, TensorFlow.js, ML Model Deployment, Feature Engineering, Model Evaluation",
         language: "en-US",
       },
       {
-        name: "Project Management",
+        name: "Mobile Development",
         level: "Advanced",
-        keywords: "Jira, Confluence, Trello, Asana",
+        keywords: "React Native, Expo, Flutter, iOS Development, Android Development, Mobile App Architecture, Push Notifications, Deep Linking, App Store Deployment, Mobile Performance Optimization, Offline-First Architecture, Mobile Analytics, In-App Purchases",
         language: "en-US",
       },
       {
-        name: "Version Control",
+        name: "Developer Tools & Practices",
         level: "Expert",
-        keywords: "Git, GitHub, GitLab, Bitbucket, Branching Strategies, Code Review, Pull Requests, Merge Strategies, Git Hooks",
+        keywords: "Git, GitHub, GitLab, Bitbucket, VS Code, Git Flow, Trunk-Based Development, Code Review, Pull Requests, Pair Programming, ESLint, Prettier, Husky, Lint-Staged, Semantic Versioning, Changesets, Monorepo (Turborepo, Nx, Lerna), Package Management (npm, yarn, pnpm), Documentation (Storybook, JSDoc, OpenAPI/Swagger)",
+        language: "en-US",
+      },
+      {
+        name: "Web3 & Blockchain",
+        level: "Beginner",
+        keywords: "Ethereum, Solidity, Web3.js, Ethers.js, Smart Contracts, DApps, MetaMask Integration, IPFS, Blockchain Fundamentals",
+        language: "en-US",
+      },
+      {
+        name: "Agile & Project Management",
+        level: "Expert",
+        keywords: "Agile Methodologies, Scrum, Kanban, Sprint Planning, Story Estimation, Retrospectives, Daily Standups, Backlog Grooming, Jira, Linear, Confluence, Notion, Asana, Monday.com, Technical Leadership, Mentoring, Cross-functional Team Collaboration, Stakeholder Management",
+        language: "en-US",
+      },
+      {
+        name: "Security & Compliance",
+        level: "Advanced",
+        keywords: "OWASP Top 10, Authentication & Authorization, OAuth2.0, OpenID Connect, JWT, Security Headers, XSS Prevention, CSRF Protection, SQL Injection Prevention, Data Encryption, HTTPS/SSL/TLS, Secrets Management, Vulnerability Scanning, Penetration Testing, GDPR Compliance, SOC 2, Security Audits",
+        language: "en-US",
+      },
+    ],
+    projects: [
+      {
+        name: "Enterprise AI-Powered Customer Support Platform",
+        startDate: parseDate("2023-01"),
+        endDate: null,
+        description: "Led the development of a scalable AI-powered customer support platform serving millions of users, integrating multiple AI models and real-time communication capabilities.",
+        highlights: "Architected and implemented microservices-based backend using Node.js, NestJS, and GraphQL, processing 50M+ API requests daily\nIntegrated OpenAI GPT-4 and custom NLP models for intelligent query routing and automated response generation, improving resolution time by 65%\nBuilt real-time chat system using WebSockets and Redis Pub/Sub, supporting 100K+ concurrent connections\nImplemented comprehensive monitoring and observability with Prometheus, Grafana, and custom dashboards, achieving 99.9% uptime\nDesigned event-driven architecture using Apache Kafka for asynchronous processing of customer interactions",
+        url: undefined,
+        language: "en-US",
+      },
+      {
+        name: "Retail Analytics & Inventory Management System",
+        startDate: parseDate("2022-03"),
+        endDate: parseDate("2023-12"),
+        description: "Developed a comprehensive analytics and inventory management platform for large-scale retail operations, enabling real-time insights and automated inventory optimization.",
+        highlights: "Built responsive React-based dashboard with real-time data visualization using D3.js and Recharts, serving 5000+ daily active users\nImplemented predictive analytics engine using Python and TensorFlow for inventory forecasting, reducing overstock by 30%\nArchitected high-performance data pipeline processing 500GB+ of transaction data daily using AWS Glue and Athena\nDeveloped REST and GraphQL APIs using Node.js and Express, integrated with 20+ third-party logistics systems\nOptimized PostgreSQL database queries and implemented caching with Redis, reducing response times from 3s to 200ms",
+        url: undefined,
+        language: "en-US",
+      },
+      {
+        name: "Multi-Tenant SaaS Platform for Healthcare",
+        startDate: parseDate("2021-06"),
+        endDate: parseDate("2022-02"),
+        description: "Architected and built a HIPAA-compliant multi-tenant SaaS platform for healthcare providers, enabling secure patient data management and telehealth capabilities.",
+        highlights: "Designed multi-tenant architecture with row-level security in PostgreSQL, supporting 200+ healthcare organizations\nImplemented end-to-end encryption for patient data using AWS KMS and achieved HIPAA compliance certification\nBuilt video conferencing feature using WebRTC and Twilio, conducting 10K+ telehealth sessions monthly\nCreated CI/CD pipeline with GitHub Actions and AWS ECS, enabling 20+ deployments per week with zero downtime\nDeveloped comprehensive audit logging system for compliance tracking and security monitoring",
+        url: undefined,
+        language: "en-US",
+      },
+      {
+        name: "Mobile-First E-commerce Platform",
+        startDate: parseDate("2020-09"),
+        endDate: parseDate("2021-05"),
+        description: "Led development of a mobile-first e-commerce platform with advanced features including AR product preview, personalized recommendations, and seamless checkout experience.",
+        highlights: "Built cross-platform mobile app using React Native and Expo, achieving 4.8★ rating with 500K+ downloads\nImplemented AR product visualization using ARKit and ARCore, increasing conversion rates by 45%\nIntegrated Stripe, PayPal, and Apple Pay for seamless payment processing with PCI DSS compliance\nDeveloped personalized recommendation engine using collaborative filtering, improving average order value by 35%\nOptimized app performance achieving <2s initial load time and 60fps animations on budget devices",
+        url: undefined,
+        language: "en-US",
+      },
+      {
+        name: "Real-Time Collaboration Tool",
+        startDate: parseDate("2020-01"),
+        endDate: parseDate("2020-08"),
+        description: "Developed a real-time collaborative workspace application enabling teams to work together on documents, whiteboards, and projects with live updates.",
+        highlights: "Implemented operational transformation (OT) algorithm for conflict-free real-time collaboration on shared documents\nBuilt WebSocket infrastructure using Socket.io and Redis, supporting 50K+ concurrent collaborative sessions\nCreated rich text editor with collaborative editing using Slate.js and custom CRDT implementation\nDeveloped offline-first architecture with conflict resolution, ensuring data consistency across clients\nImplemented fine-grained access control and permissions system for enterprise security requirements",
+        url: undefined,
+        language: "en-US",
+      },
+      {
+        name: "Headless CMS with Multi-Language Support",
+        startDate: parseDate("2023-06"),
+        endDate: null,
+        description: "Built a modern headless CMS using Keystone.js with advanced features including multi-language support, custom field types, and GraphQL API.",
+        highlights: "Architected scalable CMS using Keystone.js, Next.js, and PostgreSQL with Prisma ORM\nImplemented comprehensive multi-language support with content translation workflow\nCreated custom field types and UI components for enhanced content management capabilities\nBuilt automated content deployment pipeline with preview environments and rollback capabilities\nIntegrated image optimization and CDN delivery using Cloudflare and AWS CloudFront",
+        url: undefined,
+        language: "en-US",
+      },
+      {
+        name: "Distributed Task Scheduler & Job Queue System",
+        startDate: parseDate("2019-08"),
+        endDate: parseDate("2019-12"),
+        description: "Designed and implemented a distributed task scheduling system for processing millions of background jobs with reliability and fault tolerance.",
+        highlights: "Built distributed job queue using Bull and Redis, processing 10M+ jobs daily with 99.99% reliability\nImplemented priority-based scheduling, retry mechanisms, and dead letter queues for failed jobs\nCreated monitoring dashboard for job queue metrics, latency tracking, and failure analysis\nOptimized worker processes for memory efficiency, reducing infrastructure costs by 40%\nDeveloped job chaining and workflow orchestration for complex multi-step processes",
+        url: undefined,
         language: "en-US",
       },
     ],
@@ -418,9 +489,9 @@ Provided support to community members`,
 
     // Standort
     location: {
-      address: "Friedrichsdorf, Deutschland",
+      address: "Frankfurt, Hessen, Deutschland",
       postalCode: "",
-      city: "Friedrichsdorf",
+      city: "Frankfurt",
       countryCode: "DE",
       region: "Hessen",
       language: "de-DE",
@@ -602,7 +673,7 @@ Unterstützung von Gemeindemitgliedern`,
         area: "Angewandte Mathematik für Netzwerk- und Datenwissenschaft",
         studyType: "Master of Science",
         startDate: parseDate("09-2017"),
-        endDate: parseDate("09-2019"),
+        endDate: parseDate("09-2022"),
         language: "de-DE",
       },
       {
@@ -610,8 +681,8 @@ Unterstützung von Gemeindemitgliedern`,
         url: "https://www.aktu.ac.in/",
         area: "Informationstechnologie",
         studyType: "Bachelor of Technology",
-        startDate: parseDate("08-2008"),
-        endDate: parseDate("06-2012"),
+        startDate: parseDate("08-2007"),
+        endDate: parseDate("06-2011"),
         language: "de-DE",
       },
     ],
@@ -672,67 +743,138 @@ Unterstützung von Gemeindemitgliedern`,
       {
         name: "Frontend-Entwicklung",
         level: "Expert",
-        keywords: "React, Angular, Vue.js, TypeScript, JavaScript, HTML5, CSS3, Tailwind CSS, Material UI, Flutter",
+        keywords: "React, Next.js, TypeScript, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS, Styled Components, Material UI, Ant Design, Redux, Redux Toolkit, Zustand, React Query, SWR, Webpack, Vite, Remix, Astro, Web Components, Progressive Web Apps (PWA), Server-Side Rendering (SSR), Static Site Generation (SSG), Incremental Static Regeneration (ISR)",
         language: "de-DE",
       },
       {
         name: "Backend-Entwicklung",
         level: "Expert",
-        keywords: "Node.js, Express, NestJS, Java, Spring Boot, Python, Django, FastAPI, REST-APIs",
-        language: "de-DE",
-      },
-      {
-        name: "Mobile-Entwicklung",
-        level: "Advanced",
-        keywords: "Flutter, React Native, iOS, Android",
+        keywords: "Node.js, Express.js, NestJS, Fastify, tRPC, GraphQL, Apollo Server, Prisma, TypeORM, Drizzle ORM, REST APIs, gRPC, WebSockets, Socket.io, Message Queues, RabbitMQ, Apache Kafka, Bull Queue, BullMQ, Authentifizierung (JWT, OAuth2, SAML), API-Design, Rate Limiting, Caching-Strategien",
         language: "de-DE",
       },
       {
         name: "Cloud & DevOps",
         level: "Advanced",
-        keywords: "AWS, Azure, Google Cloud, Docker, Kubernetes, CI/CD, Jenkins, GitLab CI, GitHub Actions, Terraform, Ansible, Prometheus, Grafana, ELK Stack, ArgoCD, Helm",
+        keywords: "AWS (EC2, ECS, EKS, Lambda, S3, CloudFront, RDS, DynamoDB, SQS, SNS, API Gateway, CloudWatch), Azure, Google Cloud Platform, Docker, Kubernetes, Helm, ArgoCD, CI/CD-Pipelines, GitHub Actions, GitLab CI, Jenkins, CircleCI, Terraform, Infrastructure as Code, Ansible, Nginx, Load Balancing, Auto Scaling, Monitoring (Prometheus, Grafana, Datadog, New Relic), Logging (ELK Stack, CloudWatch Logs), CDN-Konfiguration",
         language: "de-DE",
       },
       {
-        name: "Architektur & Design",
-        level: "Expert",
-        keywords: "Microservices, Event-Driven Architecture, Domain-Driven Design, CQRS, API Gateway, Service Mesh, Micro-Frontends, Design-Patterns, Clean Architecture, Hexagonal Architecture, SOLID-Prinzipien, Systemdesign, Skalierbarkeit, Performance-Optimierung, Sicherheits-Best-Practices, Load Balancing, Caching-Strategien",
-        language: "de-DE",
-      },
-      {
-        name: "Datenbanken",
+        name: "Datenbank & Datenverwaltung",
         level: "Advanced",
-        keywords: "PostgreSQL, MongoDB, MySQL, Redis, Elasticsearch",
+        keywords: "PostgreSQL, MongoDB, MySQL, Redis, DynamoDB, Elasticsearch, TimescaleDB, Datenbankdesign, Query-Optimierung, Indexierungsstrategien, Replikation, Sharding, Datenbankmigration, Datenmodellierung, NoSQL vs SQL, ACID-Transaktionen, CAP-Theorem, Datenbanksicherheit, Backup und Recovery",
         language: "de-DE",
       },
       {
-        name: "Testing",
-        level: "Advanced",
-        keywords: "Jest, Mocha, Chai, Cypress, Selenium, JUnit, Mockito, Test-Driven Development, Integrationstests",
-        language: "de-DE",
-      },
-      {
-        name: "Methoden",
+        name: "Architektur & Systemdesign",
         level: "Expert",
-        keywords: "Agile, Scrum, Kanban, SAFe, Lean, DevOps, GitFlow, Trunk-Based Development, Code-Review, Pair Programming, Continuous Integration, Continuous Deployment, Infrastructure as Code",
+        keywords: "Microservices-Architektur, Event-Driven Architecture, Domain-Driven Design (DDD), CQRS, Event Sourcing, API Gateway Pattern, Service Mesh (Istio), Micro-frontends, Clean Architecture, Hexagonal Architecture, SOLID-Prinzipien, Design Patterns (Factory, Strategy, Observer, Singleton), High Availability, Fault Tolerance, Circuit Breaker Pattern, Saga Pattern, Verteilte Systeme, Skalierbarkeit, Performance-Optimierung, Security Best Practices, Load Balancing-Strategien",
         language: "de-DE",
       },
       {
-        name: "Data Science & Analytics",
+        name: "Testing & Qualitätssicherung",
+        level: "Advanced",
+        keywords: "Jest, Vitest, Testing Library, Cypress, Playwright, Selenium, Puppeteer, Test-Driven Development (TDD), Behavior-Driven Development (BDD), Unit Testing, Integration Testing, End-to-End Testing, Performance Testing, Load Testing (k6, Artillery), Mutation Testing, Code Coverage, Visual Regression Testing, Contract Testing (Pact), API Testing (Postman, Insomnia)",
+        language: "de-DE",
+      },
+      {
+        name: "KI & Machine Learning",
         level: "Intermediate",
-        keywords: "Python, NumPy, Pandas, Scikit-learn, TensorFlow, Datenanalyse, Machine Learning, Statistische Modellierung, Datenvisualisierung, Matplotlib",
+        keywords: "OpenAI API, Anthropic Claude API, LangChain, Vector Databases (Pinecone, Weaviate), RAG (Retrieval-Augmented Generation), Prompt Engineering, Natural Language Processing, Chatbot-Entwicklung, KI-Integration, TensorFlow.js, ML Model Deployment, Feature Engineering, Model Evaluation",
         language: "de-DE",
       },
       {
-        name: "Projektmanagement",
+        name: "Mobile Entwicklung",
         level: "Advanced",
-        keywords: "Jira, Confluence, Trello, Asana",
+        keywords: "React Native, Expo, Flutter, iOS-Entwicklung, Android-Entwicklung, Mobile App-Architektur, Push-Benachrichtigungen, Deep Linking, App Store Deployment, Mobile Performance-Optimierung, Offline-First Architecture, Mobile Analytics, In-App-Käufe",
         language: "de-DE",
       },
       {
-        name: "Versionskontrolle",
+        name: "Entwicklertools & Praktiken",
         level: "Expert",
-        keywords: "Git, GitHub, GitLab, Bitbucket, Branching-Strategien, Code-Review, Pull Requests, Merge-Strategien, Git Hooks",
+        keywords: "Git, GitHub, GitLab, Bitbucket, VS Code, Git Flow, Trunk-Based Development, Code Review, Pull Requests, Pair Programming, ESLint, Prettier, Husky, Lint-Staged, Semantic Versioning, Changesets, Monorepo (Turborepo, Nx, Lerna), Paketverwaltung (npm, yarn, pnpm), Dokumentation (Storybook, JSDoc, OpenAPI/Swagger)",
+        language: "de-DE",
+      },
+      {
+        name: "Web3 & Blockchain",
+        level: "Beginner",
+        keywords: "Ethereum, Solidity, Web3.js, Ethers.js, Smart Contracts, DApps, MetaMask Integration, IPFS, Blockchain-Grundlagen",
+        language: "de-DE",
+      },
+      {
+        name: "Agile & Projektmanagement",
+        level: "Expert",
+        keywords: "Agile Methoden, Scrum, Kanban, Sprint Planning, Story Estimation, Retrospektiven, Daily Standups, Backlog Grooming, Jira, Linear, Confluence, Notion, Asana, Monday.com, Technische Führung, Mentoring, Cross-funktionale Teamzusammenarbeit, Stakeholder Management",
+        language: "de-DE",
+      },
+      {
+        name: "Sicherheit & Compliance",
+        level: "Advanced",
+        keywords: "OWASP Top 10, Authentifizierung & Autorisierung, OAuth2.0, OpenID Connect, JWT, Security Headers, XSS-Prävention, CSRF-Schutz, SQL Injection-Prävention, Datenverschlüsselung, HTTPS/SSL/TLS, Secrets Management, Vulnerability Scanning, Penetration Testing, DSGVO-Konformität, SOC 2, Sicherheitsaudits",
+        language: "de-DE",
+      },
+    ],
+    projects: [
+      {
+        name: "Enterprise KI-gestützte Kundensupport-Plattform",
+        startDate: parseDate("2023-01"),
+        endDate: null,
+        description: "Leitete die Entwicklung einer skalierbaren KI-gestützten Kundensupport-Plattform für Millionen von Nutzern mit Integration mehrerer KI-Modelle und Echtzeit-Kommunikationsfähigkeiten.",
+        highlights: "Architektur und Implementierung eines Microservices-basierten Backends mit Node.js, NestJS und GraphQL, das täglich 50M+ API-Anfragen verarbeitet\nIntegration von OpenAI GPT-4 und benutzerdefinierten NLP-Modellen für intelligentes Query-Routing und automatisierte Antwortgenerierung, Verbesserung der Lösungszeit um 65%\nAufbau eines Echtzeit-Chat-Systems mit WebSockets und Redis Pub/Sub, das 100K+ gleichzeitige Verbindungen unterstützt\nImplementierung umfassender Überwachung und Observability mit Prometheus, Grafana und benutzerdefinierten Dashboards, Erreichung von 99,9% Uptime\nDesign einer Event-Driven Architecture mit Apache Kafka für asynchrone Verarbeitung von Kundeninteraktionen",
+        url: undefined,
+        language: "de-DE",
+      },
+      {
+        name: "Retail Analytics & Bestandsverwaltungssystem",
+        startDate: parseDate("2022-03"),
+        endDate: parseDate("2023-12"),
+        description: "Entwicklung einer umfassenden Analytics- und Bestandsverwaltungsplattform für großflächige Einzelhandelsoperationen mit Echtzeit-Einblicken und automatisierter Bestandsoptimierung.",
+        highlights: "Aufbau eines responsiven React-basierten Dashboards mit Echtzeit-Datenvisualisierung unter Verwendung von D3.js und Recharts, das 5000+ täglich aktive Benutzer bedient\nImplementierung einer prädiktiven Analytics-Engine mit Python und TensorFlow für Bestandsprognosen, Reduzierung von Überbeständen um 30%\nArchitektur einer Hochleistungs-Datenpipeline, die täglich 500GB+ Transaktionsdaten mit AWS Glue und Athena verarbeitet\nEntwicklung von REST- und GraphQL-APIs mit Node.js und Express, integriert mit 20+ Drittanbieter-Logistiksystemen\nOptimierung von PostgreSQL-Datenbankabfragen und Implementierung von Caching mit Redis, Reduzierung der Antwortzeiten von 3s auf 200ms",
+        url: undefined,
+        language: "de-DE",
+      },
+      {
+        name: "Multi-Tenant SaaS-Plattform für Gesundheitswesen",
+        startDate: parseDate("2021-06"),
+        endDate: parseDate("2022-02"),
+        description: "Architektur und Aufbau einer HIPAA-konformen Multi-Tenant SaaS-Plattform für Gesundheitsdienstleister mit sicherer Patientendatenverwaltung und Telegesundheitsfunktionen.",
+        highlights: "Design einer Multi-Tenant-Architektur mit Row-Level Security in PostgreSQL, die 200+ Gesundheitsorganisationen unterstützt\nImplementierung von End-to-End-Verschlüsselung für Patientendaten mit AWS KMS und Erlangung der HIPAA-Compliance-Zertifizierung\nAufbau einer Videokonferenzfunktion mit WebRTC und Twilio, Durchführung von 10K+ Telegesundheitssitzungen monatlich\nErstellung einer CI/CD-Pipeline mit GitHub Actions und AWS ECS, die 20+ Deployments pro Woche mit null Ausfallzeit ermöglicht\nEntwicklung eines umfassenden Audit-Logging-Systems für Compliance-Tracking und Sicherheitsüberwachung",
+        url: undefined,
+        language: "de-DE",
+      },
+      {
+        name: "Mobile-First E-Commerce-Plattform",
+        startDate: parseDate("2020-09"),
+        endDate: parseDate("2021-05"),
+        description: "Leitete die Entwicklung einer Mobile-First E-Commerce-Plattform mit erweiterten Funktionen wie AR-Produktvorschau, personalisierten Empfehlungen und nahtlosem Checkout-Erlebnis.",
+        highlights: "Aufbau einer plattformübergreifenden mobilen App mit React Native und Expo, Erzielung einer 4,8★-Bewertung mit 500K+ Downloads\nImplementierung von AR-Produktvisualisierung mit ARKit und ARCore, Steigerung der Conversion-Raten um 45%\nIntegration von Stripe, PayPal und Apple Pay für nahtlose Zahlungsabwicklung mit PCI DSS-Konformität\nEntwicklung einer personalisierten Empfehlungsmaschine mit kollaborativem Filtern, Verbesserung des durchschnittlichen Bestellwerts um 35%\nOptimierung der App-Performance mit <2s initialer Ladezeit und 60fps-Animationen auf Budget-Geräten",
+        url: undefined,
+        language: "de-DE",
+      },
+      {
+        name: "Echtzeit-Kollaborationstool",
+        startDate: parseDate("2020-01"),
+        endDate: parseDate("2020-08"),
+        description: "Entwicklung einer Echtzeit-Kollaborations-Workspace-Anwendung, die Teams ermöglicht, gemeinsam an Dokumenten, Whiteboards und Projekten mit Live-Updates zu arbeiten.",
+        highlights: "Implementierung des Operational Transformation (OT)-Algorithmus für konfliktfreie Echtzeit-Kollaboration an gemeinsamen Dokumenten\nAufbau einer WebSocket-Infrastruktur mit Socket.io und Redis, die 50K+ gleichzeitige Kollaborationssitzungen unterstützt\nErstellung eines Rich-Text-Editors mit kollaborativer Bearbeitung unter Verwendung von Slate.js und benutzerdefinierter CRDT-Implementierung\nEntwicklung einer Offline-First-Architektur mit Konfliktlösung, die Datenkonsistenz über Clients hinweg gewährleistet\nImplementierung eines fein abgestuften Zugriffskontroll- und Berechtigungssystems für Enterprise-Sicherheitsanforderungen",
+        url: undefined,
+        language: "de-DE",
+      },
+      {
+        name: "Headless CMS mit Multi-Sprach-Unterstützung",
+        startDate: parseDate("2023-06"),
+        endDate: null,
+        description: "Aufbau eines modernen Headless CMS mit Keystone.js mit erweiterten Funktionen wie Multi-Sprach-Unterstützung, benutzerdefinierten Feldtypen und GraphQL-API.",
+        highlights: "Architektur eines skalierbaren CMS mit Keystone.js, Next.js und PostgreSQL mit Prisma ORM\nImplementierung umfassender Multi-Sprach-Unterstützung mit Content-Übersetzungs-Workflow\nErstellung benutzerdefinierter Feldtypen und UI-Komponenten für erweiterte Content-Management-Fähigkeiten\nAufbau einer automatisierten Content-Deployment-Pipeline mit Preview-Umgebungen und Rollback-Funktionen\nIntegration von Bildoptimierung und CDN-Auslieferung mit Cloudflare und AWS CloudFront",
+        url: undefined,
+        language: "de-DE",
+      },
+      {
+        name: "Verteiltes Task-Scheduler & Job-Queue-System",
+        startDate: parseDate("2019-08"),
+        endDate: parseDate("2019-12"),
+        description: "Design und Implementierung eines verteilten Task-Scheduling-Systems für die Verarbeitung von Millionen von Hintergrund-Jobs mit Zuverlässigkeit und Fehlertoleranz.",
+        highlights: "Aufbau einer verteilten Job-Queue mit Bull und Redis, die täglich 10M+ Jobs mit 99,99% Zuverlässigkeit verarbeitet\nImplementierung von prioritätsbasiertem Scheduling, Wiederholungsmechanismen und Dead Letter Queues für fehlgeschlagene Jobs\nErstellung eines Monitoring-Dashboards für Job-Queue-Metriken, Latenz-Tracking und Fehleranalyse\nOptimierung von Worker-Prozessen für Speichereffizienz, Reduzierung der Infrastrukturkosten um 40%\nEntwicklung von Job-Chaining und Workflow-Orchestrierung für komplexe mehrstufige Prozesse",
+        url: undefined,
         language: "de-DE",
       },
     ],
@@ -1329,6 +1471,60 @@ const seedResumeBasicInfo = async (
   return allBasicInfo;
 };
 
+// Helper function to seed projects for a specific resume dataset
+const seedResumeProjects = async (
+  prisma: PrismaClient,
+  resumeData: typeof RESUME_DATA[0],
+  allLanguages: { id: number; label: string; value: string }[]
+) => {
+  console.log("Seeding resume projects...");
+
+  if (!resumeData.projects || resumeData.projects.length === 0) {
+    console.log("✓ No projects to seed, skipping");
+    return [];
+  }
+
+  // Check for existing projects
+  const existingProjects = await prisma.resumeProject.findMany({
+    where: {
+      name: { in: resumeData.projects.map((p) => p.name) },
+    },
+  });
+
+  const existingProjectKeys = new Set(
+    existingProjects.map((p) => `${p.name}-${p.languageId}`)
+  );
+
+  const projectsToCreate = resumeData.projects.filter((project) => {
+    const languageId = allLanguages.find((l) => l.value === project.language)?.id;
+    return !existingProjectKeys.has(`${project.name}-${languageId}`);
+  });
+
+  let newProjects = [];
+  if (projectsToCreate.length > 0) {
+    newProjects = await prisma.resumeProject.createManyAndReturn({
+      data: projectsToCreate.map((project) => ({
+        ...project,
+        languageId: allLanguages.find((l) => l.value === project.language)?.id,
+        language: undefined,
+      })),
+    });
+    console.log(`✓ Created ${newProjects.length} new resume projects`);
+  } else {
+    console.log(`✓ All resume projects already exist, skipping creation`);
+  }
+
+  // Return all projects (existing + newly created)
+  const allProjects = await prisma.resumeProject.findMany({
+    where: {
+      name: { in: resumeData.projects.map((p) => p.name) },
+    },
+  });
+
+  console.log(`✓ Total resume projects: ${allProjects.length}`);
+  return allProjects;
+};
+
 // Main seed function for resumes
 const seedResume = async (prisma: PrismaClient) => {
   console.log("Seeding resumes...");
@@ -1379,6 +1575,7 @@ const seedResume = async (prisma: PrismaClient) => {
     const allExperience = await seedResumeExperience(prisma, resumeData, allLanguages);
     const allSkills = await seedResumeSkills(prisma, resumeData, allLanguages);
     const allInterests = await seedResumeInterests(prisma, resumeData, allLanguages);
+    const allProjects = await seedResumeProjects(prisma, resumeData, allLanguages);
     const allBasicInfo = await seedResumeBasicInfo(prisma, resumeData, allLanguages);
 
     // Get certifications for this language
@@ -1417,6 +1614,9 @@ const seedResume = async (prisma: PrismaClient) => {
         },
         interests: {
           connect: allInterests.map((interest) => ({ id: interest.id })),
+        },
+        projects: {
+          connect: allProjects.map((project) => ({ id: project.id })),
         },
         basicInformationId: allBasicInfo.id,
         createdAt: new Date(),

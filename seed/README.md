@@ -1,939 +1,571 @@
-# Keystone CMS Database Seeding Guide
+# 🌱 Keystone CMS Seed & Clear CLI Guide
 
-> **Comprehensive guide for seeding and managing database content for Nimbus Tech's Keystone CMS**
+Complete guide for using the database seeding and clearing tools in Keystone CMS.
 
 ---
 
 ## Table of Contents
 
 - [Overview](#overview)
-- [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
-- [NPM Scripts Reference](#npm-scripts-reference)
-- [Seeding Components](#seeding-components)
-  - [Seed All Components](#seed-all-components)
-  - [Seed Specific Components](#seed-specific-components)
-  - [Component Dependencies](#component-dependencies)
-- [Clearing Data](#clearing-data)
-- [Available Components](#available-components)
-- [Component Details](#component-details)
-- [Advanced Usage](#advanced-usage)
+- [Seed Command](#seed-command)
+- [Clear Command](#clear-command)
+- [Common Workflows](#common-workflows)
+- [Component Reference](#component-reference)
 - [Troubleshooting](#troubleshooting)
-- [Architecture](#architecture)
-- [Adding New Components](#adding-new-components)
 
 ---
 
 ## Overview
 
-The Keystone CMS seeding system provides a robust, idempotent way to populate your database with initial data. Key features include:
+The Keystone CMS seed system provides powerful tools to populate and manage your database:
 
-- ✅ **Idempotent Operations**: Safe to run multiple times without creating duplicates
-- 🔄 **Smart Caching**: Dependencies are seeded only once per run
-- 🎯 **Automatic Dependency Resolution**: Components auto-seed their prerequisites
-- 📦 **Modular Design**: Seed individual components or everything at once
-- 🧹 **Clean Clear Operations**: Comprehensive data cleanup utilities
-- 🛡️ **Type-Safe**: Full TypeScript support
+- **`npm run db:seed`** - Add data to your database
+- **`npm run db:clear`** - Remove seeded data from your database
+- **`npm run db:reset`** - Reset the entire database schema
+- **`npm run db:fresh`** - Reset and re-seed everything
 
----
+### Key Features
 
-## Prerequisites
-
-Before running any seed scripts, you **MUST** ensure your Prisma Client is up-to-date:
-
-### 1. Delete Old Client Cache
-
-```bash
-# macOS/Linux
-rm -rf node_modules/.prisma
-
-# Windows
-rmdir /s /q node_modules\.prisma
-```
-
-### 2. Regenerate Prisma Client
-
-```bash
-npm run generate
-```
-
-### 3. Restart Your IDE/Editor
-
-This ensures your IDE picks up the latest Prisma types.
-
-### 4. Environment Setup
-
-Ensure your `.env` file has the correct database connection:
-
-```env
-DATABASE_URL="postgresql://user:password@localhost:5432/keystone_cms"
-```
+✅ **Dependency-aware** - Components are seeded in the correct order automatically  
+✅ **Selective seeding** - Seed only the components you need  
+✅ **Safe clearing** - Remove specific data without affecting other components  
+✅ **Help flags** - Built-in documentation with `--help`
 
 ---
 
 ## Quick Start
 
-### Seed Everything (Recommended for Fresh Database)
+### Initial Database Setup
 
 ```bash
-npm run db:seed
-```
-
-This seeds all components in the correct dependency order.
-
-### Seed Specific Component
-
-```bash
-npm run db:seed resume
-```
-
-### Clear and Re-seed
-
-```bash
-# Clear specific component
-npm run db:clear -- --resume
-
-# Re-seed
-npm run db:seed resume
-```
-
----
-
-## NPM Scripts Reference
-
-### Database Management Scripts
-
-| Script | Command | Description |
-|--------|---------|-------------|
-| `db:push` | `npm run db:push` | Push schema changes to database without migrations |
-| `db:seed` | `npm run db:seed` | Seed all components (default behavior) |
-| `db:seed:all` | `npm run db:seed:all` | Explicitly seed all components with `--all` flag |
-| `db:clear` | `npm run db:clear -- [options]` | Clear seeded data (see options below) |
-| `db:reset` | `npm run db:reset` | Reset database (force push schema) |
-| `db:reset:seed` | `npm run db:reset:seed` | Reset database and seed all components |
-| `db:fresh` | `npm run db:fresh` | Fresh database with all seeds (alias for reset:seed) |
-
-### Schema Management Scripts
-
-| Script | Command | Description |
-|--------|---------|-------------|
-| `generate` | `npm run generate` | Run Prisma migrations in dev mode |
-| `schema:verify:dev` | `npm run schema:verify:dev` | Verify schema, migrate, and start (development) |
-| `schema:verify:prod` | `npm run schema:verify:prod` | Verify schema, migrate, and start (production) |
-
-### Quick Reference
-
-**Fresh Start:**
-```bash
-npm run db:fresh
-```
-
-**Seed Specific Components:**
-```bash
-npm run db:seed about analytics navigation
-```
-
-**Clear Specific Component:**
-```bash
-npm run db:clear -- --about
-```
-
-**Reset and Re-seed:**
-```bash
-npm run db:reset:seed
-```
-
----
-
-## Seeding Components
-
-### Seed All Components
-
-The default behavior seeds all components in the correct dependency order:
-
-```bash
+# Seed all components (recommended for first-time setup)
 npm run db:seed
 
-# Or explicitly with --all flag
+# Or explicitly seed everything
+npm run db:seed:all
 npm run db:seed --all
 ```
 
-**Output:**
-```
-🌱 Starting Keystone CMS database seed (all components)...
+### Get Help
 
-📋 Seed order: slugs → languages → images → ctas → certifications → heroes → ...
+```bash
+# Seed command help
+npm run db:seed:help
+npm run db:seed -- --help
+npm run db:seed -- -h
 
-🌱 Seeding component: slugs...
-📌 Ensuring slugs are seeded...
-✓ Created 15 new types
-✅ Component slugs seeded successfully
-
-🌱 Seeding component: languages...
-🌍 Ensuring languages are seeded...
-✓ Created 3 new languages
-✅ Component languages seeded successfully
-
-...
-
-✅ All components seeded successfully!
+# Clear command help
+npm run db:clear:help
+npm run db:clear -- --help
+npm run db:clear -- -h
 ```
 
-### Seed Specific Components
+---
 
-Seed one or more components by name:
+## Seed Command
 
+### Basic Usage
+
+```bash
+npm run db:seed [OPTIONS] [COMPONENTS...]
+```
+
+### Options
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--all` | `-a` | Seed all components (default if no components specified) |
+| `--help` | `-h` | Display help message |
+
+### Examples
+
+#### Seed All Components
+```bash
+npm run db:seed
+npm run db:seed --all
+npm run db:seed:all
+```
+
+#### Seed Specific Components
 ```bash
 # Single component
-npm run db:seed analytics
+npm run db:seed resume
 
 # Multiple components
-npm run db:seed about analytics navigation
+npm run db:seed images ctas heroes
 
-# Complex component with many dependencies
-npm run db:seed pageContents
+# Images, CTAs, and their dependencies
+npm run db:seed slugs languages images ctas
 ```
 
-**Note:** Dependencies are automatically seeded. For example, seeding `pageContents` will automatically seed:
-- slugs
-- languages
-- images
-- ctas
-- certifications
-- heroes
-- benefits
-- approaches
-- about
-- analytics
-- navigation
-- footer
-- faqs
-- features
-- testimonials
-- maps
-
-### Component Dependencies
-
-The seeding system respects dependencies and always seeds in the correct order:
-
-```
-slugs ────────────┐
-                  ├──> images ──┐
-languages ────────┘              │
-                                 ├──> ctas ──> heroes
-                                 │            benefits
-                                 │            navigation
-                                 │            ...
-                                 └──> certifications
-                                      testimonials
-                                      ...
-```
-
-Even if you request components in random order, they'll be seeded correctly:
-
+#### Common Component Combinations
 ```bash
-# You type this (wrong order)
-npm run db:seed heroes images slugs
-
-# System seeds in correct order automatically
-# 1. slugs
-# 2. languages (dependency of images)
-# 3. images
-# 4. ctas (dependency of heroes)
-# 5. heroes
-```
-
----
-
-## Clearing Data
-
-Use the `db:clear` script to remove seeded data:
-
-### Clear Specific Components
-
-```bash
-# Clear all about data
-npm run db:clear -- --about
-
-# Clear analytics data
-npm run db:clear -- --analytics
-
-# Clear navigation data
-npm run db:clear -- --navigation
-
-# Clear resume data
-npm run db:clear -- --resume
-
-# Clear page contents
-npm run db:clear -- --page-contents
-```
-
-### Clear by Component Name
-
-You can also use component names directly:
-
-```bash
-npm run db:clear -- about
-npm run db:clear -- analytics navigation
-```
-
-### Clear Foundational Data
-
-```bash
-# Clear all images
-npm run db:clear -- --images
-
-# Clear all types (slugs)
-npm run db:clear -- --types
-
-# Clear all CTAs
-npm run db:clear -- --ctas
-
-# Clear all languages
-npm run db:clear -- --languages
-```
-
-### Clear Specific Page Contents
-
-```bash
-# Clear specific pages by slug
-npm run db:clear -- --pages home home-de
-
-# Clear legal pages
-npm run db:clear -- --pages terms impressum privacy-policy datenschutz
-```
-
-### Clear Component-Specific Data
-
-```bash
-# Clear testimonials
-npm run db:clear -- --testimonials
-
-# Clear heroes
-npm run db:clear -- --heroes
-
-# Clear benefits
-npm run db:clear -- --benefits
-
-# Clear FAQs
-npm run db:clear -- --faqs
-
-# Clear certifications
-npm run db:clear -- --certifications
-
-# Clear features
-npm run db:clear -- --features
-
-# Clear maps
-npm run db:clear -- --maps
-
-# Clear approaches
-npm run db:clear -- --approaches
-```
-
-### Clear All Default Components
-
-```bash
-npm run db:clear -- --all
-```
-
----
-
-## Available Components
-
-| Component | Description | Key Dependencies | Icon |
-|-----------|-------------|------------------|------|
-| `slugs` | Type/slug definitions for categorizing content | None | 📌 |
-| `languages` | Language configurations (en-US, de-DE, en-IN) | None | 🌍 |
-| `images` | Image assets for all sections | slugs | 🖼️ |
-| `ctas` | Call-to-action buttons and sections | slugs, languages | 🔗 |
-| `certifications` | Certification sections and items | slugs, ctas, images, languages | 🎓 |
-| `heroes` | Hero sections for pages | images, slugs, ctas, languages | 🦸 |
-| `benefits` | Benefit sections and items | images, slugs, ctas, languages | 💎 |
-| `approaches` | Approach/methodology sections | languages | 🎯 |
-| `about` | About sections and company values | languages | 📖 |
-| `analytics` | Analytics data and statistics | languages | 📊 |
-| `navigation` | Navigation menus and links | images, ctas, slugs, languages | 🧭 |
-| `footer` | Footer sections and links | languages, slugs | 🦶 |
-| `faqs` | FAQ sections and items | languages | ❓ |
-| `features` | Feature listings | languages | ⭐ |
-| `testimonials` | Testimonial sections and items | images, slugs, languages | 💬 |
-| `maps` | Map sections (location data) | languages | 🗺️ |
-| `pageContents` | Complete page content assemblies | ALL above components | 📄 |
-| `resume` | Resume/CV data | languages | 📝 |
-| `legalPages` | Legal pages (privacy, terms, etc.) | languages | ⚖️ |
-
----
-
-## Component Details
-
-### Slugs (Types)
-
-**Purpose:** Categorizes content throughout the system
-
-**Seeded Types:**
-- `main` - Main CTAs
-- `hero` - Hero sections
-- `navigation` - Navigation menus
-- `footer` - Footer sections
-- `testimonial` - Testimonial content
-- `certification` - Certifications
-- `benefit` - Benefits
-- `approach` - Approaches
-- `feature` - Features
-- `faq` - FAQs
-- `map` - Maps
-- `about` - About sections
-- `analytics` - Analytics
-- `resume` - Resume content
-- `legal` - Legal pages
-
-**Usage:**
-```bash
-npm run db:seed slugs
-```
-
-**Clear:**
-```bash
-npm run db:clear -- --types
-```
-
----
-
-### Languages
-
-**Purpose:** Defines available UI languages
-
-**Seeded Languages:**
-- English (`en-US`)
-- German (`de-DE`)
-- Hindi (`en-IN`)
-
-**Usage:**
-```bash
-npm run db:seed languages
-```
-
-**Clear:**
-```bash
-npm run db:clear -- --languages
-```
-
----
-
-### Images
-
-**Purpose:** Image assets for various sections
-
-**Seeded Categories:**
-- Hero images
-- Testimonial avatars
-- Certification logos
-- Navigation logos
-- Footer images
-- Benefit icons
-- Resume images
-
-**Usage:**
-```bash
-npm run db:seed images
-```
-
-**Clear:**
-```bash
-npm run db:clear -- --images
-```
-
----
-
-### About
-
-**Purpose:** Company information and values
-
-**Seeded Content:**
-- Company heading and intro (en-US, de-DE)
-- Core values with icons
-- Closing statements
-
-**Values:**
-- Excellence
-- Transparency
-- Collaboration
-- Reliability
-- Innovation
-
-**Usage:**
-```bash
-npm run db:seed about
-```
-
-**Clear:**
-```bash
-npm run db:clear -- --about
-```
-
----
-
-### Analytics
-
-**Purpose:** Project performance metrics and statistics
-
-**Seeded Content:**
-- Deployment statistics
-- Project summaries (Project Nimbus, Cloud Migration, Enterprise App)
-- Performance metrics
-- Multi-language support
-
-**Usage:**
-```bash
-npm run db:seed analytics
-```
-
-**Clear:**
-```bash
-npm run db:clear -- --analytics
-```
-
----
-
-### Navigation
-
-**Purpose:** Site navigation menus
-
-**Seeded Links (per language):**
-- Services
-- About Us
-- Blog
-- Contact
-
-**Usage:**
-```bash
-npm run db:seed navigation
-```
-
-**Clear:**
-```bash
-npm run db:clear -- --navigation
-```
-
----
-
-### Resume
-
-**Purpose:** Personal resume/CV data
-
-**Seeded Sections:**
-- Basic Information
-- Work Experience
-- Education
-- Volunteer Work
-- Publications
-- Awards
-- Skills
-- Languages
-- Profiles (LinkedIn, GitHub, Twitter, Instagram)
-
-**Usage:**
-```bash
+# Just the resume
 npm run db:seed resume
+
+# Page content and dependencies
+npm run db:seed pageContents
+
+# Navigation and footer
+npm run db:seed navigation footer
+
+# All content sections
+npm run db:seed heroes benefits testimonials features
 ```
 
-**Clear:**
+### How It Works
+
+1. **Automatic Dependencies**: When you seed a component, all required dependencies are automatically seeded first
+2. **Correct Order**: Components are always seeded in dependency order
+3. **No Duplicates**: Already seeded data is skipped (idempotent operations)
+4. **Safe**: Existing data is preserved unless explicitly cleared
+
+### Component Seeding Order
+
+Components are seeded in this dependency order:
+
+1. `slugs` - URL routes and slugs
+2. `languages` - Language configurations
+3. `images` - Image assets
+4. `ctas` - Call-to-action buttons and sections
+5. `certifications` - Certification data
+6. `heroes` - Hero sections
+7. `benefits` - Benefit sections
+8. `approaches` - Approach workflows
+9. `about` - About sections
+10. `analytics` - Analytics dashboards
+11. `navigation` - Navigation menus
+12. `footer` - Footer sections
+13. `faqs` - FAQ sections
+14. `features` - Feature sections
+15. `testimonials` - Testimonial sections
+16. `maps` - Map sections
+17. `pageContents` - Page content (requires all above)
+18. `resume` - Resume/CV data
+19. `legalPages` - Legal pages
+
+---
+
+## Clear Command
+
+### Basic Usage
+
 ```bash
+npm run db:clear [OPTIONS] [COMPONENTS...]
+```
+
+### Options
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--all` | `-a` | Clear all default components |
+| `--help` | `-h` | Display help message |
+
+### Component-Specific Flags
+
+| Flag | Description |
+|------|-------------|
+| `--footer` | Clear all footer data (sections, links, keys) |
+| `--page-contents` | Clear all page contents and sections |
+| `--resume` | Clear all resume/CV data |
+| `--navigation` | Clear all navigation menus and links |
+| `--analytics` | Clear all analytics data (stats, summaries) |
+| `--about` | Clear all about sections and values |
+| `--approaches` | Clear all approach workflows and steps |
+| `--maps` | Clear all map sections |
+| `--features` | Clear all feature sections |
+| `--certifications` | Clear all certification sections |
+| `--faqs` | Clear all FAQ sections |
+| `--benefits` | Clear all benefit sections |
+| `--heroes` | Clear all hero sections |
+| `--testimonials` | Clear all testimonial sections |
+| `--languages` | Clear all language configurations |
+| `--ctas` | Clear all CTA buttons and sections |
+| `--types` | Clear all type records (slugs) |
+| `--images` | Clear all image assets |
+| `--pages <slug...>` | Clear specific page contents by slug |
+
+### Examples
+
+#### Clear All Components
+```bash
+npm run db:clear --all
+npm run db:clear -a
+```
+
+#### Clear Specific Component by Flag
+```bash
+# Clear resume data
+npm run db:clear:resume
 npm run db:clear -- --resume
+
+# Clear footer
+npm run db:clear -- --footer
+
+# Clear navigation
+npm run db:clear -- --navigation
+
+# Multiple using flags
+npm run db:clear -- --resume --analytics --navigation
 ```
+
+#### Clear Specific Component by Name
+```bash
+# Single component
+npm run db:clear resume
+
+# Multiple components
+npm run db:clear resume analytics navigation
+
+# Images and slugs
+npm run db:clear images slugs
+```
+
+#### Clear Specific Pages by Slug
+```bash
+# Clear specific pages
+npm run db:clear -- --pages privacy-policy terms-of-service
+
+# Clear single page
+npm run db:clear -- --pages about-us
+```
+
+### ⚠️ Important Notes
+
+- **Permanent Deletion**: Clear operations permanently delete data from the database
+- **No Undo**: Always backup your database before clearing data
+- **Dependencies**: Some components have dependencies; clear in reverse order if needed
+- **Production Caution**: Never run clear commands on production databases without backups
 
 ---
 
-### Page Contents
+## Common Workflows
 
-**Purpose:** Assembles complete pages from all components
-
-**Seeded Pages:**
-- Home page (English)
-- Home page (German)
-
-**Dependencies:** Requires ALL other components to be seeded first
-
-**Usage:**
-```bash
-npm run db:seed pageContents
-```
-
-**Clear:**
-```bash
-npm run db:clear -- --page-contents
-```
-
----
-
-## Advanced Usage
-
-### Check What Will Be Seeded
-
-Before seeding, you can check component dependencies:
+### Fresh Database Setup
 
 ```bash
-# This will show the seed order
-npm run db:seed pageContents
+# Complete reset and fresh seed
+npm run db:fresh
+
+# Or step by step:
+npm run db:reset      # Reset schema
+npm run db:seed:all   # Seed everything
 ```
 
-Output shows:
-```
-🌱 Seeding component: pageContents...
-
-📌 Ensuring slugs are seeded...
-🌍 Ensuring languages are seeded...
-🖼️  Ensuring images are seeded...
-...
-```
-
-### Selective Re-seeding
-
-If you need to update only certain components:
+### Update Single Component
 
 ```bash
-# 1. Clear old data
-npm run db:clear -- --analytics
+# Clear and re-seed resume
+npm run db:clear:resume
+npm run db:seed:resume
 
-# 2. Re-seed with updated data
-npm run db:seed analytics
+# Clear and re-seed navigation
+npm run db:clear -- --navigation
+npm run db:seed navigation
 ```
 
 ### Development Workflow
 
-**Initial Setup:**
 ```bash
-# 1. Setup database
-npm run db:push
+# 1. Make changes to seed data in ./seed/components/resume.ts
+# 2. Clear old data
+npm run db:clear --resume
 
-# 2. Seed everything
-npm run db:seed
+# 3. Re-seed with new data
+npm run db:seed resume
+
+# 4. Verify in Keystone Admin UI
+npm run dev
 ```
 
-**After Schema Changes:**
+### Testing Different Content
+
 ```bash
-# 1. Generate new Prisma client
-npm run generate
+# Clear specific content sections
+npm run db:clear:content
+npm run db:clear -- --heroes --benefits --testimonials
 
-# 2. Push schema changes
-npm run db:push
-
-# 3. Re-seed affected components
-npm run db:seed pageContents
+# Re-seed with updated data
+npm run db:seed:content
+npm run db:seed heroes benefits testimonials
 ```
 
-**Daily Development:**
+### Clean Slate (Keep Schema)
+
 ```bash
-# Just seed what you're working on
-npm run db:seed about analytics
+# Clear everything but keep schema
+npm run db:clear --all
+
+# Or clear specific components
+npm run db:clear resume pageContents navigation footer
 ```
 
-**Quick Database Refresh:**
-```bash
-# Complete fresh start
-npm run db:fresh
-```
+---
+
+## Component Reference
+
+### Core Components
+
+#### slugs
+**Description**: URL routes and slug definitions  
+**Dependencies**: None  
+**Seed**: `npm run db:seed slugs`  
+**Clear**: `npm run db:clear slugs` or `npm run db:clear -- --types`
+
+#### languages
+**Description**: Language configurations (en-US, de-DE, etc.)  
+**Dependencies**: None  
+**Seed**: `npm run db:seed languages`  
+**Clear**: `npm run db:clear -- --languages`
+
+#### images
+**Description**: Image assets and metadata  
+**Dependencies**: `slugs`  
+**Seed**: `npm run db:seed images`  
+**Clear**: `npm run db:clear -- --images`
+
+### Content Components
+
+#### ctas
+**Description**: Call-to-action buttons and sections  
+**Dependencies**: `slugs`, `languages`  
+**Seed**: `npm run db:seed ctas`  
+**Clear**: `npm run db:clear -- --ctas`
+
+#### heroes
+**Description**: Hero banner sections  
+**Dependencies**: `images`, `slugs`, `ctas`, `languages`  
+**Seed**: `npm run db:seed heroes`  
+**Clear**: `npm run db:clear -- --heroes`
+
+#### benefits
+**Description**: Benefit/feature sections  
+**Dependencies**: `images`, `slugs`, `ctas`, `languages`  
+**Seed**: `npm run db:seed benefits`  
+**Clear**: `npm run db:clear -- --benefits`
+
+#### testimonials
+**Description**: Customer testimonial sections  
+**Dependencies**: `images`, `slugs`, `languages`  
+**Seed**: `npm run db:seed testimonials`  
+**Clear**: `npm run db:clear -- --testimonials`
+
+#### features
+**Description**: Product/service feature sections  
+**Dependencies**: `languages`  
+**Seed**: `npm run db:seed features`  
+**Clear**: `npm run db:clear -- --features`
+
+### Navigation Components
+
+#### navigation
+**Description**: Navigation menus and links  
+**Dependencies**: `images`, `ctas`, `slugs`, `languages`  
+**Seed**: `npm run db:seed navigation`  
+**Clear**: `npm run db:clear -- --navigation`
+
+#### footer
+**Description**: Footer sections and links  
+**Dependencies**: `slugs`, `languages`  
+**Seed**: `npm run db:seed footer`  
+**Clear**: `npm run db:clear -- --footer`
+
+### Page Components
+
+#### pageContents
+**Description**: Complete page content with all sections  
+**Dependencies**: ALL content components  
+**Seed**: `npm run db:seed:pages`  
+**Clear**: `npm run db:clear -- --page-contents`
+
+#### legalPages
+**Description**: Legal pages (privacy policy, terms of service)  
+**Dependencies**: None  
+**Seed**: `npm run db:seed legalPages`  
+**Clear**: `npm run db:clear legalPages`
+
+### Specialized Components
+
+#### resume
+**Description**: Resume/CV data (skills, experience, education, projects)  
+**Dependencies**: `languages`, `images`  
+**Seed**: `npm run db:seed:resume`  
+**Clear**: `npm run db:clear:resume`
+
+#### certifications
+**Description**: Certification sections and data  
+**Dependencies**: `slugs`, `ctas`, `images`, `languages`  
+**Seed**: `npm run db:seed certifications`  
+**Clear**: `npm run db:clear -- --certifications`
+
+#### analytics
+**Description**: Analytics dashboards and statistics  
+**Dependencies**: `languages`  
+**Seed**: `npm run db:seed analytics`  
+**Clear**: `npm run db:clear -- --analytics`
+
+#### about
+**Description**: About sections and company values  
+**Dependencies**: `languages`  
+**Seed**: `npm run db:seed about`  
+**Clear**: `npm run db:clear -- --about`
+
+#### approaches
+**Description**: Approach/methodology workflows  
+**Dependencies**: `languages`  
+**Seed**: `npm run db:seed approaches`  
+**Clear**: `npm run db:clear -- --approaches`
+
+#### faqs
+**Description**: FAQ sections  
+**Dependencies**: `languages`  
+**Seed**: `npm run db:seed faqs`  
+**Clear**: `npm run db:clear -- --faqs`
+
+#### maps
+**Description**: Map/location sections  
+**Dependencies**: `languages`  
+**Seed**: `npm run db:seed maps`  
+**Clear**: `npm run db:clear -- --maps`
 
 ---
 
 ## Troubleshooting
 
-### Error: "Languages not found"
+### Component Not Found
 
-**Cause:** Dependencies weren't seeded
+**Problem**: `Invalid component(s): mycomponent`
 
-**Solution:**
+**Solution**: Check available components with:
 ```bash
-# Seed all dependencies first
-npm run db:seed --all
+npm run db:seed:help
 ```
 
-### Error: "Prisma Client validation errors"
+### Prisma Client Errors
 
-**Cause:** Outdated Prisma Client
+**Problem**: Type errors or "Unknown field" errors
 
-**Solution:**
+**Solution**: Regenerate Prisma Client:
 ```bash
-# Clean and regenerate
 rm -rf node_modules/.prisma
 npm run generate
-
-# Restart your IDE
 ```
 
-### Error: "Unique constraint failed"
-
-**Cause:** Attempting to create duplicate data
-
-**Solution:** The seed functions are idempotent and should handle this. If you see this error:
-
-1. Check if you modified seed data
-2. Clear the component and re-seed:
-   ```bash
-   npm run db:clear -- --[component]
-   npm run db:seed [component]
-   ```
-
-### Warning: "No matching ... found"
-
-**Cause:** Missing dependency data
-
-**Solution:**
-```bash
-# Seed dependencies first, then your component
-npm run db:seed slugs languages images
-npm run db:seed [your-component]
-```
+Then restart your IDE/editor.
 
 ### Database Connection Errors
 
-**Solution:**
-1. Check `.env` file has correct `DATABASE_URL`
+**Problem**: Cannot connect to database
+
+**Solution**: 
+1. Check your `.env` file has correct `DATABASE_URL`
 2. Ensure database server is running
-3. Verify database exists:
-   ```bash
-   npm run db:push
-   ```
+3. Verify database exists and is accessible
+
+### Dependency Errors
+
+**Problem**: Missing required dependencies
+
+**Solution**: The seed command automatically handles dependencies. If you still see errors, try:
+```bash
+# Clear everything and start fresh
+npm run db:fresh
+```
+
+### Clear Not Removing Data
+
+**Problem**: Clear command doesn't seem to work
+
+**Solution**: Check you're using the correct flag or component name:
+```bash
+# Use shortcut script
+npm run db:clear:resume
+
+# Use flag with --
+npm run db:clear -- --resume
+
+# Or component name
+npm run db:clear resume
+
+# Not both
+npm run db:clear -- --resume resume  # ❌ Wrong
+```
+
+### Seeding Takes Too Long
+
+**Problem**: Seeding is very slow
+
+**Solution**: 
+1. Seed only components you need instead of `--all`
+2. Check database performance and indexes
+3. Review seed data volume in component files
 
 ---
 
-## Architecture
+## Advanced Usage
 
-### Caching System
+### Custom Seed Scripts
 
-The seeding system uses an in-memory cache to prevent re-seeding dependencies:
+You can create custom seed combinations in `package.json`:
 
-```typescript
-const cache = {
-  slugs: null,
-  languages: null,
-  images: null,
-  // ... other components
-};
-```
-
-Each `ensure*` function checks the cache before seeding:
-
-```typescript
-async function ensureSlugs(prisma) {
-  if (!cache.slugs) {
-    cache.slugs = await Slugs.seed(prisma);
+```json
+{
+  "scripts": {
+    "seed:content": "ts-node --transpile-only ./seed/index.ts heroes benefits testimonials features",
+    "seed:minimal": "ts-node --transpile-only ./seed/index.ts slugs languages images",
+    "clear:content": "ts-node --transpile-only ./seed/clear.ts --heroes --benefits --testimonials"
   }
-  return cache.slugs;
 }
 ```
 
-### Idempotent Design
-
-Each seed function checks for existing data:
-
-```typescript
-// Example from about.ts
-const existingValues = await prisma.value.findMany({
-  where: { label: { in: valuesToCreate.map(v => v.label) } }
-});
-
-const newValues = valuesToCreate.filter(
-  v => !existingValues.some(ev => ev.label === v.label)
-);
-
-// Only create what doesn't exist
-if (newValues.length > 0) {
-  await prisma.value.createMany({ data: newValues });
-}
-```
-
-### Dependency Graph
-
-```
-┌─────────┐     ┌───────────┐
-│  slugs  │────▶│  images   │
-└─────────┘     └───────────┘
-                      │
-┌───────────┐         │
-│ languages │─────────┼────────┐
-└───────────┘         │        │
-      │               │        │
-      │               ▼        ▼
-      │          ┌─────────┐┌──────┐
-      └─────────▶│  ctas   ││heroes│
-                 └─────────┘└──────┘
-                      │
-                      ▼
-              ┌──────────────┐
-              │ pageContents │
-              └──────────────┘
-```
-
----
-
-## Adding New Components
-
-### Step 1: Create Component File
-
-Create `seed/components/myComponent.ts`:
-
-```typescript
-import { PrismaClient } from "@prisma/client";
-
-const myComponentData = [
-  // Your data here
-];
-
-const seed = async (prisma: PrismaClient, dependencies) => {
-  console.log("Seeding myComponent...");
-  
-  // Check for existing
-  const existing = await prisma.myComponent.findMany();
-  
-  // Filter and create only new items
-  const toCreate = myComponentData.filter(/* ... */);
-  
-  if (toCreate.length > 0) {
-    await prisma.myComponent.createMany({ data: toCreate });
-    console.log(`✓ Created ${toCreate.length} items`);
-  }
-  
-  return await prisma.myComponent.findMany();
-};
-
-const clear = async (prisma: PrismaClient) => {
-  console.log("Clearing myComponent...");
-  const result = await prisma.myComponent.deleteMany({});
-  console.log(`Deleted ${result.count} item(s).`);
-};
-
-const MyComponent = { seed, clear };
-export default MyComponent;
-```
-
-### Step 2: Add to Seed Order
-
-In `seed/index.ts`:
-
-```typescript
-const SEED_ORDER = [
-  // ... existing components
-  "myComponent",
-] as const;
-```
-
-### Step 3: Create Ensure Function
-
-```typescript
-async function ensureMyComponent(prisma: PrismaClient) {
-  if (!cache.myComponent) {
-    console.log("🆕 Ensuring myComponent is seeded...");
-    const dependencies = await ensureDependencies(prisma);
-    cache.myComponent = await MyComponent.seed(prisma, dependencies);
-  }
-  return cache.myComponent;
-}
-```
-
-### Step 4: Add to Switch Statement
-
-```typescript
-case "myComponent":
-  await ensureMyComponent(prisma);
-  break;
-```
-
-### Step 5: Add Clear Function
-
-In `seed/clear.ts`:
-
-```typescript
-async function clearMyComponent(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing myComponent...');
-  const result = await prisma.myComponent.deleteMany({});
-  console.log(`Deleted ${result.count} item(s).`);
-}
-
-// Add flag handler
-const myComponentFlag = args.includes('--my-component');
-if (myComponentFlag) {
-  await clearMyComponent(prisma);
-  return;
-}
-```
-
-### Step 6: Test
+### Environment-Specific Seeding
 
 ```bash
-# Seed
-npm run db:seed myComponent
+# Development
+NODE_ENV=development npm run db:seed:all
 
-# Clear
-npm run db:clear -- --my-component
+# Staging
+NODE_ENV=staging npm run db:seed pageContents
+
+# Never on production!
+# NODE_ENV=production npm run db:fresh  # ❌ DON'T DO THIS
+```
+
+### Backup Before Clearing
+
+```bash
+# Backup database first
+pg_dump $DATABASE_URL > backup_$(date +%Y%m%d_%H%M%S).sql
+
+# Then clear
+npm run db:clear --all
 ```
 
 ---
 
-## Best Practices
+## Related Documentation
 
-### 1. Always Check for Duplicates
-
-Use composite keys when appropriate:
-
-```typescript
-const existingKeys = new Set(
-  existing.map(item => `${item.field1}-${item.field2}`)
-);
-```
-
-### 2. Use Descriptive Logging
-
-```typescript
-console.log(`✓ Created ${count} new items`);
-console.log(`✓ Item already exists (id: ${id}), skipping`);
-console.log(`✓ Total items: ${total}`);
-```
-
-### 3. Handle Foreign Keys Properly
-
-Always delete child records before parent records:
-
-```typescript
-// Delete children first
-await prisma.child.deleteMany({});
-// Then delete parent
-await prisma.parent.deleteMany({});
-```
-
-### 4. Cache Dependencies
-
-Use the ensure pattern to avoid re-seeding:
-
-```typescript
-const slugs = await ensureSlugs(prisma);
-const languages = await ensureLanguages(prisma);
-```
-
-### 5. Type Safety
-
-Export and use types:
-
-```typescript
-export type SeededMyComponent = Awaited<ReturnType<typeof seed>>;
-```
+- [NPM_USAGE_GUIDE.md](./NPM_USAGE_GUIDE.md) - Understanding npm `--` requirement
+- [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) - Quick command reference
+- [SCRIPTS.md](./SCRIPTS.md) - Detailed script documentation
+- [../README.md](../README.md) - Main project documentation
+- [../schema.ts](../schema.ts) - Database schema definitions
+- [components/](./components/) - Seed data definitions
 
 ---
 
-## Summary
+## Support
 
-The Keystone CMS seeding system provides:
+If you encounter issues:
 
-- ✅ **Safe re-runs**: Idempotent operations prevent duplicates
-- 🚀 **Fast execution**: Smart caching minimizes database queries  
-- 🎯 **Precise control**: Seed exactly what you need
-- 🧹 **Easy cleanup**: Comprehensive clear utilities
-- 📚 **Well documented**: Clear logging and error messages
-- 🔧 **Maintainable**: Modular, type-safe architecture
-
-For questions or issues, refer to the troubleshooting section or check the component implementation files in `seed/components/`.
+1. Check this guide and help flags (`--help`)
+2. Review error messages carefully
+3. Verify database connection and schema
+4. Check component dependencies
+5. Try a fresh seed: `npm run db:fresh`
 
 ---
 
-**Happy Seeding! 🌱**
+**Last Updated**: January 2025  
+**Version**: 1.0.0
