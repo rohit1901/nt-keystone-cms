@@ -40,9 +40,7 @@ export const keystoneConfig = config<TypeInfo<Session>>({
     port: 3000,
     cors: {
       origin:
-        process.env.NODE_ENV === "production"
-          ? process.env.CORS_ORIGIN
-          : ["http://localhost:3000", "http://localhost:3001"],
+        process.env.CORS_ORIGIN?.split(",").map((origin) => origin.trim()) || [],
       credentials: true,
     },
   },
