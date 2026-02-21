@@ -1,6 +1,8 @@
 services:
   db:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
     ports:
       - "5432:5432"
     environment:

@@ -4,20 +4,20 @@
 container: up
 
 up:
-	docker compose up -d --build
+	docker compose -f docker-compose.postgres.yml up -d --build
 
 down:
-	docker compose down
+	docker compose -f docker-compose.postgres.yml down
 
 logs:
-	docker compose logs -f db
+	docker compose -f docker-compose.postgres.yml logs -f db
 
 psql:
-	docker compose exec db psql -U admin -d nimbus-tech-db
+	docker compose -f docker-compose.postgres.yml exec db psql -U admin -d nimbus-tech-db
 
 status:
-	docker compose ps
+	docker compose -f docker-compose.postgres.yml ps
 
 clean:
-	docker compose down -v
+	docker compose -f docker-compose.postgres.yml down -v
 	docker system prune -f
