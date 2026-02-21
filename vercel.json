@@ -1,0 +1,5 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "keystone build",
+  "outputDirectory": ".keystone/admin/.next"
+}
