@@ -32,7 +32,7 @@ const pageContentsData: CompositePageContentWithExtras<{
       slug: "home",
       title: "Nimbus Tech",
       description:
-        "AWS cloud consulting and solutions for SMEs and startups. We design, implement, and optimize your AWS environment so your business can grow securely and cost-effectively.",
+        "AWS cloud consulting and cloud-native solutions for small, mid-market, and enterprise businesses. We design, implement, and optimize your AWS environment using Infrastructure as Code (IaC), serverless computing, and a secure cloud transformation approach so your business can grow safely and cost-effectively.",
       language: {
         label: "English",
         value: "en-US",
@@ -46,7 +46,7 @@ const pageContentsData: CompositePageContentWithExtras<{
       slug: "home-de",
       title: "Nimbus Tech",
       description:
-        "AWS-Cloud-Beratung und -Lösungen für KMU und Start-ups. Wir planen, implementieren und optimieren Ihre AWS-Umgebung, damit Ihr Unternehmen sicher und kosteneffizient wachsen kann.",
+        "AWS-Cloud-Beratung und cloud-native Lösungen für Unternehmen. Wir entwerfen, implementieren und optimieren Ihre AWS-Umgebung mit Infrastructure as Code (IaC), Serverless Computing und einem Ansatz für sichere Cloud-Transformation, damit Ihr Unternehmen sicher und kosteneffizient wachsen kann.",
       language: {
         label: "German",
         value: "de-DE",

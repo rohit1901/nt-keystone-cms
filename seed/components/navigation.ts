@@ -114,7 +114,7 @@ const navigationSections: NavigationSection[] = [
   {
     title: "Nimbus Tech",
     description:
-      "Nimbus Tech is an AWS-focused cloud consulting and software engineering company. We help SMEs and startups design, migrate, and operate scalable, secure systems on AWS without unnecessary complexity.",
+      "Nimbus Tech is an AWS-focused cloud consulting and software engineering company. We help small, mid-market, and enterprise businesses design, migrate, and operate scalable, secure systems on AWS without unnecessary complexity.",
     image: {
       src: "https://d1ljophloyhryl.cloudfront.net/assets/nimbus.logo.svg",
       alt: "Nimbus Tech Navbar Logo",
@@ -139,7 +139,7 @@ const navigationSections: NavigationSection[] = [
   {
     title: "Nimbus Tech",
     description:
-      "Nimbus Tech ist ein auf AWS fokussiertes Cloud-Beratungs- und Software-Engineering-Unternehmen. Wir helfen KMU und Start-ups, skalierbare und sichere Systeme auf AWS zu entwerfen, zu migrieren und zu betreiben – ohne unnötige Komplexität.",
+      "Nimbus Tech ist ein auf AWS fokussiertes Cloud-Beratungs- und Software-Engineering-Unternehmen. Wir helfen Unternehmen, skalierbare und sichere Systeme auf AWS zu entwerfen, zu migrieren und zu betreiben – ohne unnötige Komplexität.",
     image: {
       src: "https://d1ljophloyhryl.cloudfront.net/assets/nimbus.logo.svg",
       alt: "Nimbus Tech Navbar Logo",

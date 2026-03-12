@@ -38,7 +38,7 @@ export const faqs: FAQ[] = [
   {
     question: "Can you help if we already use AWS?",
     answer:
-      "Yes. Many clients come to us with an existing AWS setup that has grown over time. We review your environment, highlight risks and opportunities, and then help you clean up, secure, and optimize costs.",
+      "Yes. Many clients come to us with an existing AWS setup that has grown over time. We review your environment using the AWS Well-Architected Framework, highlight risks and opportunities, and then help you clean up, secure, and optimize costs using best practices for multi-account strategies and Infrastructure as Code (IaC).",
     language: {
       label: "English",
       value: "en-US",
@@ -93,7 +93,7 @@ export const faqs: FAQ[] = [
   {
     question: "Unterstützen Sie auch bestehende AWS-Setups?",
     answer:
-      "Ja. Viele Kund:innen kommen mit gewachsenen AWS-Umgebungen zu uns. Wir analysieren Ihre Umgebung, zeigen Risiken und Chancen auf und helfen anschließend bei Aufräumen, Absicherung und Kostenoptimierung.",
+      "Ja. Viele Kund:innen kommen mit einer bestehenden AWS-Umgebung zu uns, die über die Zeit gewachsen ist. Wir überprüfen Ihre Umgebung mit dem AWS Well-Architected Framework, zeigen Risiken und Chancen auf und helfen Ihnen anschließend, mit einer passenden Multi-Account-Strategie sowie Infrastructure as Code (IaC) Sicherheit und Kosten zu optimieren.",
     language: {
       label: "German",
       value: "de-DE",
@@ -124,7 +124,7 @@ export const faqSections: FaqSection[] = [
   {
     title: "Frequently Asked Questions",
     description:
-      "Find answers to common questions about our AWS cloud consulting, migration projects, and how we work with SMEs and startups.",
+      "Find answers to common questions about our AWS cloud consulting, migration projects, and how we work with small, mid-market, and enterprise businesses.",
     faqs: faqs.filter((faq) => faq.language.value === "en-US"),
     language: {
       label: "English",
@@ -134,7 +134,7 @@ export const faqSections: FaqSection[] = [
   {
     title: "Häufige Fragen",
     description:
-      "Antworten auf typische Fragen zu unserer AWS-Cloud-Beratung, Migrationsprojekten und der Zusammenarbeit mit KMU und Start-ups.",
+      "Antworten auf typische Fragen zu unserer AWS-Cloud-Beratung, Migrationsprojekten und der Zusammenarbeit mit Unternehmen.",
     faqs: faqs.filter((faq) => faq.language.value === "de-DE"),
     language: {
       label: "German",

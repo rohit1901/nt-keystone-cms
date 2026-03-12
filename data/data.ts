@@ -383,7 +383,7 @@ export const faqs: FaqItem[] = [
   {
     question: "What types of projects do you work on?",
     answer:
-      "We help companies design and build custom software solutions, migrate to the cloud, modernize legacy systems, and optimize IT infrastructure using technologies like Java, JavaScript, TypeScript, React, Angular, Vue, and AWS.",
+      "We help small, mid-market, and enterprise businesses design and build custom software solutions, migrate to the cloud, modernize legacy systems, and optimize IT infrastructure using technologies like Java, JavaScript, TypeScript, React, Angular, Vue, and AWS.",
   },
   {
     question: "Do you only work with cloud technologies?",

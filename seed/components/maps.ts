@@ -9,7 +9,7 @@ const mapPageContent: MapSection[] = [
     title: "Global Reach, Local Expertise",
     subheading: "Expert AWS Cloud Consulting, wherever you are",
     description:
-      "Our team operates from Germany, collaborating with SMEs and startups worldwide to design, build, and optimize AWS-based systems.",
+      "Our team operates from Germany, collaborating with small, mid-market, and enterprise businesses worldwide to design, build, and optimize AWS-based systems.",
     language: {
       value: "en-US",
       label: "English",

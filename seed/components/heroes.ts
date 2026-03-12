@@ -42,10 +42,10 @@ const heroesData: HeroType[] = [
   {
     title: "AWS Cloud Consulting for SMEs & Startups",
     description:
-      "Nimbus Tech helps small and medium-sized businesses and startups in the DACH region make the most of AWS. We plan, build, and optimize your cloud setup – transparent, understandable, and focused on your goals.",
+      "AWS expertise in cloud-native architecture, secure cloud transformation, and cost-optimized infrastructures for your business.",
     language: { label: "English", value: "en-US" },
     hero: {
-      subHeading: "AWS expertise for your business",
+      subHeading: "AWS expertise for cloud-native, secure, and cost-optimized infrastructures.",
       banner: {
         ...getBannerCta("en-US"),
         additional: {
@@ -59,10 +59,10 @@ const heroesData: HeroType[] = [
   {
     title: "Nimbus Tech",
     description:
-      "Maßgeschneiderte Softwareentwicklung, Cloud-Architektur und skalierbare Lösungen für moderne Unternehmen.",
+      "Nimbus Tech unterstützt kleine und mittelständische Unternehmen sowie Start-ups in der DACH-Region dabei, AWS optimal zu nutzen – mit cloud-native Architekturen und einer durchdachten Multi-Account-Strategie. Wir planen, bauen und optimieren Ihre Cloud-Umgebung mit Infrastructure as Code (IaC), setzen Serverless Computing dort ein, wo es sinnvoll ist, und nutzen bewährte Methoden zur Kostenoptimierung.",
     language: { label: "German", value: "de-DE" },
     hero: {
-      subHeading: "Experten für Software- & Cloud-Lösungen",
+      subHeading: "AWS-Expertise für cloud-native, sichere und kostenoptimierte Infrastrukturen.",
       banner: {
         ...getBannerCta("de-DE"),
         additional: {

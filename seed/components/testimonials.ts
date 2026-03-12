@@ -51,7 +51,7 @@ export const testimonialItems: TestimonialItem[] = [
     role: "AWS Cloud & Software Experts, Germany",
     company: "Nimbus Tech",
     content:
-      "As Nimbus Tech launches, we look forward to partnering with SMEs and startups to deliver clear, effective AWS cloud solutions. Your feedback could be featured here!",
+      "As Nimbus Tech launches, we look forward to partnering with small, mid-market, and enterprise businesses to deliver clear, effective AWS cloud solutions. Your feedback could be featured here!",
     imageKey: "testimonialLogo",
     language: english,
   },
@@ -64,7 +64,7 @@ export const testimonialItems: TestimonialItem[] = [
     role: "AWS-Cloud- & Software-Expert:innen, Deutschland",
     company: "Nimbus Tech",
     content:
-      "Zum Start von Nimbus Tech freuen wir uns darauf, gemeinsam mit KMU und Start-ups klare, wirksame AWS-Cloud-Lösungen umzusetzen. Ihr Feedback könnte hier erscheinen!",
+      "Zum Start von Nimbus Tech freuen wir uns darauf, gemeinsam mit Unternehmen klare, wirksame AWS-Cloud-Lösungen umzusetzen. Ihr Feedback könnte hier erscheinen!",
     imageKey: "testimonialLogo",
     language: german,
   },

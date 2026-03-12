@@ -11,9 +11,9 @@ export const features: Feature[] = [
     featureId: 1,
     title: "AWS Cloud Consulting",
     description:
-      "Strategic AWS guidance for SMEs and startups – from first cloud projects to mature environments.",
+      "Strategic AWS guidance for small, mid-market, and enterprise businesses – from first cloud-native projects to mature, multi-account environments.",
     longDescription:
-      "We help you define a clear AWS strategy, choose the right services, and design an architecture that fits your business goals. Together, we create a roadmap that balances speed, risk, and budget so you can grow safely in the cloud.",
+      "We help you define a clear AWS strategy, choose the right services, and design a cloud-native architecture that fits your business goals. Together, we create a roadmap based on the AWS Well-Architected Framework and a solid multi-account strategy, so your move to AWS becomes a secure cloud transformation that balances speed, risk, and budget.",
     visualization: "ArchitectureFeatureVisualization",
     language: {
       label: "English",
@@ -24,9 +24,9 @@ export const features: Feature[] = [
     featureId: 2,
     title: "AWS Migration & Modernization",
     description:
-      "Securely move existing systems to AWS and modernize step by step without disrupting your business.",
+      "Securely move existing systems to AWS and modernize step by step as part of a secure cloud transformation – without disrupting your business.",
     longDescription:
-      "Whether you are lifting and shifting, re-platforming, or re-architecting, we plan and execute your AWS migration with minimal downtime. We modernize where it adds value – using containers, serverless, and managed services to reduce operational effort and costs.",
+      "Whether you are lifting and shifting, re-platforming, or re-architecting, we plan and execute your AWS migration with minimal downtime. We modernize where it adds value – using Infrastructure as Code (IaC), serverless computing, and managed services to reduce operational effort, improve security, and optimize costs over time.",
     visualization: "CloudFeatureVisualization",
     language: {
       label: "English",
@@ -37,9 +37,9 @@ export const features: Feature[] = [
     featureId: 3,
     title: "DevOps & Automation on AWS",
     description:
-      "Reliable CI/CD pipelines, infrastructure as code, and monitoring tailored to your team and stack.",
+      "Reliable CI/CD pipelines, Infrastructure as Code (IaC), and monitoring tailored to your team and stack, built for secure multi-account AWS environments.",
     longDescription:
-      "We set up or improve your deployment pipelines, infrastructure as code (Terraform/CDK), and observability so your team can ship changes safely and frequently. You get an automated AWS foundation that supports your product instead of slowing it down.",
+      "We set up or improve your deployment pipelines, Infrastructure as Code (Terraform/CDK), and observability so your team can ship changes safely and frequently. You get an automated, cloud-native AWS foundation aligned with the Well-Architected Framework, making secure cloud transformation and ongoing cost optimization part of your daily operations instead of one-off projects.",
     visualization: "CloudFeatureVisualization",
     language: {
       label: "English",
@@ -51,9 +51,9 @@ export const features: Feature[] = [
     featureId: 1,
     title: "AWS-Cloud-Beratung",
     description:
-      "Strategische AWS-Beratung für KMU und Start-ups – von den ersten Cloud-Schritten bis zu gewachsenen Umgebungen.",
+      "Strategische AWS-Beratung für Unternehmen – von ersten cloud-native Projekten bis hin zu gewachsenen Multi-Account-Umgebungen.",
     longDescription:
-      "Wir entwickeln gemeinsam mit Ihnen eine klare AWS-Strategie, wählen passende Services aus und entwerfen eine Architektur, die zu Ihren Geschäftsanforderungen passt. So entsteht eine Roadmap, die Geschwindigkeit, Risiko und Budget sinnvoll ausbalanciert.",
+      "Wir entwickeln gemeinsam mit Ihnen eine klare AWS-Strategie, wählen passende Services aus und entwerfen eine cloud-native Architektur, die zu Ihren Geschäftsanforderungen passt. Auf Basis des AWS Well-Architected Frameworks und einer soliden Multi-Account-Strategie entsteht so eine sichere Cloud-Transformation, die Geschwindigkeit, Risiko und Budget sinnvoll ausbalanciert.",
     visualization: "OrbitFeatureVisualization",
     language: {
       label: "German",
@@ -64,9 +64,9 @@ export const features: Feature[] = [
     featureId: 2,
     title: "AWS-Migration & Modernisierung",
     description:
-      "Sichere Migration bestehender Systeme nach AWS und schrittweise Modernisierung ohne Betriebsunterbrechung.",
+      "Sichere Migration bestehender Systeme nach AWS und schrittweise Modernisierung im Rahmen einer sicheren Cloud-Transformation – ohne Betriebsunterbrechung.",
     longDescription:
-      "Ob Lift-and-Shift, Re-Platforming oder Re-Architektur – wir planen und begleiten Ihre AWS-Migration mit minimaler Downtime. Wir modernisieren dort, wo es echten Mehrwert bringt, etwa mit Containern, Serverless und Managed Services.",
+      "Ob Lift-and-Shift, Re-Platforming oder Re-Architektur – wir planen und begleiten Ihre AWS-Migration mit minimaler Downtime. Wir modernisieren dort, wo es echten Mehrwert bringt – mit Infrastructure as Code (IaC), Serverless Computing und Managed Services, um Betriebsaufwand zu reduzieren, Sicherheit zu erhöhen und Kosten langfristig zu optimieren.",
     visualization: "CloudFeatureVisualization",
     language: {
       label: "German",
@@ -77,9 +77,9 @@ export const features: Feature[] = [
     featureId: 3,
     title: "DevOps & Automatisierung auf AWS",
     description:
-      "Zuverlässige CI/CD-Pipelines, Infrastructure as Code und Monitoring, abgestimmt auf Ihr Team.",
+      "Zuverlässige CI/CD-Pipelines, Infrastructure as Code (IaC) und Monitoring, abgestimmt auf Ihr Team und Multi-Account-AWS-Umgebungen.",
     longDescription:
-      "Wir richten Deployment-Pipelines, Infrastructure as Code (z.B. Terraform/CDK) und Observability ein oder verbessern bestehende Lösungen. So kann Ihr Team Änderungen häufiger und sicherer ausrollen.",
+      "Wir richten Deployment-Pipelines, Infrastructure as Code (z.B. Terraform/CDK) und Observability ein oder verbessern bestehende Lösungen, damit Ihr Team Änderungen häufiger und sicherer ausrollen kann. Sie erhalten ein automatisiertes, cloud-natives AWS-Fundament, das sich am Well-Architected Framework orientiert – so werden sichere Cloud-Transformation und laufende Kostenoptimierung Teil Ihres Tagesgeschäfts statt einmaliger Projekte.",
     visualization: "ArchitectureFeatureVisualization",
     language: {
       label: "German",

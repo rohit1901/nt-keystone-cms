@@ -8,7 +8,7 @@ const aboutData: readonly AboutSection[] = [
   {
     heading: "About Nimbus Tech",
     intro:
-      "Nimbus Tech is an AWS-focused cloud consulting and software engineering company based in Germany. With more than 14 years of experience in software development and architecture, we help SMEs and startups in the DACH region design, migrate, and operate reliable systems on AWS – always with clear communication and business value in mind.",
+      "Nimbus Tech is an AWS-focused cloud consulting and software engineering company based in Germany. With more than 14 years of experience in software development and architecture, we help small, mid-market, and enterprise businesses in the DACH region design, migrate, and operate reliable systems on AWS – always with clear communication and business value in mind.",
     valuesTitle: "Our Values",
     values: [
       {
@@ -52,7 +52,7 @@ const aboutData: readonly AboutSection[] = [
   {
     heading: "Über Nimbus Tech",
     intro:
-      "Nimbus Tech ist ein auf AWS spezialisiertes Cloud-Beratungs- und Software-Engineering-Unternehmen mit Sitz in Deutschland. Mit über 14 Jahren Erfahrung in Entwicklung und Architektur unterstützen wir KMU und Start-ups in der DACH-Region dabei, zuverlässige Systeme auf AWS zu planen, zu migrieren und zu betreiben – mit klarer Kommunikation und echtem Geschäftsnutzen.",
+      "Nimbus Tech ist ein auf AWS spezialisiertes Cloud-Beratungs- und Software-Engineering-Unternehmen mit Sitz in Deutschland. Mit über 14 Jahren Erfahrung in Entwicklung und Architektur unterstützen wir alle Unternehmen in der DACH-Region dabei, zuverlässige Systeme auf AWS zu planen, zu migrieren und zu betreiben – mit klarer Kommunikation und echtem Geschäftsnutzen.",
     valuesTitle: "Unsere Werte",
     values: [
       {
