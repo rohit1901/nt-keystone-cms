@@ -929,6 +929,386 @@ Unterstützung von Gemeindemitgliedern`,
 
 
   },
+  {
+        // Main Resume
+        resume: {
+            title: "Florian Zeidler - Cloud Architect and Engineer Resume",
+            language: "en-US", // Reference to Language.value
+            createdAt: new Date().toISOString(),
+        },
+
+        // Basic Information
+        basicInformation: {
+            name: "Florian Zeidler",
+            label: "Cloud Architect",
+            email: "f.zeidler@nimbus-tech.de",
+            url: "https://www.linkedin.com/in/florian-zeidler-945b3a242/",
+            summary: "",
+            language: "en-US",
+        },
+
+        // Location
+        location: {
+            address: "Leipzig, Saxony, Germany",
+            postalCode: "04179",
+            city: "Leipzig",
+            countryCode: "DE",
+            region: "Saxony",
+            language: "en-US",
+        },
+
+        // Profiles
+        profiles: [
+            {
+                network: "LinkedIn",
+                username: "florian-zeidler-945b3a242",
+                url: "https://www.linkedin.com/in/florian-zeidler-945b3a242/",
+                language: "en-US",
+            },
+            {
+                network: "GitHub",
+                username: "Lunev1",
+                url: "https://github.com/Lunev1",
+                language: "en-US",
+            },
+        ],
+
+        // Work Experience
+        work: [
+            {
+                name: "Finatix GmbH",
+                position: "Cloud Developer / Solutions Architect / DevOps Engineer",
+                url: "",
+                startDate: parseDate("07-2019"),
+                endDate: null,
+                summary: `Cloud Engineer and Solutions Architect for cloud environments.`,
+                highlights: `Worked on projects with a focus on backend and cloud development
+Tech lead for AWS cloud architecture
+Implemented standardized processes for the development team and supported their deployment workflows`,
+                language: "en-US",
+            },
+        ],
+
+        // Volunteer
+        volunteer: [],
+
+        // Education
+        education: [
+            {
+                institution: "Universität Leipzig",
+                url: "https://www.uni-leipzig.de/",
+                area: "Business and Computer Science",
+                studyType: "Master of Science",
+                startDate: parseDate("10-2015"),
+                endDate: parseDate("11-2021"),
+                language: "en-US",
+            },
+            {
+                institution: "Universität Leipzig",
+                url: "https://www.uni-leipzig.de/",
+                area: "Business and Computer Science",
+                studyType: "Bachelor of Science",
+                startDate: parseDate("10-2010"),
+                endDate: parseDate("10-2015"),
+                language: "en-US",
+            },
+        ],
+
+        // Awards
+        awards: [],
+
+        // Publications
+        publications: [],
+
+        // Skills
+        skills: [
+            {
+                name: "Backend Development",
+                level: "Expert",
+                keywords: "Node.js, GraphQL, REST APIs, gRPC, WebSockets, Message Queues, RabbitMQ, Apache Kafka, Authentication (JWT, OAuth2, SAML), API Design, Rate Limiting, Caching Strategies, open-api",
+                language: "en-US",
+            },
+            {
+                name: "Cloud & DevOps",
+                level: "Advanced",
+                keywords: "AWS (EC2, ECS, EKS, Lambda, S3, CloudFront, RDS, DynamoDB, SQS, SNS, API Gateway, CloudWatch), Azure, Google Cloud Platform, Docker, Kubernetes, Helm, ArgoCD, CI/CD Pipelines, GitHub Actions, GitLab CI, Jenkins, CircleCI, Terraform, Infrastructure as Code, Ansible, Nginx, Load Balancing, Auto Scaling, Monitoring (Prometheus, Grafana, Datadog, New Relic), Logging (ELK Stack, CloudWatch Logs), CDN Configuration",
+                language: "en-US",
+            },
+            {
+                name: "Database & Data Management",
+                level: "Advanced",
+                keywords: "PostgreSQL, MongoDB, MySQL, Redis, DynamoDB, Elasticsearch, Database Design, Query Optimization, Indexing Strategies, Replication, Sharding, Database Migration, Data Modeling, NoSQL vs SQL, ACID Transactions, CAP Theorem, Database Security, Backup and Recovery",
+                language: "en-US",
+            },
+            {
+                name: "Architecture & System Design",
+                level: "Expert",
+                keywords: "Microservices Architecture, Event-Driven Architecture, Domain-Driven Design (DDD), CQRS, Event Sourcing, API Gateway Pattern, Clean Architecture, Hexagonal Architecture, SOLID Principles, Design Patterns (Factory, Strategy, Observer, Singleton), High Availability, Fault Tolerance, Circuit Breaker Pattern, Saga Pattern, Distributed Systems, Scalability, Performance Optimization, Security Best Practices, Load Balancing Strategies",
+                language: "en-US",
+            },
+            {
+                name: "Testing & Quality Assurance",
+                level: "Advanced",
+                keywords: "Jest, Testing Library, Cypress, Selenium, Test-Driven Development (TDD), Behavior-Driven Development (BDD), Unit Testing, Integration Testing, End-to-End Testing, Performance Testing, Load Testing, Code Coverage, Contract Testing (Pact), API Testing (Postman, Insomnia)",
+                language: "en-US",
+            }
+        ],
+        projects: [
+            {
+                name: "Development of a scalable cloud data platform for financial data",
+                startDate: parseDate("2021-10"),
+                endDate: undefined,
+                description: "Architecture and Development of a multi-account scalable cloud data platform for financial data.",
+                highlights: "Built, deployed, and operated a multi-microservice application on Kubernetes and AWS ECS on Fargate\n" +
+                    "Configured and integrated the Datadog observability SaaS platform and implemented comprehensive logging, alerting, and incident management processes for the application layer\n" +
+                    "Architected high-performance processing of millions of financial transaction records with a sub-second response time requirement\n" +
+                    "Led development of proof of concepts for new components\n",
+                url: undefined,
+                language: "en-US",
+            },
+            {
+                name: "Platform for credit cards and payment processing",
+                startDate: parseDate("2019-07"),
+                endDate: parseDate("2020-09"),
+                description: "Architected and developed a multi-tenant platform for prepaid credit cards.",
+                highlights: "Designed multi-tenant architecture with migration from a legacy monolithic application, with a focus on supporting hundreds of credit card tenants and millions of users\nDesigned and implemented a cloud environment for dedicated load tests and simulation of user behavior\nIntegration of a compliance and fraud detection service in accordance with legal requirements\n",
+                url: undefined,
+                language: "en-US",
+            },
+            {
+                name: "Development of support tools for the analysis of financial data",
+                startDate: parseDate("2015-03"),
+                endDate: parseDate("2017-08"),
+                description: "Development of a solution for the automated collection, processing, and storage of customer transactional data (ETL process). Development of a data schema for the long-term archiving of tax data and provision of data via internal company servers.",
+                highlights: "Reduced data collection and provisioning time from 10 minutes (manual Excel processing) to seconds. Approximately 98% of structured data could be processed with the new solution.",
+                url: undefined,
+                language: "en-US",
+            }
+        ],
+
+        // Interests
+        interests: [
+            {
+                name: "Business and People Management",
+                keywords: "Advancing business models, new work environments, agile frameworks at scale, the evolution of HR and AI",
+                language: "en-US",
+            },
+            {
+                name: "Technology Trends",
+                keywords: "AI/ML advancements, Cloud-native technologies, Web3 and blockchain, Serverless",
+                language: "en-US",
+            },
+            {
+                name: "Fitness & Wellness",
+                keywords: "Running, Yoga, healthy nutrition",
+                language: "en-US",
+            }
+        ],
+
+        // Languages
+        languages: [
+            {
+                language: "German",
+                fluency: "Native",
+                uiLanguage: "de-DE",
+            },
+            {
+                language: "English",
+                fluency: "Professional Working",
+                uiLanguage: "en-US",
+            },
+        ],
+    },
+  {
+        // Main Resume
+        resume: {
+            title: "Florian Zeidler - Lebenslauf Cloud-Architekt und Engineer",
+            language: "de-DE", // Reference to Language.value
+            createdAt: new Date().toISOString(),
+        },
+
+        // Basic Information
+        basicInformation: {
+            name: "Florian Zeidler",
+            label: "Cloud-Architekt",
+            email: "f.zeidler@nimbus-tech.de",
+            url: "https://www.linkedin.com/in/florian-zeidler-945b3a242/",
+            summary: "",
+            language: "de-DE",
+        },
+
+        // Location
+        location: {
+            address: "Leipzig, Sachsen, Deutschland",
+            postalCode: "04179",
+            city: "Leipzig",
+            countryCode: "DE",
+            region: "Sachsen",
+            language: "de-DE",
+        },
+
+        // Profiles
+        profiles: [
+            {
+                network: "LinkedIn",
+                username: "florian-zeidler-945b3a242",
+                url: "https://www.linkedin.com/in/florian-zeidler-945b3a242/",
+                language: "de-DE",
+            },
+            {
+                network: "GitHub",
+                username: "Lunev1",
+                url: "https://github.com/Lunev1",
+                language: "de-DE",
+            },
+        ],
+
+        // Work Experience
+        work: [
+            {
+                name: "Finatix GmbH",
+                position: "Cloud Developer / Solutions Architect / DevOps Engineer",
+                url: "",
+                startDate: parseDate("07-2019"),
+                endDate: null,
+                summary: `Cloud Engineer und Solutions Architect für Cloud-Umgebungen.`,
+                highlights: `Arbeit an Projekten mit Fokus auf Backend- und Cloud-Entwicklung
+Tech Lead für AWS Cloud-Architektur
+Implementierung standardisierter Prozesse für das Entwicklungsteam und Unterstützung deren Deployment-Workflows`,
+                language: "de-DE",
+            },
+        ],
+
+        // Volunteer
+        volunteer: [],
+
+        // Education
+        education: [
+            {
+                institution: "Universität Leipzig",
+                url: "https://www.uni-leipzig.de/",
+                area: "Wirtschaftsinformatik",
+                studyType: "Master of Science",
+                startDate: parseDate("10-2015"),
+                endDate: parseDate("11-2021"),
+                language: "de-DE",
+            },
+            {
+                institution: "Universität Leipzig",
+                url: "https://www.uni-leipzig.de/",
+                area: "Wirtschaftsinformatik",
+                studyType: "Bachelor of Science",
+                startDate: parseDate("10-2010"),
+                endDate: parseDate("10-2015"),
+                language: "de-DE",
+            },
+        ],
+
+        // Awards
+        awards: [],
+
+        // Publications
+        publications: [],
+
+        // Skills
+        skills: [
+            {
+                name: "Backend-Entwicklung",
+                level: "Expert",
+                keywords: "Node.js, GraphQL, REST APIs, gRPC, WebSockets, Message Queues, RabbitMQ, Apache Kafka, Authentication (JWT, OAuth2, SAML), API Design, Rate Limiting, Caching Strategies, open-api",
+                language: "de-DE",
+            },
+            {
+                name: "Cloud & DevOps",
+                level: "Advanced",
+                keywords: "AWS (EC2, ECS, EKS, Lambda, S3, CloudFront, RDS, DynamoDB, SQS, SNS, API Gateway, CloudWatch), Azure, Google Cloud Platform, Docker, Kubernetes, Helm, ArgoCD, CI/CD Pipelines, GitHub Actions, GitLab CI, Jenkins, CircleCI, Terraform, Infrastructure as Code, Ansible, Nginx, Load Balancing, Auto Scaling, Monitoring (Prometheus, Grafana, Datadog, New Relic), Logging (ELK Stack, CloudWatch Logs), CDN Configuration",
+                language: "de-DE",
+            },
+            {
+                name: "Datenbank- & Datenmanagement",
+                level: "Advanced",
+                keywords: "PostgreSQL, MongoDB, MySQL, Redis, DynamoDB, Elasticsearch, Database Design, Query Optimization, Indexing Strategies, Replication, Sharding, Database Migration, Data Modeling, NoSQL vs SQL, ACID Transactions, CAP Theorem, Database Security, Backup and Recovery",
+                language: "de-DE",
+            },
+            {
+                name: "Architektur & Systemdesign",
+                level: "Expert",
+                keywords: "Microservices Architecture, Event-Driven Architecture, Domain-Driven Design (DDD), CQRS, Event Sourcing, API Gateway Pattern, Clean Architecture, Hexagonal Architecture, SOLID Principles, Design Patterns (Factory, Strategy, Observer, Singleton), High Availability, Fault Tolerance, Circuit Breaker Pattern, Saga Pattern, Distributed Systems, Scalability, Performance Optimization, Security Best Practices, Load Balancing Strategies",
+                language: "de-DE",
+            },
+            {
+                name: "Testing & Qualitätssicherung",
+                level: "Advanced",
+                keywords: "Jest, Testing Library, Cypress, Selenium, Test-Driven Development (TDD), Behavior-Driven Development (BDD), Unit Testing, Integration Testing, End-to-End Testing, Performance Testing, Load Testing, Code Coverage, Contract Testing (Pact), API Testing (Postman, Insomnia)",
+                language: "de-DE",
+            },
+        ],
+        projects: [
+            {
+                name: "Entwicklung einer skalierbaren Cloud-Datenplattform für Finanzdaten",
+                startDate: parseDate("2021-10"),
+                endDate: undefined,
+                description: "Architektur und Entwicklung einer skalierbaren Multi-Account Cloud-Datenplattform für Finanzdaten.",
+                highlights: "Aufbau, Bereitstellung und Betrieb einer Multi-Microservice-Anwendung in Kubernetes (AWS EKS) und später in AWS ECS auf Fargate\n" +
+                    "Konfiguration und Integration der Datadog Observability SaaS-Plattform sowie Implementierung umfassender Logging-, Alerting- und Incident-Management-Prozesse für die Anwendungsebene\n" +
+                    "Architektur für die Hochleistungsverarbeitung von Millionen von Finanztransaktionsdatensätzen mit der Anforderung im Sekundenbereich zu verarbeiten\n" +
+                    "Leitung der Entwicklung von Proof of Concepts für neue Komponenten\n",
+                url: undefined,
+                language: "de-DE",
+            },
+            {
+                name: "Plattform für Kreditkarten und Zahlungsabwicklung",
+                startDate: parseDate("2019-07"),
+                endDate: parseDate("2020-09"),
+                description: "Architektur und Entwicklung einer mandantenfähigen Plattform für Prepaid-Kreditkarten.",
+                highlights: "Entwurf einer mandantenfähigen Architektur mit Migration von einer bestehenden monolithischen Anwendung, mit Fokus auf die Unterstützung von hunderten Kreditkarten-Mandanten und potenziell Millionen von Nutzern\nKonzeption und Implementierung einer Cloud-Umgebung für dedizierte Lasttests und Simulation von Nutzerverhalten\nIntegration eines Services zur Compliance- und Betrugserkennung gemäß den gesetzlichen Vorgaben\n",
+                url: undefined,
+                language: "de-DE",
+            },
+            {
+                name: "Entwicklung von Support-Tools für die Analyse von Finanzdaten",
+                startDate: parseDate("2015-03"),
+                endDate: parseDate("2017-08"),
+                description: "Entwicklung einer Lösung zur automatisierten Erfassung, Verarbeitung und Speicherung von Kundentransaktionsdaten (ETL-Prozess). Entwicklung eines Datenschemas für die Langzeitarchivierung von Steuerdaten und Bereitstellung der Daten über unternehmensinterne Server.",
+                highlights: "Reduzierung der Zeit für Datenerfassung und -bereitstellung von 10 Minuten (manuelle Excel-Verarbeitung) zu wenigen Sekunden. Etwa 98 % der strukturierten Daten konnten mit der neuen Lösung verarbeitet werden.",
+                url: undefined,
+                language: "de-DE",
+            }
+        ],
+
+        // Interests
+        interests: [
+            {
+                name: "Unternehmensführung und Personalmanagement",
+                keywords: "Weiterentwicklung von Geschäftsmodellen, new work, agile Frameworks in at scale, Entwicklung von HR und KI",
+                language: "de-DE",
+            },
+            {
+                name: "Technologietrends",
+                keywords: "Entwicklung in KI/ML, Cloud-native Technologien, Web3 und Blockchain, Serverless",
+                language: "de-DE",
+            },
+            {
+                name: "Fitness & Wellness",
+                keywords: "Laufen, Yoga, gesunde Ernährung",
+                language: "de-DE",
+            }
+        ],
+
+        // Languages
+        languages: [
+            {
+                language: "Deutsch",
+                fluency: "Muttersprache",
+                uiLanguage: "de-DE",
+            },
+            {
+                language: "Englisch",
+                fluency: "verhandlungssicher",
+                uiLanguage: "de-DE",
+            },
+        ],
+    }
 ];
 
 // Helper function to seed resume languages for a specific resume dataset
