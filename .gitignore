@@ -144,3 +144,5 @@ keystone.db
 /.zed
 .DS_Store
 scratch.ts
+docs/
+scripts/

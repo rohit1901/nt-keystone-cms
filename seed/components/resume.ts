@@ -10,9 +10,9 @@ const parseDate = (dateStr: string): string => {
 
 export const RESUME_DATA = [
   {
-    // Main Resume
+    // Resume Rohit Khanduri - English
     resume: {
-      title: "Rohit Khanduri - Software Architect Resume",
+      title: "Rohit Khanduri - AWS Cloud & Software Architect",
       language: "en-US", // Reference to Language.value
       createdAt: new Date().toISOString(),
     },
@@ -20,13 +20,13 @@ export const RESUME_DATA = [
     // Basic Information
     basicInformation: {
       name: "Rohit Khanduri",
-      label: "Software Architect",
-      email: "rohit.khanduri@hotmail.com",
+      label: "AWS Cloud & Software Architect",
+      email: "r.khanduri@nimbus-tech.de",
       url: "https://www.linkedin.com/in/rohit-khanduri-9098b84a/",
-      summary: "I'm a seasoned Software Architect with over a decade of expertise in Software Development, System Design, and Team Leadership. Specializing in building scalable, high-performance applications using modern technologies including Node.js, React, TypeScript, GraphQL, and cloud platforms. Passionate about solving complex problems, mentoring teams, and driving innovation through best practices in software architecture and design patterns.",
+      summary: "I’m an AWS-focused Cloud Architect and software engineer with 14+ years of experience designing and delivering secure, scalable systems in the cloud. I specialize in AWS Well-Architected architectures, Infrastructure as Code, and cloud-native application development using Node.js, React, TypeScript, and modern DevOps practices. I help small, mid-market, and enterprise businesses plan and execute secure cloud transformations on AWS – from first migration steps to mature multi-account environments. My strength is combining hands-on engineering with clear communication so stakeholders understand trade-offs while teams ship fast, reliable software.",
       language: "en-US",
+      resumePhotoKey: "resumePhoto",
     },
-
     // Location
     location: {
       address: "Frankfurt, Hesse, Germany",
@@ -63,106 +63,61 @@ export const RESUME_DATA = [
     work: [
       {
         name: "Miles & More GmbH (Lufthansa Group)",
-        position: "Manager IT",
+        position: "Manager IT / Lead Architect – Mobile Platform",
         url: "https://www.miles-and-more.com/",
         startDate: parseDate("03-2025"),
         endDate: null,
-        summary: `IT Manager responsible for the architecture of the Miles & More Flutter mobile application and for leading an outsourced development team.`,
-        highlights: `Own the technical direction and architecture of the Miles & More mobile app
-Lead and coordinate an outsourced development team
-Align architecture decisions with product and design stakeholders
-Oversee CI/CD pipelines and production readiness
-Ensure GDPR compliance, security, and risk management for the app`,
+        summary: `Lead architect for the Miles & More mobile platform, responsible for technical direction, platform architecture, AI-driven improvements, and secure, reliable delivery of the Flutter apps used by millions of Lufthansa Group customers.`,
+        highlights: `Define and own the target architecture and technical roadmap for the Miles & More mobile apps ✌🏻 Lead and coordinate a multi-vendor, outsourced development team with clear engineering standards ✌🏻 Align architecture decisions with product, design, security, and compliance stakeholders ✌🏻 Oversee CI/CD pipelines, release management, and production readiness including observability and incident processes ✌🏻 Drive AI adoption by running AI Proof of Concepts (PoCs), evaluating AI tools, automating workflows with LLM-based solutions, and designing an in-app LLM chatbot together with business stakeholders`,
         language: "en-US",
       },
       {
         name: "adesso SE",
-        position: "Software Architect",
+        position: "Software Architect – AWS & Enterprise Systems",
         url: "https://www.adesso.de/",
         startDate: parseDate("08-2020"),
         endDate: parseDate("02-2025"),
-        summary: `Software architect and consultant for large-scale banking and public-sector systems with microservice and micro-frontend architectures.`,
-        highlights: `Led architectural assessments of existing production systems and proposed improvements
-Defined target architectures and technology roadmaps for 1–3 years
-Acted as primary architectural contact for clients and internal teams
-Introduced coding guidelines, review processes, and quality standards
-Led frontend teams on React, Angular, and Flutter projects in regulated environments`,
+        summary: `Software architect and consultant for large-scale banking and public-sector systems, designing cloud-hosted (AWS) microservice and micro-frontend architectures in regulated environments.`,
+        highlights: `Led architectural assessments and AWS readiness reviews of existing production systems and proposed pragmatic modernization steps ✌🏻 Defined target architectures and 1–3 year technology roadmaps for AWS-based platforms, aligning with business and compliance requirements ✌🏻 Acted as primary architectural contact for client stakeholders and internal teams, translating business goals into technical decisions ✌🏻 Introduced coding guidelines, review processes, and quality standards to improve reliability and delivery speed across teams ✌🏻 Led frontend and platform teams (React, Angular, Flutter) on security- and compliance-sensitive projects in the banking and public sector`,
         language: "en-US",
       },
       {
-        name: "Finatix GmbH",
+        name: "Finatix GmbH / Peak Performance Apps GmbH / Appsfactory GmbH",
         position: "Software Developer (Working Student)",
-        url: "https://www.finatix.de/",
-        startDate: parseDate("09-2019"),
-        endDate: parseDate("07-2020"),
-        summary: `Working student developer on a credit card dashboard and mobile app with payment services and fraud-related data science features.`,
-        highlights: `Implemented new frontend features for a credit card dashboard
-Contributed to end-to-end functionality from backend to frontend
-Worked on fraud identification use cases with data science tooling
-Upgraded the Angular codebase and refreshed the UI design`,
-        language: "en-US",
-      },
-      {
-        name: "Peak Performance Apps GmbH (Subsidiary of Appsfactory GmbH)",
-        position: "Software Developer (Working Student)",
-        url: "https://appsfactory.de/",
-        startDate: parseDate("05-2019"),
-        endDate: parseDate("08-2019"),
-        summary: `Frontend developer for a survey and market research application delivered as both web and mobile app.`,
-        highlights: `Developed responsive web UIs with Vue.js and modern JavaScript tooling
-Contributed to a hybrid web and mobile survey platform
-Collaborated with designers and backend engineers on feature delivery`,
-        language: "en-US",
-      },
-      {
-        name: "Appsfactory GmbH",
-        position: "Software Developer (Working Student)",
-        url: "https://appsfactory.de/",
         startDate: parseDate("12-2017"),
-        endDate: parseDate("04-2019"),
-        summary: `Full-stack developer for multiple client projects including React Native mobile apps and React-based web dashboards.`,
-        highlights: `Built features for a German shopping and rewards app with React Native
-Developed web-based dashboards using React and Redux
-Contributed to backend services with Node.js and Express
-Participated in agile ceremonies and sprint planning`,
+        endDate: parseDate("07-2020"),
+        summary: `Working student developer across FinTech, market research, and consumer applications, building web and mobile frontends and contributing to full-stack and early AWS-based workloads.`,
+        highlights: `Implemented features for financial dashboards, survey platforms, and consumer mobile apps using React, Vue.js, Angular, and React Native ✌🏻 Collaborated with backend teams on Node.js and Java services and helped integrate APIs deployed to cloud environments (incl. early AWS-based setups) ✌🏻 Worked on fraud-detection and data-driven features together with data science teams, focusing on data quality and performance ✌🏻 Contributed to modernization of existing codebases and UI designs and practiced agile delivery, code reviews, and CI/CD pipelines`,
         language: "en-US",
       },
       {
         name: "Iris Software Inc.",
-        position: "Software Engineer",
+        position: "Tech Lead / Software Engineer",
         url: "https://www.irissoftware.com/",
         startDate: parseDate("06-2016"),
         endDate: parseDate("09-2017"),
-        summary: `Software engineer on telecom provisioning systems and enterprise web applications.`,
-        highlights: `Developed Java-based backend systems for telecom service provisioning
-Built Spring Boot microservices and RESTful APIs
-Worked on Oracle database design and query optimization
-Collaborated with cross-functional teams in a distributed environment
-Contributed to testing frameworks with Selenium and JUnit
-Delivered features in two-week sprints with automated CI/CD`,
+        summary: `Tech lead for telecom provisioning and enterprise web systems, leading a small team on Java-based services and integrations.`,
+        highlights: `Led a team delivering Spring Boot microservices and REST APIs for telecom provisioning ✌🏻 Coordinated design, code reviews, and release readiness across a small cross-functional team`,
         language: "en-US",
       },
       {
         name: "Virtusa Corp.",
-        position: "Senior Engineer",
+        position: "Tech Lead / Senior Engineer",
         url: "https://www.virtusa.com/",
         startDate: parseDate("08-2014"),
         endDate: parseDate("05-2016"),
-        summary: `Senior engineer focused on Java EE enterprise applications with Spring and Hibernate.`,
-        highlights: `Designed and implemented RESTful APIs with Spring MVC
-Integrated Hibernate for ORM and database interactions
-Mentored junior developers on best practices and design patterns`,
+        summary: `Tech lead on Java EE applications using Spring and Hibernate, responsible for key modules and mentoring junior engineers.`,
+        highlights: `Owned design and implementation of core REST APIs and integrations on Spring/Hibernate ✌🏻 Mentored junior developers and guided coding standards and design patterns`,
         language: "en-US",
       },
       {
         name: "Genpact",
-        position: "Module Lead",
+        position: "Software Engineer",
         url: "https://www.genpact.com/",
         startDate: parseDate("06-2013"),
         endDate: parseDate("07-2014"),
-        summary: `Module lead responsible for guiding a small team on web-based enterprise solutions.`,
-        highlights: `Led a team of 3–4 developers on Java-based enterprise modules
-Coordinated sprint planning and code reviews`,
+        summary: `Software engineer working on Calypso and Java-based enterprise applications in the financial domain.`,
+        highlights: `Implemented and customized Calypso components and Java backend services ✌🏻 Collaborated with senior engineers and business analysts on requirements and production issues`,
         language: "en-US",
       },
       {
@@ -171,24 +126,21 @@ Coordinated sprint planning and code reviews`,
         url: "https://www.nec.com/",
         startDate: parseDate("07-2012"),
         endDate: parseDate("05-2013"),
-        summary: `Software engineer building Java-based backend systems for enterprise clients.`,
-        highlights: `Developed enterprise applications with Java and J2EE
-Worked on database integration and backend logic`,
+        summary: `Software engineer building Java-based backend components for enterprise clients.`,
+        highlights: `Implemented backend features and integrations on Java/J2EE stacks ✌🏻 Worked closely with senior engineers on performance and reliability improvements`,
         language: "en-US",
       },
     ],
-
     // Volunteer
     volunteer: [
       {
-        organization: "Open Source Community",
-        position: "Contributor",
+        organization: "Open Source Community & Personal AI Projects",
+        position: "Builder & Contributor",
         url: "https://github.com/rohit1901",
         startDate: parseDate("01-2018"),
         endDate: null,
-        summary: "Active contributor to various open-source projects in the JavaScript and TypeScript ecosystem.",
-        highlights: `Contributed to React and Node.js libraries
-Maintained personal open-source projects`,
+        summary: "Actively building and experimenting with AI/LLM tooling, open-source libraries, and developer infrastructure, with a focus on local AI adoption, LLM integration, and AI-powered platform development.",
+        highlights: `Building Skywink (skywink.nimbus-tech.de), an AI platform for LLM orchestration, prompt engineering, and AI workflow automation ✌🏻 Developed drama-llm, a local LLM chatbot using Ollama and shadcn/ui, exploring on-device AI inference ✌🏻 Built and contributed to Ollama JS and Python libraries, integrating local LLM model discovery via a FastAPI service ✌🏻 Working on an MCP (Model Context Protocol) Server for Databases, enabling AI agents to interact with structured data sources ✌🏻 Maintained open-source TypeScript and React libraries (intl-react, ts-raw-utils, mockable) used by the JavaScript/TypeScript community ✌🏻 Experimented with ML clustering and classification techniques in Python (scikit-learn) for data science use cases`,
         language: "en-US",
       },
       {
@@ -198,13 +150,10 @@ Maintained personal open-source projects`,
         startDate: parseDate("01-2015"),
         endDate: parseDate("07-2018"),
         summary: "Volunteered at Robinhood Army.",
-        highlights: `Distributed food to the needy people Conducted food distribution drives
-Organized events and activities
-Provided support to community members`,
+        highlights: `Distributed food to the needy people ✌🏻 Conducted food distribution drives ✌🏻 Organized events and activities ✌🏻 Provided support to community members`,
         language: "en-US",
-      }
+      },
     ],
-
     // Education
     education: [
       {
@@ -226,46 +175,44 @@ Provided support to community members`,
         language: "en-US",
       },
     ],
-
     // Awards
     awards: [
       {
         title: "Talent Pool",
         date: parseDate("12-2022"),
-        awarder: "Adesso SE",
-        summary: "Recognized for exceptional performance and delivery of critical project milestones.",
+        awarder: "adesso SE",
+        summary: "Selected for adesso's distinguished top talent program, recognized for exceptional work performance and strong work ethics, offering unique opportunities for networking and professional growth within the company.",
         language: "en-US",
       },
       {
-        title: "Best Performer Award",
-        date: parseDate("12-2015"),
-        awarder: "Virtusa Corp.",
-        summary: "Recognized for exceptional performance and delivery of critical project milestones.",
+        title: "First Runner-up – Innovation Challenge Hackathon #2",
+        date: parseDate("11-2017"),
+        awarder: "Hochschule Mittweida",
+        summary: "Designed and built an Android application solo for Team 'EASY' in 48 hours and was awarded the first runner-up prize of €100.",
         language: "en-US",
       },
       {
-        title: "Innovation Award",
-        date: parseDate("03-2014"),
-        awarder: "Genpact",
-        summary: "Awarded for innovative solution design that improved system efficiency by 30%.",
-        language: "en-US",
-      },
-      {
-        title: "Team Excellence Award",
-        date: parseDate("11-2016"),
+        title: "Certificate of Appreciation",
+        date: parseDate("07-2017"),
         awarder: "Iris Software Inc.",
-        summary: "Team recognition for delivering a complex telecom provisioning system ahead of schedule.",
+        summary: "Awarded to employees who have worked exceptionally well and won accolades from the client.",
         language: "en-US",
       },
       {
-        title: "Academic Excellence Scholarship",
-        date: parseDate("09-2017"),
-        awarder: "Université Paris-Saclay",
-        summary: "Merit-based scholarship for outstanding academic performance in mathematics and computer science.",
+        title: "Round of Applause",
+        date: parseDate("07-2017"),
+        awarder: "Iris Software Inc.",
+        summary: "Awarded to employees who have worked exceptionally well in a particular month.",
+        language: "en-US",
+      },
+      {
+        title: "Top Talent",
+        date: parseDate("08-2015"),
+        awarder: "Polaris Financial Services (Associated with Virtusa)",
+        summary: "Top Talent Award granted to employees who have worked exceptionally well and won accolades from the client.",
         language: "en-US",
       },
     ],
-
     // Publications
     publications: [
       {
@@ -277,148 +224,126 @@ Provided support to community members`,
         language: "en-US",
       },
     ],
-
     // Skills
     skills: [
       {
-        name: "Frontend Development",
+        name: "AWS Cloud Architecture & Infrastructure",
         level: "Expert",
-        keywords: "React, Next.js, TypeScript, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS, Styled Components, Material UI, Ant Design, Redux, Redux Toolkit, Zustand, React Query, SWR, Webpack, Vite, Remix, Astro, Web Components, Progressive Web Apps (PWA), Server-Side Rendering (SSR), Static Site Generation (SSG), Incremental Static Regeneration (ISR)",
+        keywords: "AWS Well-Architected Framework, Multi-Account Strategy (AWS Organizations, Control Tower), VPC Design, IAM & Security Policies, EC2, ECS, EKS, Lambda, API Gateway, S3, CloudFront, RDS, DynamoDB, SQS, SNS, EventBridge, Step Functions, ElastiCache, Route 53, ACM, Secrets Manager, Parameter Store, AWS CDK, CloudFormation, Terraform (IaC), Auto Scaling, Elastic Load Balancing, Cost Optimization, AWS Pricing Models, Reserved Instances, Savings Plans",
         language: "en-US",
       },
       {
-        name: "Backend Development",
+        name: "AI, ML & LLM Integration",
+        level: "Intermediate",
+        keywords: "LLM Integration, Prompt Engineering, Retrieval-Augmented Generation (RAG), Model Context Protocol (MCP), Ollama, OpenAI API, Anthropic Claude API, AI Workflow Automation, AI PoC Design, Chatbot Development, Amazon Bedrock, Applied Mathematics, Statistics, Data Science, Clustering & Classification (scikit-learn), Feature Engineering, Model Evaluation, Fraud Detection (Machine Learning), Natural Language Processing, Vector Databases (Pinecone, Weaviate), TensorFlow.js, Hugging Face",
+        language: "en-US",
+      },
+      {
+        name: "DevOps, CI/CD & Automation",
         level: "Expert",
-        keywords: "Node.js, Express.js, NestJS, Fastify, tRPC, GraphQL, Apollo Server, Prisma, TypeORM, Drizzle ORM, REST APIs, gRPC, WebSockets, Socket.io, Message Queues, RabbitMQ, Apache Kafka, Bull Queue, BullMQ, Authentication (JWT, OAuth2, SAML), API Design, Rate Limiting, Caching Strategies",
+        keywords: "Infrastructure as Code (Terraform, AWS CDK, CloudFormation), CI/CD Pipelines (GitHub Actions, GitLab CI, Jenkins), Docker, Kubernetes, Helm, ArgoCD, GitOps, Trunk-Based Development, Monitoring & Observability (CloudWatch, Prometheus, Grafana), Logging (ELK Stack, CloudWatch Logs), Secrets Management, Automated Testing in Pipelines",
         language: "en-US",
       },
       {
-        name: "Cloud & DevOps",
+        name: "Cloud Security & Compliance",
         level: "Advanced",
-        keywords: "AWS (EC2, ECS, EKS, Lambda, S3, CloudFront, RDS, DynamoDB, SQS, SNS, API Gateway, CloudWatch), Azure, Google Cloud Platform, Docker, Kubernetes, Helm, ArgoCD, CI/CD Pipelines, GitHub Actions, GitLab CI, Jenkins, CircleCI, Terraform, Infrastructure as Code, Ansible, Nginx, Load Balancing, Auto Scaling, Monitoring (Prometheus, Grafana, Datadog, New Relic), Logging (ELK Stack, CloudWatch Logs), CDN Configuration",
-        language: "en-US",
-      },
-      {
-        name: "Database & Data Management",
-        level: "Advanced",
-        keywords: "PostgreSQL, MongoDB, MySQL, Redis, DynamoDB, Elasticsearch, TimescaleDB, Database Design, Query Optimization, Indexing Strategies, Replication, Sharding, Database Migration, Data Modeling, NoSQL vs SQL, ACID Transactions, CAP Theorem, Database Security, Backup and Recovery",
+        keywords: "AWS IAM, AWS Security Hub, AWS GuardDuty, AWS Config, AWS CloudTrail, AWS KMS, Secrets Manager, OWASP Top 10, OAuth2.0, OpenID Connect, JWT, SAML",
         language: "en-US",
       },
       {
         name: "Architecture & System Design",
         level: "Expert",
-        keywords: "Microservices Architecture, Event-Driven Architecture, Domain-Driven Design (DDD), CQRS, Event Sourcing, API Gateway Pattern, Service Mesh (Istio), Micro-frontends, Clean Architecture, Hexagonal Architecture, SOLID Principles, Design Patterns (Factory, Strategy, Observer, Singleton), High Availability, Fault Tolerance, Circuit Breaker Pattern, Saga Pattern, Distributed Systems, Scalability, Performance Optimization, Security Best Practices, Load Balancing Strategies",
+        keywords: "AWS Well-Architected Framework (5 Pillars), Microservices Architecture, Event-Driven Architecture, Serverless Architecture, Domain-Driven Design (DDD), CQRS, Event Sourcing, Micro-frontends, Clean Architecture, Hexagonal Architecture, SOLID Principles, Circuit Breaker Pattern, API Gateway Pattern, High Availability, Fault Tolerance, Distributed Systems, Scalability, Cloud Migration Strategy (Lift & Shift, Re-platform, Re-architect)",
         language: "en-US",
       },
       {
-        name: "Testing & Quality Assurance",
+        name: "Backend Development",
         level: "Advanced",
-        keywords: "Jest, Vitest, Testing Library, Cypress, Playwright, Selenium, Puppeteer, Test-Driven Development (TDD), Behavior-Driven Development (BDD), Unit Testing, Integration Testing, End-to-End Testing, Performance Testing, Load Testing (k6, Artillery), Mutation Testing, Code Coverage, Visual Regression Testing, Contract Testing (Pact), API Testing (Postman, Insomnia)",
-        language: "en-US",
-      },
-      {
-        name: "AI & Machine Learning",
-        level: "Intermediate",
-        keywords: "OpenAI API, Anthropic Claude API, LangChain, Vector Databases (Pinecone, Weaviate), RAG (Retrieval-Augmented Generation), Prompt Engineering, Natural Language Processing, Chatbot Development, AI Integration, TensorFlow.js, ML Model Deployment, Feature Engineering, Model Evaluation",
+        keywords: "Node.js, NestJS, Express.js, GraphQL, Apollo Server, REST APIs, WebSockets, Prisma, TypeORM, RabbitMQ, Apache Kafka, Authentication (JWT, OAuth2, SAML), Java, Spring Boot, Python, FastAPI",
         language: "en-US",
       },
       {
         name: "Mobile Development",
-        level: "Advanced",
-        keywords: "React Native, Expo, Flutter, iOS Development, Android Development, Mobile App Architecture, Push Notifications, Deep Linking, App Store Deployment, Mobile Performance Optimization, Offline-First Architecture, Mobile Analytics, In-App Purchases",
+        level: "Intermediate",
+        keywords: "Flutter, React Native, Expo, Mobile App Architecture, Push Notifications, Deep Linking, App Store Deployment, Offline-First Architecture",
         language: "en-US",
       },
       {
-        name: "Developer Tools & Practices",
+        name: "Database & Data Management",
+        level: "Intermediate",
+        keywords: "PostgreSQL, MySQL, MongoDB, DynamoDB, Redis, Database Design, Query Optimization, Data Modeling, ACID Transactions, Database Migration, AWS RDS, AWS Aurora, AWS DynamoDB",
+        language: "en-US",
+      },
+      {
+        name: "Testing & Quality Assurance",
+        level: "Intermediate",
+        keywords: "Jest, Vitest, Testing Library, Cypress, Playwright, TDD, Unit Testing, Integration Testing, End-to-End Testing, Code Coverage, API Testing (Postman)",
+        language: "en-US",
+      },
+      {
+        name: "Agile & Technical Leadership",
         level: "Expert",
-        keywords: "Git, GitHub, GitLab, Bitbucket, VS Code, Git Flow, Trunk-Based Development, Code Review, Pull Requests, Pair Programming, ESLint, Prettier, Husky, Lint-Staged, Semantic Versioning, Changesets, Monorepo (Turborepo, Nx, Lerna), Package Management (npm, yarn, pnpm), Documentation (Storybook, JSDoc, OpenAPI/Swagger)",
-        language: "en-US",
-      },
-      {
-        name: "Web3 & Blockchain",
-        level: "Beginner",
-        keywords: "Ethereum, Solidity, Web3.js, Ethers.js, Smart Contracts, DApps, MetaMask Integration, IPFS, Blockchain Fundamentals",
-        language: "en-US",
-      },
-      {
-        name: "Agile & Project Management",
-        level: "Expert",
-        keywords: "Agile Methodologies, Scrum, Kanban, Sprint Planning, Story Estimation, Retrospectives, Daily Standups, Backlog Grooming, Jira, Linear, Confluence, Notion, Asana, Monday.com, Technical Leadership, Mentoring, Cross-functional Team Collaboration, Stakeholder Management",
-        language: "en-US",
-      },
-      {
-        name: "Security & Compliance",
-        level: "Advanced",
-        keywords: "OWASP Top 10, Authentication & Authorization, OAuth2.0, OpenID Connect, JWT, Security Headers, XSS Prevention, CSRF Protection, SQL Injection Prevention, Data Encryption, HTTPS/SSL/TLS, Secrets Management, Vulnerability Scanning, Penetration Testing, GDPR Compliance, SOC 2, Security Audits",
-        language: "en-US",
-      },
-    ],
-    projects: [
-      {
-        name: "Enterprise AI-Powered Customer Support Platform",
-        startDate: parseDate("2023-01"),
-        endDate: null,
-        description: "Led the development of a scalable AI-powered customer support platform serving millions of users, integrating multiple AI models and real-time communication capabilities.",
-        highlights: "Architected and implemented microservices-based backend using Node.js, NestJS, and GraphQL, processing 50M+ API requests daily\nIntegrated OpenAI GPT-4 and custom NLP models for intelligent query routing and automated response generation, improving resolution time by 65%\nBuilt real-time chat system using WebSockets and Redis Pub/Sub, supporting 100K+ concurrent connections\nImplemented comprehensive monitoring and observability with Prometheus, Grafana, and custom dashboards, achieving 99.9% uptime\nDesigned event-driven architecture using Apache Kafka for asynchronous processing of customer interactions",
-        url: undefined,
-        language: "en-US",
-      },
-      {
-        name: "Retail Analytics & Inventory Management System",
-        startDate: parseDate("2022-03"),
-        endDate: parseDate("2023-12"),
-        description: "Developed a comprehensive analytics and inventory management platform for large-scale retail operations, enabling real-time insights and automated inventory optimization.",
-        highlights: "Built responsive React-based dashboard with real-time data visualization using D3.js and Recharts, serving 5000+ daily active users\nImplemented predictive analytics engine using Python and TensorFlow for inventory forecasting, reducing overstock by 30%\nArchitected high-performance data pipeline processing 500GB+ of transaction data daily using AWS Glue and Athena\nDeveloped REST and GraphQL APIs using Node.js and Express, integrated with 20+ third-party logistics systems\nOptimized PostgreSQL database queries and implemented caching with Redis, reducing response times from 3s to 200ms",
-        url: undefined,
-        language: "en-US",
-      },
-      {
-        name: "Multi-Tenant SaaS Platform for Healthcare",
-        startDate: parseDate("2021-06"),
-        endDate: parseDate("2022-02"),
-        description: "Architected and built a HIPAA-compliant multi-tenant SaaS platform for healthcare providers, enabling secure patient data management and telehealth capabilities.",
-        highlights: "Designed multi-tenant architecture with row-level security in PostgreSQL, supporting 200+ healthcare organizations\nImplemented end-to-end encryption for patient data using AWS KMS and achieved HIPAA compliance certification\nBuilt video conferencing feature using WebRTC and Twilio, conducting 10K+ telehealth sessions monthly\nCreated CI/CD pipeline with GitHub Actions and AWS ECS, enabling 20+ deployments per week with zero downtime\nDeveloped comprehensive audit logging system for compliance tracking and security monitoring",
-        url: undefined,
-        language: "en-US",
-      },
-      {
-        name: "Mobile-First E-commerce Platform",
-        startDate: parseDate("2020-09"),
-        endDate: parseDate("2021-05"),
-        description: "Led development of a mobile-first e-commerce platform with advanced features including AR product preview, personalized recommendations, and seamless checkout experience.",
-        highlights: "Built cross-platform mobile app using React Native and Expo, achieving 4.8★ rating with 500K+ downloads\nImplemented AR product visualization using ARKit and ARCore, increasing conversion rates by 45%\nIntegrated Stripe, PayPal, and Apple Pay for seamless payment processing with PCI DSS compliance\nDeveloped personalized recommendation engine using collaborative filtering, improving average order value by 35%\nOptimized app performance achieving <2s initial load time and 60fps animations on budget devices",
-        url: undefined,
-        language: "en-US",
-      },
-      {
-        name: "Real-Time Collaboration Tool",
-        startDate: parseDate("2020-01"),
-        endDate: parseDate("2020-08"),
-        description: "Developed a real-time collaborative workspace application enabling teams to work together on documents, whiteboards, and projects with live updates.",
-        highlights: "Implemented operational transformation (OT) algorithm for conflict-free real-time collaboration on shared documents\nBuilt WebSocket infrastructure using Socket.io and Redis, supporting 50K+ concurrent collaborative sessions\nCreated rich text editor with collaborative editing using Slate.js and custom CRDT implementation\nDeveloped offline-first architecture with conflict resolution, ensuring data consistency across clients\nImplemented fine-grained access control and permissions system for enterprise security requirements",
-        url: undefined,
-        language: "en-US",
-      },
-      {
-        name: "Headless CMS with Multi-Language Support",
-        startDate: parseDate("2023-06"),
-        endDate: null,
-        description: "Built a modern headless CMS using Keystone.js with advanced features including multi-language support, custom field types, and GraphQL API.",
-        highlights: "Architected scalable CMS using Keystone.js, Next.js, and PostgreSQL with Prisma ORM\nImplemented comprehensive multi-language support with content translation workflow\nCreated custom field types and UI components for enhanced content management capabilities\nBuilt automated content deployment pipeline with preview environments and rollback capabilities\nIntegrated image optimization and CDN delivery using Cloudflare and AWS CloudFront",
-        url: undefined,
-        language: "en-US",
-      },
-      {
-        name: "Distributed Task Scheduler & Job Queue System",
-        startDate: parseDate("2019-08"),
-        endDate: parseDate("2019-12"),
-        description: "Designed and implemented a distributed task scheduling system for processing millions of background jobs with reliability and fault tolerance.",
-        highlights: "Built distributed job queue using Bull and Redis, processing 10M+ jobs daily with 99.99% reliability\nImplemented priority-based scheduling, retry mechanisms, and dead letter queues for failed jobs\nCreated monitoring dashboard for job queue metrics, latency tracking, and failure analysis\nOptimized worker processes for memory efficiency, reducing infrastructure costs by 40%\nDeveloped job chaining and workflow orchestration for complex multi-step processes",
-        url: undefined,
+        keywords: "Agile, Scrum, Kanban, Sprint Planning, Backlog Grooming, Stakeholder Management, Technical Roadmaps, Architectural Assessments, AWS Well-Architected Reviews, Team Mentoring, Cross-functional Collaboration, Engineering Standards, Code Review Culture, Jira, Confluence, Notion",
         language: "en-US",
       },
     ],
 
+    projects: [
+      {
+        name: "Miles & More Mobile Platform – Architecture & AI Transformation",
+        startDate: parseDate("2025-03"),
+        endDate: null,
+        description: "Lead architect for the Miles & More Flutter mobile application used by millions of Lufthansa Group loyalty customers. Responsible for platform architecture, multi-vendor team coordination, CI/CD, compliance, and driving AI adoption across the mobile product.",
+        highlights: `Defined and owned the target architecture and technical roadmap for the Flutter-based mobile app serving millions of users ✌🏻 Standardized CI/CD pipelines using Jenkins and GitLab CI for automated build, test, and release across iOS and Android ✌🏻 Architected an in-app LLM chatbot with AWS Lambda and API Gateway as the backend, integrating Azure-hosted LLM models for customer self-service ✌🏻 Led AI PoC initiatives including evaluation of LLM-based tools for internal workflow automation and in-app AI feature discovery ✌🏻 Ensured GDPR compliance, security standards, and risk management in collaboration with central IT and InfoSec teams ✌🏻 Coordinated a multi-vendor outsourced development team, establishing engineering standards and code review culture`,
+        url: undefined,
+        language: "en-US",
+      },
+      {
+        name: "AWS Cloud Architecture & Migration – Banking & Public Sector",
+        startDate: parseDate("2020-08"),
+        endDate: parseDate("2025-02"),
+        description: "Led cloud architecture and AWS migration initiatives for a major German bank and a federal public-sector client at adesso SE, covering both lift & shift migrations and greenfield AWS platform builds for large-scale microservice and micro-frontend systems in regulated environments.",
+        highlights: `Designed and delivered a greenfield AWS platform for a major German bank using ECS Fargate, API Gateway, Lambda, Aurora, DynamoDB, SQS, SNS, and Cognito for authentication – built on a secure multi-account VPC architecture with IAM, Secrets Manager, ACM, and CloudTrail ✌🏻 Led a lift & shift cloud migration for a federal public-sector client, moving legacy on-premise workloads to AWS with minimal downtime and full operational handover ✌🏻 Defined target architectures and 1–3 year AWS roadmaps aligned with the AWS Well-Architected Framework across both engagements ✌🏻 Implemented observability and compliance pipelines using CloudWatch, CloudTrail, and Kinesis for real-time log aggregation and audit trails ✌🏻 Built content delivery and frontend infrastructure using S3, CloudFront, Amplify, and Route 53 for high-availability micro-frontend deployments ✌🏻 Conducted AWS Well-Architected Reviews and architectural assessments of existing production systems, proposing pragmatic modernization steps ✌🏻 Introduced Infrastructure as Code (Terraform, AWS CDK) and CI/CD pipelines to standardize deployments and enforce engineering quality across teams`,
+        url: undefined,
+        language: "en-US",
+      },
+      {
+        name: "Skywink – Open-Source Privacy-First AI Chat Platform",
+        startDate: parseDate("2025-08"),
+        endDate: null,
+        description: "Founder and lead engineer of Skywink, an open-source AI chat platform built by Nimbus Tech that gives users and enterprises full control over their AI conversations – run locally with Ollama for complete privacy or connect to cloud AI providers with no vendor lock-in.",
+        highlights: `Architected a full-stack AI chat platform using Next.js 16, React 19, TypeScript, PostgreSQL, and Prisma ORM, deployed on Northflank with Docker multi-stage builds and production-ready CI/CD ✌🏻 Implemented a unified AI provider abstraction using the Vercel AI SDK supporting Ollama (local), OpenAI, Mistral AI, and OpenRouter – allowing seamless provider switching with user-owned API keys ✌🏻 Built secure API key storage with AES-256 and RSA encryption, CSRF protection, rate limiting, and role-based access control for an enterprise-ready security posture ✌🏻 Designed a guest mode with localStorage persistence, IP-based rate limiting, and auto-cleanup – enabling zero-signup onboarding for new users ✌🏻 Applied RAG and prompt engineering patterns and integrated streaming AI responses with real-time rendering, custom generation parameter controls, and conversation export ✌🏻 Structured the platform for horizontal scalability with stateless APIs, connection pooling, edge-compatible deployment, and CDN-ready static assets`,
+        url: "https://skywink.nimbus-tech.de",
+        language: "en-US",
+      },
+      {
+        name: "Telecom & Banking Service Provisioning Platform",
+        startDate: parseDate("2016-06"),
+        endDate: parseDate("2017-09"),
+        description: "Tech Lead on a Java-based service provisioning platform for a banking and telecom client at Iris Software Inc., responsible for backend microservices, REST API design, and team delivery.",
+        highlights: `Led a small team delivering Spring Boot microservices and REST APIs for automated service provisioning and order management workflows ✌🏻 Designed and optimized Oracle database schemas and queries for high-volume transactional data ✌🏻 Built and maintained a Selenium and JUnit-based regression test suite, improving release confidence and reducing manual QA effort ✌🏻 Delivered features in two-week sprints with automated CI/CD pipelines and coordinated production readiness with cross-functional teams`,
+        url: undefined,
+        language: "en-US",
+      },
+      {
+        name: "Enterprise Banking Application Modernization",
+        startDate: parseDate("2014-08"),
+        endDate: parseDate("2016-05"),
+        description: "Tech Lead at Virtusa Corp. on the modernization of a legacy Java EE banking application for an enterprise financial client, migrating to a layered Spring MVC and Hibernate architecture.",
+        highlights: `Led the re-architecture of a monolithic Java EE banking application into a maintainable Spring MVC and Hibernate layered system, improving long-term scalability and developer productivity ✌🏻 Designed and implemented RESTful API integrations enabling third-party banking system connectivity ✌🏻 Introduced coding standards, design patterns (Factory, Strategy, Observer), and code review processes across the team ✌🏻 Mentored junior developers on clean code principles and best practices in a regulated enterprise environment`,
+        url: undefined,
+        language: "en-US",
+      },
+      {
+        name: "Calypso-Based Capital Markets & Reporting System",
+        startDate: parseDate("2013-06"),
+        endDate: parseDate("2014-07"),
+        description: "Software engineer at Genpact working on a Calypso-based capital markets platform for a banking client, covering trade lifecycle management, position keeping, and financial reporting.",
+        highlights: `Implemented and customized Calypso components for trade lifecycle management, position keeping, and risk reporting for a banking client ✌🏻 Built a Java-based reconciliation and reporting module integrated with Calypso data feeds for end-of-day financial processing ✌🏻 Collaborated with business analysts and senior engineers to translate financial domain requirements into technical solutions ✌🏻 Maintained and improved backend Java services supporting core banking workflows in a regulated financial environment`,
+        url: undefined,
+        language: "en-US",
+      },
+    ],
     // Interests
     interests: [
       {
@@ -428,7 +353,7 @@ Provided support to community members`,
       },
       {
         name: "Technology Trends",
-        keywords: "AI/ML advancements, Cloud-native technologies, Web3 and blockchain",
+        keywords: "AI/ML advancements, Cloud-native technologies.",
         language: "en-US",
       },
       {
@@ -443,11 +368,10 @@ Provided support to community members`,
       },
       {
         name: "Reading",
-        keywords: "Technical books, Science fiction, Philosophy",
+        keywords: "Technical books, Science fiction, Fiction, Philiosphy",
         language: "en-US",
       },
     ],
-
     // Languages
     languages: [
       {
@@ -466,11 +390,9 @@ Provided support to community members`,
         uiLanguage: "en-IN",
       },
     ],
-
-
   },
   {
-    // Haupt-Lebenslauf (German Version)
+    // Resume Rohit Khanduri - German
     resume: {
       title: "Rohit Khanduri – Softwarearchitekt Lebenslauf",
       language: "de-DE",
@@ -485,6 +407,7 @@ Provided support to community members`,
       url: "https://www.rohit.khanduri.de",
       summary: `Softwarearchitekt mit über zehn Jahren Erfahrung in der Konzeption und Umsetzung von Microservice-basierten Systemen in den Bereichen Banking, öffentlicher Sektor und Kundenbindungsprogramme. Ich decke den gesamten Software-Entwicklungszyklus ab und arbeite praxisnah mit Cloud-nativen Architekturen, modernen Frontend-Stacks und event-getriebenen Backends. Mein Hintergrund umfasst die Leitung internationaler Teams in Europa und Asien, das Arbeiten in agilen Umgebungen und die Ausrichtung der Architektur an der Geschäftsstrategie. Mit einem Master-Abschluss in angewandter Mathematik für Netzwerk- und Datenwissenschaft und einem Bachelor in Informationstechnologie kombiniere ich analytisches Denken mit pragmatischer Entwicklung.`,
       language: "de-DE",
+      resumePhotoKey: "resumePhoto",
     },
 
     // Standort
@@ -528,11 +451,7 @@ Provided support to community members`,
         startDate: parseDate("03-2025"),
         endDate: null,
         summary: `IT-Manager verantwortlich für die Architektur der Miles & More Flutter-Mobile-App und für die Leitung eines ausgelagerten Entwicklungsteams.`,
-        highlights: `Verantwortung für die technische Ausrichtung und Architektur der Miles & More Mobile-App
-Leitung und Koordination eines ausgelagerten Entwicklungsteams
-Abstimmung von Architekturentscheidungen mit Produkt- und Design-Stakeholdern
-Überwachung von CI/CD-Pipelines und Produktionsreife
-Sicherstellung von DSGVO-Konformität, Sicherheit und Risikomanagement für die App`,
+        highlights: `Verantwortung für die technische Ausrichtung und Architektur der Miles & More Mobile-App ✌🏻 Leitung und Koordination eines ausgelagerten Entwicklungsteams ✌🏻 Abstimmung von Architekturentscheidungen mit Produkt- und Design-Stakeholdern ✌🏻 Überwachung von CI/CD-Pipelines und Produktionsreife ✌🏻 Sicherstellung von DSGVO-Konformität, Sicherheit und Risikomanagement für die App`,
         language: "de-DE",
       },
       {
@@ -542,11 +461,7 @@ Sicherstellung von DSGVO-Konformität, Sicherheit und Risikomanagement für die 
         startDate: parseDate("08-2020"),
         endDate: parseDate("02-2025"),
         summary: `Softwarearchitekt und Berater für große Banking- und Behördensysteme mit Microservice- und Micro-Frontend-Architekturen.`,
-        highlights: `Durchführung von Architektur-Assessments bestehender Produktionssysteme und Vorschläge für Verbesserungen
-Definition von Zielarchitekturen und Technologie-Roadmaps für 1–3 Jahre
-Hauptansprechpartner für Architektur gegenüber Kunden und internen Teams
-Einführung von Coding-Richtlinien, Review-Prozessen und Qualitätsstandards
-Leitung von Frontend-Teams bei React-, Angular- und Flutter-Projekten in regulierten Umgebungen`,
+        highlights: `Durchführung von Architektur-Assessments bestehender Produktionssysteme und Vorschläge für Verbesserungen ✌🏻 Definition von Zielarchitekturen und Technologie-Roadmaps für 1–3 Jahre ✌🏻 Hauptansprechpartner für Architektur gegenüber Kunden und internen Teams ✌🏻 Einführung von Coding-Richtlinien, Review-Prozessen und Qualitätsstandards ✌🏻 Leitung von Frontend-Teams bei React-, Angular- und Flutter-Projekten in regulierten Umgebungen`,
         language: "de-DE",
       },
       {
@@ -556,10 +471,7 @@ Leitung von Frontend-Teams bei React-, Angular- und Flutter-Projekten in regulie
         startDate: parseDate("09-2019"),
         endDate: parseDate("07-2020"),
         summary: `Werkstudent als Entwickler an einem Kreditkarten-Dashboard und einer Mobile-App mit Zahlungsdiensten und Betrugs-bezogenen Data-Science-Features.`,
-        highlights: `Implementierung neuer Frontend-Features für ein Kreditkarten-Dashboard
-Beitrag zu End-to-End-Funktionalität von Backend bis Frontend
-Arbeit an Betrugserkennungs-Use-Cases mit Data-Science-Tools
-Upgrade der Angular-Codebasis und Auffrischung des UI-Designs`,
+        highlights: `Implementierung neuer Frontend-Features für ein Kreditkarten-Dashboard ✌🏻 Beitrag zu End-to-End-Funktionalität von Backend bis Frontend ✌🏻 Arbeit an Betrugserkennungs-Use-Cases mit Data-Science-Tools ✌🏻 Upgrade der Angular-Codebasis und Auffrischung des UI-Designs`,
         language: "de-DE",
       },
       {
@@ -569,9 +481,7 @@ Upgrade der Angular-Codebasis und Auffrischung des UI-Designs`,
         startDate: parseDate("05-2019"),
         endDate: parseDate("08-2019"),
         summary: `Frontend-Entwickler für eine Umfrage- und Marktforschungsanwendung, die sowohl als Web- als auch als Mobile-App bereitgestellt wurde.`,
-        highlights: `Entwicklung responsiver Web-UIs mit Vue.js und modernen JavaScript-Tools
-Beitrag zu einer hybriden Web- und Mobile-Umfrageplattform
-Zusammenarbeit mit Designern und Backend-Entwicklern bei der Feature-Auslieferung`,
+        highlights: `Entwicklung responsiver Web-UIs mit Vue.js und modernen JavaScript-Tools ✌🏻 Beitrag zu einer hybriden Web- und Mobile-Umfrageplattform ✌🏻 Zusammenarbeit mit Designern und Backend-Entwicklern bei der Feature-Auslieferung`,
         language: "de-DE",
       },
       {
@@ -581,10 +491,7 @@ Zusammenarbeit mit Designern und Backend-Entwicklern bei der Feature-Auslieferun
         startDate: parseDate("12-2017"),
         endDate: parseDate("04-2019"),
         summary: `Full-Stack-Entwickler für mehrere Kundenprojekte, darunter React-Native-Mobile-Apps und React-basierte Web-Dashboards.`,
-        highlights: `Entwicklung von Features für eine deutsche Shopping- und Rewards-App mit React Native
-Erstellung webbasierter Dashboards mit React und Redux
-Beitrag zu Backend-Services mit Node.js und Express
-Teilnahme an agilen Zeremonien und Sprint-Planung`,
+        highlights: `Entwicklung von Features für eine deutsche Shopping- und Rewards-App mit React Native ✌🏻 Erstellung webbasierter Dashboards mit React und Redux ✌🏻 Beitrag zu Backend-Services mit Node.js und Express ✌🏻 Teilnahme an agilen Zeremonien und Sprint-Planung`,
         language: "de-DE",
       },
       {
@@ -594,12 +501,7 @@ Teilnahme an agilen Zeremonien und Sprint-Planung`,
         startDate: parseDate("06-2016"),
         endDate: parseDate("09-2017"),
         summary: `Software-Engineer an Telekommunikations-Provisionierungssystemen und Unternehmens-Webanwendungen.`,
-        highlights: `Entwicklung Java-basierter Backend-Systeme für Telekommunikationsdienst-Provisionierung
-Aufbau von Spring-Boot-Microservices und RESTful-APIs
-Arbeit an Oracle-Datenbank-Design und Query-Optimierung
-Zusammenarbeit mit funktionsübergreifenden Teams in einer verteilten Umgebung
-Beitrag zu Test-Frameworks mit Selenium und JUnit
-Auslieferung von Features in zweiwöchigen Sprints mit automatisierter CI/CD`,
+        highlights: `Entwicklung Java-basierter Backend-Systeme für Telekommunikationsdienst-Provisionierung ✌🏻 Aufbau von Spring-Boot-Microservices und RESTful-APIs ✌🏻 Arbeit an Oracle-Datenbank-Design und Query-Optimierung ✌🏻 Zusammenarbeit mit funktionsübergreifenden Teams in einer verteilten Umgebung ✌🏻 Beitrag zu Test-Frameworks mit Selenium und JUnit ✌🏻 Auslieferung von Features in zweiwöchigen Sprints mit automatisierter CI/CD`,
         language: "de-DE",
       },
       {
@@ -609,9 +511,7 @@ Auslieferung von Features in zweiwöchigen Sprints mit automatisierter CI/CD`,
         startDate: parseDate("08-2014"),
         endDate: parseDate("05-2016"),
         summary: `Senior-Engineer mit Fokus auf Java-EE-Unternehmensanwendungen mit Spring und Hibernate.`,
-        highlights: `Design und Implementierung von RESTful-APIs mit Spring MVC
-Integration von Hibernate für ORM und Datenbankinteraktionen
-Mentoring von Junior-Entwicklern zu Best Practices und Design-Patterns`,
+        highlights: `Design und Implementierung von RESTful-APIs mit Spring MVC ✌🏻 Integration von Hibernate für ORM und Datenbankinteraktionen ✌🏻 Mentoring von Junior-Entwicklern zu Best Practices und Design-Patterns`,
         language: "de-DE",
       },
       {
@@ -621,8 +521,7 @@ Mentoring von Junior-Entwicklern zu Best Practices und Design-Patterns`,
         startDate: parseDate("06-2013"),
         endDate: parseDate("07-2014"),
         summary: `Modulleiter verantwortlich für die Führung eines kleinen Teams an webbasierten Unternehmenslösungen.`,
-        highlights: `Leitung eines Teams von 3–4 Entwicklern bei Java-basierten Unternehmensmodulen
-Koordination von Sprint-Planung und Code-Reviews`,
+        highlights: `Leitung eines Teams von 3–4 Entwicklern bei Java-basierten Unternehmensmodulen ✌🏻 Koordination von Sprint-Planung und Code-Reviews`,
         language: "de-DE",
       },
       {
@@ -632,8 +531,7 @@ Koordination von Sprint-Planung und Code-Reviews`,
         startDate: parseDate("07-2012"),
         endDate: parseDate("05-2013"),
         summary: `Software-Engineer mit Entwicklung Java-basierter Backend-Systeme für Unternehmenskunden.`,
-        highlights: `Entwicklung von Unternehmensanwendungen mit Java und J2EE
-Arbeit an Datenbankintegration und Backend-Logik`,
+        highlights: `Entwicklung von Unternehmensanwendungen mit Java und J2EE ✌🏻 Arbeit an Datenbankintegration und Backend-Logik`,
         language: "de-DE",
       },
     ],
@@ -647,8 +545,7 @@ Arbeit an Datenbankintegration und Backend-Logik`,
         startDate: parseDate("01-2018"),
         endDate: null,
         summary: "Aktiver Mitwirkender an verschiedenen Open-Source-Projekten im JavaScript- und TypeScript-Ökosystem.",
-        highlights: `Beiträge zu React- und Node.js-Bibliotheken
-Pflege persönlicher Open-Source-Projekte`,
+        highlights: `Beiträge zu React- und Node.js-Bibliotheken ✌🏻 Pflege persönlicher Open-Source-Projekte`,
         language: "de-DE",
       },
       {
@@ -658,9 +555,7 @@ Pflege persönlicher Open-Source-Projekte`,
         startDate: parseDate("01-2015"),
         endDate: parseDate("07-2018"),
         summary: "Freiwillige Tätigkeit bei Robinhood Army.",
-        highlights: `Verteilung von Lebensmitteln an bedürftige Menschen
-Organisation von Veranstaltungen und Aktivitäten
-Unterstützung von Gemeindemitgliedern`,
+        highlights: `Verteilung von Lebensmitteln an bedürftige Menschen ✌🏻 Organisation von Veranstaltungen und Aktivitäten ✌🏻 Unterstützung von Gemeindemitgliedern`,
         language: "de-DE",
       },
     ],
@@ -819,7 +714,7 @@ Unterstützung von Gemeindemitgliedern`,
         startDate: parseDate("2023-01"),
         endDate: null,
         description: "Leitete die Entwicklung einer skalierbaren KI-gestützten Kundensupport-Plattform für Millionen von Nutzern mit Integration mehrerer KI-Modelle und Echtzeit-Kommunikationsfähigkeiten.",
-        highlights: "Architektur und Implementierung eines Microservices-basierten Backends mit Node.js, NestJS und GraphQL, das täglich 50M+ API-Anfragen verarbeitet\nIntegration von OpenAI GPT-4 und benutzerdefinierten NLP-Modellen für intelligentes Query-Routing und automatisierte Antwortgenerierung, Verbesserung der Lösungszeit um 65%\nAufbau eines Echtzeit-Chat-Systems mit WebSockets und Redis Pub/Sub, das 100K+ gleichzeitige Verbindungen unterstützt\nImplementierung umfassender Überwachung und Observability mit Prometheus, Grafana und benutzerdefinierten Dashboards, Erreichung von 99,9% Uptime\nDesign einer Event-Driven Architecture mit Apache Kafka für asynchrone Verarbeitung von Kundeninteraktionen",
+        highlights: "Architektur und Implementierung eines Microservices-basierten Backends mit Node.js, NestJS und GraphQL, das täglich 50M+ API-Anfragen verarbeitet ✌🏻 Integration von OpenAI GPT-4 und benutzerdefinierten NLP-Modellen für intelligentes Query-Routing und automatisierte Antwortgenerierung, Verbesserung der Lösungszeit um 65% ✌🏻 Aufbau eines Echtzeit-Chat-Systems mit WebSockets und Redis Pub/Sub, das 100K+ gleichzeitige Verbindungen unterstützt ✌🏻 Implementierung umfassender Überwachung und Observability mit Prometheus, Grafana und benutzerdefinierten Dashboards, Erreichung von 99,9% Uptime ✌🏻 Design einer Event-Driven Architecture mit Apache Kafka für asynchrone Verarbeitung von Kundeninteraktionen",
         url: undefined,
         language: "de-DE",
       },
@@ -828,7 +723,7 @@ Unterstützung von Gemeindemitgliedern`,
         startDate: parseDate("2022-03"),
         endDate: parseDate("2023-12"),
         description: "Entwicklung einer umfassenden Analytics- und Bestandsverwaltungsplattform für großflächige Einzelhandelsoperationen mit Echtzeit-Einblicken und automatisierter Bestandsoptimierung.",
-        highlights: "Aufbau eines responsiven React-basierten Dashboards mit Echtzeit-Datenvisualisierung unter Verwendung von D3.js und Recharts, das 5000+ täglich aktive Benutzer bedient\nImplementierung einer prädiktiven Analytics-Engine mit Python und TensorFlow für Bestandsprognosen, Reduzierung von Überbeständen um 30%\nArchitektur einer Hochleistungs-Datenpipeline, die täglich 500GB+ Transaktionsdaten mit AWS Glue und Athena verarbeitet\nEntwicklung von REST- und GraphQL-APIs mit Node.js und Express, integriert mit 20+ Drittanbieter-Logistiksystemen\nOptimierung von PostgreSQL-Datenbankabfragen und Implementierung von Caching mit Redis, Reduzierung der Antwortzeiten von 3s auf 200ms",
+        highlights: "Aufbau eines responsiven React-basierten Dashboards mit Echtzeit-Datenvisualisierung unter Verwendung von D3.js und Recharts, das 5000+ täglich aktive Benutzer bedient ✌🏻 Implementierung einer prädiktiven Analytics-Engine mit Python und TensorFlow für Bestandsprognosen, Reduzierung von Überbeständen um 30% ✌🏻 Architektur einer Hochleistungs-Datenpipeline, die täglich 500GB+ Transaktionsdaten mit AWS Glue und Athena verarbeitet ✌🏻 Entwicklung von REST- und GraphQL-APIs mit Node.js und Express, integriert mit 20+ Drittanbieter-Logistiksystemen ✌🏻 Optimierung von PostgreSQL-Datenbankabfragen und Implementierung von Caching mit Redis, Reduzierung der Antwortzeiten von 3s auf 200ms",
         url: undefined,
         language: "de-DE",
       },
@@ -837,7 +732,7 @@ Unterstützung von Gemeindemitgliedern`,
         startDate: parseDate("2021-06"),
         endDate: parseDate("2022-02"),
         description: "Architektur und Aufbau einer HIPAA-konformen Multi-Tenant SaaS-Plattform für Gesundheitsdienstleister mit sicherer Patientendatenverwaltung und Telegesundheitsfunktionen.",
-        highlights: "Design einer Multi-Tenant-Architektur mit Row-Level Security in PostgreSQL, die 200+ Gesundheitsorganisationen unterstützt\nImplementierung von End-to-End-Verschlüsselung für Patientendaten mit AWS KMS und Erlangung der HIPAA-Compliance-Zertifizierung\nAufbau einer Videokonferenzfunktion mit WebRTC und Twilio, Durchführung von 10K+ Telegesundheitssitzungen monatlich\nErstellung einer CI/CD-Pipeline mit GitHub Actions und AWS ECS, die 20+ Deployments pro Woche mit null Ausfallzeit ermöglicht\nEntwicklung eines umfassenden Audit-Logging-Systems für Compliance-Tracking und Sicherheitsüberwachung",
+        highlights: "Design einer Multi-Tenant-Architektur mit Row-Level Security in PostgreSQL, die 200+ Gesundheitsorganisationen unterstützt ✌🏻 Implementierung von End-to-End-Verschlüsselung für Patientendaten mit AWS KMS und Erlangung der HIPAA-Compliance-Zertifizierung ✌🏻 Aufbau einer Videokonferenzfunktion mit WebRTC und Twilio, Durchführung von 10K+ Telegesundheitssitzungen monatlich ✌🏻 Erstellung einer CI/CD-Pipeline mit GitHub Actions und AWS ECS, die 20+ Deployments pro Woche mit null Ausfallzeit ermöglicht ✌🏻 Entwicklung eines umfassenden Audit-Logging-Systems für Compliance-Tracking und Sicherheitsüberwachung",
         url: undefined,
         language: "de-DE",
       },
@@ -846,7 +741,7 @@ Unterstützung von Gemeindemitgliedern`,
         startDate: parseDate("2020-09"),
         endDate: parseDate("2021-05"),
         description: "Leitete die Entwicklung einer Mobile-First E-Commerce-Plattform mit erweiterten Funktionen wie AR-Produktvorschau, personalisierten Empfehlungen und nahtlosem Checkout-Erlebnis.",
-        highlights: "Aufbau einer plattformübergreifenden mobilen App mit React Native und Expo, Erzielung einer 4,8★-Bewertung mit 500K+ Downloads\nImplementierung von AR-Produktvisualisierung mit ARKit und ARCore, Steigerung der Conversion-Raten um 45%\nIntegration von Stripe, PayPal und Apple Pay für nahtlose Zahlungsabwicklung mit PCI DSS-Konformität\nEntwicklung einer personalisierten Empfehlungsmaschine mit kollaborativem Filtern, Verbesserung des durchschnittlichen Bestellwerts um 35%\nOptimierung der App-Performance mit <2s initialer Ladezeit und 60fps-Animationen auf Budget-Geräten",
+        highlights: "Aufbau einer plattformübergreifenden mobilen App mit React Native und Expo, Erzielung einer 4,8★-Bewertung mit 500K+ Downloads ✌🏻 Implementierung von AR-Produktvisualisierung mit ARKit und ARCore, Steigerung der Conversion-Raten um 45% ✌🏻 Integration von Stripe, PayPal und Apple Pay für nahtlose Zahlungsabwicklung mit PCI DSS-Konformität ✌🏻 Entwicklung einer personalisierten Empfehlungsmaschine mit kollaborativem Filtern, Verbesserung des durchschnittlichen Bestellwerts um 35% ✌🏻 Optimierung der App-Performance mit <2s initialer Ladezeit und 60fps-Animationen auf Budget-Geräten",
         url: undefined,
         language: "de-DE",
       },
@@ -855,7 +750,7 @@ Unterstützung von Gemeindemitgliedern`,
         startDate: parseDate("2020-01"),
         endDate: parseDate("2020-08"),
         description: "Entwicklung einer Echtzeit-Kollaborations-Workspace-Anwendung, die Teams ermöglicht, gemeinsam an Dokumenten, Whiteboards und Projekten mit Live-Updates zu arbeiten.",
-        highlights: "Implementierung des Operational Transformation (OT)-Algorithmus für konfliktfreie Echtzeit-Kollaboration an gemeinsamen Dokumenten\nAufbau einer WebSocket-Infrastruktur mit Socket.io und Redis, die 50K+ gleichzeitige Kollaborationssitzungen unterstützt\nErstellung eines Rich-Text-Editors mit kollaborativer Bearbeitung unter Verwendung von Slate.js und benutzerdefinierter CRDT-Implementierung\nEntwicklung einer Offline-First-Architektur mit Konfliktlösung, die Datenkonsistenz über Clients hinweg gewährleistet\nImplementierung eines fein abgestuften Zugriffskontroll- und Berechtigungssystems für Enterprise-Sicherheitsanforderungen",
+        highlights: "Implementierung des Operational Transformation (OT)-Algorithmus für konfliktfreie Echtzeit-Kollaboration an gemeinsamen Dokumenten ✌🏻 Aufbau einer WebSocket-Infrastruktur mit Socket.io und Redis, die 50K+ gleichzeitige Kollaborationssitzungen unterstützt ✌🏻 Erstellung eines Rich-Text-Editors mit kollaborativer Bearbeitung unter Verwendung von Slate.js und benutzerdefinierter CRDT-Implementierung ✌🏻 Entwicklung einer Offline-First-Architektur mit Konfliktlösung, die Datenkonsistenz über Clients hinweg gewährleistet ✌🏻 Implementierung eines fein abgestuften Zugriffskontroll- und Berechtigungssystems für Enterprise-Sicherheitsanforderungen",
         url: undefined,
         language: "de-DE",
       },
@@ -864,7 +759,7 @@ Unterstützung von Gemeindemitgliedern`,
         startDate: parseDate("2023-06"),
         endDate: null,
         description: "Aufbau eines modernen Headless CMS mit Keystone.js mit erweiterten Funktionen wie Multi-Sprach-Unterstützung, benutzerdefinierten Feldtypen und GraphQL-API.",
-        highlights: "Architektur eines skalierbaren CMS mit Keystone.js, Next.js und PostgreSQL mit Prisma ORM\nImplementierung umfassender Multi-Sprach-Unterstützung mit Content-Übersetzungs-Workflow\nErstellung benutzerdefinierter Feldtypen und UI-Komponenten für erweiterte Content-Management-Fähigkeiten\nAufbau einer automatisierten Content-Deployment-Pipeline mit Preview-Umgebungen und Rollback-Funktionen\nIntegration von Bildoptimierung und CDN-Auslieferung mit Cloudflare und AWS CloudFront",
+        highlights: "Architektur eines skalierbaren CMS mit Keystone.js, Next.js und PostgreSQL mit Prisma ORM ✌🏻 Implementierung umfassender Multi-Sprach-Unterstützung mit Content-Übersetzungs-Workflow ✌🏻 Erstellung benutzerdefinierter Feldtypen und UI-Komponenten für erweiterte Content-Management-Fähigkeiten ✌🏻 Aufbau einer automatisierten Content-Deployment-Pipeline mit Preview-Umgebungen und Rollback-Funktionen ✌🏻 Integration von Bildoptimierung und CDN-Auslieferung mit Cloudflare und AWS CloudFront",
         url: undefined,
         language: "de-DE",
       },
@@ -873,7 +768,7 @@ Unterstützung von Gemeindemitgliedern`,
         startDate: parseDate("2019-08"),
         endDate: parseDate("2019-12"),
         description: "Design und Implementierung eines verteilten Task-Scheduling-Systems für die Verarbeitung von Millionen von Hintergrund-Jobs mit Zuverlässigkeit und Fehlertoleranz.",
-        highlights: "Aufbau einer verteilten Job-Queue mit Bull und Redis, die täglich 10M+ Jobs mit 99,99% Zuverlässigkeit verarbeitet\nImplementierung von prioritätsbasiertem Scheduling, Wiederholungsmechanismen und Dead Letter Queues für fehlgeschlagene Jobs\nErstellung eines Monitoring-Dashboards für Job-Queue-Metriken, Latenz-Tracking und Fehleranalyse\nOptimierung von Worker-Prozessen für Speichereffizienz, Reduzierung der Infrastrukturkosten um 40%\nEntwicklung von Job-Chaining und Workflow-Orchestrierung für komplexe mehrstufige Prozesse",
+        highlights: "Aufbau einer verteilten Job-Queue mit Bull und Redis, die täglich 10M+ Jobs mit 99,99% Zuverlässigkeit verarbeitet ✌🏻 Implementierung von prioritätsbasiertem Scheduling, Wiederholungsmechanismen und Dead Letter Queues für fehlgeschlagene Jobs ✌🏻 Erstellung eines Monitoring-Dashboards für Job-Queue-Metriken, Latenz-Tracking und Fehleranalyse ✌🏻 Optimierung von Worker-Prozessen für Speichereffizienz, Reduzierung der Infrastrukturkosten um 40% ✌🏻 Entwicklung von Job-Chaining und Workflow-Orchestrierung für komplexe mehrstufige Prozesse",
         url: undefined,
         language: "de-DE",
       },
@@ -926,389 +821,379 @@ Unterstützung von Gemeindemitgliedern`,
         uiLanguage: "en-IN",
       },
     ],
-
-
   },
   {
-        // Main Resume
-        resume: {
-            title: "Florian Zeidler - Cloud Architect and Engineer Resume",
-            language: "en-US", // Reference to Language.value
-            createdAt: new Date().toISOString(),
-        },
-
-        // Basic Information
-        basicInformation: {
-            name: "Florian Zeidler",
-            label: "Cloud Architect",
-            email: "f.zeidler@nimbus-tech.de",
-            url: "https://www.linkedin.com/in/florian-zeidler-945b3a242/",
-            summary: "",
-            language: "en-US",
-        },
-
-        // Location
-        location: {
-            address: "Leipzig, Saxony, Germany",
-            postalCode: "04179",
-            city: "Leipzig",
-            countryCode: "DE",
-            region: "Saxony",
-            language: "en-US",
-        },
-
-        // Profiles
-        profiles: [
-            {
-                network: "LinkedIn",
-                username: "florian-zeidler-945b3a242",
-                url: "https://www.linkedin.com/in/florian-zeidler-945b3a242/",
-                language: "en-US",
-            },
-            {
-                network: "GitHub",
-                username: "Lunev1",
-                url: "https://github.com/Lunev1",
-                language: "en-US",
-            },
-        ],
-
-        // Work Experience
-        work: [
-            {
-                name: "Finatix GmbH",
-                position: "Cloud Developer / Solutions Architect / DevOps Engineer",
-                url: "",
-                startDate: parseDate("07-2019"),
-                endDate: null,
-                summary: `Cloud Engineer and Solutions Architect for cloud environments.`,
-                highlights: `Worked on projects with a focus on backend and cloud development
-Tech lead for AWS cloud architecture
-Implemented standardized processes for the development team and supported their deployment workflows`,
-                language: "en-US",
-            },
-        ],
-
-        // Volunteer
-        volunteer: [],
-
-        // Education
-        education: [
-            {
-                institution: "Universität Leipzig",
-                url: "https://www.uni-leipzig.de/",
-                area: "Business and Computer Science",
-                studyType: "Master of Science",
-                startDate: parseDate("10-2015"),
-                endDate: parseDate("11-2021"),
-                language: "en-US",
-            },
-            {
-                institution: "Universität Leipzig",
-                url: "https://www.uni-leipzig.de/",
-                area: "Business and Computer Science",
-                studyType: "Bachelor of Science",
-                startDate: parseDate("10-2010"),
-                endDate: parseDate("10-2015"),
-                language: "en-US",
-            },
-        ],
-
-        // Awards
-        awards: [],
-
-        // Publications
-        publications: [],
-
-        // Skills
-        skills: [
-            {
-                name: "Backend Development",
-                level: "Expert",
-                keywords: "Node.js, GraphQL, REST APIs, gRPC, WebSockets, Message Queues, RabbitMQ, Apache Kafka, Authentication (JWT, OAuth2, SAML), API Design, Rate Limiting, Caching Strategies, open-api",
-                language: "en-US",
-            },
-            {
-                name: "Cloud & DevOps",
-                level: "Advanced",
-                keywords: "AWS (EC2, ECS, EKS, Lambda, S3, CloudFront, RDS, DynamoDB, SQS, SNS, API Gateway, CloudWatch), Azure, Google Cloud Platform, Docker, Kubernetes, Helm, ArgoCD, CI/CD Pipelines, GitHub Actions, GitLab CI, Jenkins, CircleCI, Terraform, Infrastructure as Code, Ansible, Nginx, Load Balancing, Auto Scaling, Monitoring (Prometheus, Grafana, Datadog, New Relic), Logging (ELK Stack, CloudWatch Logs), CDN Configuration",
-                language: "en-US",
-            },
-            {
-                name: "Database & Data Management",
-                level: "Advanced",
-                keywords: "PostgreSQL, MongoDB, MySQL, Redis, DynamoDB, Elasticsearch, Database Design, Query Optimization, Indexing Strategies, Replication, Sharding, Database Migration, Data Modeling, NoSQL vs SQL, ACID Transactions, CAP Theorem, Database Security, Backup and Recovery",
-                language: "en-US",
-            },
-            {
-                name: "Architecture & System Design",
-                level: "Expert",
-                keywords: "Microservices Architecture, Event-Driven Architecture, Domain-Driven Design (DDD), CQRS, Event Sourcing, API Gateway Pattern, Clean Architecture, Hexagonal Architecture, SOLID Principles, Design Patterns (Factory, Strategy, Observer, Singleton), High Availability, Fault Tolerance, Circuit Breaker Pattern, Saga Pattern, Distributed Systems, Scalability, Performance Optimization, Security Best Practices, Load Balancing Strategies",
-                language: "en-US",
-            },
-            {
-                name: "Testing & Quality Assurance",
-                level: "Advanced",
-                keywords: "Jest, Testing Library, Cypress, Selenium, Test-Driven Development (TDD), Behavior-Driven Development (BDD), Unit Testing, Integration Testing, End-to-End Testing, Performance Testing, Load Testing, Code Coverage, Contract Testing (Pact), API Testing (Postman, Insomnia)",
-                language: "en-US",
-            }
-        ],
-        projects: [
-            {
-                name: "Development of a scalable cloud data platform for financial data",
-                startDate: parseDate("2021-10"),
-                endDate: undefined,
-                description: "Architecture and Development of a multi-account scalable cloud data platform for financial data.",
-                highlights: "Built, deployed, and operated a multi-microservice application on Kubernetes and AWS ECS on Fargate\n" +
-                    "Configured and integrated the Datadog observability SaaS platform and implemented comprehensive logging, alerting, and incident management processes for the application layer\n" +
-                    "Architected high-performance processing of millions of financial transaction records with a sub-second response time requirement\n" +
-                    "Led development of proof of concepts for new components\n",
-                url: undefined,
-                language: "en-US",
-            },
-            {
-                name: "Platform for credit cards and payment processing",
-                startDate: parseDate("2019-07"),
-                endDate: parseDate("2020-09"),
-                description: "Architected and developed a multi-tenant platform for prepaid credit cards.",
-                highlights: "Designed multi-tenant architecture with migration from a legacy monolithic application, with a focus on supporting hundreds of credit card tenants and millions of users\nDesigned and implemented a cloud environment for dedicated load tests and simulation of user behavior\nIntegration of a compliance and fraud detection service in accordance with legal requirements\n",
-                url: undefined,
-                language: "en-US",
-            },
-            {
-                name: "Development of support tools for the analysis of financial data",
-                startDate: parseDate("2015-03"),
-                endDate: parseDate("2017-08"),
-                description: "Development of a solution for the automated collection, processing, and storage of customer transactional data (ETL process). Development of a data schema for the long-term archiving of tax data and provision of data via internal company servers.",
-                highlights: "Reduced data collection and provisioning time from 10 minutes (manual Excel processing) to seconds. Approximately 98% of structured data could be processed with the new solution.",
-                url: undefined,
-                language: "en-US",
-            }
-        ],
-
-        // Interests
-        interests: [
-            {
-                name: "Business and People Management",
-                keywords: "Advancing business models, new work environments, agile frameworks at scale, the evolution of HR and AI",
-                language: "en-US",
-            },
-            {
-                name: "Technology Trends",
-                keywords: "AI/ML advancements, Cloud-native technologies, Web3 and blockchain, Serverless",
-                language: "en-US",
-            },
-            {
-                name: "Fitness & Wellness",
-                keywords: "Running, Yoga, healthy nutrition",
-                language: "en-US",
-            }
-        ],
-
-        // Languages
-        languages: [
-            {
-                language: "German",
-                fluency: "Native",
-                uiLanguage: "de-DE",
-            },
-            {
-                language: "English",
-                fluency: "Professional Working",
-                uiLanguage: "en-US",
-            },
-        ],
+    // Main Resume
+    resume: {
+      title: "Florian Zeidler - Cloud Architect and Engineer Resume",
+      language: "en-US", // Reference to Language.value
+      createdAt: new Date().toISOString(),
     },
+
+    // Basic Information
+    basicInformation: {
+      name: "Florian Zeidler",
+      label: "Cloud Architect",
+      email: "f.zeidler@nimbus-tech.de",
+      url: "https://www.linkedin.com/in/florian-zeidler-945b3a242/",
+      summary: "",
+      language: "en-US",
+      resumePhotoKey: "resumePhotoFlori",
+    },
+
+    // Location
+    location: {
+      address: "Leipzig, Saxony, Germany",
+      postalCode: "04179",
+      city: "Leipzig",
+      countryCode: "DE",
+      region: "Saxony",
+      language: "en-US",
+    },
+
+    // Profiles
+    profiles: [
+      {
+        network: "LinkedIn",
+        username: "florian-zeidler-945b3a242",
+        url: "https://www.linkedin.com/in/florian-zeidler-945b3a242/",
+        language: "en-US",
+      },
+      {
+        network: "GitHub",
+        username: "Lunev1",
+        url: "https://github.com/Lunev1",
+        language: "en-US",
+      },
+    ],
+
+    // Work Experience
+    work: [
+      {
+        name: "Finatix GmbH",
+        position: "Cloud Developer / Solutions Architect / DevOps Engineer",
+        url: "",
+        startDate: parseDate("07-2019"),
+        endDate: null,
+        summary: `Cloud Engineer and Solutions Architect for cloud environments.`,
+        highlights: `Worked on projects with a focus on backend and cloud development ✌🏻 Tech lead for AWS cloud architecture ✌🏻 Implemented standardized processes for the development team and supported their deployment workflows`,
+        language: "en-US",
+      },
+    ],
+
+    // Volunteer
+    volunteer: [],
+
+    // Education
+    education: [
+      {
+        institution: "Universität Leipzig",
+        url: "https://www.uni-leipzig.de/",
+        area: "Business and Computer Science",
+        studyType: "Master of Science",
+        startDate: parseDate("10-2015"),
+        endDate: parseDate("11-2021"),
+        language: "en-US",
+      },
+      {
+        institution: "Universität Leipzig",
+        url: "https://www.uni-leipzig.de/",
+        area: "Business and Computer Science",
+        studyType: "Bachelor of Science",
+        startDate: parseDate("10-2010"),
+        endDate: parseDate("10-2015"),
+        language: "en-US",
+      },
+    ],
+
+    // Awards
+    awards: [],
+
+    // Publications
+    publications: [],
+
+    // Skills
+    skills: [
+      {
+        name: "Backend Development",
+        level: "Expert",
+        keywords: "Node.js, GraphQL, REST APIs, gRPC, WebSockets, Message Queues, RabbitMQ, Apache Kafka, Authentication (JWT, OAuth2, SAML), API Design, Rate Limiting, Caching Strategies, open-api",
+        language: "en-US",
+      },
+      {
+        name: "Cloud & DevOps",
+        level: "Advanced",
+        keywords: "AWS (EC2, ECS, EKS, Lambda, S3, CloudFront, RDS, DynamoDB, SQS, SNS, API Gateway, CloudWatch), Azure, Google Cloud Platform, Docker, Kubernetes, Helm, ArgoCD, CI/CD Pipelines, GitHub Actions, GitLab CI, Jenkins, CircleCI, Terraform, Infrastructure as Code, Ansible, Nginx, Load Balancing, Auto Scaling, Monitoring (Prometheus, Grafana, Datadog, New Relic), Logging (ELK Stack, CloudWatch Logs), CDN Configuration",
+        language: "en-US",
+      },
+      {
+        name: "Database & Data Management",
+        level: "Advanced",
+        keywords: "PostgreSQL, MongoDB, MySQL, Redis, DynamoDB, Elasticsearch, Database Design, Query Optimization, Indexing Strategies, Replication, Sharding, Database Migration, Data Modeling, NoSQL vs SQL, ACID Transactions, CAP Theorem, Database Security, Backup and Recovery",
+        language: "en-US",
+      },
+      {
+        name: "Architecture & System Design",
+        level: "Expert",
+        keywords: "Microservices Architecture, Event-Driven Architecture, Domain-Driven Design (DDD), CQRS, Event Sourcing, API Gateway Pattern, Clean Architecture, Hexagonal Architecture, SOLID Principles, Design Patterns (Factory, Strategy, Observer, Singleton), High Availability, Fault Tolerance, Circuit Breaker Pattern, Saga Pattern, Distributed Systems, Scalability, Performance Optimization, Security Best Practices, Load Balancing Strategies",
+        language: "en-US",
+      },
+      {
+        name: "Testing & Quality Assurance",
+        level: "Advanced",
+        keywords: "Jest, Testing Library, Cypress, Selenium, Test-Driven Development (TDD), Behavior-Driven Development (BDD), Unit Testing, Integration Testing, End-to-End Testing, Performance Testing, Load Testing, Code Coverage, Contract Testing (Pact), API Testing (Postman, Insomnia)",
+        language: "en-US",
+      }
+    ],
+    projects: [
+      {
+        name: "Development of a scalable cloud data platform for financial data",
+        startDate: parseDate("2021-10"),
+        endDate: undefined,
+        description: "Architecture and Development of a multi-account scalable cloud data platform for financial data.",
+        highlights: "Built, deployed, and operated a multi-microservice application on Kubernetes and AWS ECS on Fargate ✌🏻 Configured and integrated the Datadog observability SaaS platform and implemented comprehensive logging, alerting, and incident management processes for the application layer ✌🏻 Architected high-performance processing of millions of financial transaction records with a sub-second response time requirement ✌🏻 Led development of proof of concepts for new components\n",
+        url: undefined,
+        language: "en-US",
+      },
+      {
+        name: "Platform for credit cards and payment processing",
+        startDate: parseDate("2019-07"),
+        endDate: parseDate("2020-09"),
+        description: "Architected and developed a multi-tenant platform for prepaid credit cards.",
+        highlights: "Designed multi-tenant architecture with migration from a legacy monolithic application, with a focus on supporting hundreds of credit card tenants and millions of users ✌🏻 Designed and implemented a cloud environment for dedicated load tests and simulation of user behavior ✌🏻 Integration of a compliance and fraud detection service in accordance with legal requirements",
+        url: undefined,
+        language: "en-US",
+      },
+      {
+        name: "Development of support tools for the analysis of financial data",
+        startDate: parseDate("2015-03"),
+        endDate: parseDate("2017-08"),
+        description: "Development of a solution for the automated collection, processing, and storage of customer transactional data (ETL process). Development of a data schema for the long-term archiving of tax data and provision of data via internal company servers.",
+        highlights: "Reduced data collection and provisioning time from 10 minutes (manual Excel processing) to seconds. Approximately 98% of structured data could be processed with the new solution.",
+        url: undefined,
+        language: "en-US",
+      }
+    ],
+
+    // Interests
+    interests: [
+      {
+        name: "Business and People Management",
+        keywords: "Advancing business models, new work environments, agile frameworks at scale, the evolution of HR and AI",
+        language: "en-US",
+      },
+      {
+        name: "Technology Trends",
+        keywords: "AI/ML advancements, Cloud-native technologies, Web3 and blockchain, Serverless",
+        language: "en-US",
+      },
+      {
+        name: "Fitness & Wellness",
+        keywords: "Running, Yoga, healthy nutrition",
+        language: "en-US",
+      }
+    ],
+
+    // Languages
+    languages: [
+      {
+        language: "German",
+        fluency: "Native",
+        uiLanguage: "de-DE",
+      },
+      {
+        language: "English",
+        fluency: "Professional Working",
+        uiLanguage: "en-US",
+      },
+    ],
+  },
   {
-        // Main Resume
-        resume: {
-            title: "Florian Zeidler - Lebenslauf Cloud-Architekt und Engineer",
-            language: "de-DE", // Reference to Language.value
-            createdAt: new Date().toISOString(),
-        },
+    // Main Resume
+    resume: {
+      title: "Florian Zeidler - Lebenslauf Cloud-Architekt und Engineer",
+      language: "de-DE", // Reference to Language.value
+      createdAt: new Date().toISOString(),
+    },
 
-        // Basic Information
-        basicInformation: {
-            name: "Florian Zeidler",
-            label: "Cloud-Architekt",
-            email: "f.zeidler@nimbus-tech.de",
-            url: "https://www.linkedin.com/in/florian-zeidler-945b3a242/",
-            summary: "",
-            language: "de-DE",
-        },
+    // Basic Information
+    basicInformation: {
+      name: "Florian Zeidler",
+      label: "Cloud-Architekt",
+      email: "f.zeidler@nimbus-tech.de",
+      url: "https://www.linkedin.com/in/florian-zeidler-945b3a242/",
+      summary: "",
+      language: "de-DE",
+      resumePhotoKey: "resumePhotoFlori",
+    },
 
-        // Location
-        location: {
-            address: "Leipzig, Sachsen, Deutschland",
-            postalCode: "04179",
-            city: "Leipzig",
-            countryCode: "DE",
-            region: "Sachsen",
-            language: "de-DE",
-        },
+    // Location
+    location: {
+      address: "Leipzig, Sachsen, Deutschland",
+      postalCode: "04179",
+      city: "Leipzig",
+      countryCode: "DE",
+      region: "Sachsen",
+      language: "de-DE",
+    },
 
-        // Profiles
-        profiles: [
-            {
-                network: "LinkedIn",
-                username: "florian-zeidler-945b3a242",
-                url: "https://www.linkedin.com/in/florian-zeidler-945b3a242/",
-                language: "de-DE",
-            },
-            {
-                network: "GitHub",
-                username: "Lunev1",
-                url: "https://github.com/Lunev1",
-                language: "de-DE",
-            },
-        ],
+    // Profiles
+    profiles: [
+      {
+        network: "LinkedIn",
+        username: "florian-zeidler-945b3a242",
+        url: "https://www.linkedin.com/in/florian-zeidler-945b3a242/",
+        language: "de-DE",
+      },
+      {
+        network: "GitHub",
+        username: "Lunev1",
+        url: "https://github.com/Lunev1",
+        language: "de-DE",
+      },
+    ],
 
-        // Work Experience
-        work: [
-            {
-                name: "Finatix GmbH",
-                position: "Cloud Developer / Solutions Architect / DevOps Engineer",
-                url: "",
-                startDate: parseDate("07-2019"),
-                endDate: null,
-                summary: `Cloud Engineer und Solutions Architect für Cloud-Umgebungen.`,
-                highlights: `Arbeit an Projekten mit Fokus auf Backend- und Cloud-Entwicklung
-Tech Lead für AWS Cloud-Architektur
-Implementierung standardisierter Prozesse für das Entwicklungsteam und Unterstützung der Deployment-Workflows`,
-                language: "de-DE",
-            },
-        ],
+    // Work Experience
+    work: [
+      {
+        name: "Finatix GmbH",
+        position: "Cloud Developer / Solutions Architect / DevOps Engineer",
+        url: "",
+        startDate: parseDate("07-2019"),
+        endDate: null,
+        summary: `Cloud Engineer und Solutions Architect für Cloud-Umgebungen.`,
+        highlights: `Arbeit an Projekten mit Fokus auf Backend- und Cloud-Entwicklung ✌🏻 Tech Lead für AWS Cloud-Architektur ✌🏻 Implementierung standardisierter Prozesse für das Entwicklungsteam und Unterstützung der Deployment-Workflows`,
+        language: "de-DE",
+      },
+    ],
 
-        // Volunteer
-        volunteer: [],
+    // Volunteer
+    volunteer: [],
 
-        // Education
-        education: [
-            {
-                institution: "Universität Leipzig",
-                url: "https://www.uni-leipzig.de/",
-                area: "Wirtschaftsinformatik",
-                studyType: "Master of Science",
-                startDate: parseDate("10-2015"),
-                endDate: parseDate("11-2021"),
-                language: "de-DE",
-            },
-            {
-                institution: "Universität Leipzig",
-                url: "https://www.uni-leipzig.de/",
-                area: "Wirtschaftsinformatik",
-                studyType: "Bachelor of Science",
-                startDate: parseDate("10-2010"),
-                endDate: parseDate("10-2015"),
-                language: "de-DE",
-            },
-        ],
+    // Education
+    education: [
+      {
+        institution: "Universität Leipzig",
+        url: "https://www.uni-leipzig.de/",
+        area: "Wirtschaftsinformatik",
+        studyType: "Master of Science",
+        startDate: parseDate("10-2015"),
+        endDate: parseDate("11-2021"),
+        language: "de-DE",
+      },
+      {
+        institution: "Universität Leipzig",
+        url: "https://www.uni-leipzig.de/",
+        area: "Wirtschaftsinformatik",
+        studyType: "Bachelor of Science",
+        startDate: parseDate("10-2010"),
+        endDate: parseDate("10-2015"),
+        language: "de-DE",
+      },
+    ],
 
-        // Awards
-        awards: [],
+    // Awards
+    awards: [],
 
-        // Publications
-        publications: [],
+    // Publications
+    publications: [],
 
-        // Skills
-        skills: [
-            {
-                name: "Backend-Entwicklung",
-                level: "Advanced",
-                keywords: "Node.js, GraphQL, REST APIs, gRPC, WebSockets, Message Queues, RabbitMQ, Apache Kafka, Authentication (JWT, OAuth2, SAML), API Design, Rate Limiting, Caching Strategies, open-api",
-                language: "de-DE",
-            },
-            {
-                name: "Cloud & DevOps",
-                level: "Expert",
-                keywords: "AWS (EC2, ECS, EKS, Lambda, S3, CloudFront, RDS, DynamoDB, SQS, SNS, API Gateway, CloudWatch), Azure, Google Cloud Platform, Docker, Kubernetes, Helm, ArgoCD, CI/CD Pipelines, GitHub Actions, GitLab CI, Jenkins, CircleCI, Terraform, Infrastructure as Code, Ansible, Nginx, Load Balancing, Auto Scaling, Monitoring (Prometheus, Grafana, Datadog, New Relic), Logging (ELK Stack, CloudWatch Logs), CDN Configuration",
-                language: "de-DE",
-            },
-            {
-                name: "Datenbank- & Datenmanagement",
-                level: "Advanced",
-                keywords: "PostgreSQL, MongoDB, MySQL, Redis, DynamoDB, Elasticsearch, Database Design, Query Optimization, Indexing Strategies, Replication, Sharding, Database Migration, Data Modeling, NoSQL vs SQL, ACID Transactions, CAP Theorem, Database Security, Backup and Recovery",
-                language: "de-DE",
-            },
-            {
-                name: "Architektur & Systemdesign",
-                level: "Expert",
-                keywords: "Microservices Architecture, Event-Driven Architecture, Domain-Driven Design (DDD), CQRS, Event Sourcing, API Gateway Pattern, Clean Architecture, Hexagonal Architecture, SOLID Principles, Design Patterns (Factory, Strategy, Observer, Singleton), High Availability, Fault Tolerance, Circuit Breaker Pattern, Saga Pattern, Distributed Systems, Scalability, Performance Optimization, Security Best Practices, Load Balancing Strategies",
-                language: "de-DE",
-            },
-            {
-                name: "Testing & Qualitätssicherung",
-                level: "Advanced",
-                keywords: "Jest, Testing Library, Cypress, Selenium, Test-Driven Development (TDD), Behavior-Driven Development (BDD), Unit Testing, Integration Testing, End-to-End Testing, Performance Testing, Load Testing, Code Coverage, Contract Testing (Pact), API Testing (Postman, Insomnia)",
-                language: "de-DE",
-            },
-        ],
-        projects: [
-            {
-                name: "Entwicklung einer skalierbaren Cloud-Datenplattform für Finanzdaten",
-                startDate: parseDate("2020-10"),
-                endDate: undefined,
-                description: "Architektur und Entwicklung einer skalierbaren Multi-Account Cloud-Datenplattform für Finanzdaten.",
-                highlights: "Aufbau, Bereitstellung und Betrieb einer Multi-Microservice-Anwendung in Kubernetes (AWS EKS) und später in AWS ECS auf Fargate\n" +
-                    "Konfiguration und Integration der Datadog Observability SaaS-Plattform sowie Implementierung umfassender Logging-, Alerting- und Incident-Management-Prozesse für die Anwendungsebene\n" +
-                    "Architektur für die Hochleistungsverarbeitung von Millionen von Finanztransaktionsdatensätzen mit der Anforderung im Sekundenbereich zu verarbeiten\n" +
-                    "Leitung der Entwicklung von Proof of Concepts für neue Komponenten\n",
-                url: undefined,
-                language: "de-DE",
-            },
-            {
-                name: "Plattform für Kreditkarten und Zahlungsabwicklung",
-                startDate: parseDate("2019-07"),
-                endDate: parseDate("2020-09"),
-                description: "Architektur und Entwicklung einer mandantenfähigen Plattform für Prepaid-Kreditkarten.",
-                highlights: "Entwurf einer mandantenfähigen Architektur mit Migration von einer bestehenden monolithischen Anwendung, mit Fokus auf die Unterstützung von hunderten Kreditkarten-Mandanten und potenziell Millionen von Nutzern\nKonzeption und Implementierung einer Cloud-Umgebung für dedizierte Lasttests und Simulation von Nutzerverhalten\nIntegration eines Services zur Compliance- und Betrugserkennung gemäß den gesetzlichen Vorgaben\n",
-                url: undefined,
-                language: "de-DE",
-            },
-            {
-                name: "Entwicklung von Support-Tools für die Analyse von Finanzdaten",
-                startDate: parseDate("2015-03"),
-                endDate: parseDate("2017-08"),
-                description: "Entwicklung einer Lösung zur automatisierten Erfassung, Verarbeitung und Speicherung von Kundentransaktionsdaten (ETL-Prozess). Entwicklung eines Datenschemas für die Langzeitarchivierung von Steuerdaten und Bereitstellung der Daten über unternehmensinterne Server.",
-                highlights: "Reduzierung der Zeit für Datenerfassung und -bereitstellung von 10 Minuten (manuelle Excel-Verarbeitung) zu wenigen Sekunden. Etwa 98 % der strukturierten Daten konnten mit der neuen Lösung verarbeitet werden.",
-                url: undefined,
-                language: "de-DE",
-            }
-        ],
+    // Skills
+    skills: [
+      {
+        name: "Backend-Entwicklung",
+        level: "Advanced",
+        keywords: "Node.js, GraphQL, REST APIs, gRPC, WebSockets, Message Queues, RabbitMQ, Apache Kafka, Authentication (JWT, OAuth2, SAML), API Design, Rate Limiting, Caching Strategies, open-api",
+        language: "de-DE",
+      },
+      {
+        name: "Cloud & DevOps",
+        level: "Expert",
+        keywords: "AWS (EC2, ECS, EKS, Lambda, S3, CloudFront, RDS, DynamoDB, SQS, SNS, API Gateway, CloudWatch), Azure, Google Cloud Platform, Docker, Kubernetes, Helm, ArgoCD, CI/CD Pipelines, GitHub Actions, GitLab CI, Jenkins, CircleCI, Terraform, Infrastructure as Code, Ansible, Nginx, Load Balancing, Auto Scaling, Monitoring (Prometheus, Grafana, Datadog, New Relic), Logging (ELK Stack, CloudWatch Logs), CDN Configuration",
+        language: "de-DE",
+      },
+      {
+        name: "Datenbank- & Datenmanagement",
+        level: "Advanced",
+        keywords: "PostgreSQL, MongoDB, MySQL, Redis, DynamoDB, Elasticsearch, Database Design, Query Optimization, Indexing Strategies, Replication, Sharding, Database Migration, Data Modeling, NoSQL vs SQL, ACID Transactions, CAP Theorem, Database Security, Backup and Recovery",
+        language: "de-DE",
+      },
+      {
+        name: "Architektur & Systemdesign",
+        level: "Expert",
+        keywords: "Microservices Architecture, Event-Driven Architecture, Domain-Driven Design (DDD), CQRS, Event Sourcing, API Gateway Pattern, Clean Architecture, Hexagonal Architecture, SOLID Principles, Design Patterns (Factory, Strategy, Observer, Singleton), High Availability, Fault Tolerance, Circuit Breaker Pattern, Saga Pattern, Distributed Systems, Scalability, Performance Optimization, Security Best Practices, Load Balancing Strategies",
+        language: "de-DE",
+      },
+      {
+        name: "Testing & Qualitätssicherung",
+        level: "Advanced",
+        keywords: "Jest, Testing Library, Cypress, Selenium, Test-Driven Development (TDD), Behavior-Driven Development (BDD), Unit Testing, Integration Testing, End-to-End Testing, Performance Testing, Load Testing, Code Coverage, Contract Testing (Pact), API Testing (Postman, Insomnia)",
+        language: "de-DE",
+      },
+    ],
+    projects: [
+      {
+        name: "Entwicklung einer skalierbaren Cloud-Datenplattform für Finanzdaten",
+        startDate: parseDate("2020-10"),
+        endDate: undefined,
+        description: "Architektur und Entwicklung einer skalierbaren Multi-Account Cloud-Datenplattform für Finanzdaten.",
+        highlights: "Aufbau, Bereitstellung und Betrieb einer Multi-Microservice-Anwendung in Kubernetes (AWS EKS) und später in AWS ECS auf Fargate ✌🏻 Konfiguration und Integration der Datadog Observability SaaS-Plattform sowie Implementierung umfassender Logging-, Alerting- und Incident-Management-Prozesse für die Anwendungsebene ✌🏻 Architektur für die Hochleistungsverarbeitung von Millionen von Finanztransaktionsdatensätzen mit der Anforderung im Sekundenbereich zu verarbeiten ✌🏻 Leitung der Entwicklung von Proof of Concepts für neue Komponenten",
+        url: undefined,
+        language: "de-DE",
+      },
+      {
+        name: "Plattform für Kreditkarten und Zahlungsabwicklung",
+        startDate: parseDate("2019-07"),
+        endDate: parseDate("2020-09"),
+        description: "Architektur und Entwicklung einer mandantenfähigen Plattform für Prepaid-Kreditkarten.",
+        highlights: "Entwurf einer mandantenfähigen Architektur mit Migration von einer bestehenden monolithischen Anwendung, mit Fokus auf die Unterstützung von hunderten Kreditkarten-Mandanten und potenziell Millionen von Nutzern ✌🏻 Konzeption und Implementierung einer Cloud-Umgebung für dedizierte Lasttests und Simulation von Nutzerverhalten ✌🏻 Integration eines Services zur Compliance- und Betrugserkennung gemäß den gesetzlichen Vorgaben",
+        url: undefined,
+        language: "de-DE",
+      },
+      {
+        name: "Entwicklung von Support-Tools für die Analyse von Finanzdaten",
+        startDate: parseDate("2015-03"),
+        endDate: parseDate("2017-08"),
+        description: "Entwicklung einer Lösung zur automatisierten Erfassung, Verarbeitung und Speicherung von Kundentransaktionsdaten (ETL-Prozess). Entwicklung eines Datenschemas für die Langzeitarchivierung von Steuerdaten und Bereitstellung der Daten über unternehmensinterne Server.",
+        highlights: "Reduzierung der Zeit für Datenerfassung und -bereitstellung von 10 Minuten (manuelle Excel-Verarbeitung) zu wenigen Sekunden. Etwa 98 % der strukturierten Daten konnten mit der neuen Lösung verarbeitet werden.",
+        url: undefined,
+        language: "de-DE",
+      }
+    ],
 
-        // Interests
-        interests: [
-            {
-                name: "Unternehmensführung und Personalmanagement",
-                keywords: "Weiterentwicklung von Geschäftsmodellen, new work, agile Frameworks at scale, moderne HR und KI",
-                language: "de-DE",
-            },
-            {
-                name: "Technologietrends",
-                keywords: "Entwicklung in KI/ML, Cloud-native Technologien, Web3 und Blockchain, Serverless",
-                language: "de-DE",
-            },
-            {
-                name: "Fitness & Wellness",
-                keywords: "Kraftsport, Yoga, gesunde Ernährung",
-                language: "de-DE",
-            }
-        ],
+    // Interests
+    interests: [
+      {
+        name: "Unternehmensführung und Personalmanagement",
+        keywords: "Weiterentwicklung von Geschäftsmodellen, new work, agile Frameworks at scale, moderne HR und KI",
+        language: "de-DE",
+      },
+      {
+        name: "Technologietrends",
+        keywords: "Entwicklung in KI/ML, Cloud-native Technologien, Web3 und Blockchain, Serverless",
+        language: "de-DE",
+      },
+      {
+        name: "Fitness & Wellness",
+        keywords: "Kraftsport, Yoga, gesunde Ernährung",
+        language: "de-DE",
+      }
+    ],
 
-        // Languages
-        languages: [
-            {
-                language: "Deutsch",
-                fluency: "Muttersprache",
-                uiLanguage: "de-DE",
-            },
-            {
-                language: "Englisch",
-                fluency: "verhandlungssicher",
-                uiLanguage: "de-DE",
-            },
-        ],
-    }
+    // Languages
+    languages: [
+      {
+        language: "Deutsch",
+        fluency: "Muttersprache",
+        uiLanguage: "de-DE",
+      },
+      {
+        language: "Englisch",
+        fluency: "verhandlungssicher",
+        uiLanguage: "de-DE",
+      },
+    ],
+  }
 ];
 
 // Helper function to seed resume languages for a specific resume dataset
@@ -1823,13 +1708,24 @@ const seedResumeBasicInfo = async (
   const resumeProfiles = await seedResumeProfiles(prisma, resumeData, allLanguages);
 
   // Get the resume photo image using ResumeImageKey
-  const resumePhotoKey: ResumeImageKey = "resumePhoto";
-  const resumePhotoConfig = Images.data[resumePhotoKey];
-  const resumeImage = await prisma.image.findFirst({
-    where: {
-      src: resumePhotoConfig.src
-    },
-  });
+  let resumeImage: { id: number } | null = null;
+
+  try {
+    const photoKey: ResumeImageKey = basicInfo.resumePhotoKey as ResumeImageKey;
+    const resumePhotoConfig = Images.data[photoKey];
+
+    if (resumePhotoConfig?.src) {
+      resumeImage = await prisma.image.findFirst({
+        where: {
+          src: resumePhotoConfig.src
+        },
+      });
+    } else {
+      console.log(`! Resume photo config not found for key: ${photoKey}`);
+    }
+  } catch (error) {
+    console.log(`! Error loading resume photo: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 
   const allBasicInfo = await prisma.resumeBasicInformation.create({
     data: {
