@@ -2626,10 +2626,12 @@ type ResumeBasicInformation {
   profiles(where: ResumeProfileWhereInput! = {}, orderBy: [ResumeProfileOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeProfileWhereUniqueInput): [ResumeProfile!]
   profilesCount(where: ResumeProfileWhereInput! = {}): Int
   language: Language
+  resume: Resume
 }
 
 input ResumeBasicInformationWhereUniqueInput {
   id: ID
+  resume: ResumeWhereUniqueInput
 }
 
 input ResumeBasicInformationWhereInput {
@@ -2647,6 +2649,7 @@ input ResumeBasicInformationWhereInput {
   location: ResumeLocationWhereInput
   profiles: ResumeProfileManyRelationFilter
   language: LanguageWhereInput
+  resume: ResumeWhereInput
 }
 
 input ResumeProfileManyRelationFilter {
@@ -2676,6 +2679,7 @@ input ResumeBasicInformationUpdateInput {
   location: ResumeLocationRelateToOneForUpdateInput
   profiles: ResumeProfileRelateToManyForUpdateInput
   language: LanguageRelateToOneForUpdateInput
+  resume: ResumeRelateToOneForUpdateInput
 }
 
 input ResumeLocationRelateToOneForUpdateInput {
@@ -2689,6 +2693,12 @@ input ResumeProfileRelateToManyForUpdateInput {
   set: [ResumeProfileWhereUniqueInput!]
   create: [ResumeProfileCreateInput!]
   connect: [ResumeProfileWhereUniqueInput!]
+}
+
+input ResumeRelateToOneForUpdateInput {
+  create: ResumeCreateInput
+  connect: ResumeWhereUniqueInput
+  disconnect: Boolean
 }
 
 input ResumeBasicInformationUpdateArgs {
@@ -2707,6 +2717,7 @@ input ResumeBasicInformationCreateInput {
   location: ResumeLocationRelateToOneForCreateInput
   profiles: ResumeProfileRelateToManyForCreateInput
   language: LanguageRelateToOneForCreateInput
+  resume: ResumeRelateToOneForCreateInput
 }
 
 input ResumeLocationRelateToOneForCreateInput {
@@ -2719,9 +2730,15 @@ input ResumeProfileRelateToManyForCreateInput {
   connect: [ResumeProfileWhereUniqueInput!]
 }
 
+input ResumeRelateToOneForCreateInput {
+  create: ResumeCreateInput
+  connect: ResumeWhereUniqueInput
+}
+
 type ResumeHighlight {
   id: ID!
   value: String
+  work: ResumeWork
 }
 
 input ResumeHighlightWhereUniqueInput {
@@ -2734,6 +2751,7 @@ input ResumeHighlightWhereInput {
   NOT: [ResumeHighlightWhereInput!]
   id: IDFilter
   value: StringFilter
+  work: ResumeWorkWhereInput
 }
 
 input ResumeHighlightOrderByInput {
@@ -2743,6 +2761,13 @@ input ResumeHighlightOrderByInput {
 
 input ResumeHighlightUpdateInput {
   value: String
+  work: ResumeWorkRelateToOneForUpdateInput
+}
+
+input ResumeWorkRelateToOneForUpdateInput {
+  create: ResumeWorkCreateInput
+  connect: ResumeWorkWhereUniqueInput
+  disconnect: Boolean
 }
 
 input ResumeHighlightUpdateArgs {
@@ -2752,6 +2777,12 @@ input ResumeHighlightUpdateArgs {
 
 input ResumeHighlightCreateInput {
   value: String
+  work: ResumeWorkRelateToOneForCreateInput
+}
+
+input ResumeWorkRelateToOneForCreateInput {
+  create: ResumeWorkCreateInput
+  connect: ResumeWorkWhereUniqueInput
 }
 
 type ResumeWork {
@@ -2766,6 +2797,7 @@ type ResumeWork {
   highlightsCount(where: ResumeHighlightWhereInput! = {}): Int
   image: Image
   language: Language
+  resume: Resume
 }
 
 input ResumeWorkWhereUniqueInput {
@@ -2786,6 +2818,7 @@ input ResumeWorkWhereInput {
   highlights: ResumeHighlightManyRelationFilter
   image: ImageWhereInput
   language: LanguageWhereInput
+  resume: ResumeWhereInput
 }
 
 input DateTimeFilter {
@@ -2825,6 +2858,7 @@ input ResumeWorkUpdateInput {
   highlights: ResumeHighlightRelateToManyForUpdateInput
   image: ImageRelateToOneForUpdateInput
   language: LanguageRelateToOneForUpdateInput
+  resume: ResumeRelateToOneForUpdateInput
 }
 
 input ResumeHighlightRelateToManyForUpdateInput {
@@ -2849,6 +2883,7 @@ input ResumeWorkCreateInput {
   highlights: ResumeHighlightRelateToManyForCreateInput
   image: ImageRelateToOneForCreateInput
   language: LanguageRelateToOneForCreateInput
+  resume: ResumeRelateToOneForCreateInput
 }
 
 input ResumeHighlightRelateToManyForCreateInput {
@@ -2866,6 +2901,7 @@ type ResumeVolunteer {
   summary: String
   highlights: String
   language: Language
+  resume: Resume
 }
 
 input ResumeVolunteerWhereUniqueInput {
@@ -2885,6 +2921,7 @@ input ResumeVolunteerWhereInput {
   summary: StringFilter
   highlights: StringFilter
   language: LanguageWhereInput
+  resume: ResumeWhereInput
 }
 
 input ResumeVolunteerOrderByInput {
@@ -2907,6 +2944,7 @@ input ResumeVolunteerUpdateInput {
   summary: String
   highlights: String
   language: LanguageRelateToOneForUpdateInput
+  resume: ResumeRelateToOneForUpdateInput
 }
 
 input ResumeVolunteerUpdateArgs {
@@ -2923,6 +2961,7 @@ input ResumeVolunteerCreateInput {
   summary: String
   highlights: String
   language: LanguageRelateToOneForCreateInput
+  resume: ResumeRelateToOneForCreateInput
 }
 
 type ResumeEducation {
@@ -2936,6 +2975,7 @@ type ResumeEducation {
   score: String
   courses: String
   language: Language
+  resume: Resume
 }
 
 input ResumeEducationWhereUniqueInput {
@@ -2956,6 +2996,7 @@ input ResumeEducationWhereInput {
   score: StringFilter
   courses: StringFilter
   language: LanguageWhereInput
+  resume: ResumeWhereInput
 }
 
 input ResumeEducationOrderByInput {
@@ -2980,6 +3021,7 @@ input ResumeEducationUpdateInput {
   score: String
   courses: String
   language: LanguageRelateToOneForUpdateInput
+  resume: ResumeRelateToOneForUpdateInput
 }
 
 input ResumeEducationUpdateArgs {
@@ -2997,6 +3039,7 @@ input ResumeEducationCreateInput {
   score: String
   courses: String
   language: LanguageRelateToOneForCreateInput
+  resume: ResumeRelateToOneForCreateInput
 }
 
 type ResumeAward {
@@ -3007,6 +3050,7 @@ type ResumeAward {
   summary: String
   url: String
   language: Language
+  resume: Resume
 }
 
 input ResumeAwardWhereUniqueInput {
@@ -3024,6 +3068,7 @@ input ResumeAwardWhereInput {
   summary: StringFilter
   url: StringFilter
   language: LanguageWhereInput
+  resume: ResumeWhereInput
 }
 
 input ResumeAwardOrderByInput {
@@ -3042,6 +3087,7 @@ input ResumeAwardUpdateInput {
   summary: String
   url: String
   language: LanguageRelateToOneForUpdateInput
+  resume: ResumeRelateToOneForUpdateInput
 }
 
 input ResumeAwardUpdateArgs {
@@ -3056,6 +3102,7 @@ input ResumeAwardCreateInput {
   summary: String
   url: String
   language: LanguageRelateToOneForCreateInput
+  resume: ResumeRelateToOneForCreateInput
 }
 
 type ResumePublication {
@@ -3066,6 +3113,7 @@ type ResumePublication {
   url: String
   summary: String
   language: Language
+  resume: Resume
 }
 
 input ResumePublicationWhereUniqueInput {
@@ -3083,6 +3131,7 @@ input ResumePublicationWhereInput {
   url: StringFilter
   summary: StringFilter
   language: LanguageWhereInput
+  resume: ResumeWhereInput
 }
 
 input ResumePublicationOrderByInput {
@@ -3101,6 +3150,7 @@ input ResumePublicationUpdateInput {
   url: String
   summary: String
   language: LanguageRelateToOneForUpdateInput
+  resume: ResumeRelateToOneForUpdateInput
 }
 
 input ResumePublicationUpdateArgs {
@@ -3115,6 +3165,7 @@ input ResumePublicationCreateInput {
   url: String
   summary: String
   language: LanguageRelateToOneForCreateInput
+  resume: ResumeRelateToOneForCreateInput
 }
 
 type ResumeSkill {
@@ -3123,6 +3174,7 @@ type ResumeSkill {
   level: String
   keywords: String
   language: Language
+  resume: Resume
 }
 
 input ResumeSkillWhereUniqueInput {
@@ -3138,6 +3190,7 @@ input ResumeSkillWhereInput {
   level: StringNullableFilter
   keywords: StringFilter
   language: LanguageWhereInput
+  resume: ResumeWhereInput
 }
 
 input ResumeSkillOrderByInput {
@@ -3152,6 +3205,7 @@ input ResumeSkillUpdateInput {
   level: String
   keywords: String
   language: LanguageRelateToOneForUpdateInput
+  resume: ResumeRelateToOneForUpdateInput
 }
 
 input ResumeSkillUpdateArgs {
@@ -3164,6 +3218,7 @@ input ResumeSkillCreateInput {
   level: String
   keywords: String
   language: LanguageRelateToOneForCreateInput
+  resume: ResumeRelateToOneForCreateInput
 }
 
 type ResumeLanguage {
@@ -3171,6 +3226,7 @@ type ResumeLanguage {
   language: String
   fluency: String
   uiLanguage: Language
+  resume: Resume
 }
 
 input ResumeLanguageWhereUniqueInput {
@@ -3185,6 +3241,7 @@ input ResumeLanguageWhereInput {
   language: StringFilter
   fluency: StringNullableFilter
   uiLanguage: LanguageWhereInput
+  resume: ResumeWhereInput
 }
 
 input ResumeLanguageOrderByInput {
@@ -3197,6 +3254,7 @@ input ResumeLanguageUpdateInput {
   language: String
   fluency: String
   uiLanguage: LanguageRelateToOneForUpdateInput
+  resume: ResumeRelateToOneForUpdateInput
 }
 
 input ResumeLanguageUpdateArgs {
@@ -3208,6 +3266,7 @@ input ResumeLanguageCreateInput {
   language: String
   fluency: String
   uiLanguage: LanguageRelateToOneForCreateInput
+  resume: ResumeRelateToOneForCreateInput
 }
 
 type ResumeInterest {
@@ -3215,6 +3274,7 @@ type ResumeInterest {
   name: String
   keywords: String
   language: Language
+  resume: Resume
 }
 
 input ResumeInterestWhereUniqueInput {
@@ -3229,6 +3289,7 @@ input ResumeInterestWhereInput {
   name: StringFilter
   keywords: StringFilter
   language: LanguageWhereInput
+  resume: ResumeWhereInput
 }
 
 input ResumeInterestOrderByInput {
@@ -3241,6 +3302,7 @@ input ResumeInterestUpdateInput {
   name: String
   keywords: String
   language: LanguageRelateToOneForUpdateInput
+  resume: ResumeRelateToOneForUpdateInput
 }
 
 input ResumeInterestUpdateArgs {
@@ -3252,6 +3314,7 @@ input ResumeInterestCreateInput {
   name: String
   keywords: String
   language: LanguageRelateToOneForCreateInput
+  resume: ResumeRelateToOneForCreateInput
 }
 
 type ResumeReference {
@@ -3259,6 +3322,7 @@ type ResumeReference {
   name: String
   reference: String
   language: Language
+  resume: Resume
 }
 
 input ResumeReferenceWhereUniqueInput {
@@ -3273,6 +3337,7 @@ input ResumeReferenceWhereInput {
   name: StringFilter
   reference: StringFilter
   language: LanguageWhereInput
+  resume: ResumeWhereInput
 }
 
 input ResumeReferenceOrderByInput {
@@ -3285,6 +3350,7 @@ input ResumeReferenceUpdateInput {
   name: String
   reference: String
   language: LanguageRelateToOneForUpdateInput
+  resume: ResumeRelateToOneForUpdateInput
 }
 
 input ResumeReferenceUpdateArgs {
@@ -3296,6 +3362,7 @@ input ResumeReferenceCreateInput {
   name: String
   reference: String
   language: LanguageRelateToOneForCreateInput
+  resume: ResumeRelateToOneForCreateInput
 }
 
 type ResumeProject {
@@ -3308,6 +3375,7 @@ type ResumeProject {
   url: String
   image: Image
   language: Language
+  resume: Resume
 }
 
 input ResumeProjectWhereUniqueInput {
@@ -3327,6 +3395,7 @@ input ResumeProjectWhereInput {
   url: StringFilter
   image: ImageWhereInput
   language: LanguageWhereInput
+  resume: ResumeWhereInput
 }
 
 input ResumeProjectOrderByInput {
@@ -3348,6 +3417,7 @@ input ResumeProjectUpdateInput {
   url: String
   image: ImageRelateToOneForUpdateInput
   language: LanguageRelateToOneForUpdateInput
+  resume: ResumeRelateToOneForUpdateInput
 }
 
 input ResumeProjectUpdateArgs {
@@ -3364,6 +3434,7 @@ input ResumeProjectCreateInput {
   url: String
   image: ImageRelateToOneForCreateInput
   language: LanguageRelateToOneForCreateInput
+  resume: ResumeRelateToOneForCreateInput
 }
 
 type Resume {
@@ -3399,6 +3470,8 @@ type Resume {
 
 input ResumeWhereUniqueInput {
   id: ID
+  title: String
+  basicInformation: ResumeBasicInformationWhereUniqueInput
 }
 
 input ResumeWhereInput {

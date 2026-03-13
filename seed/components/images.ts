@@ -9,6 +9,8 @@ import {
   CtaImageKeys,
 } from "../../data";
 
+export type { CertificationImageKey };
+
 export type TestimonialImageKey =
   | "testimonialField"
   | "testimonialDrone"
