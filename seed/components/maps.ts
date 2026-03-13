@@ -6,20 +6,20 @@ export type SeededMap = Awaited<ReturnType<typeof seed>>;
 
 const mapPageContent: MapSection[] = [
   {
-    title: "Global Reach, Local Expertise",
-    subheading: "Expert AWS Cloud Consulting, wherever you are",
+    title: "Global AWS Reach, Local Expertise",
+    subheading: "Cloud-native AWS architectures for businesses of all sizes.",
     description:
-      "Our team operates from Germany, collaborating with small, mid-market, and enterprise businesses worldwide to design, build, and optimize AWS-based systems.",
+      "We design and operate secure, cost-optimized AWS environments using multi-account strategies, Infrastructure as Code (IaC), and automation – wherever your team is based.",
     language: {
       value: "en-US",
       label: "English",
     },
   },
   {
-    title: "Globale Reichweite, lokale AWS-Expertise",
-    subheading: "AWS-Cloud-Beratung aus Deutschland für KMU & Start-ups",
+    title: "Globale AWS-Reichweite, lokale Expertise",
+    subheading: "Cloud-native AWS-Architekturen für Unternehmen jeder Größe.",
     description:
-      "Unser Team arbeitet aus Deutschland und unterstützt Unternehmen und Start-ups weltweit dabei, AWS-basierte Systeme zu entwerfen, aufzubauen und zu optimieren.",
+      "Wir entwerfen und betreiben sichere, kostenoptimierte AWS-Umgebungen mit Multi-Account-Strategien, Infrastructure as Code (IaC) und Automatisierung – ganz gleich, wo Ihr Team ansässig ist.",
     language: {
       value: "de-DE",
       label: "German",
