@@ -1,0 +1,72 @@
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build artifacts
+.keystone/admin
+dist
+build
+*.log
+
+# Development files
+.git
+.gitignore
+.gitattributes
+.vscode
+.idea
+.zed
+*.md
+!README.md
+
+# Docker files
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Testing
+coverage
+.nyc_output
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+
+# Database files
+*.db
+*.db-journal
+keystone.db
+
+# Temporary files
+tmp
+temp
+*.tmp
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation
+docs
+*.md
+!LICENSE
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.circleci
+
+# Misc
+todo.md
+scratch.ts
+Makefile
+Procfile
+vercel.json

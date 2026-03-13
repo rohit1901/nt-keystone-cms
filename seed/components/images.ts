@@ -15,7 +15,7 @@ export type TestimonialImageKey =
   | "testimonialLogo";
 
 export type ResumeImageKey =
-  | "resumeAvatar"
+  | "resumePhotoFlori"
   | "resumePhoto";
 
 export type SeededImages = Awaited<ReturnType<typeof seed>>;
@@ -120,16 +120,16 @@ const imageSeedData: Record<ImageKeys, ImageConfig> = {
     height: 50,
     type: "testimonial",
   },
-  resumeAvatar: {
-    src: "https://d1ljophloyhryl.cloudfront.net/assets/resume/avatar.png",
-    alt: "Resume Avatar",
+  resumePhotoFlori: {
+    src: "https://d1ljophloyhryl.cloudfront.net/assets/images/flori.JPG",
+    alt: "Resume Photo Flori",
     width: 150,
     height: 150,
     type: "resume",
   },
   resumePhoto: {
     src: "https://d1ljophloyhryl.cloudfront.net/assets/images/rohit.JPG",
-    alt: "Resume Photo",
+    alt: "Resume Photo Rohit",
     width: 150,
     height: 150,
     type: "resume",

@@ -23,6 +23,9 @@ This repository delivers the content platform behind the Nimbus Tech website, ex
   - [Seeding System Overview](#seeding-system-overview)
   - [Seeding Commands](#seeding-commands)
   - [Clearing Data](#clearing-data)
+- [Deployment](#deployment)
+  - [Northflank Deployment](#northflank-deployment)
+  - [Docker Deployment](#docker-deployment)
 - [Available npm scripts](#available-npm-scripts)
 - [Makefile shortcuts](#makefile-shortcuts)
 - [Project structure](#project-structure)
@@ -435,6 +438,70 @@ Authentication is delegated to Amazon Cognito via NextAuth:
 2. The NextAuth callback (in `admin/pages/api/auth/[...nextauth].ts`) upserts matching `User` records with an `authId`.
 3. Keystone sessions are stateless JWTs, exposing the user ID for access checks and ownership-aware features.
 4. Secrets (`NEXTAUTH_SECRET` / `SESSION_SECRET`) must be strong random strings in all environments.
+
+## Deployment
+
+This application is optimized for production deployment with Docker and includes comprehensive guides for deploying to Northflank.
+
+### Northflank Deployment
+
+Deploy to Northflank using the included Dockerfile and managed PostgreSQL database:
+
+**📖 Complete Guide:** [NORTHFLANK_DEPLOYMENT.md](./NORTHFLANK_DEPLOYMENT.md)
+
+**Quick Setup:**
+1. Create a PostgreSQL database in Northflank
+2. Create a Combined Service with Dockerfile build
+3. Configure environment variables from [.env.northflank.template](./.env.northflank.template)
+4. Deploy - migrations run automatically
+
+**Checklist:** Use [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md) to ensure all steps are completed.
+
+**Key Features:**
+- ✅ Automatic database migrations on startup
+- ✅ Multi-stage Docker build for optimized image size
+- ✅ Built-in health checks
+- ✅ Production-ready configuration
+- ✅ External PostgreSQL database support
+
+### Docker Deployment
+
+For Docker-based deployments (local testing, custom hosting, or other platforms):
+
+**📖 Complete Guide:** [DOCKER_README.md](./DOCKER_README.md)
+
+**Quick Start:**
+```bash
+# Build the image
+docker build -t keystone-cms:latest .
+
+# Run with environment variables
+docker run -d \
+  --name keystone-cms \
+  -p 3000:3000 \
+  --env-file .env.production \
+  keystone-cms:latest
+```
+
+**Verify Before Deploying:**
+```bash
+# Run the deployment verification script
+./scripts/verify-deployment.sh
+```
+
+This script checks:
+- ✅ All required files present
+- ✅ Dockerfile syntax valid
+- ✅ Environment template configured
+- ✅ Dependencies installed
+- ✅ Git status clean
+- ✅ Documentation complete
+
+**Resources:**
+- [Dockerfile](./Dockerfile) - Production-optimized multi-stage build
+- [.dockerignore](./.dockerignore) - Optimized build context
+- [.env.northflank.template](./.env.northflank.template) - Environment variables reference
+- [scripts/verify-deployment.sh](./scripts/verify-deployment.sh) - Pre-deployment verification
 
 ## Troubleshooting
 
