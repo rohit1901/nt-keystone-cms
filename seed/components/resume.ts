@@ -1174,7 +1174,7 @@ Implemented standardized processes for the development team and supported their 
                 summary: `Cloud Engineer und Solutions Architect für Cloud-Umgebungen.`,
                 highlights: `Arbeit an Projekten mit Fokus auf Backend- und Cloud-Entwicklung
 Tech Lead für AWS Cloud-Architektur
-Implementierung standardisierter Prozesse für das Entwicklungsteam und Unterstützung deren Deployment-Workflows`,
+Implementierung standardisierter Prozesse für das Entwicklungsteam und Unterstützung der Deployment-Workflows`,
                 language: "de-DE",
             },
         ],
@@ -1214,13 +1214,13 @@ Implementierung standardisierter Prozesse für das Entwicklungsteam und Unterst�
         skills: [
             {
                 name: "Backend-Entwicklung",
-                level: "Expert",
+                level: "Advanced",
                 keywords: "Node.js, GraphQL, REST APIs, gRPC, WebSockets, Message Queues, RabbitMQ, Apache Kafka, Authentication (JWT, OAuth2, SAML), API Design, Rate Limiting, Caching Strategies, open-api",
                 language: "de-DE",
             },
             {
                 name: "Cloud & DevOps",
-                level: "Advanced",
+                level: "Expert",
                 keywords: "AWS (EC2, ECS, EKS, Lambda, S3, CloudFront, RDS, DynamoDB, SQS, SNS, API Gateway, CloudWatch), Azure, Google Cloud Platform, Docker, Kubernetes, Helm, ArgoCD, CI/CD Pipelines, GitHub Actions, GitLab CI, Jenkins, CircleCI, Terraform, Infrastructure as Code, Ansible, Nginx, Load Balancing, Auto Scaling, Monitoring (Prometheus, Grafana, Datadog, New Relic), Logging (ELK Stack, CloudWatch Logs), CDN Configuration",
                 language: "de-DE",
             },
@@ -1246,7 +1246,7 @@ Implementierung standardisierter Prozesse für das Entwicklungsteam und Unterst�
         projects: [
             {
                 name: "Entwicklung einer skalierbaren Cloud-Datenplattform für Finanzdaten",
-                startDate: parseDate("2021-10"),
+                startDate: parseDate("2020-10"),
                 endDate: undefined,
                 description: "Architektur und Entwicklung einer skalierbaren Multi-Account Cloud-Datenplattform für Finanzdaten.",
                 highlights: "Aufbau, Bereitstellung und Betrieb einer Multi-Microservice-Anwendung in Kubernetes (AWS EKS) und später in AWS ECS auf Fargate\n" +
@@ -1280,7 +1280,7 @@ Implementierung standardisierter Prozesse für das Entwicklungsteam und Unterst�
         interests: [
             {
                 name: "Unternehmensführung und Personalmanagement",
-                keywords: "Weiterentwicklung von Geschäftsmodellen, new work, agile Frameworks in at scale, Entwicklung von HR und KI",
+                keywords: "Weiterentwicklung von Geschäftsmodellen, new work, agile Frameworks at scale, moderne HR und KI",
                 language: "de-DE",
             },
             {
@@ -1290,7 +1290,7 @@ Implementierung standardisierter Prozesse für das Entwicklungsteam und Unterst�
             },
             {
                 name: "Fitness & Wellness",
-                keywords: "Laufen, Yoga, gesunde Ernährung",
+                keywords: "Kraftsport, Yoga, gesunde Ernährung",
                 language: "de-DE",
             }
         ],
