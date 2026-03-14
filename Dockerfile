@@ -7,10 +7,7 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install all dependencies
-RUN npm ci
-
-# Copy source files needed for build
+# Copy source files BEFORE npm ci (keystone postinstall needs them)
 COPY keystone.ts ./
 COPY schema.ts ./
 COPY auth.ts ./
@@ -21,6 +18,9 @@ COPY postcss.config.cjs ./
 COPY tailwind.config.ts ./
 COPY admin ./admin
 COPY migrations ./migrations
+
+# Install all dependencies (postinstall script needs source files)
+RUN npm ci
 
 # Build the Keystone application
 RUN npm run build
@@ -37,15 +37,7 @@ RUN addgroup --system --gid 1001 nodejs && \
 # Copy package files first
 COPY --chown=keystone:nodejs package*.json ./
 
-# Install all dependencies (Keystone needs dev dependencies at runtime for TS compilation)
-RUN npm ci && \
-    npm cache clean --force && \
-    chown -R keystone:nodejs /app/node_modules
-
-# Copy the entire built .keystone directory from builder
-COPY --from=builder --chown=keystone:nodejs /app/.keystone ./.keystone
-
-# Copy all source files (required by Keystone at runtime)
+# Copy all source files BEFORE npm ci (keystone postinstall needs them)
 COPY --chown=keystone:nodejs keystone.ts ./
 COPY --chown=keystone:nodejs schema.ts ./
 COPY --chown=keystone:nodejs auth.ts ./
@@ -60,6 +52,16 @@ COPY --chown=keystone:nodejs tailwind.config.ts ./
 COPY --chown=keystone:nodejs admin ./admin
 COPY --chown=keystone:nodejs migrations ./migrations
 COPY --chown=keystone:nodejs legal ./legal
+
+# Install all dependencies as root (Keystone needs dev dependencies at runtime for TS compilation)
+RUN npm ci && \
+    npm cache clean --force
+
+# Copy the entire built .keystone directory from builder AFTER npm ci
+COPY --from=builder --chown=keystone:nodejs /app/.keystone ./.keystone
+
+# Fix permissions
+RUN chown -R keystone:nodejs /app
 
 # Switch to non-root user
 USER keystone
