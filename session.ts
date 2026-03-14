@@ -7,22 +7,31 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// Check if we're in build/postinstall phase - don't require env vars during build
+const isBuildTime = process.env.npm_lifecycle_event === 'postinstall' ||
+  process.env.npm_lifecycle_event === 'build';
+
 export const requireEnv = (name: string): string => {
-  console.info(`Environment is: ${process.env.NODE_ENV}`);
   const value = process.env[name];
   if (!value) {
-    console.error(`Missing environment variable: ${name}`);
+    if (isBuildTime) {
+      // During build, return placeholder instead of throwing
+      return "build-time-placeholder";
+    }
+    throw new Error(`Missing environment variable: ${name}`);
   }
-  return value ?? "";
+  return value;
 };
 
 const sessionSecret =
   process.env.NEXTAUTH_SECRET ??
   process.env.SESSION_SECRET ??
   "-- DEV COOKIE SECRET; CHANGE ME --";
-const cognitoClientId = requireEnv("COGNITO_CLIENT_ID");
-const cognitoClientSecret = requireEnv("COGNITO_CLIENT_SECRET");
-const cognitoIssuer = requireEnv("COGNITO_ISSUER");
+
+// Use placeholder values during build, real values at runtime
+const cognitoClientId = isBuildTime ? "build-placeholder" : requireEnv("COGNITO_CLIENT_ID");
+const cognitoClientSecret = isBuildTime ? "build-placeholder" : requireEnv("COGNITO_CLIENT_SECRET");
+const cognitoIssuer = isBuildTime ? "build-placeholder" : requireEnv("COGNITO_ISSUER");
 
 type KeystoneAuthSession = DefaultSession & {
   keystone: {
