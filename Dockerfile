@@ -59,7 +59,6 @@ COPY --chown=keystone:nodejs tailwind.config.ts ./
 # Copy directories
 COPY --chown=keystone:nodejs admin ./admin
 COPY --chown=keystone:nodejs migrations ./migrations
-COPY --chown=keystone:nodejs scripts ./scripts
 COPY --chown=keystone:nodejs legal ./legal
 
 # Switch to non-root user
