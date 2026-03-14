@@ -1,6 +1,8 @@
 # Multi-stage Dockerfile for Northflank deployment
 FROM node:18-slim AS builder
 
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 ARG DATABASE_URL
@@ -16,6 +18,8 @@ RUN npm run build
 
 
 FROM node:18-slim AS runner
+
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -37,10 +41,10 @@ COPY --chown=keystone:nodejs migrations ./migrations
 COPY --chown=keystone:nodejs legal ./legal
 
 RUN npm ci --ignore-scripts --omit=dev && \
+    npx prisma generate && \
     npm cache clean --force
 
 COPY --from=builder --chown=keystone:nodejs /app/.keystone ./.keystone
-COPY --from=builder --chown=keystone:nodejs /app/node_modules/.prisma ./node_modules/.prisma
 
 USER keystone
 
