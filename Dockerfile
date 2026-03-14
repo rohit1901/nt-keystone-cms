@@ -1,5 +1,5 @@
 # Multi-stage Dockerfile for Northflank deployment
-FROM node:18-alpine AS builder
+FROM node:18-slim AS builder
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN npm ci --ignore-scripts
 RUN npm run build
 
 
-FROM node:18-alpine AS runner
+FROM node:18-slim AS runner
 
 WORKDIR /app
 
