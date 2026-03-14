@@ -15,7 +15,6 @@ coverage
 .env.copy
 
 # Local development
-.keystone/admin/.next
 .next
 
 # Git
@@ -58,3 +57,13 @@ Procfile
 
 # Data directory (if contains local dev data)
 data
+node_modules
+.keystone
+.git
+.gitignore
+.env
+.env.*
+*.log
+npm-debug.log*
+README.md
+.DS_Store

@@ -12,23 +12,11 @@ ARG SESSION_SECRET
 ENV DATABASE_URL=${DATABASE_URL}
 ENV SESSION_SECRET=${SESSION_SECRET}
 
-# Copy package files
-COPY package*.json ./
+# Copy all source files (.dockerignore handles exclusions)
+COPY . .
 
-# Copy source files BEFORE npm ci (keystone postinstall needs them)
-COPY keystone.ts ./
-COPY schema.ts ./
-COPY auth.ts ./
-COPY session.ts ./
-COPY schema.prisma ./
-COPY tsconfig.json ./
-COPY postcss.config.cjs ./
-COPY tailwind.config.ts ./
-COPY admin ./admin
-COPY migrations ./migrations
-
-# Install all dependencies (postinstall script needs source files)
-RUN npm ci
+# Install all dependencies, skip postinstall (build handles schema generation)
+RUN npm ci --ignore-scripts
 
 # Build the Keystone application (DATABASE_URL is available here)
 RUN npm run build
@@ -42,27 +30,11 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 keystone
 
-# Copy package files first
-COPY --chown=keystone:nodejs package*.json ./
+# Copy all source files (.dockerignore handles exclusions)
+COPY --chown=keystone:nodejs . .
 
-# Copy all source files BEFORE npm ci (keystone postinstall needs them)
-COPY --chown=keystone:nodejs keystone.ts ./
-COPY --chown=keystone:nodejs schema.ts ./
-COPY --chown=keystone:nodejs auth.ts ./
-COPY --chown=keystone:nodejs session.ts ./
-COPY --chown=keystone:nodejs schema.prisma ./
-COPY --chown=keystone:nodejs schema.graphql ./
-COPY --chown=keystone:nodejs tsconfig.json ./
-COPY --chown=keystone:nodejs postcss.config.cjs ./
-COPY --chown=keystone:nodejs tailwind.config.ts ./
-
-# Copy directories
-COPY --chown=keystone:nodejs admin ./admin
-COPY --chown=keystone:nodejs migrations ./migrations
-COPY --chown=keystone:nodejs legal ./legal
-
-# Install all dependencies as root (Keystone needs dev dependencies at runtime for TS compilation)
-RUN npm ci && \
+# Install all dependencies, skip postinstall (schema already built)
+RUN npm ci --ignore-scripts && \
     npm cache clean --force
 
 # Copy the entire built .keystone directory from builder AFTER npm ci
@@ -77,8 +49,7 @@ USER keystone
 # Expose the application port
 EXPOSE 3000
 
-# Static build-time values only — no secrets baked in
-# DATABASE_URL, SESSION_SECRET, etc. are injected at runtime by Northflank
+# Static build-time values only — secrets injected at runtime by Northflank
 ENV NODE_ENV=production
 ENV PORT=3000
 
