@@ -7,7 +7,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const requireEnv = (name: string): string => {
+export const requireEnv = (name: string): string => {
+  console.info(`Environment is: ${process.env.NODE_ENV}`);
   const value = process.env[name];
   if (!value) {
     console.error(`Missing environment variable: ${name}`);

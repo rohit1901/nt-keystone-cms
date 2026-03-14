@@ -13,18 +13,10 @@ import { lists } from "./schema";
 // authentication is configured separately here too, but you might move this elsewhere
 // when you write your list-level access control functions, as they typically rely on session data
 
-import { type Session, nextAuthSessionStrategy } from "./session";
+import { type Session, nextAuthSessionStrategy, requireEnv } from "./session";
 import type { TypeInfo } from ".keystone/types";
 
 dotenv.config();
-
-const requireEnv = (name: string): string => {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Missing environment variable: ${name}`);
-  }
-  return value;
-};
 
 export const keystoneConfig = config<TypeInfo<Session>>({
   db: {
