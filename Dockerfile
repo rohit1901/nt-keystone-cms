@@ -4,6 +4,14 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Declare build-time arguments (scoped to this stage only)
+ARG DATABASE_URL
+ARG SESSION_SECRET
+
+# Expose them as ENV so RUN steps (Prisma/Keystone build) can read them
+ENV DATABASE_URL=${DATABASE_URL}
+ENV SESSION_SECRET=${SESSION_SECRET}
+
 # Copy package files
 COPY package*.json ./
 
@@ -22,7 +30,7 @@ COPY migrations ./migrations
 # Install all dependencies (postinstall script needs source files)
 RUN npm ci
 
-# Build the Keystone application
+# Build the Keystone application (DATABASE_URL is available here)
 RUN npm run build
 
 # Stage 2: Production Runner
@@ -69,7 +77,8 @@ USER keystone
 # Expose the application port
 EXPOSE 3000
 
-# Set environment variables
+# Static build-time values only — no secrets baked in
+# DATABASE_URL, SESSION_SECRET, etc. are injected at runtime by Northflank
 ENV NODE_ENV=production
 ENV PORT=3000
 
