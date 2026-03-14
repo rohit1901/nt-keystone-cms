@@ -5,17 +5,19 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# Testing
-coverage
-*.log
+# Build artifacts
+.keystone
+.next
 
 # Environment files
 .env
+.env.*
 .env*.local
 .env.copy
 
-# Local development
-.next
+# Logs
+*.log
+coverage
 
 # Git
 .git
@@ -25,16 +27,11 @@ coverage
 # IDEs and editors
 .vscode
 .idea
+.zed
 *.swp
 *.swo
 *~
 .DS_Store
-.zed
-
-# Documentation
-README.md
-docs
-todo.md
 
 # Docker files
 Dockerfile*
@@ -49,21 +46,14 @@ docker-compose*.yml
 *.db-journal
 keystone.db
 
+# Documentation
+README.md
+docs
+todo.md
+
 # Misc
 scratch.ts
 Makefile
 vercel.json
 Procfile
-
-# Data directory (if contains local dev data)
 data
-node_modules
-.keystone
-.git
-.gitignore
-.env
-.env.*
-*.log
-npm-debug.log*
-README.md
-.DS_Store
