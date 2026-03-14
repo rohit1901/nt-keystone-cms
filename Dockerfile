@@ -1,17 +1,5 @@
 # Multi-stage Dockerfile for Northflank deployment
-# Stage 1: Dependencies
-FROM node:18-alpine AS deps
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies
-RUN npm ci --only=production && \
-    npm cache clean --force
-
-# Stage 2: Builder
+# Stage 1: Builder
 FROM node:18-alpine AS builder
 
 WORKDIR /app
@@ -19,7 +7,7 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install all dependencies (including dev dependencies for build)
+# Install all dependencies (Keystone needs TypeScript and build tools at runtime)
 RUN npm ci
 
 # Copy application source
@@ -28,7 +16,7 @@ COPY . .
 # Build the Keystone application
 RUN npm run build
 
-# Stage 3: Production
+# Stage 2: Production
 FROM node:18-alpine AS runner
 
 WORKDIR /app
@@ -37,27 +25,32 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 keystone
 
-# Copy production dependencies from deps stage
-COPY --from=deps --chown=keystone:nodejs /app/node_modules ./node_modules
+# Copy package files
+COPY --chown=keystone:nodejs package*.json ./
+
+# Install ALL dependencies (including dev) because Keystone needs TypeScript compiler at runtime
+RUN npm ci && \
+    npm cache clean --force
 
 # Copy built application from builder stage
 COPY --from=builder --chown=keystone:nodejs /app/.keystone ./.keystone
-COPY --from=builder --chown=keystone:nodejs /app/node_modules/.prisma ./node_modules/.prisma
 
-# Copy necessary application files
-COPY --chown=keystone:nodejs package*.json ./
+# Copy all source files (Keystone needs these at runtime)
 COPY --chown=keystone:nodejs keystone.ts ./
 COPY --chown=keystone:nodejs schema.ts ./
 COPY --chown=keystone:nodejs auth.ts ./
 COPY --chown=keystone:nodejs session.ts ./
 COPY --chown=keystone:nodejs schema.prisma ./
+COPY --chown=keystone:nodejs schema.graphql ./
 COPY --chown=keystone:nodejs tsconfig.json ./
 COPY --chown=keystone:nodejs postcss.config.cjs ./
 COPY --chown=keystone:nodejs tailwind.config.ts ./
 
-# Copy additional directories if they exist
+# Copy additional directories
 COPY --chown=keystone:nodejs admin ./admin
 COPY --chown=keystone:nodejs migrations ./migrations
+COPY --chown=keystone:nodejs scripts ./scripts
+COPY --chown=keystone:nodejs legal ./legal
 
 # Switch to non-root user
 USER keystone
@@ -65,7 +58,7 @@ USER keystone
 # Expose the application port
 EXPOSE 3000
 
-# Set NODE_ENV to production
+# Set environment variables
 ENV NODE_ENV=production
 ENV PORT=3000
 
