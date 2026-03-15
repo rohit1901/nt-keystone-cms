@@ -37,7 +37,7 @@ export const RESUME_DATA = [
       language: "en-US", // Reference to Language.value
       createdAt: new Date().toISOString(),
     },
-    certifications: ["certAwsSap", "certAwsDeveloper", "certIsaQbFoundation", "certIsaQbAdvanced", "certApolloAssociate", "certApolloProfessional", "certGitKraken"],
+    certifications: ["certAwsSap", "certIsaQbFoundation", "certIsaQbAdvanced", "certApolloAssociate", "certApolloProfessional", "certGitKraken"],
     // Basic Information
     basicInformation: {
       name: "Rohit Khanduri",
@@ -419,7 +419,7 @@ export const RESUME_DATA = [
       language: "de-DE",
       createdAt: new Date().toISOString(),
     },
-    certifications: ["certAwsSap", "certAwsDeveloper", "certIsaQbFoundation", "certIsaQbAdvanced", "certApolloAssociate", "certApolloProfessional", "certGitKraken"],
+    certifications: ["certAwsSap", "certIsaQbFoundation", "certIsaQbAdvanced", "certApolloAssociate", "certApolloProfessional", "certGitKraken"],
 
     // Basisinformationen
     basicInformation: {

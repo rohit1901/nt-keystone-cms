@@ -34,6 +34,7 @@ const certificationSectionsData: CertificationSection[] = [
           certIsaQbAdvanced: Image.data.certIsaQbAdvanced,
         },
         key: "certIsaQbAdvanced",
+        link: "https://d1ljophloyhryl.cloudfront.net/assets/certifications/2402-CPSAAL-003-EN.pdf",
         language: {
           label: "English",
           value: "en-US",
@@ -90,7 +91,7 @@ const certificationSectionsData: CertificationSection[] = [
           certGitKraken: Image.data.certGitKraken,
         },
         key: "certGitKraken",
-        link: "https://cdn.filestackcontent.com/dq8NILlGROaJpp4bxYlC?policy=eyJjYWxsIjpbInJlYWQiXSwiZXhwaXJ5IjoxNzUwNjg3MzIwLCJwYXRoIjoiLyJ9&signature=3180d99a6f24a049042e2341f449f4e35a12688f261859fa6dfd88cac212d230",
+        link: "https://d1ljophloyhryl.cloudfront.net/assets/certifications/foundations.git.kraken.2022.10.11.pdf",
         language: {
           label: "English",
           value: "en-US",
@@ -117,6 +118,7 @@ const certificationSectionsData: CertificationSection[] = [
           certAwsSap: Image.data.certAwsSap,
         },
         key: "certAwsSap",
+        link: "https://www.credly.com/badges/6d371de7-680e-4230-9b42-fc593fc4a87e/public_url",
         language: {
           label: "English",
           value: "en-US",
@@ -146,6 +148,7 @@ const certificationSectionsData: CertificationSection[] = [
           certIsaQbAdvanced: Image.data.certIsaQbAdvanced,
         },
         key: "certIsaQbAdvanced",
+        link: "https://d1ljophloyhryl.cloudfront.net/assets/certifications/2402-CPSAAL-003-EN.pdf",
         language: {
           label: "German",
           value: "de-DE",
@@ -202,7 +205,7 @@ const certificationSectionsData: CertificationSection[] = [
           certGitKraken: Image.data.certGitKraken,
         },
         key: "certGitKraken",
-        link: "https://cdn.filestackcontent.com/dq8NILlGROaJpp4bxYlC?policy=eyJjYWxsIjpbInJlYWQiXSwiZXhwaXJ5IjoxNzUwNjg3MzIwLCJwYXRoIjoiLyJ9&signature=3180d99a6f24a049042e2341f449f4e35a12688f261859fa6dfd88cac212d230",
+        link: "https://d1ljophloyhryl.cloudfront.net/assets/certifications/foundations.git.kraken.2022.10.11.pdf",
         language: {
           label: "German",
           value: "de-DE",
@@ -230,6 +233,7 @@ const certificationSectionsData: CertificationSection[] = [
           certAwsSap: Image.data.certAwsSap,
         },
         key: "certAwsSap",
+        link: "https://www.credly.com/badges/6d371de7-680e-4230-9b42-fc593fc4a87e/public_url",
         language: {
           label: "German",
           value: "de-DE",
