@@ -14,7 +14,7 @@ export const features: Feature[] = [
       "Strategic AWS guidance for small, mid-market, and enterprise businesses – from first cloud-native projects to mature, multi-account environments.",
     longDescription:
       "We help you define a clear AWS strategy, choose the right services, and design a cloud-native architecture that fits your business goals. Together, we create a roadmap based on the AWS Well-Architected Framework and a solid multi-account strategy, so your move to AWS becomes a secure cloud transformation that balances speed, risk, and budget.",
-    visualization: "ArchitectureFeatureVisualization",
+    visualization: "OrbitFeatureVisualization",
     language: {
       label: "English",
       value: "en-US",
@@ -40,7 +40,7 @@ export const features: Feature[] = [
       "Reliable CI/CD pipelines, Infrastructure as Code (IaC), and monitoring tailored to your team and stack, built for secure multi-account AWS environments.",
     longDescription:
       "We set up or improve your deployment pipelines, Infrastructure as Code (Terraform/CDK), and observability so your team can ship changes safely and frequently. You get an automated, cloud-native AWS foundation aligned with the Well-Architected Framework, making secure cloud transformation and ongoing cost optimization part of your daily operations instead of one-off projects.",
-    visualization: "CloudFeatureVisualization",
+    visualization: "ArchitectureFeatureVisualization",
     language: {
       label: "English",
       value: "en-US",
