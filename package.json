@@ -5,9 +5,10 @@
   "scripts": {
     "build": "keystone build",
     "start": "keystone start",
-    "postinstall": "keystone postinstall",
+    "postinstall": "keystone postinstall && node node_modules/@prisma/engines/scripts/postinstall.js 2>/dev/null || true",
+    "prisma:engines": "node node_modules/@prisma/engines/scripts/postinstall.js",
     "dev": "keystone dev",
-    "dev:preinstall": "cp .env.copy .env && npm install",
+    "dev:preinstall": "cp .env.copy .env && pnpm install",
     "build:dry": "NODE_ENV=production keystone build",
     "generate": "keystone prisma migrate dev",
     "db:push": "keystone prisma db push",
@@ -18,8 +19,8 @@
     "db:clear:all": "ts-node --transpile-only ./seed/clear.ts -- --all",
     "db:clear:help": "ts-node --transpile-only ./seed/clear.ts -- --help",
     "db:reset": "keystone prisma db push --force-reset",
-    "db:reset:seed": "npm run db:reset && npm run db:seed",
-    "db:fresh": "npm run db:reset && npm run db:seed:all",
+    "db:reset:seed": "pnpm db:reset && pnpm db:seed",
+    "db:fresh": "pnpm db:reset && pnpm db:seed:all",
     "db:help": "ts-node --transpile-only ./seed/help.ts",
     "schema:verify:dev": "NODE_ENV=production keystone build && keystone prisma migrate dev && keystone start",
     "schema:verify:prod": "keystone build && keystone prisma migrate deploy && keystone start"

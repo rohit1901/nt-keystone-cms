@@ -123,7 +123,7 @@ You can run PostgreSQL through Docker (recommended) or connect to an external in
 Generate and apply Prisma migrations so the database matches the Keystone schema.
 
 ```bash
-pnpm run generate
+pnpm generate
 ```
 
 ### 6. Seed baseline content
@@ -131,7 +131,7 @@ pnpm run generate
 Populate the database with multilingual demo content, navigation, CTAs, and component data.
 
 ```bash
-pnpm run db:seed
+pnpm db:seed
 ```
 
 The seeding process imports data from the modules in `seed/components/` and produces a ready-to-browse Admin UI.
@@ -141,7 +141,7 @@ The seeding process imports data from the modules in `seed/components/` and prod
 Launch the Admin UI and GraphQL API.
 
 ```bash
-pnpm run dev
+pnpm dev
 ```
 
 Once the server reports that Keystone is ready, open [http://localhost:3000/admin](http://localhost:3000/admin) to sign in via Cognito and begin managing content.
@@ -176,25 +176,25 @@ The Keystone CMS seed system provides powerful tools to populate and manage your
 
 ```bash
 # Get help
-pnpm run db:help              # Quick overview
-pnpm run db:seed:help         # Full seed documentation
-pnpm run db:clear:help        # Full clear documentation
+pnpm db:help              # Quick overview
+pnpm db:seed:help         # Full seed documentation
+pnpm db:clear:help        # Full clear documentation
 
 # Seed everything (recommended for initial setup)
-pnpm run db:seed
-pnpm run db:seed:all
+pnpm db:seed
+pnpm db:seed:all
 
 # Seed specific components
-pnpm run db:seed:resume
-pnpm run db:seed heroes benefits testimonials
+pnpm db:seed:resume
+pnpm db:seed heroes benefits testimonials
 
 # Clear data
-pnpm run db:clear:all
-pnpm run db:clear:resume
-pnpm run db:clear -- --footer
+pnpm db:clear:all
+pnpm db:clear:resume
+pnpm db:clear -- --footer
 
 # Fresh database
-pnpm run db:fresh             # Reset + seed all
+pnpm db:fresh             # Reset + seed all
 ```
 
 ### Key Features
@@ -211,20 +211,20 @@ When passing flags to pnpm scripts, you must use `--` separator:
 
 ```bash
 # ✅ WORKS - Using shortcuts (recommended)
-pnpm run db:seed:help
-pnpm run db:clear:resume
+pnpm db:seed:help
+pnpm db:clear:resume
 
 # ✅ WORKS - Using -- before flags
-pnpm run db:seed -- --help
-pnpm run db:clear -- --resume
+pnpm db:seed -- --help
+pnpm db:clear -- --resume
 
 # ✅ WORKS - Component names (no -- needed)
-pnpm run db:seed resume
-pnpm run db:clear resume analytics
+pnpm db:seed resume
+pnpm db:clear resume analytics
 
 # ❌ DOESN'T WORK - Missing --
-pnpm run db:seed --help       # ❌
-pnpm run db:clear --resume    # ❌
+pnpm db:seed --help       # ❌
+pnpm db:clear --resume    # ❌
 ```
 
 **Why?** pnpm (like npm) interprets `--` as a separator between pnpm options and script arguments. Everything after `--` is passed to your script. Component names (without dashes) don't need `--`.
@@ -257,35 +257,35 @@ Components are seeded in dependency order:
 
 **Fresh Database Setup:**
 ```bash
-pnpm run db:fresh             # Complete reset + seed all
+pnpm db:fresh             # Complete reset + seed all
 ```
 
 **Update Single Component:**
 ```bash
-pnpm run db:clear:resume      # Clear resume
-pnpm run db:seed:resume       # Re-seed resume
+pnpm db:clear:resume      # Clear resume
+pnpm db:seed:resume       # Re-seed resume
 ```
 
 **Development Workflow:**
 ```bash
 # 1. Make changes to seed data in ./seed/components/resume.ts
 # 2. Clear old data
-pnpm run db:clear:resume
+pnpm db:clear:resume
 
 # 3. Re-seed with new data
-pnpm run db:seed:resume
+pnpm db:seed:resume
 
 # 4. Verify in Keystone Admin UI
-pnpm run dev
+pnpm dev
 ```
 
 **Testing Different Content:**
 ```bash
 # Clear specific sections
-pnpm run db:clear:content
+pnpm db:clear:content
 
 # Re-seed with updated data
-pnpm run db:seed:content
+pnpm db:seed:content
 ```
 
 ### Component-Specific Flags
@@ -293,48 +293,48 @@ pnpm run db:seed:content
 The clear command supports component-specific flags:
 
 ```bash
-pnpm run db:clear -- --footer       # Footer sections
-pnpm run db:clear -- --navigation   # Navigation menus
-pnpm run db:clear -- --resume       # Resume data
-pnpm run db:clear -- --analytics    # Analytics data
-pnpm run db:clear -- --about        # About sections
-pnpm run db:clear -- --images       # All images
-pnpm run db:clear -- --pages privacy-policy terms  # Specific pages
+pnpm db:clear -- --footer       # Footer sections
+pnpm db:clear -- --navigation   # Navigation menus
+pnpm db:clear -- --resume       # Resume data
+pnpm db:clear -- --analytics    # Analytics data
+pnpm db:clear -- --about        # About sections
+pnpm db:clear -- --images       # All images
+pnpm db:clear -- --pages privacy-policy terms  # Specific pages
 ```
 
 ### Troubleshooting
 
 **Component Not Found:**
 ```bash
-pnpm run db:seed:help  # See all available components
+pnpm db:seed:help  # See all available components
 ```
 
 **Prisma Client Errors:**
 ```bash
 rm -rf node_modules/.prisma
-pnpm run generate
+pnpm generate
 # Restart your IDE
 ```
 
 **Clear Not Working:**
 ```bash
 # Use shortcut (recommended)
-pnpm run db:clear:resume
+pnpm db:clear:resume
 
 # Or use -- with flags
-pnpm run db:clear -- --resume
+pnpm db:clear -- --resume
 
 # Component names don't need --
-pnpm run db:clear resume
+pnpm db:clear resume
 ```
 
 **Help Not Showing:**
 ```bash
 # Use shortcut (recommended)
-pnpm run db:seed:help
+pnpm db:seed:help
 
 # Or use -- with flag
-pnpm run db:seed -- --help
+pnpm db:seed -- --help
 ```
 
 ### Documentation
@@ -352,36 +352,36 @@ The most common scripts are summarised below:
 | Script | Purpose |
 | --- | --- |
 | **Development** | |
-| `pnpm run dev` | Start Keystone in development mode with the Admin UI and GraphQL API. |
-| `pnpm run build` | Produce a production build of the Keystone application. |
-| `pnpm run start` | Launch the built Keystone server (after `pnpm run build`). |
+| `pnpm dev` | Start Keystone in development mode with the Admin UI and GraphQL API. |
+| `pnpm build` | Produce a production build of the Keystone application. |
+| `pnpm start` | Launch the built Keystone server (after `pnpm build`). |
 | **Database Management** | |
-| `pnpm run db:push` | Push schema changes to database without migrations. |
-| `pnpm run db:seed` | Seed all components (idempotent, safe to re-run). |
-| `pnpm run db:seed:all` | Explicitly seed all components with `--all` flag. |
-| `pnpm run db:clear` | Clear seeded data (use `-- --[component]` or `-- --all`). |
-| `pnpm run db:reset` | Force-reset the database schema via Prisma. |
-| `pnpm run db:reset:seed` | Reset the schema and seed all components. |
-| `pnpm run db:fresh` | Complete fresh database (alias for reset:seed). |
+| `pnpm db:push` | Push schema changes to database without migrations. |
+| `pnpm db:seed` | Seed all components (idempotent, safe to re-run). |
+| `pnpm db:seed:all` | Explicitly seed all components with `--all` flag. |
+| `pnpm db:clear` | Clear seeded data (use `-- --[component]` or `-- --all`). |
+| `pnpm db:reset` | Force-reset the database schema via Prisma. |
+| `pnpm db:reset:seed` | Reset the schema and seed all components. |
+| `pnpm db:fresh` | Complete fresh database (alias for reset:seed). |
 | **Schema Management** | |
-| `pnpm run generate` | Run Prisma migrations and regenerate the Prisma client. |
-| `pnpm run schema:verify:dev` | Verify schema, migrate, and start (development). |
-| `pnpm run schema:verify:prod` | Verify schema, migrate, and start (production). |
+| `pnpm generate` | Run Prisma migrations and regenerate the Prisma client. |
+| `pnpm schema:verify:dev` | Verify schema, migrate, and start (development). |
+| `pnpm schema:verify:prod` | Verify schema, migrate, and start (production). |
 
 **Seeding Examples:**
 ```bash
 # Seed everything
-pnpm run db:seed
+pnpm db:seed
 
 # Seed specific components
-pnpm run db:seed about analytics navigation
+pnpm db:seed about analytics navigation
 
 # Clear and re-seed
-pnpm run db:clear -- --analytics
-pnpm run db:seed analytics
+pnpm db:clear -- --analytics
+pnpm db:seed analytics
 
 # Complete fresh start
-pnpm run db:fresh
+pnpm db:fresh
 ```
 
 For detailed seeding documentation, see [seed/README.md](seed/README.md) and [seed/SCRIPTS.md](seed/SCRIPTS.md).
@@ -443,12 +443,13 @@ Authentication is delegated to Amazon Cognito via NextAuth:
 
 ## Troubleshooting
 
-- **Prisma client errors:** delete `node_modules/.prisma`, run `pnpm run generate`, and restart the dev server.
+- **Prisma client errors:** delete `node_modules/.prisma`, run `pnpm generate`, and restart the dev server.
+- **Prisma schema engine binary not found:** if you see "Could not find schema-engine binary" errors, pnpm may have blocked build scripts. Run `pnpm prisma:engines` to manually download the Prisma engine binaries, or use `pnpm rebuild @prisma/client @prisma/engines prisma`.
 - **Cannot sign in:** confirm Cognito credentials and callback URLs match your local host configuration.
 - **Database connection refused:** ensure PostgreSQL is running (`docker compose ps`) and that `DATABASE_URL` matches your credentials.
-- **Seed conflicts:** the seeding system is idempotent and handles duplicates automatically. If issues persist, use `pnpm run db:fresh` to rebuild from scratch.
-- **Component not found:** ensure you're using valid component names. Run `pnpm run db:seed` without arguments to see available components.
-- **Dependency errors:** the system auto-seeds dependencies. If you see "not found" errors, try `pnpm run db:seed --all` to ensure all prerequisites exist.
+- **Seed conflicts:** the seeding system is idempotent and handles duplicates automatically. If issues persist, use `pnpm db:fresh` to rebuild from scratch.
+- **Component not found:** ensure you're using valid component names. Run `pnpm db:seed` without arguments to see available components.
+- **Dependency errors:** the system auto-seeds dependencies. If you see "not found" errors, try `pnpm db:seed:all` to ensure all prerequisites exist.
 
 ## Contributing
 
