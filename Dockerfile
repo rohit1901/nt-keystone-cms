@@ -47,7 +47,7 @@ COPY --chown=keystone:nodejs admin ./admin
 COPY --chown=keystone:nodejs migrations ./migrations
 COPY --chown=keystone:nodejs legal ./legal
 
-RUN pnpm install --frozen-lockfile --ignore-scripts --prod && \
+RUN pnpm install --frozen-lockfile --ignore-scripts && \
     pnpm exec prisma generate
 
 COPY --from=builder --chown=keystone:nodejs /app/.keystone ./.keystone
