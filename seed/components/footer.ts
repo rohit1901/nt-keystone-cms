@@ -133,7 +133,7 @@ const footerData: CompositePageContentWithExtras<{
             },
             {
               label: "Blog",
-              href: "https://rohitkhanduri.substack.com",
+              href: "https://nimbustechgmbh.substack.com",
               external: true,
               icon: "RiArticleFill",
               language: {
@@ -254,7 +254,7 @@ const footerData: CompositePageContentWithExtras<{
             },
             {
               label: "Blog",
-              href: "https://rohitkhanduri.substack.com",
+              href: "https://nimbustechgmbh.substack.com",
               external: true,
               icon: "RiArticleFill",
               language: {

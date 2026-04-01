@@ -48,7 +48,7 @@ const navigationLinksByLanguage: Partial<Record<
     },
     {
       label: "Blog",
-      href: "https://rohitkhanduri.substack.com",
+      href: "https://nimbustechgmbh.substack.com",
       external: true,
       language: {
         label: "English",
@@ -87,7 +87,7 @@ const navigationLinksByLanguage: Partial<Record<
     },
     {
       label: "Blog",
-      href: "https://rohitkhanduri.substack.com",
+      href: "https://nimbustechgmbh.substack.com",
       external: true,
       language: {
         label: "German",

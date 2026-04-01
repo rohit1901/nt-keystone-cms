@@ -221,7 +221,7 @@ export const navigationPageContent: PageContent = {
 export const navLinks: NavigationSectionItem[] = [
   { label: "Services", href: "#features" },
   { label: "About Us", href: "#about-us" },
-  { label: "Blog", href: "https://rohitkhanduri.substack.com", external: true }, // TODO: Link to Substack for now
+  { label: "Blog", href: "https://nimbustechgmbh.substack.com/", external: true }, // TODO: Link to Substack for now
   {
     label: "Contact",
     href: "mailto:r.khanduri@nimbus-tech.de,f.zeidler@nimbus-tech.de",
@@ -236,7 +236,7 @@ export const heroPageContent: CompositePageContent<"hero", HeroType> = {
     subHeading: "Expert Software & Cloud Solutions",
     banner: {
       label: "News",
-      href: "https://rohitkhanduri.substack.com", // TODO: Substack for now, change later
+      href: "https://www.cal.eu/r.khanduri", // TODO: Substack for now, change later
       external: true,
       additional: {
         icon: "RiArrowRightUpLine",
@@ -274,7 +274,7 @@ export const footerPageContent: CompositePageContentWithExtras<{
         { label: "About Nimbus Tech", href: "#about-us" },
         {
           label: "Blog",
-          href: "https://rohitkhanduri.substack.com",
+          href: "https://nimbustechgmbh.substack.com/",
           external: true,
         }, //TODO:  Link to Substack for now
         // Careers removed (add later when hiring)
@@ -282,7 +282,7 @@ export const footerPageContent: CompositePageContentWithExtras<{
         { label: "Our Values", href: "#our-values" },
         {
           label: "News & Updates",
-          href: "https://rohitkhanduri.substack.com",
+          href: "https://nimbustechgmbh.substack.com/",
           external: true,
         }, //TODO:  Link to Substack for now
       ],

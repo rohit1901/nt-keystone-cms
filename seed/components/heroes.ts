@@ -14,14 +14,14 @@ export type SeededHeroes = Awaited<ReturnType<typeof seed>>;
 const fallbackCTA: CTA[] = [
   {
     label: "News",
-    href: "https://rohitkhanduri.substack.com",
+    href: "https://nimbustechgmbh.substack.com/p/nimbus-tech-gmbh-is-launching-soon",
     external: true,
     type: "hero",
     language: { label: "English", value: "en-US" },
   },
   {
     label: "Aktuelles",
-    href: "https://rohitkhanduri.substack.com",
+    href: "https://nimbustechgmbh.substack.com/p/nimbus-tech-gmbh-is-launching-soon",
     external: true,
     type: "hero",
     language: { label: "German", value: "de-DE" },

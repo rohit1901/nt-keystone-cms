@@ -66,7 +66,7 @@ const ctas: CTA[] = [
   },
   {
     label: "News",
-    href: "https://rohitkhanduri.substack.com", // TODO: Substack for now, change later
+    href: "https://nimbustechgmbh.substack.com/p/nimbus-tech-gmbh-is-launching-soon", // TODO: Substack for now, change later
     external: true,
     type: "hero",
     language: {
@@ -126,7 +126,7 @@ const ctas: CTA[] = [
   },
   {
     label: "Aktuelles",
-    href: "https://rohitkhanduri.substack.com", // TODO: Substack for now, change later
+    href: "https://nimbustechgmbh.substack.com/p/nimbus-tech-gmbh-is-launching-soon", // TODO: Substack for now, change later
     external: true,
     type: "hero",
     language: {
