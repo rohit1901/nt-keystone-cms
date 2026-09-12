@@ -1,30 +1,37 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { type NavigationProps } from "@keystone-6/core/types";
 import {
-  getHrefFromList,
-  NavContainer,
+  NavigationContainer,
   NavItem,
-  NavList,
+  ListNavItems,
 } from "@keystone-6/core/admin-ui/components";
-import { SessionStatus } from "./SessionStatus";
 
-export function AdminNavigation({ lists }: NavigationProps) {
+import { ThemeToggle } from "./ThemeToggle";
+import "../styles/globals.css";
+
+function Greeting({ children }: { children: ReactNode }) {
   return (
-    <NavContainer>
-      <NavList>
-        <NavItem href="/">Dashboard</NavItem>
-        <NavItem href="/profile-page">Profile</NavItem>
-        {lists.map((list) => (
-          <NavItem key={list.key} href={getHrefFromList(list)}>
-            {list.label}
-          </NavItem>
-        ))}
-      </NavList>
-      <div className="mt-auto px-3 pb-3 pt-4">
-        <SessionStatus />
-      </div>
-    </NavContainer>
+    <span className="truncate text-sm font-semibold text-foreground">
+      {children}
+    </span>
+  );
+}
+
+export function AdminNavigation({ authenticatedItem, lists }: NavigationProps) {
+  const displayName =
+    authenticatedItem?.state === "authenticated"
+      ? authenticatedItem.label
+      : null;
+  const renderableLists = Array.isArray(lists) ? lists : [];
+
+  return (
+    <NavigationContainer authenticatedItem={authenticatedItem}>
+      <NavItem href="/">Dashboard</NavItem>
+      <NavItem href="/profile-page">Profile</NavItem>
+      <ListNavItems lists={renderableLists} />
+    </NavigationContainer>
   );
 }
 
