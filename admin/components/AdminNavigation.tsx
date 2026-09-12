@@ -1,37 +1,29 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { type NavigationProps } from "@keystone-6/core/types";
 import {
-  NavigationContainer,
+  getHrefFromList,
+  NavContainer,
+  NavFooter,
   NavItem,
-  ListNavItems,
+  NavList,
 } from "@keystone-6/core/admin-ui/components";
 
-import { ThemeToggle } from "./ThemeToggle";
-import "../styles/globals.css";
-
-function Greeting({ children }: { children: ReactNode }) {
-  return (
-    <span className="truncate text-sm font-semibold text-foreground">
-      {children}
-    </span>
-  );
-}
-
-export function AdminNavigation({ authenticatedItem, lists }: NavigationProps) {
-  const displayName =
-    authenticatedItem?.state === "authenticated"
-      ? authenticatedItem.label
-      : null;
+export function AdminNavigation({ lists }: NavigationProps) {
   const renderableLists = Array.isArray(lists) ? lists : [];
 
   return (
-    <NavigationContainer authenticatedItem={authenticatedItem}>
-      <NavItem href="/">Dashboard</NavItem>
-      <NavItem href="/profile-page">Profile</NavItem>
-      <ListNavItems lists={renderableLists} />
-    </NavigationContainer>
+    <NavContainer>
+      <NavList>
+        <NavItem href="/">Dashboard</NavItem>
+        <NavItem href="/profile-page">Profile</NavItem>
+        {renderableLists.map((list) => (
+          <NavItem key={list.key} href={getHrefFromList(list)}>
+            {list.label}
+          </NavItem>
+        ))}
+      </NavList>
+    </NavContainer>
   );
 }
 
