@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "../prisma";
 import { AnalyticsData } from "../../data";
 
 export type SeededAnalyticsStat = Awaited<ReturnType<typeof seedStat>>;
@@ -152,12 +152,6 @@ const resolveTableHeadingValues = (headings: string[]) => {
   });
 };
 
-const getLanguageId = async (prisma: PrismaClient, locale: string) => {
-  const language = await prisma.language.findFirstOrThrow({
-    where: { value: locale },
-  });
-  return language.id;
-};
 
 const seedStat = async (
   prisma: PrismaClient,
@@ -169,9 +163,10 @@ const seedStat = async (
   // Check if stat already exists for this language
   const existingStat = await prisma.analyticsStat.findFirst({
     where: {
-      languageId: languageId,
+      languageId,
       totalDeployments: statsData.totalDeployments,
     },
+    select: { id: true },
   });
 
   if (existingStat) {
@@ -208,9 +203,10 @@ const seedSummaryItems = async (
   // Check for existing summary items
   const existingItems = await prisma.analyticsSummaryItem.findMany({
     where: {
-      languageId: languageId,
+      languageId,
       name: { in: summaryData.map((item) => item.name) },
     },
+    select: { id: true, name: true },
   });
 
   const existingNames = new Set(existingItems.map((item) => item.name));
@@ -220,26 +216,22 @@ const seedSummaryItems = async (
     (item) => !existingNames.has(item.name),
   );
 
-  const newItems = [];
+  let seededItems = existingItems;
   if (itemsToCreate.length > 0) {
-    for (const item of itemsToCreate) {
-      const summaryItem = await prisma.analyticsSummaryItem.create({
-        data: {
-          name: item.name,
-          deployments: item.deployments,
-          uptime: item.uptime,
-          clientSatisfaction: item.clientSatisfaction,
-          efficiency: item.efficiency,
-          revenueGrowth: item.revenueGrowth,
-          bgColor: item.bgColor,
-          changeType: item.changeType,
-          language: {
-            connect: { id: languageId },
-          },
-        },
-      });
-      newItems.push(summaryItem);
-    }
+    const newItems = await prisma.analyticsSummaryItem.createManyAndReturn({
+      data: itemsToCreate.map((item) => ({
+        name: item.name,
+        deployments: item.deployments,
+        uptime: item.uptime,
+        clientSatisfaction: item.clientSatisfaction,
+        efficiency: item.efficiency,
+        revenueGrowth: item.revenueGrowth,
+        bgColor: item.bgColor,
+        changeType: item.changeType,
+        languageId,
+      })),
+    });
+    seededItems = [...existingItems, ...newItems];
     console.log(`✓ Created ${newItems.length} new analytics summary items`);
   } else {
     console.log(
@@ -247,79 +239,72 @@ const seedSummaryItems = async (
     );
   }
 
-  // Return all items (existing + newly created)
-  const allItems = await prisma.analyticsSummaryItem.findMany({
-    where: {
-      languageId: languageId,
-      name: { in: summaryData.map((item) => item.name) },
-    },
-  });
+  console.log(`✓ Total analytics summary items: ${seededItems.length}`);
 
-  console.log(`✓ Total analytics summary items: ${allItems.length}`);
-
-  return allItems;
+  return seededItems;
 };
 
 const seed = async (prisma: PrismaClient) => {
   console.log("Seeding analytics section...");
 
-  const englishId = await getLanguageId(prisma, "en-US");
-  const germanId = await getLanguageId(prisma, "de-DE");
-
-  const seededAnalytics = [];
-
-  for (const data of analyticsSeedData) {
-    const locale = data.language?.value;
-    const languageId = locale === "de-DE" ? germanId : englishId;
-
-    console.log(`Processing Analytics data for ${locale}`);
-
-    // Check if analytic section already exists for this language
-    const existingAnalytic = await prisma.analytic.findFirst({
-      where: {
-        languageId: languageId,
-      },
-      include: {
-        stats: true,
-        summary: true,
-      },
-    });
-
-    if (existingAnalytic) {
-      console.log(
-        `✓ Analytics section for ${locale} already exists (id: ${existingAnalytic.id}), skipping`,
-      );
-      seededAnalytics.push(existingAnalytic);
-      continue;
-    }
-
-    const stat = await seedStat(prisma, data.stats, languageId);
-    const summaryItems = await seedSummaryItems(
-      prisma,
-      data.summary,
-      languageId,
-    );
-
-    const analytic = await prisma.analytic.create({
-      data: {
-        heading: data.heading,
-        subheading: data.subheading,
-        stats: {
-          connect: { id: stat.id },
-        },
-        tableHeadings: resolveTableHeadingValues(data.tableHeadings),
-        summary: {
-          connect: summaryItems.map((item) => ({ id: item.id })),
-        },
-        language: {
-          connect: { id: languageId },
-        },
-      },
-    });
-
-    console.log(`✓ Created analytics section with id ${analytic.id}`);
-    seededAnalytics.push(analytic);
+  const locales = analyticsSeedData.map(({ language }) => language.value);
+  const languages = await prisma.language.findMany({
+    where: { value: { in: locales } },
+    select: { id: true, value: true },
+  });
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
+  const englishId = languageIdByValue.get("en-US");
+  const germanId = languageIdByValue.get("de-DE");
+  if (!englishId || !germanId) {
+    throw new Error("English and German languages must be seeded first");
   }
+  const existingAnalytics = await prisma.analytic.findMany({
+    where: { languageId: { in: [englishId, germanId] } },
+    select: { id: true, languageId: true },
+  });
+  const existingAnalyticByLanguageId = new Map(
+    existingAnalytics.map((analytic) => [analytic.languageId, analytic]),
+  );
+
+  const seededAnalytics = await Promise.all(
+    analyticsSeedData.map(async (data) => {
+      const locale = data.language.value;
+      const languageId = languageIdByValue.get(locale)!;
+
+      console.log(`Processing Analytics data for ${locale}`);
+
+      const existingAnalytic = existingAnalyticByLanguageId.get(languageId);
+      if (existingAnalytic) {
+        console.log(
+          `✓ Analytics section for ${locale} already exists (id: ${existingAnalytic.id}), skipping`,
+        );
+        return existingAnalytic;
+      }
+
+      const [stat, summaryItems] = await Promise.all([
+        seedStat(prisma, data.stats, languageId),
+        seedSummaryItems(prisma, data.summary, languageId),
+      ]);
+
+      const analytic = await prisma.analytic.create({
+        data: {
+          heading: data.heading,
+          subheading: data.subheading,
+          stats: { connect: { id: stat.id } },
+          tableHeadings: resolveTableHeadingValues(data.tableHeadings),
+          summary: {
+            connect: summaryItems.map((item) => ({ id: item.id })),
+          },
+          language: { connect: { id: languageId } },
+        },
+      });
+
+      console.log(`✓ Created analytics section with id ${analytic.id}`);
+      return analytic;
+    }),
+  );
 
   console.log(`✓ Total analytics sections: ${seededAnalytics.length}`);
 

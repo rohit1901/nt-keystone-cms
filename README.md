@@ -1,460 +1,131 @@
 # nt-keystone-cms
 
-> Bilingual Keystone 6 CMS powering the Nimbus Tech marketing experience.
+Keystone 6 CMS for Nimbus Tech. It provides a PostgreSQL-backed GraphQL API and a Cognito-authenticated Admin UI for managing bilingual website content.
 
-This repository delivers the content platform behind the Nimbus Tech website, exposing a customizable admin UI, GraphQL API, and Prisma-managed PostgreSQL database for marketing, case study, and company content.
+## Runtime
 
-## Table of Contents
+- Node.js 22.12+ (the production `Dockerfile` uses `node:22-slim`)
+- pnpm 10.32.1, pinned through `packageManager`
+- Keystone 8, Next.js 16, React 19, and Prisma 7
+- PostgreSQL
+- NextAuth with Amazon Cognito
 
-- [Overview](#overview)
-- [Core Capabilities](#core-capabilities)
-- [Architecture at a Glance](#architecture-at-a-glance)
-- [Prerequisites](#prerequisites)
-- [Quick Start](#quick-start)
-  - [1. Clone the repository](#1-clone-the-repository)
-  - [2. Install dependencies](#2-install-dependencies)
-  - [3. Configure environment variables](#3-configure-environment-variables)
-  - [4. Provision a PostgreSQL database](#4-provision-a-postgresql-database)
-  - [5. Prepare the database schema](#5-prepare-the-database-schema)
-  - [6. Seed baseline content](#6-seed-baseline-content)
-  - [7. Run the Keystone development server](#7-run-the-keystone-development-server)
-- [Working with Docker Compose](#working-with-docker-compose)
-- [Database & Seeding](#database--seeding)
-  - [Seeding System Overview](#seeding-system-overview)
-  - [Seeding Commands](#seeding-commands)
-  - [Clearing Data](#clearing-data)
-- [Available pnpm scripts](#available-pnpm-scripts)
-- [Makefile shortcuts](#makefile-shortcuts)
-- [Project structure](#project-structure)
-- [Content model highlights](#content-model-highlights)
-- [Authentication](#authentication)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
+## Access model
 
-## Overview
+- GraphQL reads are public.
+- GraphQL create, update, and delete operations require an authenticated user whose stored `userGroup` is `cms-admin`.
+- The Admin UI requires an authenticated `cms-admin` session.
+- `CMS_AUTH_GROUP` must therefore be `cms-admin`, and the Cognito user must belong to that group.
 
-Nimbus Tech is a Germany-based software consultancy specialising in cloud-native platforms, enterprise architecture, and product delivery. The website showcases multilingual marketing content, solution offerings, certifications, testimonials, and lead-generation CTAs.
+## Local setup
 
-This project packages a bespoke Keystone 6 instance that editors use to manage all site content in a structured, type-safe manner. The CMS feeds both the public-facing Next.js application and any future integrations through Keystone's Admin UI and GraphQL API.
-
-## Core Capabilities
-
-- Modern Admin UI branded with Nimbus Tech navigation and theming
-- Rich content modelling covering hero, benefit, feature, testimonial, certification, FAQ, analytics, approach, map, CTA, navigation, and footer sections for the marketing site
-- Multi-language coverage (English and German) across key lists
-- Opinionated seed scripts bundling Nimbus Tech storylines, imagery, navigation, and lead CTAs for rapid onboarding
-- NextAuth session strategy wired to Amazon Cognito for secure access
-- Dockerised PostgreSQL for repeatable local development environments
-
-## Architecture at a Glance
-
-- **Keystone 6** handles schema definitions, Admin UI, and GraphQL API exposure.
-- **Prisma ORM** maps Keystone lists to PostgreSQL with generated client code.
-- **Next.js Admin Customisations** (in `admin/`) brand the interface and expose profile routes.
-- **Amazon Cognito + NextAuth** provide SSO-style authentication with JWT-backed sessions.
-- **Seed modules** (in `seed/components`) curate Nimbus Tech-specific marketing content.
-- **Docker Compose** provisions PostgreSQL locally, while scripts support alternative setups.
-
-## Prerequisites
-
-Ensure the following tooling is available before you begin:
-
-- **Node.js 18.17+** (aligns with Keystone 6 and Next.js 13 requirements)
-- **pnpm 8.0+** for fast, efficient package management
-- **Docker Desktop** 4.x or newer (only required when using the bundled database container)
-- **PostgreSQL 14+** if you prefer running your own instance instead of Docker
-- **AWS Cognito user pool** with an App Client for authentication flows
-- **Git** for cloning the repository
-
-If you don't have pnpm installed, you can install it globally:
-
-```bash
-npm install -g pnpm
-```
-
-## Quick Start
-
-Follow the numbered steps below to stand up the CMS locally. Each step builds on the previous one.
-
-### 1. Clone the repository
-
-Use Git to fetch the code base and navigate into it.
-
-```bash
-git clone https://github.com/rohit1901/nt-keystone-cms.git
-cd nt-keystone-cms
-```
-
-### 2. Install dependencies
-
-Install the project's JavaScript packages (this will also run Keystone's postinstall hook).
+### 1. Install dependencies
 
 ```bash
 pnpm install
 ```
 
-### 3. Configure environment variables
+### 2. Configure environment variables
 
-Copy the sample configuration and populate the required secrets.
+Create your local environment configuration without committing credentials. The application requires:
+
+| Variable | Purpose |
+| --- | --- |
+| `DATABASE_URL` | PostgreSQL connection URL for the application database. |
+| `SHADOW_DATABASE_URL` | Connection URL for a separate Prisma shadow database used by the `prisma migrate dev` step in `pnpm generate`. Never point this at the application database. |
+| `NEXTAUTH_SECRET` | Strong random secret used to sign NextAuth sessions. |
+| `COGNITO_CLIENT_ID` | Cognito app client ID. |
+| `COGNITO_CLIENT_SECRET` | Cognito app client secret. |
+| `COGNITO_ISSUER` | Cognito issuer URL for the user pool. |
+| `CMS_AUTH_GROUP` | Cognito group allowed to write content; set this to `cms-admin`. |
+
+For hosted environments, also set `NEXTAUTH_URL` to the public CMS base URL. `CORS_ORIGIN` is optional and accepts a comma-separated list of allowed browser origins.
+
+The local PostgreSQL Compose service additionally reads `POSTGRES_DB`, `POSTGRES_USER`, and `POSTGRES_PASSWORD`.
+
+### 3. Start PostgreSQL
 
 ```bash
-cp .env.copy .env
-# Open .env and fill in the values described below
+docker compose -f docker-compose.postgres.yml up -d --build
 ```
 
-Key variables to review:
+PostgreSQL is published on host port **5433** (container port `5432`), so local database URLs must use `localhost:5433`. Provision a separate shadow database on the same server, or use another PostgreSQL instance, for `SHADOW_DATABASE_URL`.
 
-- `DATABASE_URL`: Prisma connection string for PostgreSQL (e.g. `postgresql://user:password@localhost:5432/nimbus-tech-db`).
-- `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`: credentials consumed by `docker-compose.yml`.
-- `NEXTAUTH_SECRET` (or `SESSION_SECRET`): cryptographic secret used by NextAuth stateless sessions.
-- `COGNITO_CLIENT_ID`, `COGNITO_CLIENT_SECRET`, `COGNITO_ISSUER`: values from your Cognito user pool.
-- Any additional integration keys or overrides specific to your deployment targets.
+To stop the database:
 
-### 4. Provision a PostgreSQL database
+```bash
+docker compose -f docker-compose.postgres.yml down
+```
 
-You can run PostgreSQL through Docker (recommended) or connect to an external instance.
-
-- **Docker:** follow the steps in [Working with Docker Compose](#working-with-docker-compose).
-- **External DB:** ensure the server is reachable, create the target database, and update `DATABASE_URL`.
-
-### 5. Prepare the database schema
-
-Generate and apply Prisma migrations so the database matches the Keystone schema.
+### 4. Apply a development migration and generate the Prisma client
 
 ```bash
 pnpm generate
 ```
 
-### 6. Seed baseline content
+Despite its name, this script first runs `keystone build --no-ui` to regenerate Keystone's GraphQL/Prisma schemas and client, then runs `prisma migrate dev` and an explicit `prisma generate`. This prevents migrations from using a stale generated `schema.prisma`.
 
-Populate the database with multilingual demo content, navigation, CTAs, and component data.
+### 5. Seed content (optional)
 
 ```bash
 pnpm db:seed
 ```
 
-The seeding process imports data from the modules in `seed/components/` and produces a ready-to-browse Admin UI.
+See [the seed CLI guide](seed/README.md) for supported components and arguments.
 
-### 7. Run the Keystone development server
-
-Launch the Admin UI and GraphQL API.
+### 6. Start Keystone
 
 ```bash
 pnpm dev
 ```
 
-Once the server reports that Keystone is ready, open [http://localhost:3000/admin](http://localhost:3000/admin) to sign in via Cognito and begin managing content.
+- Admin UI: <http://localhost:3000/admin>
+- GraphQL API: <http://localhost:3000/api/graphql>
 
-## Working with Docker Compose
+## Database safety
 
-The repository includes a minimal Docker Compose stack and Makefile to spin up PostgreSQL quickly.
+> **Destructive commands:** `pnpm db:clear`, `pnpm db:clear:all`, `pnpm db:reset`, `pnpm db:reset:seed`, and `pnpm db:fresh` delete content or reset the schema. Verify the target `DATABASE_URL` and take any required backup before running them. Do not run them against production unless data loss is intentional.
 
-1. Confirm `POSTGRES_DB`, `POSTGRES_USER`, and `POSTGRES_PASSWORD` in `.env` match the compose file expectations.
-2. Start the database container in detached mode:
+Use `pnpm generate` only for development migration work and Prisma client generation. In production, run `pnpm exec prisma migrate deploy` in a dedicated deployment migration job before releasing the web service. Do not make schema migration part of application startup. See [the Northflank/Docker deployment guide](docs/deployment.md).
 
-```bash
-docker compose up -d db
-```
+## Package scripts
 
-3. Wait for the container health check to pass. You can monitor status with either of the following:
+These are the scripts currently defined in `package.json`:
 
-```bash
-docker compose ps
-make status
-```
-
-4. When you are finished developing, tear down the container with `docker compose down` or `make down`.
-
-For log streaming, interactive psql access, and cleanup commands see the [Makefile shortcuts](#makefile-shortcuts) section.
-
-## Database & Seeding - Complete CLI Guide
-
-The Keystone CMS seed system provides powerful tools to populate and manage your database with comprehensive help flags and documentation.
-
-### Quick Reference
-
-```bash
-# Get help
-pnpm db:help              # Quick overview
-pnpm db:seed:help         # Full seed documentation
-pnpm db:clear:help        # Full clear documentation
-
-# Seed everything (recommended for initial setup)
-pnpm db:seed
-pnpm db:seed:all
-
-# Seed specific components
-pnpm db:seed:resume
-pnpm db:seed heroes benefits testimonials
-
-# Clear data
-pnpm db:clear:all
-pnpm db:clear:resume
-pnpm db:clear -- --footer
-
-# Fresh database
-pnpm db:fresh             # Reset + seed all
-```
-
-### Key Features
-
-✅ **Dependency-aware** - Components are seeded in the correct order automatically  
-✅ **Selective seeding** - Seed only the components you need  
-✅ **Safe clearing** - Remove specific data without affecting other components  
-✅ **Help flags** - Built-in documentation with `--help`  
-✅ **Idempotent** - Safe to run multiple times without creating duplicates
-
-### Understanding pnpm `--` Requirement
-
-When passing flags to pnpm scripts, you must use `--` separator:
-
-```bash
-# ✅ WORKS - Using shortcuts (recommended)
-pnpm db:seed:help
-pnpm db:clear:resume
-
-# ✅ WORKS - Using -- before flags
-pnpm db:seed -- --help
-pnpm db:clear -- --resume
-
-# ✅ WORKS - Component names (no -- needed)
-pnpm db:seed resume
-pnpm db:clear resume analytics
-
-# ❌ DOESN'T WORK - Missing --
-pnpm db:seed --help       # ❌
-pnpm db:clear --resume    # ❌
-```
-
-**Why?** pnpm (like npm) interprets `--` as a separator between pnpm options and script arguments. Everything after `--` is passed to your script. Component names (without dashes) don't need `--`.
-
-### Available Components
-
-Components are seeded in dependency order:
-
-1. `slugs` - URL routes and slugs
-2. `languages` - Language configurations
-3. `images` - Image assets
-4. `ctas` - Call-to-action buttons and sections
-5. `certifications` - Certification data
-6. `heroes` - Hero sections
-7. `benefits` - Benefit sections
-8. `approaches` - Approach workflows
-9. `about` - About sections
-10. `analytics` - Analytics dashboards
-11. `navigation` - Navigation menus
-12. `footer` - Footer sections
-13. `faqs` - FAQ sections
-14. `features` - Feature sections
-15. `testimonials` - Testimonial sections
-16. `maps` - Map sections
-17. `pageContents` - Page content (requires all above)
-18. `resume` - Resume/CV data
-19. `legalPages` - Legal pages
-
-### Common Workflows
-
-**Fresh Database Setup:**
-```bash
-pnpm db:fresh             # Complete reset + seed all
-```
-
-**Update Single Component:**
-```bash
-pnpm db:clear:resume      # Clear resume
-pnpm db:seed:resume       # Re-seed resume
-```
-
-**Development Workflow:**
-```bash
-# 1. Make changes to seed data in ./seed/components/resume.ts
-# 2. Clear old data
-pnpm db:clear:resume
-
-# 3. Re-seed with new data
-pnpm db:seed:resume
-
-# 4. Verify in Keystone Admin UI
-pnpm dev
-```
-
-**Testing Different Content:**
-```bash
-# Clear specific sections
-pnpm db:clear:content
-
-# Re-seed with updated data
-pnpm db:seed:content
-```
-
-### Component-Specific Flags
-
-The clear command supports component-specific flags:
-
-```bash
-pnpm db:clear -- --footer       # Footer sections
-pnpm db:clear -- --navigation   # Navigation menus
-pnpm db:clear -- --resume       # Resume data
-pnpm db:clear -- --analytics    # Analytics data
-pnpm db:clear -- --about        # About sections
-pnpm db:clear -- --images       # All images
-pnpm db:clear -- --pages privacy-policy terms  # Specific pages
-```
-
-### Troubleshooting
-
-**Component Not Found:**
-```bash
-pnpm db:seed:help  # See all available components
-```
-
-**Prisma Client Errors:**
-```bash
-rm -rf node_modules/.prisma
-pnpm generate
-# Restart your IDE
-```
-
-**Clear Not Working:**
-```bash
-# Use shortcut (recommended)
-pnpm db:clear:resume
-
-# Or use -- with flags
-pnpm db:clear -- --resume
-
-# Component names don't need --
-pnpm db:clear resume
-```
-
-**Help Not Showing:**
-```bash
-# Use shortcut (recommended)
-pnpm db:seed:help
-
-# Or use -- with flag
-pnpm db:seed -- --help
-```
-
-### Documentation
-
-📚 **Comprehensive guides available:**
-- [seed/README.md](seed/README.md) - Complete CLI guide with all options
-- [seed/NPM_USAGE_GUIDE.md](seed/NPM_USAGE_GUIDE.md) - Understanding `--` requirement for pnpm/npm
-- [seed/QUICK_REFERENCE.md](seed/QUICK_REFERENCE.md) - Quick command reference
-- [seed/SCRIPTS.md](seed/SCRIPTS.md) - Detailed script documentation
-
-## Available pnpm scripts
-
-The most common scripts are summarised below:
-
-| Script | Purpose |
+| Script | What it runs |
 | --- | --- |
-| **Development** | |
-| `pnpm dev` | Start Keystone in development mode with the Admin UI and GraphQL API. |
-| `pnpm build` | Produce a production build of the Keystone application. |
-| `pnpm start` | Launch the built Keystone server (after `pnpm build`). |
-| **Database Management** | |
-| `pnpm db:push` | Push schema changes to database without migrations. |
-| `pnpm db:seed` | Seed all components (idempotent, safe to re-run). |
-| `pnpm db:seed:all` | Explicitly seed all components with `--all` flag. |
-| `pnpm db:clear` | Clear seeded data (use `-- --[component]` or `-- --all`). |
-| `pnpm db:reset` | Force-reset the database schema via Prisma. |
-| `pnpm db:reset:seed` | Reset the schema and seed all components. |
-| `pnpm db:fresh` | Complete fresh database (alias for reset:seed). |
-| **Schema Management** | |
-| `pnpm generate` | Run Prisma migrations and regenerate the Prisma client. |
-| `pnpm schema:verify:dev` | Verify schema, migrate, and start (development). |
-| `pnpm schema:verify:prod` | Verify schema, migrate, and start (production). |
+| `pnpm dev` | Start Keystone in development mode. |
+| `pnpm build` | Build Keystone for production. |
+| `pnpm start` | Start the previously built Keystone application. |
 
-**Seeding Examples:**
-```bash
-# Seed everything
-pnpm db:seed
+| `pnpm postinstall` | Generate Keystone artifacts; normally invoked by pnpm. |
+| `pnpm generate` | Regenerate Keystone schemas/client, run `prisma migrate dev`, then `prisma generate`. |
+| `pnpm db:push` | Regenerate Keystone schemas/client, push with `prisma db push`, then `prisma generate`. |
+| `pnpm db:seed` | Run the seed CLI. |
+| `pnpm db:seed:all` | Run the seed CLI with `--all`. |
+| `pnpm db:seed:help` | Show seed CLI help. |
+| `pnpm db:clear` | Run the clear CLI. |
+| `pnpm db:clear:all` | Run the clear CLI with `--all`. |
+| `pnpm db:clear:help` | Show clear CLI help. |
+| `pnpm db:reset` | Regenerate Keystone schemas/client, force-reset with `prisma db push`, then run `prisma generate`. |
+| `pnpm db:reset:seed` | Force-reset the database, generate the Prisma client, then seed it. |
+| `pnpm db:fresh` | Force-reset the database, generate the Prisma client, then seed all components. |
+| `pnpm db:help` | Show database CLI help. |
+| `pnpm schema:verify:dev` | Production build, development migration, then start. |
+| `pnpm schema:verify:prod` | Build, deploy migrations, then start in one process. Prefer the dedicated migration-job workflow for deployments. |
 
-# Seed specific components
-pnpm db:seed about analytics navigation
+## Repository map
 
-# Clear and re-seed
-pnpm db:clear -- --analytics
-pnpm db:seed analytics
+- `admin/` — Admin UI customizations and NextAuth routes
+- `data/` — active seed support types/icon mapping plus legacy reference data; see [`data/README.md`](data/README.md)
+- `migrations/` — committed Prisma migrations
+- `seed/` — seed and clear CLIs
+- `keystone.ts` — Keystone server, database, CORS, and Admin UI configuration
+- `schema.ts` — lists and access control
+- `session.ts` — Cognito/NextAuth session integration
+- `Dockerfile` — production image used by Northflank
+- `docker-compose.postgres.yml` — local PostgreSQL service
 
-# Complete fresh start
-pnpm db:fresh
-```
+## Deployment
 
-For detailed seeding documentation, see [seed/README.md](seed/README.md) and [seed/SCRIPTS.md](seed/SCRIPTS.md).
-
-## Makefile shortcuts
-
-The Makefile wraps common Docker Compose commands for convenience:
-
-| Target | Description |
-| --- | --- |
-| `make up` | Build and start the PostgreSQL container. |
-| `make down` | Stop and remove the PostgreSQL container. |
-| `make logs` | Tail database logs. |
-| `make psql` | Open a psql shell using project credentials. |
-| `make status` | Show container status and health. |
-| `make clean` | Remove containers and prune dangling Docker resources. |
-
-## Project structure
-
-A simplified layout of notable directories:
-
-```
-admin/                  # Custom Admin UI components, pages, and theming
-data/                   # Static data used by seeds (do not edit directly)
-seed/                   # Modular seeders, orchestrator, and documentation
-  ├── components/       # Individual component seed modules
-  ├── index.ts          # Main seed orchestrator with caching
-  ├── clear.ts          # Data cleanup utilities
-  ├── README.md         # Comprehensive seeding guide
-  └── SCRIPTS.md        # Quick reference for all commands
-schema.ts               # Keystone list definitions and relationships
-keystone.ts             # Keystone configuration entry point
-session.ts              # NextAuth session strategy helper
-docker-compose.yml      # Local PostgreSQL container definition
-Makefile                # Helper targets for Docker workflows
-package.json            # Scripts and dependency manifest
-README.md               # Project documentation (this file)
-```
-
-## Content model highlights
-
-Keystone lists in `schema.ts` model the marketing site and support future growth:
-
-- **User**: stores authenticated CMS users synced from Cognito.
-- **Language**: enumerates supported locales (currently English and German).
-- **Hero, Benefit, Feature, Faq, Certification**: each manages a core marketing section.
-- **NavigationLink, FooterSection, Footer**: drive primary and footer navigation menus.
-- **TestimonialSection, AnalyticsStat, ApproachStep**: capture social proof and process visuals.
-- **PageContent & Section**: compose page-level layouts by referencing other lists.
-
-## Authentication
-
-Authentication is delegated to Amazon Cognito via NextAuth:
-
-1. Users authenticate with Cognito, which returns an ID token to NextAuth.
-2. The NextAuth callback (in `admin/pages/api/auth/[...nextauth].ts`) upserts matching `User` records with an `authId`.
-3. Keystone sessions are stateless JWTs, exposing the user ID for access checks and ownership-aware features.
-4. Secrets (`NEXTAUTH_SECRET` / `SESSION_SECRET`) must be strong random strings in all environments.
-
-## Troubleshooting
-
-- **Prisma client errors:** delete `node_modules/.prisma`, run `pnpm generate`, and restart the dev server.
-- **Prisma schema engine binary not found:** if you see "Could not find schema-engine binary" errors, pnpm may have blocked build scripts. Run `pnpm prisma:engines` to manually download the Prisma engine binaries, or use `pnpm rebuild @prisma/client @prisma/engines prisma`.
-- **Cannot sign in:** confirm Cognito credentials and callback URLs match your local host configuration.
-- **Database connection refused:** ensure PostgreSQL is running (`docker compose ps`) and that `DATABASE_URL` matches your credentials.
-- **Seed conflicts:** the seeding system is idempotent and handles duplicates automatically. If issues persist, use `pnpm db:fresh` to rebuild from scratch.
-- **Component not found:** ensure you're using valid component names. Run `pnpm db:seed` without arguments to see available components.
-- **Dependency errors:** the system auto-seeds dependencies. If you see "not found" errors, try `pnpm db:seed:all` to ensure all prerequisites exist.
-
-## Contributing
-
-Issue reports and pull requests are welcome. For significant changes, start a discussion to align on approach and data model implications.
-
-## License
-
-[MIT](LICENSE)
+Production deployment is documented only for Northflank using the repository Docker image: [Northflank/Docker deployment](docs/deployment.md).

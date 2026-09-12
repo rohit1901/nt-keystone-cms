@@ -6,7 +6,7 @@ import { FaGithub, FaExternalLinkAlt, FaShieldAlt, FaRocket, FaGlobe } from "rea
 
 import { NimbusTechLogo } from "../../components/NimbusTechLogo";
 import { Button } from "../../components/ui/button";
-import "../../styles/globals.css";
+
 
 type SignInPageProps = {
   error: string | null;
@@ -132,7 +132,7 @@ const SIGNIN_CONFIG: SignInPageConfig = {
     platformDetailsTitle: "Platform Details",
     platformDetails: [
       { label: "Database:", value: "Neon PostgreSQL" },
-      { label: "Hosting:", value: "Heroku" },
+      { label: "Hosting:", value: "Northflank" },
       { label: "Auth Provider:", value: "Amazon Cognito" },
     ],
     footer: {

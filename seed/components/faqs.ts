@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../prisma";
 import { FAQ, FaqSection } from "../../data";
 import { SeededFooterLanguages } from "./footer";
 
@@ -144,9 +144,18 @@ export const faqSections: FaqSection[] = [
 ];
 
 const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
-  // Get all existing FAQs to check for duplicates
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
+  const faqKeys = faqs.flatMap((faq) => {
+    const languageId = languageIdByValue.get(faq.language.value);
+    return languageId ? [{ question: faq.question, languageId }] : [];
+  });
+
+  // Get only existing FAQs matching known seed keys.
   const existingFaqs = await prisma.faq.findMany({
-    select: { id: true, question: true, answer: true, languageId: true },
+    where: { OR: faqKeys },
+    select: { id: true, question: true, languageId: true },
   });
 
   // Create unique keys based on question + languageId
@@ -157,7 +166,7 @@ const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
   // Filter out FAQs that already exist
   const faqsToCreate = faqs
     .map((faq) => {
-      const languageId = languages.find((l) => l.value === faq.language.value)?.id;
+      const languageId = languageIdByValue.get(faq.language.value);
 
       if (!languageId) {
         console.warn(`! Language not found: ${faq.language.value}`);
@@ -199,8 +208,17 @@ const seedSections = async (
   // First seed all FAQs
   const allSeededFaqs = await seed(prisma, languages);
 
-  // Get all existing FAQ sections to check for duplicates
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
+  const sectionKeys = faqSections.flatMap((section) => {
+    const languageId = languageIdByValue.get(section.language.value);
+    return languageId ? [{ title: section.title, languageId }] : [];
+  });
+
+  // Get only existing FAQ sections matching known seed keys.
   const existingSections = await prisma.faqSection.findMany({
+    where: { OR: sectionKeys },
     select: { id: true, title: true, languageId: true },
   });
 
@@ -211,7 +229,7 @@ const seedSections = async (
 
   // Filter out sections that already exist
   const sectionsToCreate = faqSections.filter((section) => {
-    const languageId = languages.find((l) => l.value === section.language.value)?.id;
+    const languageId = languageIdByValue.get(section.language.value);
     const key = `${section.title}|${languageId}`;
     return !existingSectionKeys.has(key);
   });
@@ -222,23 +240,23 @@ const seedSections = async (
   if (sectionsToCreate.length > 0) {
     const newSections = await Promise.all(
       sectionsToCreate.map((section) => {
-        const lang = languages.find((l) => l.value === section.language.value);
+        const languageId = languageIdByValue.get(section.language.value);
 
-        if (!lang) {
+        if (!languageId) {
           console.warn(`! Language not found: ${section.language.value}`);
           return null;
         }
 
         // Filter the seeded FAQs to find matches for this section's language
         const relevantFaqs = allSeededFaqs.filter(
-          (f) => f.languageId === lang.id,
+          (faq) => faq.languageId === languageId,
         );
 
         return prisma.faqSection.create({
           data: {
             title: section.title,
             description: section.description,
-            languageId: lang.id,
+            languageId,
             faqs: {
               connect: relevantFaqs.map((faq) => ({ id: faq.id })),
             },

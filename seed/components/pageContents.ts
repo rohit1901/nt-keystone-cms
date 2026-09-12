@@ -1,4 +1,4 @@
-import type { PrismaClient, Prisma } from "@prisma/client";
+import type { PrismaClient, Prisma } from "../prisma";
 import type { CompositePageContentWithExtras, Language } from "../../data";
 import type { WithId as SeedWithId } from "../types";
 import Ctas from "./ctas";
@@ -10,7 +10,6 @@ type RuntimeEntity = SeedWithId<number> & {
 };
 
 type PageContentSeedOptions = {
-  prisma: PrismaClient;
   languageMap: Record<Language["value"], number>; // Maps 'en-US' -> ID
 };
 
@@ -222,103 +221,80 @@ export type SeededPageContents = Awaited<ReturnType<typeof seed>>;
 async function seed(prisma: PrismaClient, deps: PageContentDependencies) {
   console.log("Seeding page contents...");
 
-  // Pre-fetch languages to map value ('en-US') to ID
-  const allLanguages = await prisma.language.findMany();
-  // Only use this version if your database IDs are actually Integers (1, 2, 3...)
-  const languageMap: Record<Language["value"], number> = allLanguages.reduce(
-    (acc, lang) => {
-      acc[lang.value] = lang.id;
-      return acc;
+  const languageValues = pageContentsConfig.map(
+    ({ language }) => language.value,
+  );
+  const [allLanguages, existingPageContents, mainType] = await Promise.all([
+    prisma.language.findMany({
+      where: { value: { in: languageValues } },
+      select: { id: true, value: true },
+    }),
+    prisma.pageContent.findMany({
+      where: { slug: { in: pageContentsConfig.map(({ slug }) => slug) } },
+      select: { id: true, slug: true },
+    }),
+    prisma.type.findFirstOrThrow({
+      where: { label: "main" },
+      select: { id: true },
+    }),
+  ]);
+  const languageMap = Object.fromEntries(
+    allLanguages.map((language) => [language.value, language.id]),
+  ) as Record<Language["value"], number>;
+  const existingContentBySlug = new Map(
+    existingPageContents.map((content) => [content.slug, content]),
+  );
+  const ctas = await prisma.cta.findMany({
+    where: {
+      typeId: mainType.id,
+      languageId: { in: allLanguages.map(({ id }) => id) },
     },
-    {} as Record<string, number>, // <--- This must match the variable type
+    select: { id: true, languageId: true },
+  });
+  const ctaByLanguageId = new Map(
+    ctas.map((cta) => [cta.languageId, cta]),
   );
 
-  // Check for existing page contents
-  const existingPageContents = await prisma.pageContent.findMany({
-    where: {
-      slug: { in: pageContentsConfig.map(c => c.slug) },
-    },
-    include: {
-      sections: true,
-    },
-  });
+  const seededContents = await Promise.all(
+    pageContentsConfig.map(async (config) => {
+      const existingContent = existingContentBySlug.get(config.slug);
+      if (existingContent) {
+        console.log(
+          `✓ Page content for slug "${config.slug}" already exists (id: ${existingContent.id}), skipping`,
+        );
+        return existingContent;
+      }
 
-  const existingSlugs = new Set(existingPageContents.map(pc => pc.slug));
+      const languageId = languageMap[config.language.value];
+      if (!languageId) {
+        throw new Error(
+          `Language not found for value: ${config.language.value}`,
+        );
+      }
+      const cta = ctaByLanguageId.get(languageId);
+      if (!cta) {
+        throw new Error(
+          `Main CTA not found for language: ${config.language.value}`,
+        );
+      }
+      const { create } = config.buildSection(deps, { languageMap });
+      const pageContent = await prisma.pageContent.create({
+        data: {
+          slug: config.slug,
+          title: config.title,
+          description: config.description,
+          language: { connect: { id: languageId } },
+          sections: { create },
+          cta: { connect: { id: cta.id } },
+        },
+      });
 
-  const seededContents = [];
-
-  for (const config of pageContentsConfig) {
-    // Check if page content already exists for this slug
-    const existingContent = existingPageContents.find(
-      (pc) => pc.slug === config.slug,
-    );
-
-    if (existingContent) {
       console.log(
-        `✓ Page content for slug "${config.slug}" already exists (id: ${existingContent.id}), skipping`,
+        `✓ Created page content for slug "${config.slug}" (id: ${pageContent.id})`,
       );
-      seededContents.push(existingContent);
-      continue;
-    }
-
-    // Pass languageMap to buildSection
-    const { create } = config.buildSection(deps, { prisma, languageMap });
-    const type = await prisma.type.findFirstOrThrow({
-      where: {
-        label: "main",
-      },
-    });
-    const languageId = allLanguages.find(
-      (lang) => lang.value === config.language.value,
-    )?.id;
-
-    if (!languageId) {
-      throw new Error(
-        `Language not found for value: ${config.language.value}`,
-      );
-    }
-
-    const cta = await prisma.cta.findFirstOrThrow({
-      where: {
-        type: {
-          id: type.id,
-        },
-        language: {
-          id: languageId,
-        },
-      },
-    });
-
-    const pageContent = await prisma.pageContent.create({
-      data: {
-        slug: config.slug,
-        title: config.title,
-        description: config.description,
-        // Connect Page Language
-        language: {
-          connect: {
-            id: allLanguages.find(
-              (lang) => lang.value === config.language.value,
-            )?.id,
-          },
-        },
-        // Create the Master Section with filtered connections
-        sections: {
-          create: create,
-        },
-        cta: {
-          connect: {
-            id: cta.id,
-          },
-        },
-      },
-    });
-
-    console.log(
-      `✓ Created page content for slug "${config.slug}" (id: ${pageContent.id})`,
-    );
-    seededContents.push(pageContent);
-  }
+      return pageContent;
+    }),
+  );
 
   console.log(`✓ Total page contents: ${seededContents.length}`);
   return seededContents;

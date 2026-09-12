@@ -3,7 +3,7 @@
 import { SessionProvider } from "next-auth/react";
 import { PageContainer } from "@keystone-6/core/admin-ui/components";
 import { UserProfile } from "../components/UserProfile";
-import "../styles/globals.css";
+
 
 function Profile() {
   return (
@@ -18,9 +18,11 @@ function Profile() {
 export default function ProfilePage() {
   return (
     <SessionProvider basePath="/api/auth">
+      <div className="text-primary">
       <PageContainer header="Profile" title="Profile">
         <Profile />
-      </PageContainer>
+        </PageContainer>
+        </div>
     </SessionProvider>
   );
 }

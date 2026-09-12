@@ -2,13 +2,12 @@
 // Modify your Keystone config when you want to change this.
 
 datasource postgresql {
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "postgresql"
+  provider = "postgresql"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "./generated/prisma"
 }
 
 model User {
@@ -265,8 +264,8 @@ model Certification {
   link                                     String                 @default("")
   language                                 Language?              @relation("Certification_language", fields: [languageId], references: [id])
   languageId                               Int?                   @map("language")
+  resumeCertifications                     ResumeCertification[]  @relation("ResumeCertification_certification")
   from_CertificationSection_certifications CertificationSection[] @relation("CertificationSection_certifications")
-  from_Resume_certificates                 Resume[]               @relation("Resume_certificates")
 
   @@index([imageId])
   @@index([languageId])
@@ -533,29 +532,32 @@ model PageContent {
 }
 
 model ResumeLocation {
-  id                                   Int                      @id @default(autoincrement())
-  address                              String                   @default("")
-  postalCode                           String                   @default("")
-  city                                 String                   @default("")
-  countryCode                          String                   @default("")
-  region                               String                   @default("")
-  language                             Language?                @relation("ResumeLocation_language", fields: [languageId], references: [id])
-  languageId                           Int?                     @map("language")
-  from_ResumeBasicInformation_location ResumeBasicInformation[] @relation("ResumeBasicInformation_location")
+  id                 Int                     @id @default(autoincrement())
+  address            String                  @default("")
+  postalCode         String                  @default("")
+  city               String                  @default("")
+  countryCode        String                  @default("")
+  region             String                  @default("")
+  language           Language?               @relation("ResumeLocation_language", fields: [languageId], references: [id])
+  languageId         Int?                    @map("language")
+  basicInformation   ResumeBasicInformation? @relation("ResumeLocation_basicInformation", fields: [basicInformationId], references: [id], onDelete: Cascade)
+  basicInformationId Int?                    @unique @map("basicInformation")
 
   @@index([languageId])
 }
 
 model ResumeProfile {
-  id                                   Int                      @id @default(autoincrement())
-  network                              String
-  username                             String                   @default("")
-  url                                  String                   @default("")
-  language                             Language?                @relation("ResumeProfile_language", fields: [languageId], references: [id])
-  languageId                           Int?                     @map("language")
-  from_ResumeBasicInformation_profiles ResumeBasicInformation[] @relation("ResumeBasicInformation_profiles")
+  id                 Int                     @id @default(autoincrement())
+  network            String
+  username           String                  @default("")
+  url                String                  @default("")
+  language           Language?               @relation("ResumeProfile_language", fields: [languageId], references: [id])
+  languageId         Int?                    @map("language")
+  basicInformation   ResumeBasicInformation? @relation("ResumeProfile_basicInformation", fields: [basicInformationId], references: [id], onDelete: Cascade)
+  basicInformationId Int?                    @map("basicInformation")
 
   @@index([languageId])
+  @@index([basicInformationId])
 }
 
 model ResumeBasicInformation {
@@ -568,22 +570,21 @@ model ResumeBasicInformation {
   phone      String          @default("")
   url        String          @default("")
   summary    String          @default("")
-  location   ResumeLocation? @relation("ResumeBasicInformation_location", fields: [locationId], references: [id])
-  locationId Int?            @map("location")
-  profiles   ResumeProfile[] @relation("ResumeBasicInformation_profiles")
+  location   ResumeLocation? @relation("ResumeLocation_basicInformation")
+  profiles   ResumeProfile[] @relation("ResumeProfile_basicInformation")
   language   Language?       @relation("ResumeBasicInformation_language", fields: [languageId], references: [id])
   languageId Int?            @map("language")
-  resume     Resume?         @relation("Resume_basicInformation")
+  resume     Resume?         @relation("ResumeBasicInformation_resume", fields: [resumeId], references: [id], onDelete: Cascade)
+  resumeId   Int?            @unique @map("resume")
 
   @@index([imageId])
-  @@index([locationId])
   @@index([languageId])
 }
 
 model ResumeHighlight {
   id     Int         @id @default(autoincrement())
   value  String      @default("")
-  work   ResumeWork? @relation("ResumeHighlight_work", fields: [workId], references: [id])
+  work   ResumeWork? @relation("ResumeHighlight_work", fields: [workId], references: [id], onDelete: Cascade)
   workId Int?        @map("work")
 
   @@index([workId])
@@ -602,7 +603,7 @@ model ResumeWork {
   imageId    Int?              @map("image")
   language   Language?         @relation("ResumeWork_language", fields: [languageId], references: [id])
   languageId Int?              @map("language")
-  resume     Resume?           @relation("ResumeWork_resume", fields: [resumeId], references: [id])
+  resume     Resume?           @relation("ResumeWork_resume", fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId   Int?              @map("resume")
 
   @@index([imageId])
@@ -621,7 +622,7 @@ model ResumeVolunteer {
   highlights   String    @default("")
   language     Language? @relation("ResumeVolunteer_language", fields: [languageId], references: [id])
   languageId   Int?      @map("language")
-  resume       Resume?   @relation("ResumeVolunteer_resume", fields: [resumeId], references: [id])
+  resume       Resume?   @relation("ResumeVolunteer_resume", fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId     Int?      @map("resume")
 
   @@index([languageId])
@@ -640,7 +641,7 @@ model ResumeEducation {
   courses     String    @default("")
   language    Language? @relation("ResumeEducation_language", fields: [languageId], references: [id])
   languageId  Int?      @map("language")
-  resume      Resume?   @relation("ResumeEducation_resume", fields: [resumeId], references: [id])
+  resume      Resume?   @relation("ResumeEducation_resume", fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId    Int?      @map("resume")
 
   @@index([languageId])
@@ -656,7 +657,7 @@ model ResumeAward {
   url        String    @default("")
   language   Language? @relation("ResumeAward_language", fields: [languageId], references: [id])
   languageId Int?      @map("language")
-  resume     Resume?   @relation("ResumeAward_resume", fields: [resumeId], references: [id])
+  resume     Resume?   @relation("ResumeAward_resume", fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId   Int?      @map("resume")
 
   @@index([languageId])
@@ -672,7 +673,7 @@ model ResumePublication {
   summary     String    @default("")
   language    Language? @relation("ResumePublication_language", fields: [languageId], references: [id])
   languageId  Int?      @map("language")
-  resume      Resume?   @relation("ResumePublication_resume", fields: [resumeId], references: [id])
+  resume      Resume?   @relation("ResumePublication_resume", fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId    Int?      @map("resume")
 
   @@index([languageId])
@@ -686,7 +687,7 @@ model ResumeSkill {
   keywords   String    @default("")
   language   Language? @relation("ResumeSkill_language", fields: [languageId], references: [id])
   languageId Int?      @map("language")
-  resume     Resume?   @relation("ResumeSkill_resume", fields: [resumeId], references: [id])
+  resume     Resume?   @relation("ResumeSkill_resume", fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId   Int?      @map("resume")
 
   @@index([languageId])
@@ -699,7 +700,7 @@ model ResumeLanguage {
   fluency      String?
   uiLanguage   Language? @relation("ResumeLanguage_uiLanguage", fields: [uiLanguageId], references: [id])
   uiLanguageId Int?      @map("uiLanguage")
-  resume       Resume?   @relation("ResumeLanguage_resume", fields: [resumeId], references: [id])
+  resume       Resume?   @relation("ResumeLanguage_resume", fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId     Int?      @map("resume")
 
   @@index([uiLanguageId])
@@ -712,7 +713,7 @@ model ResumeInterest {
   keywords   String    @default("")
   language   Language? @relation("ResumeInterest_language", fields: [languageId], references: [id])
   languageId Int?      @map("language")
-  resume     Resume?   @relation("ResumeInterest_resume", fields: [resumeId], references: [id])
+  resume     Resume?   @relation("ResumeInterest_resume", fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId   Int?      @map("resume")
 
   @@index([languageId])
@@ -725,7 +726,7 @@ model ResumeReference {
   reference  String    @default("")
   language   Language? @relation("ResumeReference_language", fields: [languageId], references: [id])
   languageId Int?      @map("language")
-  resume     Resume?   @relation("ResumeReference_resume", fields: [resumeId], references: [id])
+  resume     Resume?   @relation("ResumeReference_resume", fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId   Int?      @map("resume")
 
   @@index([languageId])
@@ -744,7 +745,7 @@ model ResumeProject {
   imageId     Int?      @map("image")
   language    Language? @relation("ResumeProject_language", fields: [languageId], references: [id])
   languageId  Int?      @map("language")
-  resume      Resume?   @relation("ResumeProject_resume", fields: [resumeId], references: [id])
+  resume      Resume?   @relation("ResumeProject_resume", fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId    Int?      @map("resume")
 
   @@index([imageId])
@@ -752,26 +753,37 @@ model ResumeProject {
   @@index([resumeId])
 }
 
+model ResumeCertification {
+  id              Int            @id @default(autoincrement())
+  credentialUrl   String         @default("")
+  certification   Certification? @relation("ResumeCertification_certification", fields: [certificationId], references: [id])
+  certificationId Int?           @map("certification")
+  resume          Resume?        @relation("ResumeCertification_resume", fields: [resumeId], references: [id], onDelete: Cascade)
+  resumeId        Int?           @map("resume")
+
+  @@index([certificationId])
+  @@index([resumeId])
+}
+
 model Resume {
-  id                 Int                     @id @default(autoincrement())
-  title              String                  @unique @default("")
-  basicInformation   ResumeBasicInformation? @relation("Resume_basicInformation", fields: [basicInformationId], references: [id])
-  basicInformationId Int?                    @unique @map("basicInformation")
-  work               ResumeWork[]            @relation("ResumeWork_resume")
-  volunteer          ResumeVolunteer[]       @relation("ResumeVolunteer_resume")
-  education          ResumeEducation[]       @relation("ResumeEducation_resume")
-  awards             ResumeAward[]           @relation("ResumeAward_resume")
-  certificates       Certification[]         @relation("Resume_certificates")
-  publications       ResumePublication[]     @relation("ResumePublication_resume")
-  skills             ResumeSkill[]           @relation("ResumeSkill_resume")
-  resumeLanguages    ResumeLanguage[]        @relation("ResumeLanguage_resume")
-  interests          ResumeInterest[]        @relation("ResumeInterest_resume")
-  references         ResumeReference[]       @relation("ResumeReference_resume")
-  projects           ResumeProject[]         @relation("ResumeProject_resume")
-  language           Language?               @relation("Resume_language", fields: [languageId], references: [id])
-  languageId         Int?                    @map("language")
-  createdAt          DateTime?               @default(now())
-  updatedAt          DateTime?               @updatedAt
+  id                   Int                     @id @default(autoincrement())
+  title                String                  @unique @default("")
+  basicInformation     ResumeBasicInformation? @relation("ResumeBasicInformation_resume")
+  work                 ResumeWork[]            @relation("ResumeWork_resume")
+  volunteer            ResumeVolunteer[]       @relation("ResumeVolunteer_resume")
+  education            ResumeEducation[]       @relation("ResumeEducation_resume")
+  awards               ResumeAward[]           @relation("ResumeAward_resume")
+  resumeCertifications ResumeCertification[]   @relation("ResumeCertification_resume")
+  publications         ResumePublication[]     @relation("ResumePublication_resume")
+  skills               ResumeSkill[]           @relation("ResumeSkill_resume")
+  resumeLanguages      ResumeLanguage[]        @relation("ResumeLanguage_resume")
+  interests            ResumeInterest[]        @relation("ResumeInterest_resume")
+  references           ResumeReference[]       @relation("ResumeReference_resume")
+  projects             ResumeProject[]         @relation("ResumeProject_resume")
+  language             Language?               @relation("Resume_language", fields: [languageId], references: [id])
+  languageId           Int?                    @map("language")
+  createdAt            DateTime?               @default(now())
+  updatedAt            DateTime?               @updatedAt
 
   @@index([languageId])
 }

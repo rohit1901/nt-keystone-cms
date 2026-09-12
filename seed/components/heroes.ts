@@ -1,10 +1,8 @@
-import Images from "./images";
 import type { SeededImages } from "./images";
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "../prisma";
 import type { SeededSlugs } from "./slugs";
 import Ctas, { SeededCTAs } from "./ctas";
-import { remixIconMap } from "../../data/icons/remixicon-map";
-import { CTA, HeroType, ImageConfig } from "../../data";
+import { CTA, HeroType } from "../../data";
 import { SeededFooterLanguages } from "./footer";
 
 export type SeededHeroes = Awaited<ReturnType<typeof seed>>;
@@ -82,38 +80,77 @@ const seed = async (
   languages: SeededFooterLanguages,
 ) => {
   const foundCtaSlug = slugs.find((slug) => slug.label === "hero");
-
-  // Get all existing heroes to check for duplicates
-  const existingHeroes = await prisma.hero.findMany({
-    select: { id: true, title: true, subHeading: true, languageId: true },
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
+  const heroKeys = heroesData.flatMap((hero) => {
+    const languageId = languageIdByValue.get(hero.language.value);
+    return languageId
+      ? [{ title: hero.title, subHeading: hero.hero.subHeading, languageId }]
+      : [];
+  });
+  const additionalKeys = heroesData.flatMap((hero) => {
+    const languageId = languageIdByValue.get(hero.language.value);
+    const additional = hero.hero.banner.additional;
+    return languageId && additional
+      ? [{ text: additional.text, languageId }]
+      : [];
+  });
+  const bannerKeys = heroesData.flatMap((hero) => {
+    const languageId = languageIdByValue.get(hero.language.value);
+    return languageId
+      ? [
+          {
+            label: hero.hero.banner.label,
+            href: hero.hero.banner.href,
+            languageId,
+          },
+        ]
+      : [];
   });
 
-  // Create unique keys based on title + subHeading + languageId
+  const [existingHeroes, existingAdditionals, existingBanners] =
+    await Promise.all([
+      prisma.hero.findMany({
+        where: { OR: heroKeys },
+        select: { id: true, title: true, subHeading: true, languageId: true },
+      }),
+      prisma.heroBannerAdditional.findMany({
+        where: { OR: additionalKeys },
+        select: { id: true, text: true, languageId: true },
+      }),
+      prisma.heroBanner.findMany({
+        where: { OR: bannerKeys },
+        select: { id: true, label: true, href: true, languageId: true },
+      }),
+    ]);
+
   const existingHeroKeys = new Set(
-    existingHeroes.map((hero) => `${hero.title}|${hero.subHeading}|${hero.languageId}`)
+    existingHeroes.map(
+      (hero) => `${hero.title}|${hero.subHeading}|${hero.languageId}`,
+    ),
   );
-
-  // Get existing hero banner additionals to check for duplicates
-  const existingAdditionals = await prisma.heroBannerAdditional.findMany({
-    select: { id: true, text: true, languageId: true },
-  });
-  const existingAdditionalKeys = new Set(
-    existingAdditionals.map((add) => `${add.text}|${add.languageId}`)
+  const additionalByKey = new Map(
+    existingAdditionals.map((additional) => [
+      `${additional.text}|${additional.languageId}`,
+      additional,
+    ]),
   );
-
-  // Get existing hero banners to check for duplicates
-  const existingBanners = await prisma.heroBanner.findMany({
-    select: { id: true, label: true, href: true, languageId: true },
-  });
-  const existingBannerKeys = new Set(
-    existingBanners.map((banner) => `${banner.label}|${banner.href}|${banner.languageId}`)
+  const bannerByKey = new Map(
+    existingBanners.map((banner) => [
+      `${banner.label}|${banner.href}|${banner.languageId}`,
+      banner,
+    ]),
+  );
+  const ctaByLanguageId = new Map(
+    ctas
+      .filter((cta) => cta.typeId === foundCtaSlug?.id && cta.external)
+      .map((cta) => [cta.languageId, cta]),
   );
 
   // Filter out heroes that already exist
   const heroesToCreate = heroesData.filter((heroData) => {
-    const languageId = languages.find(
-      (l) => l.value === heroData.language.value,
-    )?.id;
+    const languageId = languageIdByValue.get(heroData.language.value);
     const key = `${heroData.title}|${heroData.hero.subHeading}|${languageId}`;
     return !existingHeroKeys.has(key);
   });
@@ -125,37 +162,26 @@ const seed = async (
     const newHeroes = await Promise.all(
       heroesToCreate.map(async (heroData) => {
         // 1. Find the correct Language ID
-        const languageId = languages.find(
-          (l) => l.value === heroData.language.value,
-        )?.id;
+        const languageId = languageIdByValue.get(heroData.language.value);
 
         if (!languageId) {
           console.warn(`! Language not found: ${heroData.language.value}`);
         }
 
         // 2. Find the correct CTA ID (matching type 'hero' and the hero's language)
-        const foundCta = ctas.find(
-          (cta) =>
-            cta.typeId === foundCtaSlug?.id &&
-            cta.languageId === languageId &&
-            cta.external,
-        );
+        const foundCta = ctaByLanguageId.get(languageId ?? null);
 
         // Check if banner additional already exists
         let additionalId: number | undefined = undefined;
         if (heroData.hero.banner.additional) {
           const additionalKey = `${heroData.hero.banner.additional.text}|${languageId}`;
-          const existingAdditional = existingAdditionals.find(
-            (add) => `${add.text}|${add.languageId}` === additionalKey
-          );
+          const existingAdditional = additionalByKey.get(additionalKey);
           additionalId = existingAdditional?.id;
         }
 
         // Check if banner already exists
         const bannerKey = `${heroData.hero.banner.label}|${heroData.hero.banner.href}|${languageId}`;
-        const existingBanner = existingBanners.find(
-          (banner) => `${banner.label}|${banner.href}|${banner.languageId}` === bannerKey
-        );
+        const existingBanner = bannerByKey.get(bannerKey);
 
         // 3. Create the Hero record
         return prisma.hero.create({

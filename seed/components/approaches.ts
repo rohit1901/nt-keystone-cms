@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "../prisma";
 import { ApproachData } from "../../data";
 import { SeededFooterLanguages } from "./footer";
 
@@ -125,30 +125,15 @@ const seedSteps = async (
 ) => {
   console.log("Seeding approach steps...");
 
-  // Get all existing approach steps to check for duplicates
-  const existingSteps = await prisma.approachStep.findMany({
-    select: { id: true, stepId: true, title: true, languageId: true, type: true, description: true, activityTime: true },
-  });
-
-  // Create unique keys based on stepId + title + languageId
-  const existingStepKeys = new Set(
-    existingSteps.map((step) => `${step.stepId}|${step.title}|${step.languageId}`)
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
   );
 
-  // Flatten all steps from all approaches
-  const allSteps = approachesData.flatMap((approach) =>
-    approach.steps.map((step) => ({
-      ...step,
-      approachLanguage: approach.language,
-    }))
-  );
-
-  // Filter out steps that already exist
-  const stepsToCreate = allSteps
+  // Flatten all steps from all approaches and resolve their language once.
+  const allSteps = approachesData.flatMap((approach) => approach.steps);
+  const resolvedSteps = allSteps
     .map((step) => {
-      const languageId = languages.find(
-        (lang) => lang.value === step.language.value,
-      )?.id;
+      const languageId = languageIdByValue.get(step.language.value);
 
       if (!languageId) {
         console.warn(`! Language not found: ${step.language.value}`);
@@ -165,20 +150,40 @@ const seedSteps = async (
         key: `${step.id}|${step.title}|${languageId}`,
       };
     })
-    .filter((step): step is NonNullable<typeof step> => step !== null)
-    .filter(({ key }) => !existingStepKeys.has(key));
+    .filter((step): step is NonNullable<typeof step> => step !== null);
+
+  // Get only existing steps matching known seed keys.
+  const existingSteps = await prisma.approachStep.findMany({
+    where: {
+      OR: resolvedSteps.map(({ stepId, title, languageId }) => ({
+        stepId,
+        title,
+        languageId,
+      })),
+    },
+    select: {
+      id: true,
+      stepId: true,
+      title: true,
+      languageId: true,
+    },
+  });
+  const existingStepKeys = new Set(
+    existingSteps.map(
+      (step) => `${step.stepId}|${step.title}|${step.languageId}`,
+    ),
+  );
+  const stepsToCreate = resolvedSteps.filter(
+    ({ key }) => !existingStepKeys.has(key),
+  );
 
   let newStepsCount = 0;
   let seededSteps = [...existingSteps];
 
   if (stepsToCreate.length > 0) {
-    const newSteps = await Promise.all(
-      stepsToCreate.map(async ({ key, ...data }) => {
-        return await prisma.approachStep.create({
-          data,
-        });
-      })
-    );
+    const newSteps = await prisma.approachStep.createManyAndReturn({
+      data: stepsToCreate.map(({ key, ...data }) => data),
+    });
     newStepsCount = newSteps.length;
     seededSteps = [...existingSteps, ...newSteps];
     console.log(`✓ Created ${newStepsCount} new approach step(s)`);
@@ -196,8 +201,17 @@ const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
   // First seed all steps
   const allSteps = await seedSteps(prisma, languages);
 
-  // Get all existing approaches to check for duplicates
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
+  const approachKeys = approachesData.flatMap((approach) => {
+    const languageId = languageIdByValue.get(approach.language.value);
+    return languageId ? [{ title: approach.title, languageId }] : [];
+  });
+
+  // Get only existing approaches matching known seed keys.
   const existingApproaches = await prisma.approach.findMany({
+    where: { OR: approachKeys },
     select: { id: true, title: true, languageId: true },
   });
 
@@ -208,32 +222,33 @@ const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
 
   // Filter out approaches that already exist
   const approachesToCreate = approachesData.filter((approachData) => {
-    const languageId = languages.find(
-      (lang) => lang.value === approachData.language.value,
-    )?.id;
+    const languageId = languageIdByValue.get(approachData.language.value);
     const key = `${approachData.title}|${languageId}`;
     return !existingApproachKeys.has(key);
   });
 
-  let newApproachesCount = 0;
   const seededApproaches = [...existingApproaches];
 
   if (approachesToCreate.length > 0) {
     const newApproaches = await Promise.all(
       approachesToCreate.map(async (approachData) => {
-        const languageId = languages.find(
-          (lang) => lang.value === approachData.language.value,
-        )?.id;
+        const languageId = languageIdByValue.get(
+          approachData.language.value,
+        );
 
         if (!languageId) {
           console.warn(`! Language not found: ${approachData.language.value}`);
           return null;
         }
 
-        // Find steps that match this approach's language
-        const matchingSteps = allSteps.filter((step) =>
-          step.languageId === languageId &&
-          approachData.steps.some((s) => s.id === step.stepId)
+        // Find steps that match this approach's language and step IDs.
+        const approachStepIds = new Set(
+          approachData.steps.map((step) => step.id),
+        );
+        const matchingSteps = allSteps.filter(
+          (step) =>
+            step.languageId === languageId &&
+            approachStepIds.has(step.stepId),
         );
 
         const approach = await prisma.approach.create({
@@ -259,7 +274,6 @@ const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
     const validApproaches = newApproaches.filter(
       (approach): approach is NonNullable<typeof approach> => approach !== null
     );
-    newApproachesCount = validApproaches.length;
     seededApproaches.push(...validApproaches);
   } else {
     console.log(`✓ All approaches already exist, skipping creation`);

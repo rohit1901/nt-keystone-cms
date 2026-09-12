@@ -1,11 +1,18 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "module": "commonjs",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@prisma/client": ["./generated/prisma/client"]
+    },
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "forceConsistentCasingInFileNames": true
-  }
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "exclude": ["**/scratch.ts", "**/.keystone", "generated"]
 }

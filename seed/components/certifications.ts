@@ -1,10 +1,10 @@
 import Image from "./images";
 import type { SeededCTAs } from "./ctas";
 import type { SeededImages } from "./images";
-import type { PrismaClient } from "@prisma/client";
-import { SeededSlugs } from "./slugs";
+import type { PrismaClient } from "../prisma";
+import type { SeededSlugs } from "./slugs";
 import Ctas from "./ctas";
-import { CertificationSection, ImageConfig } from "../../data";
+import { CertificationSection } from "../../data";
 import { SeededFooterLanguages } from "./footer";
 
 export type SeededCertifications = Awaited<ReturnType<typeof seed>>;
@@ -34,7 +34,6 @@ const certificationSectionsData: CertificationSection[] = [
           certIsaQbAdvanced: Image.data.certIsaQbAdvanced,
         },
         key: "certIsaQbAdvanced",
-        link: "https://d1ljophloyhryl.cloudfront.net/assets/certifications/2402-CPSAAL-003-EN.pdf",
         language: {
           label: "English",
           value: "en-US",
@@ -49,7 +48,6 @@ const certificationSectionsData: CertificationSection[] = [
           certIsaQbFoundation: Image.data.certIsaQbFoundation,
         },
         key: "certIsaQbFoundation",
-        link: "https://app.skillsclub.com/credential/28340-f57d08ae92c30e28a0c2850516e8fec9616ac7473feba42e7c4a2e62585c44c0?locale=en&badge=true",
         language: {
           label: "English",
           value: "en-US",
@@ -63,7 +61,6 @@ const certificationSectionsData: CertificationSection[] = [
           certApolloProfessional: Image.data.certApolloProfessional,
         },
         key: "certApolloProfessional",
-        link: "https://www.apollographql.com/tutorials/certifications/d5356f71-0760-4701-ae67-8b56c425c89a",
         language: {
           label: "English",
           value: "en-US",
@@ -77,7 +74,6 @@ const certificationSectionsData: CertificationSection[] = [
           certApolloAssociate: Image.data.certApolloAssociate,
         },
         key: "certApolloAssociate",
-        link: "https://www.apollographql.com/tutorials/certifications/3ad7e4dd-4b29-46f2-8e65-6e5706e0c067",
         language: {
           label: "English",
           value: "en-US",
@@ -91,7 +87,6 @@ const certificationSectionsData: CertificationSection[] = [
           certGitKraken: Image.data.certGitKraken,
         },
         key: "certGitKraken",
-        link: "https://d1ljophloyhryl.cloudfront.net/assets/certifications/foundations.git.kraken.2022.10.11.pdf",
         language: {
           label: "English",
           value: "en-US",
@@ -111,14 +106,13 @@ const certificationSectionsData: CertificationSection[] = [
         },
       },
       {
-        title: "AWS Certified Solutions Architect - Associate",
+        title: "AWS Certified Solutions Architect - Professional",
         description:
           "Demonstrates proficiency in architecting applications on AWS.",
         image: {
           certAwsSap: Image.data.certAwsSap,
         },
         key: "certAwsSap",
-        link: "https://www.credly.com/badges/6d371de7-680e-4230-9b42-fc593fc4a87e/public_url",
         language: {
           label: "English",
           value: "en-US",
@@ -148,7 +142,6 @@ const certificationSectionsData: CertificationSection[] = [
           certIsaQbAdvanced: Image.data.certIsaQbAdvanced,
         },
         key: "certIsaQbAdvanced",
-        link: "https://d1ljophloyhryl.cloudfront.net/assets/certifications/2402-CPSAAL-003-EN.pdf",
         language: {
           label: "German",
           value: "de-DE",
@@ -163,7 +156,6 @@ const certificationSectionsData: CertificationSection[] = [
           certIsaQbFoundation: Image.data.certIsaQbFoundation,
         },
         key: "certIsaQbFoundation",
-        link: "https://app.skillsclub.com/credential/28340-f57d08ae92c30e28a0c2850516e8fec9616ac7473feba42e7c4a2e62585c44c0?locale=en&badge=true",
         language: {
           label: "German",
           value: "de-DE",
@@ -177,7 +169,6 @@ const certificationSectionsData: CertificationSection[] = [
           certApolloProfessional: Image.data.certApolloProfessional,
         },
         key: "certApolloProfessional",
-        link: "https://www.apollographql.com/tutorials/certifications/d5356f71-0760-4701-ae67-8b56c425c89a",
         language: {
           label: "German",
           value: "de-DE",
@@ -191,7 +182,6 @@ const certificationSectionsData: CertificationSection[] = [
           certApolloAssociate: Image.data.certApolloAssociate,
         },
         key: "certApolloAssociate",
-        link: "https://www.apollographql.com/tutorials/certifications/3ad7e4dd-4b29-46f2-8e65-6e5706e0c067",
         language: {
           label: "German",
           value: "de-DE",
@@ -205,7 +195,6 @@ const certificationSectionsData: CertificationSection[] = [
           certGitKraken: Image.data.certGitKraken,
         },
         key: "certGitKraken",
-        link: "https://d1ljophloyhryl.cloudfront.net/assets/certifications/foundations.git.kraken.2022.10.11.pdf",
         language: {
           label: "German",
           value: "de-DE",
@@ -226,14 +215,13 @@ const certificationSectionsData: CertificationSection[] = [
         },
       },
       {
-        title: "AWS Certified Solutions Architect - Associate",
+        title: "AWS Certified Solutions Architect - Professional",
         description:
           "Zeigt Fachwissen in der Architektur von Anwendungen auf AWS.",
         image: {
           certAwsSap: Image.data.certAwsSap,
         },
         key: "certAwsSap",
-        link: "https://www.credly.com/badges/6d371de7-680e-4230-9b42-fc593fc4a87e/public_url",
         language: {
           label: "German",
           value: "de-DE",
@@ -242,33 +230,6 @@ const certificationSectionsData: CertificationSection[] = [
     ],
   },
 ];
-
-const findImageId = (
-  images: SeededImages,
-  typeId: number,
-  localImages: ImageConfig[],
-  key?: string,
-): number | undefined => {
-  // 1. Find the local image config that matches the provided key
-  const localImage = localImages.find((img) => img.key === key);
-
-  if (!localImage) {
-    console.warn(`No local image found with key: ${key}`);
-    return undefined;
-  }
-
-  // 2. Search through the seeded images to find a match
-  const foundImage = images.find((imgData) => {
-    return (
-      imgData.typeId === typeId &&
-      imgData.src === localImage.src &&
-      imgData.alt === localImage.alt
-    );
-  });
-
-  // 3. Return the ID if found, otherwise undefined
-  return foundImage ? foundImage.id : undefined;
-};
 
 async function seed(
   prisma: PrismaClient,
@@ -284,78 +245,132 @@ async function seed(
     throw new Error(`Slug not found for label: certification`);
   }
 
-  // Get all existing certifications to check for duplicates
-  const existingCertifications = await prisma.certification.findMany({
-    select: { id: true, title: true, description: true, languageId: true, imageId: true, link: true },
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
+  const seededImageIdByKey = new Map(
+    images.map((image) => [
+      `${image.typeId}|${image.src}|${image.alt}`,
+      image.id,
+    ]),
+  );
+  const localImageByKey = new Map(
+    certificationSectionsData.flatMap((section) =>
+      section.certifications.flatMap((certification) => {
+        if (!certification.image || !certification.key) return [];
+        const image = certification.image[certification.key];
+        return image ? [[certification.key, image] as const] : [];
+      }),
+    ),
+  );
+  const allCertifications = certificationSectionsData.flatMap(
+    (section) => section.certifications,
+  );
+  const resolvedCertifications = allCertifications.map((cert) => {
+    const languageId = languageIdByValue.get(cert.language.value);
+    if (!languageId) {
+      throw new Error(`Language not found: ${cert.language.value}`);
+    }
+
+    const localImage = cert.key ? localImageByKey.get(cert.key) : undefined;
+    const imageId = localImage
+      ? seededImageIdByKey.get(
+          `${certificationSlug.id}|${localImage.src}|${localImage.alt}`,
+        )
+      : undefined;
+    if (!imageId) {
+      throw new Error(`Certification image not found for key: ${cert.key}`);
+    }
+
+    return {
+      title: cert.title,
+      description: cert.description,
+      link: cert.link ?? "",
+      imageId,
+      languageId,
+      key: `${imageId}|${languageId}`,
+    };
   });
 
-  // Create unique keys based on title + languageId
-  const existingCertificationKeys = new Set(
-    existingCertifications.map((cert) => `${cert.title}|${cert.languageId}`)
-  );
-
-  // Flatten all certifications from all sections
-  const allCertifications = certificationSectionsData.flatMap((sectionData) =>
-    sectionData.certifications.map((cert) => ({
-      ...cert,
-      sectionLanguage: sectionData.language,
-    }))
-  );
-
-  // Get all local images for finding image IDs
-  const localImages = certificationSectionsData.flatMap((section) =>
-    section.certifications.flatMap((cert) => {
-      if (!cert.image || !cert.key) return [];
-      const img = cert.image[cert.key];
-      return img ? [img] : [];
-    })
-  );
-
-  // Filter out certifications that already exist
-  const certificationsToCreate = allCertifications
-    .map((cert) => {
-      const languageId = languages.find(
-        (l) => l.value === cert.language.value
-      )?.id;
-
-      if (!languageId) {
-        console.warn(`! Language not found: ${cert.language.value}`);
-        return null;
-      }
-
-      const imageId = findImageId(
-        images,
-        certificationSlug.id,
-        localImages,
-        cert.key,
-      );
-
-      return {
-        title: cert.title,
-        description: cert.description,
-        link: cert.link,
+  const existingCertifications = await prisma.certification.findMany({
+    where: {
+      OR: resolvedCertifications.map(({ imageId, languageId }) => ({
         imageId,
         languageId,
-        key: `${cert.title}|${languageId}`,
-      };
-    })
-    .filter((cert): cert is NonNullable<typeof cert> => cert !== null)
-    .filter(({ key }) => !existingCertificationKeys.has(key));
+      })),
+    },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      link: true,
+      imageId: true,
+      languageId: true,
+    },
+  });
+  const certificationByKey = new Map(
+    existingCertifications.map((certification) => [
+      `${certification.imageId}|${certification.languageId}`,
+      certification,
+    ]),
+  );
 
-  let newCertificationsCount = 0;
-  let seededCertifications = [...existingCertifications];
+  const certificationsToUpdate = resolvedCertifications.flatMap((resolved) => {
+    const existing = certificationByKey.get(resolved.key);
+    return existing &&
+      (existing.title !== resolved.title ||
+        existing.description !== resolved.description ||
+        existing.link !== resolved.link)
+      ? [{ existing, resolved }]
+      : [];
+  });
+  const updatedCertifications = await Promise.all(
+    certificationsToUpdate.map(({ existing, resolved }) =>
+      prisma.certification.update({
+        where: { id: existing.id },
+        data: {
+          title: resolved.title,
+          description: resolved.description,
+          link: resolved.link,
+        },
+      }),
+    ),
+  );
+  for (const certification of updatedCertifications) {
+    certificationByKey.set(
+      `${certification.imageId}|${certification.languageId}`,
+      certification,
+    );
+  }
 
+  const certificationsToCreate = resolvedCertifications.filter(
+    ({ key }) => !certificationByKey.has(key),
+  );
   if (certificationsToCreate.length > 0) {
     const newCertifications = await prisma.certification.createManyAndReturn({
       data: certificationsToCreate.map(({ key, ...data }) => data),
     });
-    newCertificationsCount = newCertifications.length;
-    seededCertifications = [...existingCertifications, ...newCertifications];
-    console.log(`✓ Created ${newCertificationsCount} new certification(s)`);
+    for (const certification of newCertifications) {
+      certificationByKey.set(
+        `${certification.imageId}|${certification.languageId}`,
+        certification,
+      );
+    }
+    console.log(`✓ Created ${newCertifications.length} new certification(s)`);
   } else {
     console.log(`✓ All certifications already exist, skipping creation`);
   }
+  if (updatedCertifications.length > 0) {
+    console.log(`✓ Updated ${updatedCertifications.length} certification(s)`);
+  }
 
+  const seededCertifications = resolvedCertifications.map(({ key }) => {
+    const certification = certificationByKey.get(key);
+    if (!certification) {
+      throw new Error(`Failed to reconcile certification seed key: ${key}`);
+    }
+    return certification;
+  });
   console.log(`✓ Total certifications in database: ${seededCertifications.length}`);
   return seededCertifications;
 }
@@ -378,8 +393,17 @@ async function seedSection(
     throw new Error(`Slug not found for label: certification`);
   }
 
-  // Get all existing certification sections to check for duplicates
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
+  const sectionKeys = certificationSectionsData.flatMap((section) => {
+    const languageId = languageIdByValue.get(section.language.value);
+    return languageId ? [{ title: section.title, languageId }] : [];
+  });
+
+  // Get only existing certification sections matching known seed keys.
   const existingSections = await prisma.certificationSection.findMany({
+    where: { OR: sectionKeys },
     select: { id: true, title: true, languageId: true },
   });
 
@@ -390,40 +414,46 @@ async function seedSection(
 
   // Filter out sections that already exist
   const sectionsToCreate = certificationSectionsData.filter((sectionData) => {
-    const languageId = languages.find(
-      (l) => l.value === sectionData.language.value
-    )?.id;
+    const languageId = languageIdByValue.get(sectionData.language.value);
     const key = `${sectionData.title}|${languageId}`;
     return !existingSectionKeys.has(key);
   });
 
-  let newSectionsCount = 0;
+  const ctaIdByLanguageId = new Map(
+    ctas
+      .filter((cta) => cta.typeId === certificationCtaType.id)
+      .map((cta) => [cta.languageId, cta.id]),
+  );
+  const certificationsByLanguageId = new Map<number | null, { id: number }[]>();
+  for (const certification of allCertifications) {
+    const matching =
+      certificationsByLanguageId.get(certification.languageId) ?? [];
+    matching.push(certification);
+    certificationsByLanguageId.set(certification.languageId, matching);
+  }
+
   const seededSections = [...existingSections];
 
   if (sectionsToCreate.length > 0) {
     const newSections = await Promise.all(
       sectionsToCreate.map(async (sectionData) => {
-        const languageId = languages.find(
-          (l) => l.value === sectionData.language.value
-        )?.id;
+        const languageId = languageIdByValue.get(
+          sectionData.language.value,
+        );
 
         if (!languageId) {
           console.warn(`! Language not found: ${sectionData.language.value}`);
           return null;
         }
 
-        const foundCtaId = ctas.find(
-          (cta) => cta.typeId === certificationCtaType.id && cta.languageId === languageId,
-        )?.id;
+        const foundCtaId = ctaIdByLanguageId.get(languageId);
 
         if (!foundCtaId) {
           console.warn(`! CTA not found for certification section (${sectionData.language.value})`);
         }
 
-        // Filter certifications to find the ones matching this section's language
-        const matchingCertifications = allCertifications.filter(
-          (cert) => cert.languageId === languageId
-        );
+        const matchingCertifications =
+          certificationsByLanguageId.get(languageId) ?? [];
 
         const section = await prisma.certificationSection.create({
           data: {
@@ -447,7 +477,6 @@ async function seedSection(
     const validSections = newSections.filter(
       (section): section is NonNullable<typeof section> => section !== null
     );
-    newSectionsCount = validSections.length;
     seededSections.push(...validSections);
   } else {
     console.log(`✓ All certification sections already exist, skipping creation`);

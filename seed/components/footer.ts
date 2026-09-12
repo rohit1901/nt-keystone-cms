@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "../prisma";
 import {
   FooterSection,
   FooterSectionKey,
@@ -297,15 +297,37 @@ const seedLanguages = async (prisma: PrismaClient) => {
 
 const seedFooterSectionKeys = async (prisma: PrismaClient) => {
   console.log("Seeding footer section keys...");
-  const keys = await prisma.footerSectionKey.createManyAndReturn({
-    data: footerSectionKeys.map((key) => ({
-      label: key.value,
-    })),
+  const labels = footerSectionKeys.map(({ value }) => value);
+  const existingKeys = await prisma.footerSectionKey.findMany({
+    where: { label: { in: labels } },
+    orderBy: { id: "asc" },
   });
+  const keyByLabel = new Map<string, (typeof existingKeys)[number]>();
 
-  console.log(`✓ Seeded ${keys.length} footer section keys`);
+  for (const key of existingKeys) {
+    if (key.label && !keyByLabel.has(key.label)) {
+      keyByLabel.set(key.label, key);
+    }
+  }
 
-  return keys;
+  const missingLabels = labels.filter((label) => !keyByLabel.has(label));
+  if (missingLabels.length > 0) {
+    const createdKeys = await prisma.footerSectionKey.createManyAndReturn({
+      data: missingLabels.map((label) => ({ label })),
+    });
+    createdKeys.forEach((key) => {
+      if (key.label) keyByLabel.set(key.label, key);
+    });
+    console.log(`✓ Created ${createdKeys.length} footer section key(s)`);
+  } else {
+    console.log("✓ All footer section keys already exist, skipping creation");
+  }
+
+  return labels.map((label) => {
+    const key = keyByLabel.get(label);
+    if (!key) throw new Error(`Footer section key not found: ${label}`);
+    return key;
+  });
 };
 
 const seedSections = async (
@@ -315,7 +337,15 @@ const seedSections = async (
 ) => {
   console.log("Seeding footer sections...");
   const typeId = slugs.find((slug) => slug.label === "footer")?.id;
+  if (!typeId) throw new Error("Footer type not found");
+
   const seededKeys = await seedFooterSectionKeys(prisma);
+  const languageIdByLabel = new Map(
+    languages.map((language) => [language.label, language.id]),
+  );
+  const keyByLabel = new Map(
+    seededKeys.flatMap((key) => key.label ? [[key.label.toLowerCase(), key] as const] : []),
+  );
   const sectionsData = footerData.map((footer) => footer.sections);
 
   // creating all NavigationItems in FooterSections
@@ -341,9 +371,7 @@ const seedSections = async (
   );
 
   const linksToCreate = items.filter((link) => {
-    const languageId = languages.find(
-      (language) => language.label === link.language.label,
-    )?.id;
+    const languageId = languageIdByLabel.get(link.language.label);
     const key = `${link.label}-${link.href}-${languageId}`;
     return !existingLinkKeys.has(key);
   });
@@ -355,13 +383,11 @@ const seedSections = async (
         label: link.label,
         href: link.href,
         external: link.external ?? false,
-        languageId: languages.find(
-          (language) => language.label === link.language.label,
-        )?.id,
-        typeId: typeId,
-        sectionKeyId: seededKeys.find(
-          (key) => key.label?.toLowerCase() === link.sectionKey?.toLowerCase(),
-        )?.id,
+        languageId: languageIdByLabel.get(link.language.label),
+        typeId,
+        sectionKeyId: link.sectionKey
+          ? keyByLabel.get(link.sectionKey.toLowerCase())?.id
+          : undefined,
         type: undefined,
         language: undefined,
         sectionKey: undefined,
@@ -376,9 +402,10 @@ const seedSections = async (
   // Get all footer navigation links
   const allSectionItems = await prisma.navigationLink.findMany({
     where: {
-      typeId: typeId,
+      typeId,
       languageId: { in: languages.map((lang) => lang.id) },
     },
+    include: { sectionKey: true },
   });
 
   console.log(`✓ Total footer section items: ${allSectionItems.length}`);
@@ -400,25 +427,30 @@ const seedSections = async (
     where: {
       languageId: { in: languages.map((lang) => lang.id) },
     },
+    include: { title: true },
   });
-
-  const existingFooterSectionKeys = new Set(
-    existingFooterSections.map((section) => `${section.titleId}-${section.languageId}`),
-  );
 
   const seededSections = [];
 
   for (const section of sections) {
-    const titleId = seededKeys.find((key) => key.label === section.title)?.id;
-    const languageId = languages.find(
-      (language) => language.label === section.language?.label,
-    )?.id;
+    const normalizedTitle = section.title.toLowerCase();
+    const titleId = keyByLabel.get(normalizedTitle)?.id;
+    const languageId = section.language?.label
+      ? languageIdByLabel.get(section.language.label)
+      : undefined;
 
-    const sectionKey = `${titleId}-${languageId}`;
+    if (!titleId || !languageId) {
+      throw new Error(
+        `Missing footer section dependency for ${section.title}/${section.language?.label}`,
+      );
+    }
 
-    // Check if section already exists
+    // Match semantically by key label so legacy duplicate key rows do not cause
+    // another section to be created.
     const existingSection = existingFooterSections.find(
-      (s) => s.titleId === titleId && s.languageId === languageId,
+      (candidate) =>
+        candidate.title?.label?.toLowerCase() === normalizedTitle &&
+        candidate.languageId === languageId,
     );
 
     if (existingSection) {
@@ -430,18 +462,11 @@ const seedSections = async (
     }
 
     const connectedItems = allSectionItems
-      .filter((item) => {
-        const itemSectionKey = seededKeys.find(
-          (key) => key.label === section.title.toLowerCase(),
-        );
-        const itemLanguage = languages.find(
-          (language) => language.label === section.language?.label,
-        );
-        return (
-          item.sectionKeyId === itemSectionKey?.id &&
-          item.languageId === itemLanguage?.id
-        );
-      })
+      .filter(
+        (item) =>
+          item.sectionKey?.label?.toLowerCase() === normalizedTitle &&
+          item.languageId === languageId,
+      )
       .map((item) => ({ id: item.id }));
 
     const newSection = await prisma.footerSection.create({
@@ -487,10 +512,6 @@ const seed = async (
       sections: true,
     },
   });
-
-  const existingLanguageIds = new Set(
-    existingFooters.map((footer) => footer.languageId),
-  );
 
   const footers = [];
 

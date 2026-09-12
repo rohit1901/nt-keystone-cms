@@ -1,8 +1,7 @@
-import Images from "./images";
 import type { SeededImages } from "./images";
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "../prisma";
 import type { SeededSlugs } from "./slugs";
-import { CTA, CtaSection, ImageConfig, Slug } from "../../data";
+import { CTA, CtaSection, ImageConfig } from "../../data";
 import { SeededFooterLanguages } from "./footer";
 
 export type SeededCTAs = Awaited<ReturnType<typeof seed>>;
@@ -175,38 +174,58 @@ async function seed(
   slugs: SeededSlugs,
   languages: SeededFooterLanguages,
 ) {
-  // Get all existing CTAs to check for duplicates
-  const existingCtas = await prisma.cta.findMany();
-
-  // Create a unique key for each CTA (label + href + languageId + typeId)
-  const existingCtaKeys = new Set(
-    existingCtas.map(cta => `${cta.label}|${cta.href}|${cta.languageId}|${cta.typeId}`)
+  const typeIdByLabel = new Map(slugs.map((slug) => [slug.label, slug.id]));
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
   );
 
-  // Prepare data for CTAs that don't already exist
-  const ctasToCreate = ctas
-    .map((cta) => {
-      const typeId = slugs.find((slug) => slug.label === cta.type)?.id;
-      if (!typeId) {
-        throw new Error(`Type not found for CTA: ${cta.label}`);
-      }
-      const languageId = languages.find(
-        (language) => language.value === cta.language.value,
-      )?.id;
+  const resolvedCtas = ctas.map((cta) => {
+    const typeId = typeIdByLabel.get(cta.type);
+    if (!typeId) {
+      throw new Error(`Type not found for CTA: ${cta.label}`);
+    }
+    const languageId = languageIdByValue.get(cta.language.value);
 
-      return {
-        original: cta,
-        data: {
-          label: cta.label,
-          href: cta.href,
-          external: cta.external,
-          languageId,
-          typeId,
-        },
-        key: `${cta.label}|${cta.href}|${languageId}|${typeId}`,
-      };
-    })
-    .filter(({ key }) => !existingCtaKeys.has(key));
+    return {
+      data: {
+        label: cta.label,
+        href: cta.href,
+        external: cta.external,
+        languageId,
+        typeId,
+      },
+      key: `${cta.label}|${cta.href}|${languageId}|${typeId}`,
+    };
+  });
+
+  // Get only existing CTAs matching known seed keys.
+  const existingCtas = await prisma.cta.findMany({
+    where: {
+      OR: resolvedCtas.map(({ data }) => ({
+        label: data.label,
+        href: data.href,
+        languageId: data.languageId,
+        typeId: data.typeId,
+      })),
+    },
+    select: {
+      id: true,
+      label: true,
+      href: true,
+      external: true,
+      languageId: true,
+      typeId: true,
+    },
+  });
+  const existingCtaKeys = new Set(
+    existingCtas.map(
+      (cta) =>
+        `${cta.label}|${cta.href}|${cta.languageId}|${cta.typeId}`,
+    ),
+  );
+  const ctasToCreate = resolvedCtas.filter(
+    ({ key }) => !existingCtaKeys.has(key),
+  );
 
   let newCtasCount = 0;
   let seededCtas = [...existingCtas];
@@ -233,26 +252,30 @@ async function seedSection(
   backgrounds: SeededImages,
   languages: SeededFooterLanguages,
 ) {
-  const foundCtaSlug = slugs.find((slug) => slug.label === "cta");
+  const slugByLabel = new Map(slugs.map((slug) => [slug.label, slug]));
+  const languageIdByLabel = new Map(
+    languages.map((language) => [language.label, language.id]),
+  );
+  const foundCtaSlug = slugByLabel.get("cta");
 
   if (!foundCtaSlug) {
     throw new Error("CTA slug not found");
   }
 
-  const ctaImageIds = backgrounds
-    .filter((image) => image.typeId === foundCtaSlug.id)
-    .map(({ id }) => id);
-
-  if (!ctaImageIds.length) {
+  const backgroundsToConnect = backgrounds.filter(
+    (image) => image.typeId === foundCtaSlug.id,
+  );
+  if (!backgroundsToConnect.length) {
     throw new Error("CTA background images not found");
   }
+  const sectionKeys = sectionsData.map((section) => ({
+    title: section.title,
+    languageId: languageIdByLabel.get(section.language.label),
+  }));
 
-  const backgroundsToConnect = backgrounds.filter((background) =>
-    ctaImageIds.includes(background.id),
-  );
-
-  // Get existing CTA sections to check for duplicates
+  // Get existing CTA sections matching known seed keys.
   const existingSections = await prisma.ctaSection.findMany({
+    where: { OR: sectionKeys },
     select: { id: true, title: true, languageId: true },
   });
 
@@ -262,12 +285,18 @@ async function seedSection(
 
   // Map over sectionsData to create multiple sections (en-US, de-DE)
   const sectionsToCreate = sectionsData.filter((sectionData) => {
-    const sectionLang = languages.find(
-      (lang) => lang.label === sectionData.language.label,
-    );
-    const key = `${sectionData.title}|${sectionLang?.id}`;
+    const languageId = languageIdByLabel.get(sectionData.language.label);
+    const key = `${sectionData.title}|${languageId}`;
     return !existingSectionKeys.has(key);
   });
+
+  const ctasByLanguageId = new Map<number | null, SeededCTAs>();
+  for (const cta of ctas) {
+    if (cta.typeId !== foundCtaSlug.id) continue;
+    const matching = ctasByLanguageId.get(cta.languageId) ?? [];
+    matching.push(cta);
+    ctasByLanguageId.set(cta.languageId, matching);
+  }
 
   let newSectionsCount = 0;
   const sections = [...existingSections];
@@ -275,14 +304,11 @@ async function seedSection(
   if (sectionsToCreate.length > 0) {
     const newSections = await Promise.all(
       sectionsToCreate.map(async (sectionData) => {
-        const sectionLang = languages.find(
-          (lang) => lang.label === sectionData.language.label,
+        const languageId = languageIdByLabel.get(
+          sectionData.language.label,
         );
         // Filter CTAs by Type AND Language
-        const foundCtaCTAs = ctas.filter(
-          (cta) =>
-            cta.typeId === foundCtaSlug.id && cta.languageId === sectionLang?.id,
-        );
+        const foundCtaCTAs = ctasByLanguageId.get(languageId ?? null) ?? [];
 
         if (!foundCtaCTAs.length) {
           console.warn(
@@ -304,7 +330,7 @@ async function seedSection(
             },
             language: {
               connect: {
-                id: sectionLang?.id,
+                id: languageId,
               },
             },
           },

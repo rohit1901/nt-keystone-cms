@@ -1,5 +1,5 @@
-import type { PrismaClient } from "@prisma/client";
-import Images, { type NavigationImageKey, type SeededImages } from "./images";
+import type { PrismaClient } from "../prisma";
+import type { SeededImages } from "./images";
 import {
   NavigationSection,
   NavigationSectionItem,
@@ -172,11 +172,17 @@ const seedLinks = async (
 ) => {
   console.log(`Seeding navigation links for languageId=${languageId}...`);
 
-  // Check for existing navigation links
+  // Check only for existing links matching known seed keys.
   const existingLinks = await prisma.navigationLink.findMany({
     where: {
-      languageId: languageId,
+      languageId,
       typeId: navigationSlugId,
+      OR: items.map(({ label, href }) => ({ label, href })),
+    },
+    select: {
+      id: true,
+      label: true,
+      href: true,
     },
   });
 
@@ -190,9 +196,9 @@ const seedLinks = async (
     return !existingLinkKeys.has(key);
   });
 
-  let newLinks = [];
+  let seededLinks = existingLinks;
   if (linksToCreate.length > 0) {
-    newLinks = await prisma.navigationLink.createManyAndReturn({
+    const newLinks = await prisma.navigationLink.createManyAndReturn({
       data: linksToCreate.map((link) => ({
         label: link.label,
         href: link.href,
@@ -203,6 +209,7 @@ const seedLinks = async (
         language: undefined,
       })),
     });
+    seededLinks = [...existingLinks, ...newLinks];
     console.log(
       `✓ Created ${newLinks.length} new navigation links for languageId=${languageId}`,
     );
@@ -212,19 +219,11 @@ const seedLinks = async (
     );
   }
 
-  // Return all links (existing + newly created)
-  const allLinks = await prisma.navigationLink.findMany({
-    where: {
-      languageId: languageId,
-      typeId: navigationSlugId,
-    },
-  });
-
   console.log(
-    `✓ Total navigation links for languageId=${languageId}: ${allLinks.length}`,
+    `✓ Total navigation links for languageId=${languageId}: ${seededLinks.length}`,
   );
 
-  return allLinks;
+  return seededLinks;
 };
 
 const seed = async (
@@ -238,6 +237,9 @@ const seed = async (
 
   const navigationSlug =
     slugs.find((slug) => slug.label === DEFAULT_NAVIGATION_SLUG)?.id ?? null;
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
 
   if (
     navigationSections.some((section) => section.image) &&
@@ -257,7 +259,11 @@ const seed = async (
     );
   }
 
-  const navigationCtas = ctas.filter((cta) => cta.typeId === navigationSlug);
+  const navigationCtaIdByLanguageId = new Map(
+    ctas
+      .filter((cta) => cta.typeId === navigationSlug)
+      .map((cta) => [cta.languageId, cta.id]),
+  );
 
   // Check for existing navigation sections
   const existingNavigations = await prisma.navigation.findMany({
@@ -266,67 +272,60 @@ const seed = async (
         in: languages.map((lang) => lang.id),
       },
     },
-    include: {
-      items: true,
-    },
+    select: { id: true, languageId: true },
   });
 
-  const existingLanguageIds = new Set(
-    existingNavigations.map((nav) => nav.languageId),
+  const existingNavigationByLanguageId = new Map(
+    existingNavigations.map((navigation) => [
+      navigation.languageId,
+      navigation,
+    ]),
   );
 
-  const seededNavigations = [];
+  const seededNavigations = await Promise.all(
+    navigationSections.map(async (section) => {
+      const navigationLanguageId =
+        languageIdByValue.get(section.language.value) ?? null;
+      const existingNavigation =
+        existingNavigationByLanguageId.get(navigationLanguageId);
 
-  for (const section of navigationSections) {
-    const navigationLanguageId =
-      languages.find((language) => language.value === section.language.value)
-        ?.id ?? null;
+      if (existingNavigation) {
+        console.log(
+          `✓ Navigation for ${section.language.value} already exists (id: ${existingNavigation.id}), skipping`,
+        );
+        return existingNavigation;
+      }
 
-    // Check if navigation already exists for this language
-    const existingNavigation = existingNavigations.find(
-      (nav) => nav.languageId === navigationLanguageId,
-    );
-
-    if (existingNavigation) {
-      console.log(
-        `✓ Navigation for ${section.language.value} already exists (id: ${existingNavigation.id}), skipping`,
+      const seededLinks = await seedLinks(
+        prisma,
+        navigationLanguageId,
+        section.items,
+        navigationSlug,
       );
-      seededNavigations.push(existingNavigation);
-      continue;
-    }
-
-    const seededLinks = await seedLinks(
-      prisma,
-      navigationLanguageId,
-      section.items,
-      navigationSlug,
-    );
-
-    const ctaId =
-      navigationCtas.find((cta) => cta.languageId === navigationLanguageId)
-        ?.id ?? null;
-
-    const navigation = await prisma.navigation.create({
-      data: {
-        title: section.title,
-        description: section.description,
-        items: {
-          connect: seededLinks.map((link) => ({ id: link.id })),
+      const ctaId =
+        navigationCtaIdByLanguageId.get(navigationLanguageId) ?? null;
+      const navigation = await prisma.navigation.create({
+        data: {
+          title: section.title,
+          description: section.description,
+          items: {
+            connect: seededLinks.map((link) => ({ id: link.id })),
+          },
+          languageId: navigationLanguageId,
+          imageId,
+          ctaId,
+          language: undefined,
+          image: undefined,
+          cta: undefined,
         },
-        languageId: navigationLanguageId,
-        imageId,
-        ctaId,
-        language: undefined,
-        image: undefined,
-        cta: undefined,
-      },
-    });
+      });
 
-    console.log(
-      `✓ Created navigation with id ${navigation.id} for language ${section.language.value}`,
-    );
-    seededNavigations.push(navigation);
-  }
+      console.log(
+        `✓ Created navigation with id ${navigation.id} for language ${section.language.value}`,
+      );
+      return navigation;
+    }),
+  );
 
   console.log(`✓ Total navigation sections: ${seededNavigations.length}`);
 

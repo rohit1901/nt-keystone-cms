@@ -89,7 +89,7 @@ export function UserProfile({ className, ...props }: UserProfileProps) {
         {status === "authenticated" && (
           <CardFooter className="flex flex-col gap-2 sm:flex-row sm:justify-end">
             <Button
-              variant="outline"
+              variant="destructive"
               onClick={() => void signOut()}
               type="button"
             >

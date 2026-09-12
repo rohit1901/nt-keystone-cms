@@ -1,5 +1,5 @@
-import { Maybe } from "../seed/types";
-import { remixIconMap } from "./icons/remixicon-map";
+import type { Maybe } from "../seed/types";
+import type { remixIconMap } from "./icons/remixicon-map";
 // --- Image Types ---
 export type ImageConfig = {
   src: string;
@@ -66,6 +66,28 @@ export type CtaSection = {
   ctas: CTA[];
   language: Language;
 };
+
+export const RESUME_FLUENCY_OPTIONS = [
+  { label: "Elementary", value: "Elementary" },
+  { label: "Grundkenntnisse", value: "Grundkenntnisse" },
+  { label: "Limited Working", value: "Limited Working" },
+  { label: "Arbeitssprachkenntnisse", value: "Arbeitssprachkenntnisse" },
+  { label: "Professional Working", value: "Professional Working" },
+  {
+    label: "Berufliche Arbeitskenntnisse",
+    value: "Berufliche Arbeitskenntnisse",
+  },
+  { label: "Full Professional", value: "Full Professional" },
+  {
+    label: "Vollständige berufliche Kenntnisse",
+    value: "Vollständige berufliche Kenntnisse",
+  },
+  { label: "Native", value: "Native" },
+  { label: "Muttersprache", value: "Muttersprache" },
+] as const;
+
+export type ResumeFluency =
+  (typeof RESUME_FLUENCY_OPTIONS)[number]["value"];
 
 export type Language = {
   label: "English" | "German" | "Hindi";

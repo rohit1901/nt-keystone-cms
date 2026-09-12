@@ -1,5 +1,6 @@
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
+import { RESUME_FLUENCY_OPTIONS, type ResumeFluency } from "../../data/types";
+import { PrismaClient } from "../prisma";
 import Images, { ResumeImageKey, CertificationImageKey, ImageKeys } from "./images";
 
 /**
@@ -29,6 +30,21 @@ export function parseDate(input: string): string {
 
 
 
+const ROHIT_CREDENTIAL_URLS = {
+  certAwsSap:
+    "https://www.credly.com/badges/6d371de7-680e-4230-9b42-fc593fc4a87e/public_url",
+  certIsaQbFoundation:
+    "https://app.skillsclub.com/credential/28340-f57d08ae92c30e28a0c2850516e8fec9616ac7473feba42e7c4a2e62585c44c0?locale=en&badge=true",
+  certIsaQbAdvanced:
+    "https://d1ljophloyhryl.cloudfront.net/assets/certifications/2402-CPSAAL-003-EN.pdf",
+  certApolloAssociate:
+    "https://www.apollographql.com/tutorials/certifications/3ad7e4dd-4b29-46f2-8e65-6e5706e0c067",
+  certApolloProfessional:
+    "https://www.apollographql.com/tutorials/certifications/d5356f71-0760-4701-ae67-8b56c425c89a",
+  certGitKraken:
+    "https://d1ljophloyhryl.cloudfront.net/assets/certifications/foundations.git.kraken.2022.10.11.pdf",
+} as const satisfies Partial<Record<CertificationImageKey, string>>;
+
 export const RESUME_DATA = [
   {
     // Resume Rohit Khanduri - English
@@ -37,7 +53,12 @@ export const RESUME_DATA = [
       language: "en-US", // Reference to Language.value
       createdAt: new Date().toISOString(),
     },
-    certifications: ["certAwsSap", "certIsaQbFoundation", "certIsaQbAdvanced", "certApolloAssociate", "certApolloProfessional", "certGitKraken"],
+    certifications: Object.entries(ROHIT_CREDENTIAL_URLS).map(
+      ([key, credentialUrl]) => ({
+        key: key as CertificationImageKey,
+        credentialUrl,
+      }),
+    ),
     // Basic Information
     basicInformation: {
       name: "Rohit Khanduri",
@@ -419,7 +440,12 @@ export const RESUME_DATA = [
       language: "de-DE",
       createdAt: new Date().toISOString(),
     },
-    certifications: ["certAwsSap", "certIsaQbFoundation", "certIsaQbAdvanced", "certApolloAssociate", "certApolloProfessional", "certGitKraken"],
+    certifications: Object.entries(ROHIT_CREDENTIAL_URLS).map(
+      ([key, credentialUrl]) => ({
+        key: key as CertificationImageKey,
+        credentialUrl,
+      }),
+    ),
 
     // Basisinformationen
     basicInformation: {
@@ -837,7 +863,7 @@ export const RESUME_DATA = [
       },
       {
         language: "Deutsch",
-        fluency: "Professionelle Berufspraxis",
+        fluency: "Berufliche Arbeitskenntnisse",
         uiLanguage: "de-DE"
       },
       {
@@ -854,7 +880,10 @@ export const RESUME_DATA = [
       language: "en-US", // Reference to Language.value
       createdAt: new Date().toISOString(),
     },
-    certifications: ["certAwsSap", "certAwsDeveloper"],
+    certifications: [
+      { key: "certAwsSap" as CertificationImageKey },
+      { key: "certAwsDeveloper" as CertificationImageKey },
+    ],
 
     // Basic Information
     basicInformation: {
@@ -1041,7 +1070,10 @@ export const RESUME_DATA = [
       language: "de-DE", // Reference to Language.value
       createdAt: new Date().toISOString(),
     },
-    certifications: ["certAwsSap", "certAwsDeveloper"],
+    certifications: [
+      { key: "certAwsSap" as CertificationImageKey },
+      { key: "certAwsDeveloper" as CertificationImageKey },
+    ],
     // Basic Information
     basicInformation: {
       name: "Florian Zeidler",
@@ -1224,18 +1256,122 @@ export const RESUME_DATA = [
       },
       {
         language: "Englisch",
-        fluency: "verhandlungssicher",
+        fluency: "Berufliche Arbeitskenntnisse",
         uiLanguage: "de-DE",
       },
     ],
   }
 ];
 
+type LanguageIdMap = ReadonlyMap<string, number>;
+
+type ResumeFixture = (typeof RESUME_DATA)[number];
+
+const isResumeFluency = (value: string): value is ResumeFluency =>
+  RESUME_FLUENCY_OPTIONS.some(
+    ({ value: fluencyValue }) => fluencyValue === value,
+  );
+
+const getProfileIdentity = (
+  network: string,
+  username: string,
+  languageId: number,
+) => JSON.stringify([network, username, languageId]);
+
+const validateResumeFixtures = (
+  resumeFixtures: ReadonlyArray<ResumeFixture>,
+  languageIdByValue: LanguageIdMap,
+) => {
+  const profileContextByIdentity = new Map<
+    string,
+    { resumeTitle: string; index: number }
+  >();
+
+  for (const resumeData of resumeFixtures) {
+    const resumeTitle = resumeData.resume.title;
+    const requireLanguageId = (value: string, context: string) => {
+      const languageId = languageIdByValue.get(value);
+      if (languageId === undefined) {
+        throw new Error(
+          `Invalid resume fixture "${resumeTitle}" (${context}): language "${value}" was not found in the database`,
+        );
+      }
+      return languageId;
+    };
+    const validateLocalizedEntries = (
+      section: string,
+      entries: ReadonlyArray<{ language: string }>,
+    ) => {
+      entries.forEach((entry, index) => {
+        requireLanguageId(entry.language, `${section}[${index}].language`);
+      });
+    };
+
+    requireLanguageId(resumeData.resume.language, "resume.language");
+    requireLanguageId(
+      resumeData.basicInformation.language,
+      "basicInformation.language",
+    );
+    requireLanguageId(resumeData.location.language, "location.language");
+
+    resumeData.profiles.forEach((profile, index) => {
+      const context = `profiles[${index}]`;
+      const languageId = requireLanguageId(
+        profile.language,
+        `${context}.language`,
+      );
+      const identity = getProfileIdentity(
+        profile.network,
+        profile.username,
+        languageId,
+      );
+      const duplicateContext = profileContextByIdentity.get(identity);
+      if (duplicateContext) {
+        throw new Error(
+          `Invalid resume fixture "${resumeTitle}" (${context}): duplicate profile identity (network "${profile.network}", username "${profile.username}", language ID ${languageId}); first used by resume fixture "${duplicateContext.resumeTitle}" (profiles[${duplicateContext.index}])`,
+        );
+      }
+      profileContextByIdentity.set(identity, { resumeTitle, index });
+    });
+
+    validateLocalizedEntries("work", resumeData.work);
+    validateLocalizedEntries("volunteer", resumeData.volunteer);
+    validateLocalizedEntries("education", resumeData.education);
+    validateLocalizedEntries("awards", resumeData.awards);
+    validateLocalizedEntries("publications", resumeData.publications);
+    validateLocalizedEntries("skills", resumeData.skills);
+    validateLocalizedEntries("interests", resumeData.interests);
+    validateLocalizedEntries("projects", resumeData.projects);
+
+    const certificationKeys = new Set<CertificationImageKey>();
+    resumeData.certifications.forEach((credential, index) => {
+      if (certificationKeys.has(credential.key)) {
+        throw new Error(
+          `Invalid resume fixture "${resumeTitle}" (certifications[${index}]): duplicate certification key "${credential.key}"`,
+        );
+      }
+      certificationKeys.add(credential.key);
+    });
+
+    resumeData.languages.forEach((language, index) => {
+      requireLanguageId(
+        language.uiLanguage,
+        `resumeLanguages[${index}].uiLanguage`,
+      );
+      if (!isResumeFluency(language.fluency)) {
+        throw new Error(
+          `Invalid resume fixture "${resumeTitle}" (resumeLanguages[${index}].fluency): unsupported fluency "${language.fluency}"`,
+        );
+      }
+    });
+  }
+};
+
 // ── Helper: seed resume languages ────────────────────────────────────────────
 const seedResumeLanguages = async (
   prisma: PrismaClient,
   resumeData: typeof RESUME_DATA[0],
-  allLanguages: { id: number; label: string; value: string }[],
+  languageIdByValue: LanguageIdMap,
   resumeId: number
 ) => {
   const existingLanguages = await prisma.resumeLanguage.findMany({
@@ -1243,37 +1379,94 @@ const seedResumeLanguages = async (
       language: { in: resumeData.languages.map((l) => l.language) },
       resumeId,
     },
+    orderBy: { id: "asc" },
   });
 
-  const existingLanguageNames = new Set(existingLanguages.map((l) => l.language));
+  const existingLanguageByName = new Map<
+    string,
+    (typeof existingLanguages)[number]
+  >();
+  for (const language of existingLanguages) {
+    if (!existingLanguageByName.has(language.language)) {
+      existingLanguageByName.set(language.language, language);
+    }
+  }
+
+  const languagesToUpdate = resumeData.languages.flatMap((language) => {
+    const existingLanguage = existingLanguageByName.get(language.language);
+    if (!existingLanguage) return [];
+
+    const uiLanguageId = languageIdByValue.get(language.uiLanguage);
+    if (uiLanguageId === undefined) {
+      throw new Error(
+        `Invalid resume fixture "${resumeData.resume.title}" (resumeLanguages.${language.language}.uiLanguage): language "${language.uiLanguage}" was not found in the database`,
+      );
+    }
+
+    return existingLanguage.fluency !== language.fluency ||
+      existingLanguage.uiLanguageId !== uiLanguageId
+      ? [{ existingLanguage, language, uiLanguageId }]
+      : [];
+  });
+
+  const updatedLanguages = await Promise.all(
+    languagesToUpdate.map(({ existingLanguage, language, uiLanguageId }) =>
+      prisma.resumeLanguage.update({
+        where: { id: existingLanguage.id },
+        data: {
+          fluency: language.fluency as ResumeFluency,
+          uiLanguageId,
+        },
+      }),
+    ),
+  );
+  for (const language of updatedLanguages) {
+    existingLanguageByName.set(language.language, language);
+  }
+  if (updatedLanguages.length > 0) {
+    console.log(`✓ Updated ${updatedLanguages.length} resume languages`);
+  }
 
   const languagesToCreate = resumeData.languages.filter(
-    (lang) => !existingLanguageNames.has(lang.language)
+    (language) => !existingLanguageByName.has(language.language),
   );
 
-  let newLanguages = [];
+  let newLanguages: typeof existingLanguages = [];
   if (languagesToCreate.length > 0) {
     newLanguages = await prisma.resumeLanguage.createManyAndReturn({
-      data: languagesToCreate.map((lang) => ({
-        language: lang.language,
-        fluency: lang.fluency,
-        uiLanguageId: allLanguages.find((l) => l.value === lang.uiLanguage)?.id,
-        resumeId,
-      })),
+      data: languagesToCreate.map((language) => {
+        const uiLanguageId = languageIdByValue.get(language.uiLanguage);
+        if (uiLanguageId === undefined) {
+          throw new Error(
+            `Invalid resume fixture "${resumeData.resume.title}" (resumeLanguages.${language.language}.uiLanguage): language "${language.uiLanguage}" was not found in the database`,
+          );
+        }
+        return {
+          language: language.language,
+          fluency: language.fluency as ResumeFluency,
+          uiLanguageId,
+          resumeId,
+        };
+      }),
     });
+    for (const language of newLanguages) {
+      existingLanguageByName.set(language.language, language);
+    }
     console.log(`✓ Created ${newLanguages.length} new resume languages`);
   } else {
     console.log(`✓ All resume languages already exist, skipping creation`);
   }
 
-  const languages = await prisma.resumeLanguage.findMany({
-    where: {
-      language: { in: resumeData.languages.map((l) => l.language) },
-      resumeId,
-    },
+  const languages = resumeData.languages.map((language) => {
+    const seededLanguage = existingLanguageByName.get(language.language);
+    if (!seededLanguage) {
+      throw new Error(
+        `Failed to reconcile resume fixture "${resumeData.resume.title}" (resumeLanguages.${language.language})`,
+      );
+    }
+    return seededLanguage;
   });
-
-  console.log(`✓ Total resume languages: ${languages.length}`);
+  console.log(`✓ Total desired resume languages: ${languages.length}`);
   return languages;
 };
 
@@ -1281,7 +1474,7 @@ const seedResumeLanguages = async (
 const seedResumePublications = async (
   prisma: PrismaClient,
   resumeData: typeof RESUME_DATA[0],
-  allLanguages: { id: number; label: string; value: string }[],
+  languageIdByValue: LanguageIdMap,
   resumeId: number
 ) => {
   const existingPublications = await prisma.resumePublication.findMany({
@@ -1297,12 +1490,12 @@ const seedResumePublications = async (
     (pub) => !existingPublicationNames.has(pub.name)
   );
 
-  let newPublications = [];
+  let newPublications: typeof existingPublications = [];
   if (publicationsToCreate.length > 0) {
     newPublications = await prisma.resumePublication.createManyAndReturn({
       data: publicationsToCreate.map((pub) => ({
         ...pub,
-        languageId: allLanguages.find((l) => l.value === pub.language)?.id,
+        languageId: languageIdByValue.get(pub.language),
         language: undefined,
         resumeId,
       })),
@@ -1312,13 +1505,7 @@ const seedResumePublications = async (
     console.log(`✓ All resume publications already exist, skipping creation`);
   }
 
-  const allPublications = await prisma.resumePublication.findMany({
-    where: {
-      name: { in: resumeData.publications.map((p) => p.name) },
-      resumeId,
-    },
-  });
-
+  const allPublications = [...existingPublications, ...newPublications];
   console.log(`✓ Total resume publications: ${allPublications.length}`);
   return allPublications;
 };
@@ -1327,7 +1514,7 @@ const seedResumePublications = async (
 const seedAwards = async (
   prisma: PrismaClient,
   resumeData: typeof RESUME_DATA[0],
-  allLanguages: { id: number; label: string; value: string }[],
+  languageIdByValue: LanguageIdMap,
   resumeId: number
 ) => {
   const existingAwards = await prisma.resumeAward.findMany({
@@ -1343,12 +1530,12 @@ const seedAwards = async (
     (award) => !existingAwardTitles.has(award.title)
   );
 
-  let newAwards = [];
+  let newAwards: typeof existingAwards = [];
   if (awardsToCreate.length > 0) {
     newAwards = await prisma.resumeAward.createManyAndReturn({
       data: awardsToCreate.map((award) => ({
         ...award,
-        languageId: allLanguages.find((l) => l.value === award.language)?.id,
+        languageId: languageIdByValue.get(award.language),
         language: undefined,
         resumeId,
       })),
@@ -1358,13 +1545,7 @@ const seedAwards = async (
     console.log(`✓ All resume awards already exist, skipping creation`);
   }
 
-  const allAwards = await prisma.resumeAward.findMany({
-    where: {
-      title: { in: resumeData.awards.map((a) => a.title) },
-      resumeId,
-    },
-  });
-
+  const allAwards = [...existingAwards, ...newAwards];
   console.log(`✓ Total resume awards: ${allAwards.length}`);
   return allAwards;
 };
@@ -1373,7 +1554,7 @@ const seedAwards = async (
 const seedResumeEducation = async (
   prisma: PrismaClient,
   resumeData: typeof RESUME_DATA[0],
-  allLanguages: { id: number; label: string; value: string }[],
+  languageIdByValue: LanguageIdMap,
   resumeId: number
 ) => {
   const existingEducation = await prisma.resumeEducation.findMany({
@@ -1391,12 +1572,12 @@ const seedResumeEducation = async (
     (edu) => !existingEducationKeys.has(`${edu.institution}-${edu.studyType}`)
   );
 
-  let newEducation = [];
+  let newEducation: typeof existingEducation = [];
   if (educationToCreate.length > 0) {
     newEducation = await prisma.resumeEducation.createManyAndReturn({
       data: educationToCreate.map((edu) => ({
         ...edu,
-        languageId: allLanguages.find((l) => l.value === edu.language)?.id,
+        languageId: languageIdByValue.get(edu.language),
         language: undefined,
         resumeId,
       })),
@@ -1406,13 +1587,7 @@ const seedResumeEducation = async (
     console.log(`✓ All resume education records already exist, skipping creation`);
   }
 
-  const allEducation = await prisma.resumeEducation.findMany({
-    where: {
-      institution: { in: resumeData.education.map((e) => e.institution) },
-      resumeId,
-    },
-  });
-
+  const allEducation = [...existingEducation, ...newEducation];
   console.log(`✓ Total resume education records: ${allEducation.length}`);
   return allEducation;
 };
@@ -1421,7 +1596,7 @@ const seedResumeEducation = async (
 const seedVolunteer = async (
   prisma: PrismaClient,
   resumeData: typeof RESUME_DATA[0],
-  allLanguages: { id: number; label: string; value: string }[],
+  languageIdByValue: LanguageIdMap,
   resumeId: number
 ) => {
   const existingVolunteer = await prisma.resumeVolunteer.findMany({
@@ -1439,12 +1614,12 @@ const seedVolunteer = async (
     (vol) => !existingVolunteerKeys.has(`${vol.organization}-${vol.position}`)
   );
 
-  let newVolunteer = [];
+  let newVolunteer: typeof existingVolunteer = [];
   if (volunteerToCreate.length > 0) {
     newVolunteer = await prisma.resumeVolunteer.createManyAndReturn({
       data: volunteerToCreate.map((vol) => ({
         ...vol,
-        languageId: allLanguages.find((l) => l.value === vol.language)?.id,
+        languageId: languageIdByValue.get(vol.language),
         language: undefined,
         resumeId,
       })),
@@ -1454,13 +1629,7 @@ const seedVolunteer = async (
     console.log(`✓ All resume volunteer records already exist, skipping creation`);
   }
 
-  const allVolunteer = await prisma.resumeVolunteer.findMany({
-    where: {
-      organization: { in: resumeData.volunteer.map((v) => v.organization) },
-      resumeId,
-    },
-  });
-
+  const allVolunteer = [...existingVolunteer, ...newVolunteer];
   console.log(`✓ Total resume volunteer records: ${allVolunteer.length}`);
   return allVolunteer;
 };
@@ -1469,7 +1638,7 @@ const seedVolunteer = async (
 const seedResumeExperience = async (
   prisma: PrismaClient,
   resumeData: typeof RESUME_DATA[0],
-  allLanguages: { id: number; label: string; value: string }[],
+  languageIdByValue: LanguageIdMap,
   resumeId: number
 ) => {
   const existingWork = await prisma.resumeWork.findMany({
@@ -1493,7 +1662,7 @@ const seedResumeExperience = async (
       continue;
     }
 
-    const languageId = allLanguages.find((l) => l.value === exp.language)?.id;
+    const languageId = languageIdByValue.get(exp.language);
 
     // Parse highlights into individual ResumeHighlight records
     const highlightStrings = exp.highlights
@@ -1527,52 +1696,133 @@ const seedResumeExperience = async (
 const seedResumeProfiles = async (
   prisma: PrismaClient,
   resumeData: typeof RESUME_DATA[0],
-  allLanguages: { id: number; label: string; value: string }[],
-  resumeId: number
+  languageIdByValue: LanguageIdMap,
 ) => {
-  const profileLanguageId = allLanguages.find(
-    (l) => l.value === resumeData.resume.language
-  )?.id;
+  const getPersistedProfileIdentity = (profile: {
+    network: string;
+    username: string;
+    languageId: number | null;
+  }) => {
+    if (profile.languageId === null) {
+      throw new Error(
+        `Failed to reconcile resume fixture "${resumeData.resume.title}" (profiles): persisted profile "${profile.network}/${profile.username}" has no language ID`,
+      );
+    }
+    return getProfileIdentity(
+      profile.network,
+      profile.username,
+      profile.languageId,
+    );
+  };
+
+  const requestedProfiles = resumeData.profiles.map((profile, index) => {
+    const languageId = languageIdByValue.get(profile.language);
+    if (languageId === undefined) {
+      throw new Error(
+        `Invalid resume fixture "${resumeData.resume.title}" (profiles[${index}].language): language "${profile.language}" was not found in the database`,
+      );
+    }
+    return {
+      profile,
+      languageId,
+      identity: getProfileIdentity(
+        profile.network,
+        profile.username,
+        languageId,
+      ),
+    };
+  });
 
   const existingProfiles = await prisma.resumeProfile.findMany({
     where: {
-      network: { in: resumeData.profiles.map((p) => p.network) },
-      languageId: profileLanguageId,   // ← no resumeId, scope by language
+      OR: requestedProfiles.map(({ profile, languageId }) => ({
+        network: profile.network,
+        username: profile.username,
+        languageId,
+      })),
     },
+    select: {
+      id: true,
+      network: true,
+      username: true,
+      url: true,
+      languageId: true,
+    },
+    distinct: ["network", "username", "languageId"],
+    orderBy: { id: "asc" },
   });
 
-  const existingProfileKeys = new Set(
-    existingProfiles.map((p) => `${p.network}-${p.username}`)
-  );
+  const profileByIdentity = new Map<
+    string,
+    (typeof existingProfiles)[number]
+  >();
+  for (const profile of existingProfiles) {
+    const identity = getPersistedProfileIdentity(profile);
+    if (!profileByIdentity.has(identity)) {
+      profileByIdentity.set(identity, profile);
+    }
+  }
 
-  const profilesToCreate = resumeData.profiles.filter(
-    (profile) => !existingProfileKeys.has(`${profile.network}-${profile.username}`)
+  const profilesToUpdate = requestedProfiles.flatMap((requestedProfile) => {
+    const existingProfile = profileByIdentity.get(requestedProfile.identity);
+    return existingProfile &&
+      existingProfile.url !== requestedProfile.profile.url
+      ? [{ ...requestedProfile, existingProfile }]
+      : [];
+  });
+  const updatedProfiles = await Promise.all(
+    profilesToUpdate.map(({ profile, existingProfile }) =>
+      prisma.resumeProfile.update({
+        where: { id: existingProfile.id },
+        data: { url: profile.url },
+        select: {
+          id: true,
+          network: true,
+          username: true,
+          url: true,
+          languageId: true,
+        },
+      }),
+    ),
   );
+  for (const profile of updatedProfiles) {
+    profileByIdentity.set(getPersistedProfileIdentity(profile), profile);
+  }
+  if (updatedProfiles.length > 0) {
+    console.log(`✓ Updated ${updatedProfiles.length} resume profile URLs`);
+  }
 
-  let newProfiles = [];
+  const profilesToCreate = requestedProfiles.filter(
+    ({ identity }) => !profileByIdentity.has(identity),
+  );
   if (profilesToCreate.length > 0) {
-    newProfiles = await prisma.resumeProfile.createManyAndReturn({
-      data: profilesToCreate.map((profile) => ({
-        network: profile.network,      // explicit fields only, no spread
+    const newProfiles = await prisma.resumeProfile.createManyAndReturn({
+      data: profilesToCreate.map(({ profile, languageId }) => ({
+        network: profile.network,
         username: profile.username,
         url: profile.url,
-        languageId: allLanguages.find((l) => l.value === profile.language)?.id,
+        languageId,
       })),
     });
+    for (const profile of newProfiles) {
+      profileByIdentity.set(getPersistedProfileIdentity(profile), profile);
+    }
     console.log(`✓ Created ${newProfiles.length} new resume profiles`);
   } else {
     console.log(`✓ All resume profiles already exist, skipping creation`);
   }
 
-  const allProfiles = await prisma.resumeProfile.findMany({
-    where: {
-      network: { in: resumeData.profiles.map((p) => p.network) },
-      languageId: profileLanguageId,   // ← no resumeId here either
-    },
+  const profiles = requestedProfiles.map(({ identity }, index) => {
+    const profile = profileByIdentity.get(identity);
+    if (!profile) {
+      throw new Error(
+        `Failed to reconcile resume fixture "${resumeData.resume.title}" (profiles[${index}])`,
+      );
+    }
+    return profile;
   });
-
-  console.log(`✓ Total resume profiles: ${allProfiles.length}`);
-  return allProfiles;
+  console.log(`✓ Total requested resume profiles: ${profiles.length}`);
+  return profiles;
 };
 
 
@@ -1580,7 +1830,7 @@ const seedResumeProfiles = async (
 const seedResumeSkills = async (
   prisma: PrismaClient,
   resumeData: typeof RESUME_DATA[0],
-  allLanguages: { id: number; label: string; value: string }[],
+  languageIdByValue: LanguageIdMap,
   resumeId: number
 ) => {
   const existingSkills = await prisma.resumeSkill.findMany({
@@ -1593,16 +1843,16 @@ const seedResumeSkills = async (
   const existingSkillKeys = new Set(existingSkills.map((s) => `${s.name}-${s.languageId}`));
 
   const skillsToCreate = resumeData.skills.filter((skill) => {
-    const languageId = allLanguages.find((l) => l.value === skill.language)?.id;
+    const languageId = languageIdByValue.get(skill.language);
     return !existingSkillKeys.has(`${skill.name}-${languageId}`);
   });
 
-  let newSkills = [];
+  let newSkills: typeof existingSkills = [];
   if (skillsToCreate.length > 0) {
     newSkills = await prisma.resumeSkill.createManyAndReturn({
       data: skillsToCreate.map((skill) => ({
         ...skill,
-        languageId: allLanguages.find((l) => l.value === skill.language)?.id,
+        languageId: languageIdByValue.get(skill.language),
         language: undefined,
         resumeId,
       })),
@@ -1612,13 +1862,7 @@ const seedResumeSkills = async (
     console.log(`✓ All resume skills already exist, skipping creation`);
   }
 
-  const allSkills = await prisma.resumeSkill.findMany({
-    where: {
-      name: { in: resumeData.skills.map((s) => s.name) },
-      resumeId,
-    },
-  });
-
+  const allSkills = [...existingSkills, ...newSkills];
   console.log(`✓ Total resume skills: ${allSkills.length}`);
   return allSkills;
 };
@@ -1627,7 +1871,7 @@ const seedResumeSkills = async (
 const seedResumeInterests = async (
   prisma: PrismaClient,
   resumeData: typeof RESUME_DATA[0],
-  allLanguages: { id: number; label: string; value: string }[],
+  languageIdByValue: LanguageIdMap,
   resumeId: number
 ) => {
   const existingInterests = await prisma.resumeInterest.findMany({
@@ -1640,16 +1884,16 @@ const seedResumeInterests = async (
   const existingInterestKeys = new Set(existingInterests.map((i) => `${i.name}-${i.languageId}`));
 
   const interestsToCreate = resumeData.interests.filter((interest) => {
-    const languageId = allLanguages.find((l) => l.value === interest.language)?.id;
+    const languageId = languageIdByValue.get(interest.language);
     return !existingInterestKeys.has(`${interest.name}-${languageId}`);
   });
 
-  let newInterests = [];
+  let newInterests: typeof existingInterests = [];
   if (interestsToCreate.length > 0) {
     newInterests = await prisma.resumeInterest.createManyAndReturn({
       data: interestsToCreate.map((interest) => ({
         ...interest,
-        languageId: allLanguages.find((l) => l.value === interest.language)?.id,
+        languageId: languageIdByValue.get(interest.language),
         language: undefined,
         resumeId,
       })),
@@ -1659,13 +1903,7 @@ const seedResumeInterests = async (
     console.log(`✓ All resume interests already exist, skipping creation`);
   }
 
-  const allInterests = await prisma.resumeInterest.findMany({
-    where: {
-      name: { in: resumeData.interests.map((i) => i.name) },
-      resumeId,
-    },
-  });
-
+  const allInterests = [...existingInterests, ...newInterests];
   console.log(`✓ Total resume interests: ${allInterests.length}`);
   return allInterests;
 };
@@ -1674,11 +1912,10 @@ const seedResumeInterests = async (
 const seedResumeLocations = async (
   prisma: PrismaClient,
   resumeData: typeof RESUME_DATA[0],
-  allLanguages: { id: number; label: string; value: string }[],
-  resumeId: number
+  languageIdByValue: LanguageIdMap,
 ) => {
   const location = resumeData.location;
-  const languageId = allLanguages.find((l) => l.value === location.language)?.id;
+  const languageId = languageIdByValue.get(location.language);
 
   const existingLocation = await prisma.resumeLocation.findFirst({
     where: {
@@ -1714,11 +1951,30 @@ const seedResumeLocations = async (
 const seedResumeBasicInfo = async (
   prisma: PrismaClient,
   resumeData: typeof RESUME_DATA[0],
-  allLanguages: { id: number; label: string; value: string }[],
-  resumeId: number
+  languageIdByValue: LanguageIdMap,
+  imageIdBySrc: ReadonlyMap<string, number>,
+  resumeId: number,
+  profileIds: readonly number[],
 ) => {
   const basicInfo = resumeData.basicInformation;
-  const languageId = allLanguages.find((l) => l.value === basicInfo.language)?.id;
+  const languageId = languageIdByValue.get(basicInfo.language);
+  if (!languageId) {
+    throw new Error(`Language not found for resume basic information: ${basicInfo.language}`);
+  }
+
+  const location = await seedResumeLocations(
+    prisma,
+    resumeData,
+    languageIdByValue,
+  );
+  const photoKey = basicInfo.resumePhotoKey as ResumeImageKey | undefined;
+  const photoImage = photoKey ? Images.data[photoKey] : undefined;
+  const imageId = photoImage ? imageIdBySrc.get(photoImage.src) : undefined;
+  const relationshipConnections = {
+    location: { connect: { id: location.id } },
+    resume: { connect: { id: resumeId } },
+    ...(imageId ? { image: { connect: { id: imageId } } } : {}),
+  };
 
   const existingBasicInfo = await prisma.resumeBasicInformation.findFirst({
     where: {
@@ -1728,25 +1984,17 @@ const seedResumeBasicInfo = async (
   });
 
   if (existingBasicInfo) {
-    console.log(
-      `✓ Resume basic information already exists (id: ${existingBasicInfo.id}), skipping creation`
-    );
-    return existingBasicInfo;
-  }
-
-  // Seed location first so we can link it
-  const location = await seedResumeLocations(prisma, resumeData, allLanguages, resumeId);
-
-  // Resolve photo image if provided
-  const photoKey = basicInfo.resumePhotoKey as ResumeImageKey | undefined;
-  const photoImage = photoKey ? Images.data[photoKey] : undefined;
-  let imageId: number | undefined;
-
-  if (photoImage) {
-    const existingImage = await prisma.image.findFirst({
-      where: { src: photoImage.src },
+    const reconciledBasicInfo = await prisma.resumeBasicInformation.update({
+      where: { id: existingBasicInfo.id },
+      data: {
+        ...relationshipConnections,
+        profiles: { set: profileIds.map((id) => ({ id })) },
+      },
     });
-    imageId = existingImage?.id;
+    console.log(
+      `✓ Reconciled resume basic information (id: ${reconciledBasicInfo.id})`,
+    );
+    return reconciledBasicInfo;
   }
 
   const newBasicInfo = await prisma.resumeBasicInformation.create({
@@ -1757,9 +2005,8 @@ const seedResumeBasicInfo = async (
       url: basicInfo.url ?? null,
       summary: basicInfo.summary ?? null,
       language: { connect: { id: languageId } },
-      location: { connect: { id: location.id } },
-      image: { connect: { id: imageId } },
-      resume: { connect: { id: resumeId } },
+      ...relationshipConnections,
+      profiles: { connect: profileIds.map((id) => ({ id })) },
     },
   });
 
@@ -1771,7 +2018,7 @@ const seedResumeBasicInfo = async (
 const seedResumeProjects = async (
   prisma: PrismaClient,
   resumeData: typeof RESUME_DATA[0],
-  allLanguages: { id: number; label: string; value: string }[],
+  languageIdByValue: LanguageIdMap,
   resumeId: number
 ) => {
   const existingProjects = await prisma.resumeProject.findMany({
@@ -1786,16 +2033,16 @@ const seedResumeProjects = async (
   );
 
   const projectsToCreate = resumeData.projects.filter((project) => {
-    const languageId = allLanguages.find((l) => l.value === project.language)?.id;
+    const languageId = languageIdByValue.get(project.language);
     return !existingProjectKeys.has(`${project.name}-${languageId}`);
   });
 
-  let newProjects = [];
+  let newProjects: typeof existingProjects = [];
   if (projectsToCreate.length > 0) {
     newProjects = await prisma.resumeProject.createManyAndReturn({
       data: projectsToCreate.map((project) => ({
         ...project,
-        languageId: allLanguages.find((l) => l.value === project.language)?.id,
+        languageId: languageIdByValue.get(project.language),
         language: undefined,
         resumeId,
         url: project.url ?? "",
@@ -1806,41 +2053,184 @@ const seedResumeProjects = async (
     console.log(`✓ All resume projects already exist, skipping creation`);
   }
 
-  const allProjects = await prisma.resumeProject.findMany({
-    where: {
-      name: { in: resumeData.projects.map((p) => p.name) },
-      resumeId,
-    },
-  });
-
+  const allProjects = [...existingProjects, ...newProjects];
   console.log(`✓ Total resume projects: ${allProjects.length}`);
   return allProjects;
+};
+
+const seedResumeCertifications = async (
+  prisma: PrismaClient,
+  resumeData: ResumeFixture,
+  resumeId: number,
+  resumeLanguageId: number,
+  imageIdBySrc: ReadonlyMap<string, number>,
+  certifications: ReadonlyArray<{
+    id: number;
+    imageId: number | null;
+    languageId: number | null;
+  }>,
+) => {
+  const certificationByImageId = new Map(
+    certifications
+      .filter(
+        (certification) =>
+          certification.languageId === resumeLanguageId &&
+          certification.imageId !== null,
+      )
+      .map((certification) => [certification.imageId!, certification]),
+  );
+
+  const desired = resumeData.certifications.map((credential, index) => {
+    const imageSource = Images.data[credential.key as ImageKeys]?.src;
+    const imageId = imageSource ? imageIdBySrc.get(imageSource) : undefined;
+    const certification = imageId
+      ? certificationByImageId.get(imageId)
+      : undefined;
+    if (!certification) {
+      throw new Error(
+        `Certification "${credential.key}" was not found for resume fixture "${resumeData.resume.title}" (certifications[${index}])`,
+      );
+    }
+    return {
+      certificationId: certification.id,
+      credentialUrl:
+        "credentialUrl" in credential ? credential.credentialUrl : "",
+    };
+  });
+
+  const existing = await prisma.resumeCertification.findMany({
+    where: { resumeId },
+    orderBy: { id: "asc" },
+  });
+  const existingByCertificationId = new Map<
+    number,
+    (typeof existing)[number]
+  >();
+  for (const achievement of existing) {
+    if (
+      achievement.certificationId !== null &&
+      !existingByCertificationId.has(achievement.certificationId)
+    ) {
+      existingByCertificationId.set(
+        achievement.certificationId,
+        achievement,
+      );
+    }
+  }
+
+  const desiredCertificationIds = new Set(
+    desired.map(({ certificationId }) => certificationId),
+  );
+  const staleIds = existing
+    .filter(
+      (achievement) =>
+        achievement.certificationId === null ||
+        !desiredCertificationIds.has(achievement.certificationId) ||
+        existingByCertificationId.get(achievement.certificationId)?.id !==
+          achievement.id,
+    )
+    .map(({ id }) => id);
+
+  const updates = desired.flatMap((credential) => {
+    const achievement = existingByCertificationId.get(
+      credential.certificationId,
+    );
+    return achievement && achievement.credentialUrl !== credential.credentialUrl
+      ? [{ achievement, credential }]
+      : [];
+  });
+  const creates = desired.filter(
+    ({ certificationId }) =>
+      !existingByCertificationId.has(certificationId),
+  );
+
+  await prisma.$transaction(async (transaction) => {
+    if (staleIds.length > 0) {
+      await transaction.resumeCertification.deleteMany({
+        where: { id: { in: staleIds } },
+      });
+    }
+    await Promise.all(
+      updates.map(({ achievement, credential }) =>
+        transaction.resumeCertification.update({
+          where: { id: achievement.id },
+          data: { credentialUrl: credential.credentialUrl },
+        }),
+      ),
+    );
+    if (creates.length > 0) {
+      await transaction.resumeCertification.createMany({
+        data: creates.map((credential) => ({
+          ...credential,
+          resumeId,
+        })),
+      });
+    }
+  });
+
+  console.log(
+    `✓ Reconciled ${desired.length} resume certification(s)` +
+      (staleIds.length > 0 ? `; removed ${staleIds.length} stale row(s)` : ""),
+  );
 };
 
 // ── Main seed function ────────────────────────────────────────────────────────
 const seedResume = async (prisma: PrismaClient) => {
   console.log("Seeding resumes...");
 
-  const allLanguages = await prisma.language.findMany();
-  if (!allLanguages || allLanguages.length === 0) {
-    throw new Error("Languages not found - please seed languages first");
+  const imageSources = new Set<string>();
+  for (const resumeData of RESUME_DATA) {
+    const photoKey = resumeData.basicInformation.resumePhotoKey as ResumeImageKey;
+    const photo = Images.data[photoKey];
+    if (photo?.src) imageSources.add(photo.src);
+
+    for (const credential of resumeData.certifications) {
+      const certificationImage = Images.data[credential.key as ImageKeys];
+      if (certificationImage?.src) imageSources.add(certificationImage.src);
+    }
   }
 
+  const [allLanguages, allImages] = await Promise.all([
+    prisma.language.findMany({ select: { id: true, value: true } }),
+    prisma.image.findMany({
+      where: { src: { in: [...imageSources] } },
+      select: { id: true, src: true },
+    }),
+  ]);
+
+  const languageIdByValue = new Map(
+    allLanguages.map((language) => [language.value, language.id]),
+  );
+  validateResumeFixtures(RESUME_DATA, languageIdByValue);
+
+  const imageIdBySrc = new Map(allImages.map((image) => [image.src, image.id]));
+  const certificationImageIds = [...new Set(
+    RESUME_DATA.flatMap((resumeData) =>
+      resumeData.certifications.flatMap(({ key }) => {
+        const source = Images.data[key as ImageKeys]?.src;
+        const imageId = source ? imageIdBySrc.get(source) : undefined;
+        return imageId ? [imageId] : [];
+      }),
+    ),
+  )];
+  const seededCertifications = certificationImageIds.length > 0
+    ? await prisma.certification.findMany({
+        where: { imageId: { in: certificationImageIds } },
+        select: { id: true, imageId: true, languageId: true },
+      })
+    : [];
   const createdResumes = [];
 
   for (const resumeData of RESUME_DATA) {
-    const resumeLanguageId = allLanguages.find(
-      (language) => language.value === resumeData.resume.language
-    )?.id;
+    const resumeLanguageId = languageIdByValue.get(resumeData.resume.language);
 
     if (!resumeLanguageId) {
       console.error(
-        `Language ${resumeData.resume.language} not found, skipping resume: ${resumeData.resume.title}`
+        `Language ${resumeData.resume.language} not found, skipping resume: ${resumeData.resume.title}`,
       );
       continue;
     }
 
-    // ── Step 1: Create the Resume shell first so we have its id ──────────────
     let resume = await prisma.resume.findFirst({
       where: {
         title: resumeData.resume.title,
@@ -1849,85 +2239,74 @@ const seedResume = async (prisma: PrismaClient) => {
     });
 
     if (resume) {
-      console.log(`✓ Resume already exists (id: ${resume.id}), skipping`);
-      createdResumes.push(resume);
-      continue;
+      console.log(`✓ Resume already exists (id: ${resume.id}), reconciling children`);
+    } else {
+      resume = await prisma.resume.create({
+        data: {
+          title: resumeData.resume.title,
+          languageId: resumeLanguageId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      });
+      console.log(`✓ Created resume shell: ${resume.title} (id: ${resume.id})`);
     }
 
-    resume = await prisma.resume.create({
-      data: {
-        title: resumeData.resume.title,
-        languageId: resumeLanguageId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    });
-
-    console.log(`✓ Created resume shell: ${resume.title} (id: ${resume.id})`);
     const resumeId = resume.id;
+    const [
+      resumeLanguages,
+      allPublications,
+      allAwards,
+      allEducation,
+      allVolunteer,
+      allExperience,
+      allProfiles,
+      allSkills,
+      allInterests,
+      allProjects,
+    ] = await Promise.all([
+      seedResumeLanguages(prisma, resumeData, languageIdByValue, resumeId),
+      seedResumePublications(prisma, resumeData, languageIdByValue, resumeId),
+      seedAwards(prisma, resumeData, languageIdByValue, resumeId),
+      seedResumeEducation(prisma, resumeData, languageIdByValue, resumeId),
+      seedVolunteer(prisma, resumeData, languageIdByValue, resumeId),
+      seedResumeExperience(prisma, resumeData, languageIdByValue, resumeId),
+      seedResumeProfiles(prisma, resumeData, languageIdByValue),
+      seedResumeSkills(prisma, resumeData, languageIdByValue, resumeId),
+      seedResumeInterests(prisma, resumeData, languageIdByValue, resumeId),
+      seedResumeProjects(prisma, resumeData, languageIdByValue, resumeId),
+    ]);
+    const basicInfo = await seedResumeBasicInfo(
+      prisma,
+      resumeData,
+      languageIdByValue,
+      imageIdBySrc,
+      resumeId,
+      allProfiles.map(({ id }) => id),
+    );
 
-    // ── Step 2: Seed all components with resumeId set at creation time ────────
-    const resumeLanguages = await seedResumeLanguages(prisma, resumeData, allLanguages, resumeId);
-    const allPublications = await seedResumePublications(prisma, resumeData, allLanguages, resumeId);
-    const allAwards = await seedAwards(prisma, resumeData, allLanguages, resumeId);
-    const allEducation = await seedResumeEducation(prisma, resumeData, allLanguages, resumeId);
-    const allVolunteer = await seedVolunteer(prisma, resumeData, allLanguages, resumeId);
-    const allExperience = await seedResumeExperience(prisma, resumeData, allLanguages, resumeId);
-    const allProfiles = await seedResumeProfiles(prisma, resumeData, allLanguages, resumeId);
-    const allSkills = await seedResumeSkills(prisma, resumeData, allLanguages, resumeId);
-    const allInterests = await seedResumeInterests(prisma, resumeData, allLanguages, resumeId);
-    const allProjects = await seedResumeProjects(prisma, resumeData, allLanguages, resumeId);
-    const basicInfo = await seedResumeBasicInfo(prisma, resumeData, allLanguages, resumeId);
+    await seedResumeCertifications(
+      prisma,
+      resumeData,
+      resumeId,
+      resumeLanguageId,
+      imageIdBySrc,
+      seededCertifications,
+    );
 
-    // Fetch certifications based on the certification keys in resumeData
-    let allCertifications: { id: number }[] = [];
-
-    if (resumeData.certifications && resumeData.certifications.length > 0) {
-      // Get certification images from the certification keys
-      const certificationImageIds: number[] = [];
-
-      for (const certKey of resumeData.certifications as CertificationImageKey[]) {
-        const certConfig = Images.data[certKey as ImageKeys];
-
-        if (certConfig?.src) {
-          const certImage = await prisma.image.findFirst({
-            where: { src: certConfig.src },
-          });
-
-          if (certImage) {
-            certificationImageIds.push(certImage.id);
-          } else {
-            console.log(`! Certification image not found for key: ${certKey}`);
-          }
-        }
-      }
-
-      // Fetch certifications by image IDs and language
-      if (certificationImageIds.length > 0) {
-        allCertifications = await prisma.certification.findMany({
-          where: {
-            imageId: { in: certificationImageIds },
-            languageId: resumeLanguageId,
-          },
-        });
-      }
-    }
-
-    // ── Step 3: Update Resume to connect all components ───────────────────────
     const updatedResume = await prisma.resume.update({
       where: { id: resumeId },
       data: {
         basicInformation: { connect: { id: basicInfo.id } },
-        work: { connect: allExperience.map((w) => ({ id: w.id })) },
-        volunteer: { connect: allVolunteer.map((v) => ({ id: v.id })) },
-        education: { connect: allEducation.map((e) => ({ id: e.id })) },
-        publications: { connect: allPublications.map((p) => ({ id: p.id })) },
-        awards: { connect: allAwards.map((a) => ({ id: a.id })) },
-        certificates: { connect: allCertifications.map((c) => ({ id: c.id })) },
-        skills: { connect: allSkills.map((s) => ({ id: s.id })) },
-        resumeLanguages: { connect: resumeLanguages.map((l) => ({ id: l.id })) },
-        interests: { connect: allInterests.map((i) => ({ id: i.id })) },
-        projects: { connect: allProjects.map((p) => ({ id: p.id })) },
+        work: { connect: allExperience.map(({ id }) => ({ id })) },
+        volunteer: { connect: allVolunteer.map(({ id }) => ({ id })) },
+        education: { connect: allEducation.map(({ id }) => ({ id })) },
+        publications: { connect: allPublications.map(({ id }) => ({ id })) },
+        awards: { connect: allAwards.map(({ id }) => ({ id })) },
+        skills: { connect: allSkills.map(({ id }) => ({ id })) },
+        resumeLanguages: { connect: resumeLanguages.map(({ id }) => ({ id })) },
+        interests: { connect: allInterests.map(({ id }) => ({ id })) },
+        projects: { connect: allProjects.map(({ id }) => ({ id })) },
       },
     });
 

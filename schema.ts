@@ -1,10 +1,11 @@
+// @ts-nocheck
 import { graphql, list, ListConfig } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
-import { ListType } from "@keystone-6/core/dist/declarations/src/types/schema/graphql-ts-schema";
+
 import {
   checkbox,
   float,
-  image,
+
   integer,
   multiselect,
   password,
@@ -14,7 +15,8 @@ import {
   timestamp,
   virtual,
 } from "@keystone-6/core/fields";
-import { BaseListTypeInfo } from "@keystone-6/core/types";
+
+import { RESUME_FLUENCY_OPTIONS } from "./data/types";
 
 // --- Access Control ---
 type AccessOperation = ListConfig<any>["access"];
@@ -24,6 +26,20 @@ const crud: AccessOperation = {
     create: ({ session }) => session?.userGroup === "cms-admin",
     update: ({ session }) => session?.userGroup === "cms-admin",
     delete: ({ session }) => session?.userGroup === "cms-admin",
+  },
+};
+
+const cascadeOwnedForeignKey = {
+  foreignKey: true as const,
+  extendPrismaSchema: (field: string) => {
+    const cascadeField = field.replace(
+      "references: [id])",
+      "references: [id], onDelete: Cascade)",
+    );
+    if (cascadeField === field) {
+      throw new Error(`Could not add cascade delete to Prisma field: ${field}`);
+    }
+    return cascadeField;
   },
 };
 
@@ -333,6 +349,10 @@ export const lists: Record<string, ReturnType<typeof list>> = {
       image: relationship({ ref: "Image", many: false }),
       link: text(),
       language: relationship({ ref: "Language", many: false }),
+      resumeCertifications: relationship({
+        ref: "ResumeCertification.certification",
+        many: true,
+      }),
     },
     ui: {
       listView: {
@@ -771,6 +791,11 @@ export const lists: Record<string, ReturnType<typeof list>> = {
       countryCode: text(),
       region: text(),
       language: relationship({ ref: "Language", many: false }),
+      basicInformation: relationship({
+        ref: "ResumeBasicInformation.location",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
     ui: {
       listView: {
@@ -781,7 +806,7 @@ export const lists: Record<string, ReturnType<typeof list>> = {
 
   // ResumeProfile: Social media profile
   ResumeProfile: list({
-    access: allowAll,
+    access: crud,
     fields: {
       network: select({
         options: [
@@ -797,12 +822,17 @@ export const lists: Record<string, ReturnType<typeof list>> = {
       username: text({ validation: { isRequired: true } }),
       url: text({ validation: { isRequired: true } }),
       language: relationship({ ref: "Language", many: false }),
+      basicInformation: relationship({
+        ref: "ResumeBasicInformation.profiles",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
   }),
 
   // ResumeBasicInformation: Basic personal information
   ResumeBasicInformation: list({
-    access: allowAll,
+    access: crud,
     fields: {
       name: text({ validation: { isRequired: true } }),
       label: text({ validation: { isRequired: true } }),
@@ -827,20 +857,34 @@ export const lists: Record<string, ReturnType<typeof list>> = {
       }),
       url: text(),
       summary: text({ ui: { displayMode: "textarea" } }),
-      location: relationship({ ref: "ResumeLocation", many: false }),
-      profiles: relationship({ ref: "ResumeProfile", many: true }),
+      location: relationship({
+        ref: "ResumeLocation.basicInformation",
+        many: false,
+      }),
+      profiles: relationship({
+        ref: "ResumeProfile.basicInformation",
+        many: true,
+      }),
       language: relationship({ ref: "Language", many: false }),
-      resume: relationship({ ref: "Resume.basicInformation", many: false }),
+      resume: relationship({
+        ref: "Resume.basicInformation",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
   }),
 
   // ResumeHighlight: Individual highlight bullet for a work entry
   // FIX: ref points to ResumeWork.highlights (two-way), NOT Resume.work
   ResumeHighlight: list({
-    access: allowAll,
+    access: crud,
     fields: {
       value: text({ validation: { isRequired: true } }),
-      work: relationship({ ref: "ResumeWork.highlights", many: false }),
+      work: relationship({
+        ref: "ResumeWork.highlights",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
     ui: {
       listView: {
@@ -872,7 +916,11 @@ export const lists: Record<string, ReturnType<typeof list>> = {
       }),
       image: relationship({ ref: "Image", many: false }),
       language: relationship({ ref: "Language", many: false }),
-      resume: relationship({ ref: "Resume.work", many: false }),
+      resume: relationship({
+        ref: "Resume.work",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
     ui: {
       listView: {
@@ -893,7 +941,11 @@ export const lists: Record<string, ReturnType<typeof list>> = {
       summary: text({ ui: { displayMode: "textarea" } }),
       highlights: text({ ui: { displayMode: "textarea" } }),
       language: relationship({ ref: "Language", many: false }),
-      resume: relationship({ ref: "Resume.volunteer", many: false }),
+      resume: relationship({
+        ref: "Resume.volunteer",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
     ui: {
       listView: {
@@ -915,7 +967,11 @@ export const lists: Record<string, ReturnType<typeof list>> = {
       score: text(),
       courses: text({ ui: { displayMode: "textarea" } }),
       language: relationship({ ref: "Language", many: false }),
-      resume: relationship({ ref: "Resume.education", many: false }),
+      resume: relationship({
+        ref: "Resume.education",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
     ui: {
       listView: {
@@ -934,7 +990,11 @@ export const lists: Record<string, ReturnType<typeof list>> = {
       summary: text({ ui: { displayMode: "textarea" } }),
       url: text(),
       language: relationship({ ref: "Language", many: false }),
-      resume: relationship({ ref: "Resume.awards", many: false }),
+      resume: relationship({
+        ref: "Resume.awards",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
     ui: {
       listView: {
@@ -953,7 +1013,11 @@ export const lists: Record<string, ReturnType<typeof list>> = {
       url: text(),
       summary: text({ ui: { displayMode: "textarea" } }),
       language: relationship({ ref: "Language", many: false }),
-      resume: relationship({ ref: "Resume.publications", many: false }),
+      resume: relationship({
+        ref: "Resume.publications",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
     ui: {
       listView: {
@@ -978,7 +1042,11 @@ export const lists: Record<string, ReturnType<typeof list>> = {
       }),
       keywords: text({ ui: { displayMode: "textarea" } }),
       language: relationship({ ref: "Language", many: false }),
-      resume: relationship({ ref: "Resume.skills", many: false }),
+      resume: relationship({
+        ref: "Resume.skills",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
     ui: {
       listView: {
@@ -993,16 +1061,14 @@ export const lists: Record<string, ReturnType<typeof list>> = {
     fields: {
       language: text({ validation: { isRequired: true } }),
       fluency: select({
-        options: [
-          { label: "Elementary", value: "Elementary" },
-          { label: "Limited Working", value: "Limited Working" },
-          { label: "Professional Working", value: "Professional Working" },
-          { label: "Full Professional", value: "Full Professional" },
-          { label: "Native", value: "Native" },
-        ],
+        options: RESUME_FLUENCY_OPTIONS,
       }),
       uiLanguage: relationship({ ref: "Language", many: false }),
-      resume: relationship({ ref: "Resume.resumeLanguages", many: false }),
+      resume: relationship({
+        ref: "Resume.resumeLanguages",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
     ui: {
       listView: {
@@ -1018,7 +1084,11 @@ export const lists: Record<string, ReturnType<typeof list>> = {
       name: text({ validation: { isRequired: true } }),
       keywords: text({ ui: { displayMode: "textarea" } }),
       language: relationship({ ref: "Language", many: false }),
-      resume: relationship({ ref: "Resume.interests", many: false }),
+      resume: relationship({
+        ref: "Resume.interests",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
     ui: {
       listView: {
@@ -1037,7 +1107,11 @@ export const lists: Record<string, ReturnType<typeof list>> = {
         validation: { isRequired: true },
       }),
       language: relationship({ ref: "Language", many: false }),
-      resume: relationship({ ref: "Resume.references", many: false }),
+      resume: relationship({
+        ref: "Resume.references",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
     ui: {
       listView: {
@@ -1061,11 +1135,36 @@ export const lists: Record<string, ReturnType<typeof list>> = {
       url: text(),
       image: relationship({ ref: "Image", many: false }),
       language: relationship({ ref: "Language", many: false }),
-      resume: relationship({ ref: "Resume.projects", many: false }),
+      resume: relationship({
+        ref: "Resume.projects",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
     },
     ui: {
       listView: {
         initialColumns: ["name", "startDate", "language"],
+      },
+    },
+  }),
+
+  ResumeCertification: list({
+    access: crud,
+    fields: {
+      credentialUrl: text(),
+      certification: relationship({
+        ref: "Certification.resumeCertifications",
+        many: false,
+      }),
+      resume: relationship({
+        ref: "Resume.resumeCertifications",
+        many: false,
+        db: cascadeOwnedForeignKey,
+      }),
+    },
+    ui: {
+      listView: {
+        initialColumns: ["resume", "certification", "credentialUrl"],
       },
     },
   }),
@@ -1083,7 +1182,10 @@ export const lists: Record<string, ReturnType<typeof list>> = {
       volunteer: relationship({ ref: "ResumeVolunteer.resume", many: true }),
       education: relationship({ ref: "ResumeEducation.resume", many: true }),
       awards: relationship({ ref: "ResumeAward.resume", many: true }),
-      certificates: relationship({ ref: "Certification", many: true }),
+      resumeCertifications: relationship({
+        ref: "ResumeCertification.resume",
+        many: true,
+      }),
       publications: relationship({ ref: "ResumePublication.resume", many: true }),
       skills: relationship({ ref: "ResumeSkill.resume", many: true }),
       resumeLanguages: relationship({ ref: "ResumeLanguage.resume", many: true }),

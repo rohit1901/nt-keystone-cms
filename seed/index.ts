@@ -1,32 +1,17 @@
 // seed.ts
 //
-// ⚠️ IMPORTANT: Before running this seed script, you MUST regenerate the Prisma Client:
-//
-//   1. Delete the old client cache:
-//      rm -rf node_modules/.prisma  (or on Windows: rmdir /s /q node_modules\.prisma)
-//
-//   2. Regenerate Prisma Client:
-//      npm run generate
-//
-//   3. Restart your IDE/Editor to pick up new types
-//
-//   4. Then run this seed:
-//      npm run db:seed
-//
-// See PRISMA_REGENERATE.md for full details and troubleshooting.
+// Prisma Client output: generated/prisma
+// After schema changes, run: pnpm generate
 //
 // Usage:
-//   - Seed all components:
-//       npm run db:seed
-//   - Seed specific component(s):
-//       npm run db:seed slugs
-//       npm run db:seed slugs images ctas
-//   - Seed with all flag:
-//       npm run db:seed --all
+//   pnpm db:seed
+//   pnpm db:seed slugs
+//   pnpm db:seed slugs images ctas
+//   pnpm db:seed -- --all
 //
 
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
+import { createPrismaClient, PrismaClient } from "./prisma";
 import Images from "./components/images";
 import Certifications from "./components/certifications";
 import Slugs from "./components/slugs";
@@ -45,8 +30,6 @@ import Testimonials from "./components/testimonials";
 import Maps from "./components/maps";
 import Resume from "./components/resume";
 import LegalPages from "./components/legalPages";
-
-const prisma = new PrismaClient();
 
 // Define seeding order - components that depend on others should come later
 export const SEED_ORDER = [
@@ -72,6 +55,10 @@ export const SEED_ORDER = [
 ] as const;
 
 type SeedComponent = typeof SEED_ORDER[number];
+
+function isSeedComponent(component: string): component is SeedComponent {
+  return SEED_ORDER.some(seedComponent => seedComponent === component);
+}
 
 // Cache for seeded dependencies to avoid re-seeding
 type SeedCache = {
@@ -466,12 +453,16 @@ async function seedComponent(
       break;
 
     case "resume":
-      console.log("📝 Seeding resume...");
+      console.log("📝 Seeding resume with dependencies...");
+      await ensureLanguages(prisma);
+      await ensureImages(prisma);
+      await ensureCertificationSections(prisma);
       await Resume.seed(prisma);
       break;
 
     case "legalPages":
-      console.log("⚖️  Seeding legal pages...");
+      console.log("⚖️  Seeding legal pages with dependencies...");
+      await ensureLanguages(prisma);
       await LegalPages.seed(prisma);
       break;
 
@@ -511,17 +502,18 @@ DESCRIPTION:
   in the correct dependency order automatically.
 
 USAGE:
-  npm run db:seed [COMPONENTS...]
-  npm run db:seed -- [OPTIONS]
-  npm run db:seed:all
+  pnpm db:seed [COMPONENTS...]
+  pnpm db:seed -- [OPTIONS]
+  pnpm db:seed:all
 
 OPTIONS:
   --all, -a          Seed all components (default if no components specified)
   --help, -h         Display this help message
+  --db-help          Display the combined database command reference
 
-NOTE: When using flags with npm run, you must use -- before the flags:
-  npm run db:seed -- --help
-  npm run db:seed:help  (shortcut without --)
+NOTE: When using flags with pnpm, you must use -- before the flags:
+  pnpm db:seed -- --help
+  pnpm db:seed:help  (shortcut without --)
 
 COMPONENTS:
   Available components to seed (in dependency order):
@@ -529,30 +521,32 @@ ${SEED_ORDER.map(c => `    • ${c.padEnd(20)} ${getComponentDescription(c)}`).j
 
 EXAMPLES:
   # Seed all components (recommended for initial setup)
-  npm run db:seed
-  npm run db:seed:all
-  npm run db:seed -- --all
+  pnpm db:seed
+  pnpm db:seed:all
+  pnpm db:seed -- --all
 
   # Seed specific component(s)
-  npm run db:seed slugs
-  npm run db:seed images ctas heroes
-  npm run db:seed:resume
+  pnpm db:seed slugs
+  pnpm db:seed images ctas heroes
+  pnpm db:seed resume
 
   # Get help
-  npm run db:seed:help
-  npm run db:seed -- --help
-  npm run db:seed -- -h
+  pnpm db:seed:help
+  pnpm db:seed -- --help
+  pnpm db:seed -- -h
 
 NOTES:
   • Dependencies are automatically seeded when needed
+  • resume ensures languages, images, and certifications first
+  • legalPages ensures languages first
   • Components are always seeded in the correct order
   • Existing data is NOT deleted (use db:clear to remove data)
-  • For a fresh database, use: npm run db:fresh
+  • For a fresh database, use: pnpm db:fresh
 
 RELATED COMMANDS:
-  npm run db:clear         Clear seeded data
-  npm run db:reset         Reset database schema
-  npm run db:fresh         Reset database and seed all components
+  pnpm db:clear         Clear seeded data
+  pnpm db:reset         Reset database schema
+  pnpm db:fresh         Reset database and seed all components
 
 For more information, see: ./seed/README.md
 `);
@@ -568,68 +562,71 @@ function displayDatabaseHelp() {
 ╚════════════════════════════════════════════════════════════════════════════╝
 
 QUICK REFERENCE:
-  For detailed documentation, see: ./seed/SCRIPTS.md
+  For detailed documentation, see: ./seed/README.md
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ 🌱 SEEDING COMMANDS                                                         │
 └─────────────────────────────────────────────────────────────────────────────┘
 
-  npm run db:seed              Seed all components (default)
-  npm run db:seed:all          Explicitly seed all components
-  npm run db:seed:help         Show detailed seed help
+  pnpm db:seed              Seed all components (default)
+  pnpm db:seed:all          Explicitly seed all components
+  pnpm db:seed:help         Show detailed seed help
 
-  npm run db:seed <component>  Seed specific component(s)
+  pnpm db:seed <component>  Seed specific component(s)
     Examples:
-      npm run db:seed slugs
-      npm run db:seed about analytics navigation
-      npm run db:seed:resume
+      pnpm db:seed slugs
+      pnpm db:seed about analytics navigation
+      pnpm db:seed resume
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ 🗑️  CLEARING COMMANDS                                                       │
 └─────────────────────────────────────────────────────────────────────────────┘
 
-  npm run db:clear:all         Clear all seeded data
-  npm run db:clear:help        Show detailed clear help
+  pnpm db:clear:all         Clear all records in default component tables
+  pnpm db:clear:help        Show detailed clear help
 
-  npm run db:clear -- <flags>  Clear specific components
+  pnpm db:clear -- <flags>  Clear specific components
     Examples:
-      npm run db:clear -- --about
-      npm run db:clear -- --analytics --navigation
-      npm run db:clear -- --pages home terms
+      pnpm db:clear -- --about
+      pnpm db:clear -- --analytics --navigation
+      pnpm db:clear -- --pages home terms
+
+  Production clears additionally require --confirm-production-clear or
+  ALLOW_PRODUCTION_DB_CLEAR=true.
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ 🔄 DATABASE MANAGEMENT                                                      │
 └─────────────────────────────────────────────────────────────────────────────┘
 
-  npm run db:push              Push schema without migrations
-  npm run db:reset             Reset database (⚠️  DELETES ALL DATA)
-  npm run db:fresh             Reset + seed all (complete fresh start)
-  npm run db:reset:seed        Alias for db:fresh
+  pnpm db:push              Push schema without migrations
+  pnpm db:reset             Reset database (⚠️  DELETES ALL DATA)
+  pnpm db:fresh             Reset + seed all (complete fresh start)
+  pnpm db:reset:seed        Alias for db:fresh
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ 📋 SCHEMA MANAGEMENT                                                        │
 └─────────────────────────────────────────────────────────────────────────────┘
 
-  npm run generate             Generate migrations (development)
-  npm run schema:verify:dev    Verify schema (development)
-  npm run schema:verify:prod   Verify schema (production)
+  pnpm generate             Generate migrations (development)
+  pnpm schema:verify:dev    Verify schema (development)
+  pnpm schema:verify:prod   Verify schema (production)
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ 🎯 COMMON WORKFLOWS                                                         │
 └─────────────────────────────────────────────────────────────────────────────┘
 
   Initial Setup:
-    npm run db:push && npm run db:seed
+    pnpm db:push && pnpm db:seed
 
   After Schema Changes:
-    npm run generate && npm run db:push
+    pnpm generate && pnpm db:push
 
   Fresh Start:
-    npm run db:fresh
+    pnpm db:fresh
 
   Update Specific Content:
-    npm run db:clear -- --about
-    npm run db:seed about
+    pnpm db:clear -- --about
+    pnpm db:seed about
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ 📦 AVAILABLE COMPONENTS                                                     │
@@ -641,12 +638,11 @@ ${SEED_ORDER.map(c => `  • ${c.padEnd(20)} ${getComponentDescription(c)}`).joi
 │ 📖 DOCUMENTATION                                                            │
 └─────────────────────────────────────────────────────────────────────────────┘
 
-  Detailed Guide:     ./seed/SCRIPTS.md
   Full README:        ./seed/README.md
-  Seed Help:          npm run db:seed:help
-  Clear Help:         npm run db:clear:help
+  Seed Help:          pnpm db:seed:help
+  Clear Help:         pnpm db:clear:help
 
-For step-by-step workflows and advanced usage, see ./seed/SCRIPTS.md
+For step-by-step workflows and advanced usage, see ./seed/README.md
 `);
 }
 
@@ -672,8 +668,8 @@ function getComponentDescription(component: SeedComponent): string {
     testimonials: "Testimonial sections",
     maps: "Map sections",
     pageContents: "Page content (requires all dependencies)",
-    resume: "Resume/CV data",
-    legalPages: "Legal pages (privacy, terms, etc.)",
+    resume: "Resume/CV data (includes required dependencies)",
+    legalPages: "Legal pages (requires languages)",
   };
   return descriptions[component] || "";
 }
@@ -684,66 +680,71 @@ function getComponentDescription(component: SeedComponent): string {
 async function main() {
   const args = process.argv.slice(2);
 
+  // Check for database help flag
+  if (args.includes("--db-help")) {
+    displayDatabaseHelp();
+    return;
+  }
+
+  // Check for help flag
+  if (args.includes("--help") || args.includes("-h")) {
+    displayHelp();
+    return;
+  }
+
+  let orderedComponents: readonly SeedComponent[] | undefined;
+
+  // Check for --all flag or no arguments (default to all)
+  if (!(args.length === 0 || args.includes("--all") || args.includes("-a"))) {
+    // Seed specific component(s)
+    const components = args.filter(arg => !arg.startsWith("--"));
+
+    if (components.length === 0) {
+      console.log("⚠️  No valid components specified. Use --all to seed everything.");
+      console.log("\nAvailable components:");
+      SEED_ORDER.forEach(c => console.log(`  - ${c}`));
+      console.log("\nUse --help for more information.");
+      process.exitCode = 1;
+      return;
+    }
+
+    // Validate component names
+    const invalidComponents = components.filter(c => !isSeedComponent(c));
+
+    if (invalidComponents.length > 0) {
+      console.error(`❌ Invalid component(s): ${invalidComponents.join(", ")}`);
+      console.log("\nAvailable components:");
+      SEED_ORDER.forEach(c => console.log(`  - ${c}`));
+      console.log("\nUse --help for more information.");
+      process.exitCode = 1;
+      return;
+    }
+
+    // Seed in the correct order (respecting dependencies)
+    orderedComponents = SEED_ORDER.filter(c => components.includes(c));
+  }
+
+  const prisma = createPrismaClient();
+
   try {
-    // Check for database help flag
-    if (args.includes("--db-help")) {
-      displayDatabaseHelp();
-      process.exit(0);
-    }
-
-    // Check for help flag
-    if (args.includes("--help") || args.includes("-h")) {
-      displayHelp();
-      process.exit(0);
-    }
-
-    // Check for --all flag or no arguments (default to all)
-    if (args.length === 0 || args.includes("--all") || args.includes("-a")) {
+    if (!orderedComponents) {
       await seedAll(prisma);
-    } else {
-      // Seed specific component(s)
-      const components = args.filter(arg => !arg.startsWith("--")) as SeedComponent[];
-
-      if (components.length === 0) {
-        console.log("⚠️  No valid components specified. Use --all to seed everything.");
-        console.log("\nAvailable components:");
-        SEED_ORDER.forEach(c => console.log(`  - ${c}`));
-        console.log("\nUse --help for more information.");
-        process.exit(1);
-      }
-
-      // Validate component names
-      const invalidComponents = components.filter(
-        c => !SEED_ORDER.includes(c as any)
-      );
-
-      if (invalidComponents.length > 0) {
-        console.error(`❌ Invalid component(s): ${invalidComponents.join(", ")}`);
-        console.log("\nAvailable components:");
-        SEED_ORDER.forEach(c => console.log(`  - ${c}`));
-        console.log("\nUse --help for more information.");
-        process.exit(1);
-      }
-
-      // Seed in the correct order (respecting dependencies)
-      const orderedComponents = SEED_ORDER.filter(c =>
-        components.includes(c as any)
-      );
-
-      console.log(`\n🌱 Seeding ${orderedComponents.length} component(s): ${orderedComponents.join(", ")}\n`);
-
-      for (const component of orderedComponents) {
-        await seedComponent(component, prisma);
-      }
-
-      console.log("\n✅ Requested components seeded successfully!\n");
+      return;
     }
-  } catch (error) {
-    console.error("\n❌ Seeding failed:", error);
-    process.exit(1);
+
+    console.log(`\n🌱 Seeding ${orderedComponents.length} component(s): ${orderedComponents.join(", ")}\n`);
+
+    for (const component of orderedComponents) {
+      await seedComponent(component, prisma);
+    }
+
+    console.log("\n✅ Requested components seeded successfully!\n");
   } finally {
     await prisma.$disconnect();
   }
 }
 
-main();
+void main().catch(error => {
+  console.error("\n❌ Seeding failed:", error);
+  process.exitCode = 1;
+});

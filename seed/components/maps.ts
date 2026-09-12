@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "../prisma";
 import { MapSection } from "../../data";
 import { SeededFooterLanguages } from "./footer";
 
@@ -30,9 +30,18 @@ const mapPageContent: MapSection[] = [
 const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
   console.log("Seeding map content...");
 
-  // Get all existing maps to check for duplicates
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
+  const mapKeys = mapPageContent.flatMap((section) => {
+    const languageId = languageIdByValue.get(section.language.value);
+    return languageId ? [{ title: section.title, languageId }] : [];
+  });
+
+  // Get existing seeded maps to check for duplicates
   const existingMaps = await prisma.map.findMany({
-    select: { id: true, title: true, subheading: true, languageId: true },
+    where: { OR: mapKeys },
+    select: { id: true, title: true, languageId: true },
   });
 
   // Create unique keys based on title + languageId
@@ -43,9 +52,7 @@ const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
   // Filter out maps that already exist
   const mapsToCreate = mapPageContent
     .map((section) => {
-      const languageId = languages.find(
-        (language) => language.value === section.language.value,
-      )?.id;
+      const languageId = languageIdByValue.get(section.language.value);
 
       if (!languageId) {
         console.warn(`! Language not found: ${section.language.value}`);

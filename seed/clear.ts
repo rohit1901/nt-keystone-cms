@@ -1,790 +1,551 @@
-import { PrismaClient } from '@prisma/client';
+import "dotenv/config";
+import { createPrismaClient, Prisma, PrismaClient } from "./prisma";
 
 /**
- * Generic clear script that can clear any seed config by name.
+ * Destructive seed-data clear CLI.
  *
- * Usage examples:
- *   - Clear a single config by name:
- *       ts-node --transpile-only ./seed/clear.ts resume
- *   - Clear multiple configs:
- *       ts-node --transpile-only ./seed/clear.ts resume analytics navigation
- *   - Clear all known configs (best-effort):
- *       ts-node --transpile-only ./seed/clear.ts --all
- *   - Clear PageContents by slug:
- *       ts-node --transpile-only ./seed/clear.ts --pages privacy-policy terms-of-service
- *   - Clear all images:
- *       ts-node --transpile-only ./seed/clear.ts --images
- *   - Clear all types (slugs):
- *       ts-node --transpile-only ./seed/clear.ts --types
- *   - Clear all CTAs and CTA sections:
- *       ts-node --transpile-only ./seed/clear.ts --ctas
- *   - Clear all languages:
- *       ts-node --transpile-only ./seed/clear.ts --languages
- *   - Clear all testimonials:
- *       ts-node --transpile-only ./seed/clear.ts --testimonials
- *   - Clear all heroes:
- *       ts-node --transpile-only ./seed/clear.ts --heroes
- *   - Clear all benefits:
- *       ts-node --transpile-only ./seed/clear.ts --benefits
- *   - Clear all FAQs:
- *       ts-node --transpile-only ./seed/clear.ts --faqs
- *   - Clear all certifications:
- *       ts-node --transpile-only ./seed/clear.ts --certifications
- *   - Clear all features:
- *       ts-node --transpile-only ./seed/clear.ts --features
- * - Clear all maps:
- *       ts-node --transpile-only ./seed/clear.ts --maps
- * - Clear all approaches:
- *       ts-node --transpile-only ./seed/clear.ts --approaches
- * - Clear all about sections:
- *       ts-node --transpile-only ./seed/clear.ts --about
- * - Clear all analytics:
- *       ts-node --transpile-only ./seed/clear.ts --analytics
- * - Clear all navigation:
- *       ts-node --transpile-only ./seed/clear.ts --navigation
- * - Clear all footer:
- *       ts-node --transpile-only ./seed/clear.ts --footer
- *
- * Notes:
- * - Each seed config module is expected to export a default object with a `clear(prisma)` function.
- * - The module resolution path is `./seed/components/<name>`. For example, `resume` -> `./seed/components/resume.ts`.
- * - If a given config does not export `clear`, this script will skip it and report the issue.
- * - The --pages flag allows you to delete specific PageContent records by their slug.
- * - The --images flag allows you to delete all Image records from the database.
- * - The --types flag allows you to delete all Type records (slugs) from the database.
- * - The --ctas flag allows you to delete all CTA and CtaSection records from the database.
- * - The --languages flag allows you to delete all Language records from the database.
- * - The --testimonials flag allows you to delete all Testimonial records from the database.
- * - The --heroes flag allows you to delete all Hero records from the database.
- * - The --benefits flag allows you to delete all Benefit records from the database.
- * - The --faqs flag allows you to delete all FAQ records from the database.
- * - The --certifications flag allows you to delete all Certification records from the database.
- * - The --features flag allows you to delete all Feature records from the database.
- * - The --maps flag allows you to delete all Map records from the database.
- * - The --approaches flag allows you to delete all Approach records from the database.
- * - The --about flag allows you to delete all About sections and values from the database.
- * - The --analytics flag allows you to delete all Analytics sections, stats, and summary items from the database.
- * - The --navigation flag allows you to delete all Navigation sections and links from the database.
- * - The --footer flag allows you to delete all Footer sections, links, and keys from the database.
- * - The --resume flag allows you to delete all Resume data from the database.
- * - The --page-contents flag allows you to delete all PageContent and Section records from the database.
+ * All component clears intentionally retain their historical all-record
+ * semantics. In production, an explicit confirmation flag or environment
+ * variable is required before a Prisma client is created.
  */
 
+type DatabaseClient = PrismaClient | Prisma.TransactionClient;
 type SeedModule = {
   clear?: (prisma: PrismaClient) => Promise<void>;
   [key: string]: unknown;
 };
+type ClearAction = (prisma: PrismaClient) => Promise<void>;
+
+const PRODUCTION_CONFIRMATION_FLAG = "--confirm-production-clear";
+const PRODUCTION_CONFIRMATION_ENV = "ALLOW_PRODUCTION_DB_CLEAR";
+const LEGAL_PAGE_SLUGS = [
+  "terms",
+  "terms-de",
+  "privacy-policy",
+  "privacy-policy-de",
+] as const;
 
 const DEFAULT_COMPONENTS = [
-  'resume',
-  'images',
-  'slugs',
-  'ctas',
-  'languages',
-  'testimonials',
-  'heroes',
-  'benefits',
-  'faqs',
-  'certifications',
-  'features',
-  'maps',
-  'approaches',
-  'about',
-  'analytics',
-  'navigation',
-  'footer',
-  'resume',
-  'pageContents',
-];
+  "resume",
+  "legalPages",
+  "pageContents",
+  "footer",
+  "navigation",
+  "analytics",
+  "about",
+  "approaches",
+  "maps",
+  "features",
+  "certifications",
+  "faqs",
+  "benefits",
+  "heroes",
+  "testimonials",
+  "ctas",
+  "images",
+  "slugs",
+  "languages",
+] as const;
+
+async function inTransaction(
+  prisma: PrismaClient,
+  operation: (transaction: Prisma.TransactionClient) => Promise<void>,
+): Promise<void> {
+  await prisma.$transaction(operation);
+}
 
 async function loadSeedModule(name: string): Promise<SeedModule | null> {
+  if (!/^[A-Za-z][A-Za-z0-9]*$/.test(name)) {
+    console.error(`Invalid seed component name: "${name}".`);
+    return null;
+  }
+
   try {
-    // Resolve relative to this script location; assumes this file lives in nt-keystone-cms/seed/clear.ts
-    const modulePath = `./components/${name}`;
-    const mod = await import(modulePath);
-    // Default export is expected
-    const exported = (mod?.default ?? mod) as SeedModule;
-    return exported;
-  } catch (err) {
-    console.error(`Failed to load seed component "${name}":`, err);
+    const mod = await import(`./components/${name}`);
+    return (mod?.default ?? mod) as SeedModule;
+  } catch (error) {
+    console.error(`Failed to load seed component "${name}":`, error);
     return null;
   }
 }
 
 async function clearComponent(prisma: PrismaClient, name: string): Promise<void> {
-  const mod = await loadSeedModule(name);
-  if (!mod) {
-    console.warn(`Skipping "${name}": module could not be loaded.`);
+  const action = CLEAR_ACTIONS[name];
+  if (action) {
+    await action(prisma);
     return;
   }
-  if (typeof mod.clear !== 'function') {
-    console.warn(`Skipping "${name}": clear() function not found in module.`);
-    return;
+
+  const seedModule = await loadSeedModule(name);
+  if (!seedModule) {
+    throw new Error(`Seed component "${name}" could not be loaded.`);
   }
+  if (typeof seedModule.clear !== "function") {
+    throw new Error(`Seed component "${name}" does not export clear().`);
+  }
+
   console.log(`Clearing "${name}"...`);
-  await mod.clear!(prisma);
+  await seedModule.clear(prisma);
   console.log(`Cleared "${name}".`);
 }
 
-async function clearPagesBySlug(prisma: PrismaClient, slugs: string[]): Promise<void> {
-  console.log(`Clearing PageContents with slugs: ${slugs.join(', ')}...`);
+async function clearPagesBySlug(
+  prisma: DatabaseClient,
+  slugs: readonly string[],
+): Promise<void> {
+  console.log(`Clearing PageContents with slugs: ${slugs.join(", ")}...`);
   const result = await prisma.pageContent.deleteMany({
-    where: {
-      slug: {
-        in: slugs,
-      },
-    },
+    where: { slug: { in: [...slugs] } },
   });
   console.log(`Deleted ${result.count} PageContent record(s).`);
 }
 
-async function clearImages(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all images...');
+async function clearImages(prisma: DatabaseClient): Promise<void> {
+  console.log("Clearing all images...");
   const result = await prisma.image.deleteMany({});
   console.log(`Deleted ${result.count} image(s).`);
 }
 
-async function clearTypes(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all types (slugs)...');
+async function clearTypes(prisma: DatabaseClient): Promise<void> {
+  console.log("Clearing all types (slugs)...");
   const result = await prisma.type.deleteMany({});
   console.log(`Deleted ${result.count} type(s).`);
 }
 
 async function clearCtas(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all CTA sections...');
-  const sectionsResult = await prisma.ctaSection.deleteMany({});
-  console.log(`Deleted ${sectionsResult.count} CTA section(s).`);
+  await inTransaction(prisma, async (transaction) => {
+    console.log("Clearing all CTA sections...");
+    const sections = await transaction.ctaSection.deleteMany({});
+    console.log(`Deleted ${sections.count} CTA section(s).`);
 
-  console.log('Clearing all CTAs...');
-  const ctasResult = await prisma.cta.deleteMany({});
-  console.log(`Deleted ${ctasResult.count} CTA(s).`);
+    console.log("Clearing all CTAs...");
+    const ctas = await transaction.cta.deleteMany({});
+    console.log(`Deleted ${ctas.count} CTA(s).`);
+  });
 }
 
-async function clearLanguages(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all languages...');
+async function clearLanguages(prisma: DatabaseClient): Promise<void> {
+  console.log("Clearing all languages...");
   const result = await prisma.language.deleteMany({});
   console.log(`Deleted ${result.count} language(s).`);
 }
 
 async function clearTestimonials(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all testimonial sections...');
-  const sectionsResult = await prisma.testimonialSection.deleteMany({});
-  console.log(`Deleted ${sectionsResult.count} testimonial section(s).`);
+  await inTransaction(prisma, async (transaction) => {
+    console.log("Clearing all testimonial sections...");
+    const sections = await transaction.testimonialSection.deleteMany({});
+    console.log(`Deleted ${sections.count} testimonial section(s).`);
 
-  console.log('Clearing all testimonial items...');
-  const itemsResult = await prisma.testimonialItem.deleteMany({});
-  console.log(`Deleted ${itemsResult.count} testimonial item(s).`);
+    console.log("Clearing all testimonial items...");
+    const items = await transaction.testimonialItem.deleteMany({});
+    console.log(`Deleted ${items.count} testimonial item(s).`);
 
-  console.log('Clearing all testimonial badges...');
-  const badgesResult = await prisma.testimonialBadge.deleteMany({});
-  console.log(`Deleted ${badgesResult.count} testimonial badge(s).`);
+    console.log("Clearing all testimonial badges...");
+    const badges = await transaction.testimonialBadge.deleteMany({});
+    console.log(`Deleted ${badges.count} testimonial badge(s).`);
+  });
 }
 
 async function clearHeroes(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all heroes...');
-  const heroesResult = await prisma.hero.deleteMany({});
-  console.log(`Deleted ${heroesResult.count} hero section(s).`);
+  await inTransaction(prisma, async (transaction) => {
+    console.log("Clearing all heroes...");
+    const heroes = await transaction.hero.deleteMany({});
+    console.log(`Deleted ${heroes.count} hero section(s).`);
 
-  console.log('Clearing all hero banners...');
-  const bannersResult = await prisma.heroBanner.deleteMany({});
-  console.log(`Deleted ${bannersResult.count} hero banner(s).`);
+    console.log("Clearing all hero banners...");
+    const banners = await transaction.heroBanner.deleteMany({});
+    console.log(`Deleted ${banners.count} hero banner(s).`);
 
-  console.log('Clearing all hero banner additionals...');
-  const additionalsResult = await prisma.heroBannerAdditional.deleteMany({});
-  console.log(`Deleted ${additionalsResult.count} hero banner additional(s).`);
+    console.log("Clearing all hero banner additionals...");
+    const additionals = await transaction.heroBannerAdditional.deleteMany({});
+    console.log(`Deleted ${additionals.count} hero banner additional(s).`);
+  });
 }
 
 async function clearBenefits(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all benefit sections...');
-  const sectionsResult = await prisma.benefitSection.deleteMany({});
-  console.log(`Deleted ${sectionsResult.count} benefit section(s).`);
+  await inTransaction(prisma, async (transaction) => {
+    console.log("Clearing all benefit sections...");
+    const sections = await transaction.benefitSection.deleteMany({});
+    console.log(`Deleted ${sections.count} benefit section(s).`);
 
-  console.log('Clearing all benefits...');
-  const benefitsResult = await prisma.benefit.deleteMany({});
-  console.log(`Deleted ${benefitsResult.count} benefit(s).`);
+    console.log("Clearing all benefits...");
+    const benefits = await transaction.benefit.deleteMany({});
+    console.log(`Deleted ${benefits.count} benefit(s).`);
+  });
 }
 
 async function clearFaqs(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all FAQ sections...');
-  const sectionsResult = await prisma.faqSection.deleteMany({});
-  console.log(`Deleted ${sectionsResult.count} FAQ section(s).`);
+  await inTransaction(prisma, async (transaction) => {
+    console.log("Clearing all FAQ sections...");
+    const sections = await transaction.faqSection.deleteMany({});
+    console.log(`Deleted ${sections.count} FAQ section(s).`);
 
-  console.log('Clearing all FAQs...');
-  const faqsResult = await prisma.faq.deleteMany({});
-  console.log(`Deleted ${faqsResult.count} FAQ(s).`);
+    console.log("Clearing all FAQs...");
+    const faqs = await transaction.faq.deleteMany({});
+    console.log(`Deleted ${faqs.count} FAQ(s).`);
+  });
 }
 
 async function clearCertifications(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all certification sections...');
-  const sectionsResult = await prisma.certificationSection.deleteMany({});
-  console.log(`Deleted ${sectionsResult.count} certification section(s).`);
+  await inTransaction(prisma, async (transaction) => {
+    console.log("Clearing all certification sections...");
+    const sections = await transaction.certificationSection.deleteMany({});
+    console.log(`Deleted ${sections.count} certification section(s).`);
 
-  console.log('Clearing all certifications...');
-  const certificationsResult = await prisma.certification.deleteMany({});
-  console.log(`Deleted ${certificationsResult.count} certification(s).`);
+    console.log("Clearing all certifications...");
+    const certifications = await transaction.certification.deleteMany({});
+    console.log(`Deleted ${certifications.count} certification(s).`);
+  });
 }
 
-async function clearFeatures(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all features...');
+async function clearFeatures(prisma: DatabaseClient): Promise<void> {
+  console.log("Clearing all features...");
   const result = await prisma.feature.deleteMany({});
   console.log(`Deleted ${result.count} feature(s).`);
 }
 
-async function clearMaps(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all maps...');
+async function clearMaps(prisma: DatabaseClient): Promise<void> {
+  console.log("Clearing all maps...");
   const result = await prisma.map.deleteMany({});
   console.log(`Deleted ${result.count} map(s).`);
 }
 
 async function clearApproaches(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all approaches...');
-  const approachesResult = await prisma.approach.deleteMany({});
-  console.log(`Deleted ${approachesResult.count} approach(es).`);
+  await inTransaction(prisma, async (transaction) => {
+    console.log("Clearing all approaches...");
+    const approaches = await transaction.approach.deleteMany({});
+    console.log(`Deleted ${approaches.count} approach(es).`);
 
-  console.log('Clearing all approach steps...');
-  const stepsResult = await prisma.approachStep.deleteMany({});
-  console.log(`Deleted ${stepsResult.count} approach step(s).`);
+    console.log("Clearing all approach steps...");
+    const steps = await transaction.approachStep.deleteMany({});
+    console.log(`Deleted ${steps.count} approach step(s).`);
+  });
 }
 
 async function clearAbout(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all about sections...');
-  const aboutResult = await prisma.about.deleteMany({});
-  console.log(`Deleted ${aboutResult.count} about section(s).`);
+  await inTransaction(prisma, async (transaction) => {
+    console.log("Clearing all about sections...");
+    const about = await transaction.about.deleteMany({});
+    console.log(`Deleted ${about.count} about section(s).`);
 
-  console.log('Clearing all about values...');
-  const valuesResult = await prisma.value.deleteMany({});
-  console.log(`Deleted ${valuesResult.count} value(s).`);
+    console.log("Clearing all about values...");
+    const values = await transaction.value.deleteMany({});
+    console.log(`Deleted ${values.count} value(s).`);
+  });
 }
 
 async function clearAnalytics(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all analytics sections...');
-  const analyticsResult = await prisma.analytic.deleteMany({});
-  console.log(`Deleted ${analyticsResult.count} analytics section(s).`);
+  await inTransaction(prisma, async (transaction) => {
+    console.log("Clearing all analytics sections...");
+    const analytics = await transaction.analytic.deleteMany({});
+    console.log(`Deleted ${analytics.count} analytics section(s).`);
 
-  console.log('Clearing all analytics stats...');
-  const statsResult = await prisma.analyticsStat.deleteMany({});
-  console.log(`Deleted ${statsResult.count} analytics stat(s).`);
+    console.log("Clearing all analytics stats...");
+    const stats = await transaction.analyticsStat.deleteMany({});
+    console.log(`Deleted ${stats.count} analytics stat(s).`);
 
-  console.log('Clearing all analytics summary items...');
-  const summaryResult = await prisma.analyticsSummaryItem.deleteMany({});
-  console.log(`Deleted ${summaryResult.count} analytics summary item(s).`);
+    console.log("Clearing all analytics summary items...");
+    const summaries = await transaction.analyticsSummaryItem.deleteMany({});
+    console.log(`Deleted ${summaries.count} analytics summary item(s).`);
+  });
 }
 
 async function clearNavigation(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all navigation sections...');
-  const navigationResult = await prisma.navigation.deleteMany({});
-  console.log(`Deleted ${navigationResult.count} navigation section(s).`);
+  await inTransaction(prisma, async (transaction) => {
+    console.log("Clearing all navigation sections...");
+    const navigation = await transaction.navigation.deleteMany({});
+    console.log(`Deleted ${navigation.count} navigation section(s).`);
 
-  console.log('Clearing all navigation links...');
-  const linksResult = await prisma.navigationLink.deleteMany({});
-  console.log(`Deleted ${linksResult.count} navigation link(s).`);
+    console.log("Clearing all navigation links...");
+    const links = await transaction.navigationLink.deleteMany({});
+    console.log(`Deleted ${links.count} navigation link(s).`);
+  });
 }
 
 async function clearResume(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all resume data...');
+  await inTransaction(prisma, async (transaction) => {
+    console.log("Clearing all resume data...");
 
-  const resumeResult = await prisma.resume.deleteMany({});
-  console.log(`Deleted ${resumeResult.count} resume(s).`);
-
-  const basicInfoResult = await prisma.resumeBasicInformation.deleteMany({});
-  console.log(`Deleted ${basicInfoResult.count} resume basic information record(s).`);
-
-  const workResult = await prisma.resumeWork.deleteMany({});
-  console.log(`Deleted ${workResult.count} resume work record(s).`);
-
-  const volunteerResult = await prisma.resumeVolunteer.deleteMany({});
-  console.log(`Deleted ${volunteerResult.count} resume volunteer record(s).`);
-
-  const educationResult = await prisma.resumeEducation.deleteMany({});
-  console.log(`Deleted ${educationResult.count} resume education record(s).`);
-
-  const awardResult = await prisma.resumeAward.deleteMany({});
-  console.log(`Deleted ${awardResult.count} resume award(s).`);
-
-  const publicationResult = await prisma.resumePublication.deleteMany({});
-  console.log(`Deleted ${publicationResult.count} resume publication(s).`);
-
-  const skillResult = await prisma.resumeSkill.deleteMany({});
-  console.log(`Deleted ${skillResult.count} resume skill(s).`);
-
-  const languageResult = await prisma.resumeLanguage.deleteMany({});
-  console.log(`Deleted ${languageResult.count} resume language(s).`);
-
-  const interestResult = await prisma.resumeInterest.deleteMany({});
-  console.log(`Deleted ${interestResult.count} resume interest(s).`);
-
-  const referenceResult = await prisma.resumeReference.deleteMany({});
-  console.log(`Deleted ${referenceResult.count} resume reference(s).`);
-
-  const projectResult = await prisma.resumeProject.deleteMany({});
-  console.log(`Deleted ${projectResult.count} resume project(s).`);
-
-  const locationResult = await prisma.resumeLocation.deleteMany({});
-  console.log(`Deleted ${locationResult.count} resume location(s).`);
-
-  const profileResult = await prisma.resumeProfile.deleteMany({});
-  console.log(`Deleted ${profileResult.count} resume profile(s).`);
-
-  const highlightResult = await prisma.resumeHighlight.deleteMany({});
-  console.log(`Deleted ${highlightResult.count} resume highlight(s).`);
+    const resume = await transaction.resume.deleteMany({});
+    console.log(`Deleted ${resume.count} resume(s).`);
+    const basicInfo = await transaction.resumeBasicInformation.deleteMany({});
+    console.log(`Deleted ${basicInfo.count} resume basic information record(s).`);
+    const work = await transaction.resumeWork.deleteMany({});
+    console.log(`Deleted ${work.count} resume work record(s).`);
+    const volunteer = await transaction.resumeVolunteer.deleteMany({});
+    console.log(`Deleted ${volunteer.count} resume volunteer record(s).`);
+    const education = await transaction.resumeEducation.deleteMany({});
+    console.log(`Deleted ${education.count} resume education record(s).`);
+    const awards = await transaction.resumeAward.deleteMany({});
+    console.log(`Deleted ${awards.count} resume award(s).`);
+    const publications = await transaction.resumePublication.deleteMany({});
+    console.log(`Deleted ${publications.count} resume publication(s).`);
+    const skills = await transaction.resumeSkill.deleteMany({});
+    console.log(`Deleted ${skills.count} resume skill(s).`);
+    const languages = await transaction.resumeLanguage.deleteMany({});
+    console.log(`Deleted ${languages.count} resume language(s).`);
+    const interests = await transaction.resumeInterest.deleteMany({});
+    console.log(`Deleted ${interests.count} resume interest(s).`);
+    const references = await transaction.resumeReference.deleteMany({});
+    console.log(`Deleted ${references.count} resume reference(s).`);
+    const projects = await transaction.resumeProject.deleteMany({});
+    console.log(`Deleted ${projects.count} resume project(s).`);
+    const locations = await transaction.resumeLocation.deleteMany({});
+    console.log(`Deleted ${locations.count} resume location(s).`);
+    const profiles = await transaction.resumeProfile.deleteMany({});
+    console.log(`Deleted ${profiles.count} resume profile(s).`);
+    const highlights = await transaction.resumeHighlight.deleteMany({});
+    console.log(`Deleted ${highlights.count} resume highlight(s).`);
+  });
 }
 
 async function clearPageContents(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all page contents...');
+  await inTransaction(prisma, async (transaction) => {
+    console.log("Clearing all page contents...");
+    const sections = await transaction.section.deleteMany({});
+    console.log(`Deleted ${sections.count} section(s).`);
+    const pageContents = await transaction.pageContent.deleteMany({});
+    console.log(`Deleted ${pageContents.count} page content(s).`);
+  });
+}
 
-  const sectionsResult = await prisma.section.deleteMany({});
-  console.log(`Deleted ${sectionsResult.count} section(s).`);
-
-  const pageContentsResult = await prisma.pageContent.deleteMany({});
-  console.log(`Deleted ${pageContentsResult.count} page content(s).`);
+async function clearLegalPages(prisma: PrismaClient): Promise<void> {
+  await clearPagesBySlug(prisma, LEGAL_PAGE_SLUGS);
 }
 
 async function clearFooter(prisma: PrismaClient): Promise<void> {
-  console.log('Clearing all footers...');
-  const footerResult = await prisma.footer.deleteMany({});
-  console.log(`Deleted ${footerResult.count} footer(s).`);
+  await inTransaction(prisma, async (transaction) => {
+    console.log("Clearing all footers...");
+    const footers = await transaction.footer.deleteMany({});
+    console.log(`Deleted ${footers.count} footer(s).`);
 
-  console.log('Clearing all footer sections...');
-  const footerSectionResult = await prisma.footerSection.deleteMany({});
-  console.log(`Deleted ${footerSectionResult.count} footer section(s).`);
+    console.log("Clearing all footer sections...");
+    const sections = await transaction.footerSection.deleteMany({});
+    console.log(`Deleted ${sections.count} footer section(s).`);
 
-  console.log('Clearing footer navigation links...');
-  const footerSlug = await prisma.type.findFirst({
-    where: { label: 'footer' },
-  });
-  if (footerSlug) {
-    const linksResult = await prisma.navigationLink.deleteMany({
-      where: { typeId: footerSlug.id },
+    console.log("Clearing footer navigation links...");
+    const footerType = await transaction.type.findFirst({
+      where: { label: "footer" },
+      select: { id: true },
     });
-    console.log(`Deleted ${linksResult.count} footer navigation link(s).`);
-  }
+    if (footerType) {
+      const links = await transaction.navigationLink.deleteMany({
+        where: { typeId: footerType.id },
+      });
+      console.log(`Deleted ${links.count} footer navigation link(s).`);
+    }
 
-  console.log('Clearing footer section keys...');
-  const keysResult = await prisma.footerSectionKey.deleteMany({});
-  console.log(`Deleted ${keysResult.count} footer section key(s).`);
+    console.log("Clearing footer section keys...");
+    const keys = await transaction.footerSectionKey.deleteMany({});
+    console.log(`Deleted ${keys.count} footer section key(s).`);
+  });
 }
 
-/**
- * Display help information
- */
-function displayHelp() {
-  console.log(`
-╔════════════════════════════════════════════════════════════════════════════╗
-║                   🗑️  Keystone CMS Database Clear Tool                     ║
-╚════════════════════════════════════════════════════════════════════════════╝
+const CLEAR_ACTIONS: Record<string, ClearAction> = {
+  about: clearAbout,
+  analytics: clearAnalytics,
+  approaches: clearApproaches,
+  benefits: clearBenefits,
+  certifications: clearCertifications,
+  ctas: clearCtas,
+  faqs: clearFaqs,
+  features: clearFeatures,
+  footer: clearFooter,
+  heroes: clearHeroes,
+  images: clearImages,
+  languages: clearLanguages,
+  legalPages: clearLegalPages,
+  maps: clearMaps,
+  navigation: clearNavigation,
+  pageContents: clearPageContents,
+  resume: clearResume,
+  slugs: clearTypes,
+  testimonials: clearTestimonials,
+};
 
-DESCRIPTION:
-  Clear seeded data from your Keystone CMS database. Use this to remove
-  specific components or all seeded data.
+const FLAG_COMPONENTS: Record<string, string> = {
+  "--about": "about",
+  "--analytics": "analytics",
+  "--approaches": "approaches",
+  "--benefits": "benefits",
+  "--certifications": "certifications",
+  "--ctas": "ctas",
+  "--faqs": "faqs",
+  "--features": "features",
+  "--footer": "footer",
+  "--heroes": "heroes",
+  "--images": "images",
+  "--languages": "languages",
+  "--legal-pages": "legalPages",
+  "--maps": "maps",
+  "--navigation": "navigation",
+  "--page-contents": "pageContents",
+  "--resume": "resume",
+  "--testimonials": "testimonials",
+  "--types": "slugs",
+};
+
+function isProductionEnvironment(): boolean {
+  return process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production";
+}
+
+function hasProductionConfirmation(args: string[]): boolean {
+  return (
+    args.includes(PRODUCTION_CONFIRMATION_FLAG) ||
+    process.env[PRODUCTION_CONFIRMATION_ENV] === "true"
+  );
+}
+
+function displayHelp(): void {
+  console.log(`
+🗑️  Keystone CMS Database Clear Tool
 
 USAGE:
-  npm run db:clear [COMPONENTS...]
-  npm run db:clear -- [OPTIONS]
+  pnpm db:clear -- [OPTIONS] [COMPONENTS...]
 
 OPTIONS:
-  --all, -a              Clear all default components
-  --help, -h             Display this help message
+  --all, -a                    Clear every default component
+  --pages <slug...>            Clear listed PageContent slugs; must be last
+  --legal-pages                Clear the configured legal PageContent records
+  --help, -h                   Display this help message
+  ${PRODUCTION_CONFIRMATION_FLAG}
+                               Required in production unless
+                               ${PRODUCTION_CONFIRMATION_ENV}=true
 
-NOTE: When using flags with npm run, you must use -- before the flags:
-  npm run db:clear -- --resume
-  npm run db:clear:resume  (shortcut without --)
+COMPONENT FLAGS:
+  ${Object.keys(FLAG_COMPONENTS).join("  ")}
 
-COMPONENT-SPECIFIC FLAGS:
-  --footer               Clear all footer data (sections, links, keys)
-  --page-contents        Clear all page contents and sections
-  --resume               Clear all resume/CV data
-  --navigation           Clear all navigation menus and links
-  --analytics            Clear all analytics data (stats, summaries)
-  --about                Clear all about sections and values
-  --approaches           Clear all approach workflows and steps
-  --maps                 Clear all map sections
-  --features             Clear all feature sections
-  --certifications       Clear all certification sections
-  --faqs                 Clear all FAQ sections
-  --benefits             Clear all benefit sections
-  --heroes               Clear all hero sections
-  --testimonials         Clear all testimonial sections
-  --languages            Clear all language configurations
-  --ctas                 Clear all CTA buttons and sections
-  --types                Clear all type records (slugs)
-  --images               Clear all image assets
-  --pages <slug...>      Clear specific page contents by slug
-
-COMPONENTS (by name):
-  You can also clear components by name (module-based clearing):
-${DEFAULT_COMPONENTS.map(c => `    • ${c}`).join('\n')}
+COMPONENT NAMES:
+  ${DEFAULT_COMPONENTS.join("  ")}
 
 EXAMPLES:
-  # Clear all default components
-  npm run db:clear:all
-  npm run db:clear -- --all
+  pnpm db:clear -- --resume --analytics --navigation
+  pnpm db:clear -- resume legalPages
+  pnpm db:clear -- --resume --pages privacy-policy terms
+  pnpm db:clear -- --all
 
-  # Clear specific component by flag (requires --)
-  npm run db:clear:resume
-  npm run db:clear -- --resume
-  npm run db:clear -- --footer
-  npm run db:clear -- --navigation
+PRODUCTION:
+  NODE_ENV=production pnpm db:clear -- --resume ${PRODUCTION_CONFIRMATION_FLAG}
+  ${PRODUCTION_CONFIRMATION_ENV}=true NODE_ENV=production pnpm db:clear -- --resume
 
-  # Clear specific component by name (no -- needed)
-  npm run db:clear resume
-  npm run db:clear images slugs
-
-  # Clear multiple components
-  npm run db:clear resume analytics navigation
-
-  # Clear specific pages by slug (requires --)
-  npm run db:clear -- --pages privacy-policy terms-of-service
-
-  # Get help
-  npm run db:clear:help
-  npm run db:clear -- --help
-
-NOTES:
-  ⚠️  CAUTION: This operation deletes data from the database!
-  • Always backup your database before clearing data
-  • Some components have dependencies that must be cleared in order
-  • Use --all to clear all default components
-  • Component-specific flags provide more control over deletion
-
-RELATED COMMANDS:
-  npm run db:seed          Seed database with initial data
-  npm run db:reset         Reset database schema (deletes ALL data)
-  npm run db:fresh         Reset database and re-seed all components
-
-For more information, see: ./seed/SCRIPTS.md
+⚠️  Every component clear deletes all records in its target tables. Back up the
+   database first. Components run in argument order; --pages must be last and
+   its requested pages are deleted after component clears.
 `);
 }
 
-async function main() {
+function parseRequests(args: string[]): {
+  components: string[];
+  pageSlugs: string[];
+} {
+  const components: string[] = [];
+  const pageSlugs: string[] = [];
+  const addComponent = (component: string) => {
+    if (!components.includes(component)) components.push(component);
+  };
+
+  if (args.includes("--all") || args.includes("-a")) {
+    DEFAULT_COMPONENTS.forEach(addComponent);
+  }
+
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index];
+
+    if (
+      argument === "--" ||
+      argument === "--all" ||
+      argument === "-a" ||
+      argument === PRODUCTION_CONFIRMATION_FLAG
+    ) {
+      continue;
+    }
+
+    if (argument === "--pages") {
+      index += 1;
+      while (index < args.length && !args[index].startsWith("-")) {
+        pageSlugs.push(args[index]);
+        index += 1;
+      }
+      index -= 1;
+      continue;
+    }
+
+    const flagComponent = FLAG_COMPONENTS[argument];
+    if (flagComponent) {
+      addComponent(flagComponent);
+      continue;
+    }
+
+    if (argument.startsWith("-")) {
+      throw new Error(`Unknown option: ${argument}`);
+    }
+
+    addComponent(argument);
+  }
+
+  return { components, pageSlugs: [...new Set(pageSlugs)] };
+}
+
+async function main(): Promise<void> {
   const args = process.argv.slice(2);
-  const prisma = new PrismaClient();
 
-  // Check for help flag
-  if (args.includes('--help') || args.includes('-h')) {
+  if (args.includes("--help") || args.includes("-h")) {
     displayHelp();
-    process.exit(0);
-  }
-
-  // Check for --footer flag
-  const footerFlag = args.includes('--footer');
-  if (footerFlag) {
-    try {
-      await clearFooter(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
     return;
   }
 
-  // Check for --page-contents flag
-  const pageContentsFlag = args.includes('--page-contents');
-  if (pageContentsFlag) {
-    try {
-      await clearPageContents(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --resume flag
-  const resumeFlag = args.includes('--resume');
-  if (resumeFlag) {
-    try {
-      await clearResume(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --navigation flag
-  const navigationFlag = args.includes('--navigation');
-  if (navigationFlag) {
-    try {
-      await clearNavigation(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --analytics flag
-  const analyticsFlag = args.includes('--analytics');
-  if (analyticsFlag) {
-    try {
-      await clearAnalytics(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --about flag
-  const aboutFlag = args.includes('--about');
-  if (aboutFlag) {
-    try {
-      await clearAbout(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --approaches flag
-  const approachesFlag = args.includes('--approaches');
-  if (approachesFlag) {
-    try {
-      await clearApproaches(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --maps flag
-  const mapsFlag = args.includes('--maps');
-  if (mapsFlag) {
-    try {
-      await clearMaps(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --features flag
-  const featuresFlag = args.includes('--features');
-  if (featuresFlag) {
-    try {
-      await clearFeatures(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --certifications flag
-  const certificationsFlag = args.includes('--certifications');
-  if (certificationsFlag) {
-    try {
-      await clearCertifications(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --faqs flag
-  const faqsFlag = args.includes('--faqs');
-  if (faqsFlag) {
-    try {
-      await clearFaqs(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --benefits flag
-  const benefitsFlag = args.includes('--benefits');
-  if (benefitsFlag) {
-    try {
-      await clearBenefits(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --heroes flag
-  const heroesFlag = args.includes('--heroes');
-  if (heroesFlag) {
-    try {
-      await clearHeroes(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --testimonials flag
-  const testimonialsFlag = args.includes('--testimonials');
-  if (testimonialsFlag) {
-    try {
-      await clearTestimonials(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --languages flag
-  const languagesFlag = args.includes('--languages');
-  if (languagesFlag) {
-    try {
-      await clearLanguages(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --ctas flag
-  const ctasFlag = args.includes('--ctas');
-  if (ctasFlag) {
-    try {
-      await clearCtas(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --types flag
-  const typesFlag = args.includes('--types');
-  if (typesFlag) {
-    try {
-      await clearTypes(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --images flag
-  const imagesFlag = args.includes('--images');
-  if (imagesFlag) {
-    try {
-      await clearImages(prisma);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Check for --pages flag
-  const pagesIndex = args.indexOf('--pages');
-  if (pagesIndex !== -1) {
-    const slugs = args.slice(pagesIndex + 1).filter(a => !a.startsWith('-'));
-    if (slugs.length === 0) {
-      console.log('No slugs specified with --pages flag.');
-      console.log('Usage:');
-      console.log('  ts-node --transpile-only ./seed/clear.ts --pages <slug1> [slug2...]');
-      process.exit(0);
-    }
-    try {
-      await clearPagesBySlug(prisma, slugs);
-      console.log('Clear operation completed.');
-    } catch (err) {
-      console.error('Error during clear operation:', err);
-      process.exitCode = 1;
-    } finally {
-      await prisma.$disconnect();
-    }
-    return;
-  }
-
-  // Determine target components to clear
-  const isAll = args.includes('--all') || args.includes('-a');
-  const explicitNames = args.filter(a => !a.startsWith('-'));
-
-  const componentsToClear = isAll
-    ? DEFAULT_COMPONENTS
-    : explicitNames.length > 0
-      ? explicitNames
-      : [];
-
-  if (componentsToClear.length === 0) {
-    console.log('❌ No components specified to clear.');
-    console.log('\nUse --help to see available options:');
-    console.log('  npm run db:clear --help');
-    process.exit(0);
-  }
-
+  let requests: ReturnType<typeof parseRequests>;
   try {
-    for (const name of componentsToClear) {
-      await clearComponent(prisma, name);
+    requests = parseRequests(args);
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+    displayHelp();
+    process.exitCode = 1;
+    return;
+  }
+
+  if (requests.components.length === 0 && requests.pageSlugs.length === 0) {
+    console.error("No components or page slugs specified to clear.");
+    displayHelp();
+    process.exitCode = 1;
+    return;
+  }
+
+  if (args.includes("--pages") && requests.pageSlugs.length === 0) {
+    console.error("No slugs specified after --pages.");
+    process.exitCode = 1;
+    return;
+  }
+
+  if (isProductionEnvironment() && !hasProductionConfirmation(args)) {
+    console.error(
+      `Refusing to clear a production database. Pass ${PRODUCTION_CONFIRMATION_FLAG} ` +
+        `or set ${PRODUCTION_CONFIRMATION_ENV}=true to confirm this destructive operation.`,
+    );
+    process.exitCode = 1;
+    return;
+  }
+
+  const prisma = createPrismaClient();
+  try {
+    for (const component of requests.components) {
+      console.log(`\nClearing component "${component}"...`);
+      await clearComponent(prisma, component);
+      console.log(`Cleared component "${component}".`);
     }
-    console.log('Clear operation completed.');
-  } catch (err) {
-    console.error('Error during clear operation:', err);
+
+    if (requests.pageSlugs.length > 0) {
+      console.log("\nClearing requested pages...");
+      await clearPagesBySlug(prisma, requests.pageSlugs);
+    }
+
+    console.log("\nClear operation completed.");
+  } catch (error) {
+    console.error("Error during clear operation:", error);
     process.exitCode = 1;
   } finally {
     await prisma.$disconnect();
   }
 }
 
-main();
+void main();

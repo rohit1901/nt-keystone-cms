@@ -1,12 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@keystone-ui/core';
-import { CellContainer } from '@keystone-6/core/admin-ui/components';
-import { CellComponent } from '@keystone-6/core/types';
-import Image from 'next/image';
+import { CellContainer } from "@keystone-6/core/admin-ui/components";
+import type { CellComponent } from "@keystone-6/core/types";
 
-export const Cell: CellComponent = ({ item, field }) => {
-  const src = item.preview;
+export const Cell: CellComponent = ({ item }) => {
+  const src = typeof item.preview === "string" ? item.preview : null;
 
   if (!src) return <CellContainer>No Image</CellContainer>;
 
@@ -15,10 +11,14 @@ export const Cell: CellComponent = ({ item, field }) => {
       <img
         src={src}
         alt="Preview"
-        className='w-10 h-10'
+        loading="lazy"
+        decoding="async"
+        width={40}
+        height={40}
+        className="h-10 w-10"
         style={{
-          objectFit: 'contain',
-          borderRadius: '4px',
+          objectFit: "contain",
+          borderRadius: "4px",
         }}
       />
     </CellContainer>

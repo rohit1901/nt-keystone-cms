@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../prisma";
 import { Feature } from "../../data";
 import { SeededFooterLanguages } from "./footer";
 
@@ -89,9 +89,18 @@ export const features: Feature[] = [
 ];
 
 const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
-  // Get all existing features to check for duplicates
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
+  const featureKeys = features.flatMap((feature) => {
+    const languageId = languageIdByValue.get(feature.language.value);
+    return languageId ? [{ featureId: feature.featureId, languageId }] : [];
+  });
+
+  // Get existing seeded features to check for duplicates
   const existingFeatures = await prisma.feature.findMany({
-    select: { id: true, featureId: true, title: true, languageId: true },
+    where: { OR: featureKeys },
+    select: { id: true, featureId: true, languageId: true },
   });
 
   // Create unique keys based on featureId + languageId
@@ -102,9 +111,7 @@ const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
   // Filter out features that already exist
   const featuresToCreate = features
     .map((feature) => {
-      const languageId = languages.find(
-        (language) => language.value === feature.language.value,
-      )?.id;
+      const languageId = languageIdByValue.get(feature.language.value);
 
       if (!languageId) {
         console.warn(`! Language not found: ${feature.language.value}`);

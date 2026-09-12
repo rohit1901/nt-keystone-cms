@@ -1,23 +1,24 @@
-# Makefile for PostgreSQL Docker Compose setup
-.PHONY: container up down logs psql clean status
+COMPOSE := docker compose -f docker-compose.postgres.yml
+
+.PHONY: container up down logs psql status clean
 
 container: up
 
 up:
-	docker compose -f docker-compose.postgres.yml up -d --build
+	$(COMPOSE) up -d
 
 down:
-	docker compose -f docker-compose.postgres.yml down
+	$(COMPOSE) down
 
 logs:
-	docker compose -f docker-compose.postgres.yml logs -f db
+	$(COMPOSE) logs -f db
 
 psql:
-	docker compose -f docker-compose.postgres.yml exec db psql -U admin -d nimbus-tech-db
+	$(COMPOSE) exec db sh -c 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"'
 
 status:
-	docker compose -f docker-compose.postgres.yml ps
+	$(COMPOSE) ps
 
+# DESTRUCTIVE: removes the PostgreSQL container and its persisted named volume.
 clean:
-	docker compose -f docker-compose.postgres.yml down -v
-	docker system prune -f
+	$(COMPOSE) down --volumes --remove-orphans

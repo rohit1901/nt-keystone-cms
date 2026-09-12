@@ -1,4 +1,4 @@
-import type { Language, PrismaClient } from "@prisma/client";
+import type { Language, PrismaClient } from "../prisma";
 import { AboutSection } from "../../data";
 
 export type SeededValues = Awaited<ReturnType<typeof seedValues>>;
@@ -113,23 +113,36 @@ const seedValues = async (
     })),
   );
 
-  const foundEnglish =
+  const [foundEnglish, foundGerman] = await Promise.all([
     languages?.english ??
-    (await prisma.language.findFirstOrThrow({
-      where: { value: "en-US" },
-    }));
-  const foundGerman =
+      prisma.language.findFirstOrThrow({
+        where: { value: "en-US" },
+        select: { id: true, value: true },
+      }),
     languages?.german ??
-    (await prisma.language.findFirstOrThrow({
-      where: { value: "de-DE" },
-    }));
+      prisma.language.findFirstOrThrow({
+        where: { value: "de-DE" },
+        select: { id: true, value: true },
+      }),
+  ]);
+  const languageIdByValue = new Map([
+    [foundEnglish.value, foundEnglish.id],
+    [foundGerman.value, foundGerman.id],
+  ]);
+  const resolvedValues = valuesWithLanguage.map((value) => ({
+    ...value,
+    languageId: languageIdByValue.get(value.languageValue)!,
+  }));
 
-  // Check for existing values
+  // Check only for existing values matching known seed keys.
   const existingValues = await prisma.value.findMany({
     where: {
-      languageId: { in: [foundEnglish.id, foundGerman.id] },
-      label: { in: valuesWithLanguage.map((value) => value.label) },
+      OR: resolvedValues.map(({ label, languageId }) => ({
+        label,
+        languageId,
+      })),
     },
+    select: { id: true, label: true, languageId: true },
   });
 
   const existingKeys = new Set(
@@ -137,36 +150,25 @@ const seedValues = async (
   );
 
   // Only create values that don't exist
-  const valuesToCreate = valuesWithLanguage.filter((value) => {
-    const languageId =
-      value.languageValue === "en-US" ? foundEnglish.id : foundGerman.id;
-    const key = `${value.label}-${languageId}`;
-    return !existingKeys.has(key);
-  });
+  const valuesToCreate = resolvedValues.filter(
+    (value) => !existingKeys.has(`${value.label}-${value.languageId}`),
+  );
 
-  let seededValues = [];
+  let values = existingValues;
   if (valuesToCreate.length > 0) {
-    seededValues = await prisma.value.createManyAndReturn({
+    const seededValues = await prisma.value.createManyAndReturn({
       data: valuesToCreate.map((value) => ({
         label: value.label,
         description: value.description,
         icon: value.icon,
-        languageId:
-          value.languageValue === "en-US" ? foundEnglish.id : foundGerman.id,
+        languageId: value.languageId,
       })),
     });
+    values = [...existingValues, ...seededValues];
     console.log(`✓ Created ${seededValues.length} new about values`);
   } else {
     console.log(`✓ All about values already exist, skipping creation`);
   }
-
-  // Return all values (existing + newly created)
-  const values = await prisma.value.findMany({
-    where: {
-      languageId: { in: [foundEnglish.id, foundGerman.id] },
-      label: { in: valuesWithLanguage.map((value) => value.label) },
-    },
-  });
 
   console.log(`✓ Total about values: ${values.length}`);
 
@@ -176,12 +178,16 @@ const seedValues = async (
 const seed = async (prisma: PrismaClient, seededValues?: SeededValues) => {
   console.log("Seeding about section...");
 
-  const foundEnglish = await prisma.language.findFirstOrThrow({
-    where: { value: "en-US" },
-  });
-  const foundGerman = await prisma.language.findFirstOrThrow({
-    where: { value: "de-DE" },
-  });
+  const [foundEnglish, foundGerman] = await Promise.all([
+    prisma.language.findFirstOrThrow({
+      where: { value: "en-US" },
+      select: { id: true, value: true },
+    }),
+    prisma.language.findFirstOrThrow({
+      where: { value: "de-DE" },
+      select: { id: true, value: true },
+    }),
+  ]);
 
   const values =
     seededValues ??
@@ -192,38 +198,36 @@ const seed = async (prisma: PrismaClient, seededValues?: SeededValues) => {
     where: {
       languageId: { in: [foundEnglish.id, foundGerman.id] },
     },
-    include: {
-      values: true,
-    },
+    select: { id: true, languageId: true },
   });
 
-  const existingLanguageIds = new Set(
-    existingAboutSections.map((section) => section.languageId),
+  const languageIdByValue = new Map([
+    [foundEnglish.value, foundEnglish.id],
+    [foundGerman.value, foundGerman.id],
+  ]);
+  const existingSectionByLanguageId = new Map(
+    existingAboutSections.map((section) => [section.languageId, section]),
+  );
+  const valueByKey = new Map(
+    values.map((value) => [`${value.languageId}|${value.label}`, value]),
   );
 
-  const aboutSections = [];
+  const aboutSections = await Promise.all(
+    aboutData.map(async (data) => {
+      const languageId = languageIdByValue.get(data.language.value)!;
+      const existingSection = existingSectionByLanguageId.get(languageId);
 
-  for (const data of aboutData) {
-    const languageId =
-      data.language.value === "en-US" ? foundEnglish.id : foundGerman.id;
+      if (existingSection) {
+        console.log(
+          `✓ About section for ${data.language.value} already exists (id: ${existingSection.id}), skipping`,
+        );
+        return existingSection;
+      }
 
-    const sectionValues = values.filter(
-      (value) =>
-        value.languageId === languageId &&
-        data.values.some((sectionValue) => sectionValue.label === value.label),
-    );
-
-    // Check if about section already exists for this language
-    const existingSection = existingAboutSections.find(
-      (section) => section.languageId === languageId,
-    );
-
-    if (existingSection) {
-      console.log(
-        `✓ About section for ${data.language.value} already exists (id: ${existingSection.id}), skipping`,
-      );
-      aboutSections.push(existingSection);
-    } else {
+      const sectionValues = data.values.flatMap((value) => {
+        const seededValue = valueByKey.get(`${languageId}|${value.label}`);
+        return seededValue ? [seededValue] : [];
+      });
       const newSection = await prisma.about.create({
         data: {
           heading: data.heading,
@@ -233,19 +237,15 @@ const seed = async (prisma: PrismaClient, seededValues?: SeededValues) => {
             connect: sectionValues.map((value) => ({ id: value.id })),
           },
           closing: data.closing,
-          language: {
-            connect: {
-              id: languageId,
-            },
-          },
+          language: { connect: { id: languageId } },
         },
       });
       console.log(
         `✓ Created about section for ${data.language.value} (id: ${newSection.id})`,
       );
-      aboutSections.push(newSection);
-    }
-  }
+      return newSection;
+    }),
+  );
 
   console.log(`✓ Total about sections: ${aboutSections.length}`);
 

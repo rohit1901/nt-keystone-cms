@@ -1,11 +1,10 @@
 import "dotenv/config";
-import type { PrismaClient } from "@prisma/client";
-import type { Maybe } from "../types";
+import type { PrismaClient } from "../prisma";
+
 import type { SeededSlugs } from "./slugs";
 import {
   CertificationImageKey,
   ImageConfig,
-  Slug,
   CtaImageKeys,
 } from "../../data";
 
@@ -154,23 +153,15 @@ const navigationPageContent = {
   },
 };
 
-const getTypeId = (type: Maybe<Slug>, slugs: Maybe<SeededSlugs>) => {
-  if (!type) return undefined;
-  if (!slugs) return undefined;
-  const slug = slugs.find(({ label }) => label === type);
-  return slug?.id;
-};
 
 const seed = async (prisma: PrismaClient, slugs: SeededSlugs) => {
-  const certificationSlugId = slugs.find(
-    ({ label }) => label === "certification",
-  )?.id;
-  if (!certificationSlugId) throw new Error("Certification slug not found");
-
-  const navigationSlugExists = slugs.some(
-    ({ label }) => label === "navigation",
-  );
-  if (!navigationSlugExists) throw new Error("Navigation slug not found");
+  const slugByLabel = new Map(slugs.map((slug) => [slug.label, slug.id]));
+  if (!slugByLabel.has("certification")) {
+    throw new Error("Certification slug not found");
+  }
+  if (!slugByLabel.has("navigation")) {
+    throw new Error("Navigation slug not found");
+  }
 
   if (!navigationPageContent.image) {
     throw new Error(
@@ -178,10 +169,20 @@ const seed = async (prisma: PrismaClient, slugs: SeededSlugs) => {
     );
   }
 
-  // Get all existing images by src to check for duplicates
-  const existingImages = await prisma.image.findMany();
+  // Get existing seeded images by src to check for duplicates
+  const existingImages = await prisma.image.findMany({
+    where: {
+      src: { in: Object.values(imageSeedData).map(({ src }) => src) },
+    },
+    select: {
+      id: true,
+      src: true,
+      alt: true,
+      typeId: true,
+    },
+  });
 
-  const existingImageSrcs = new Set(existingImages.map(img => img.src));
+  const existingImageSrcs = new Set(existingImages.map(({ src }) => src));
 
   // Prepare data for images that don't already exist
   const imagesToCreate = Object.entries(imageSeedData)
@@ -190,7 +191,7 @@ const seed = async (prisma: PrismaClient, slugs: SeededSlugs) => {
       ...value,
       type: undefined,
       fill: !!value.fill,
-      typeId: getTypeId(value.type, slugs),
+      typeId: value.type ? slugByLabel.get(value.type) : undefined,
     }));
 
   let newImagesCount = 0;

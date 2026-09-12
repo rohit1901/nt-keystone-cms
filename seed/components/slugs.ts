@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../prisma";
 import { Slug } from "../../data";
 
 export type SeededSlugs = Awaited<ReturnType<typeof seed>>;
@@ -19,13 +19,14 @@ export const slugs: Slug[] = [
 const seed = async (prisma: PrismaClient) => {
   // Get all existing types (slugs) to check for duplicates
   const existingTypes = await prisma.type.findMany({
+    where: { label: { in: slugs } },
     select: { id: true, label: true },
   });
 
-  const existingLabels = new Set(existingTypes.map(type => type.label));
+  const existingLabels = new Set(existingTypes.map(({ label }) => label));
 
   // Prepare data for types that don't already exist
-  const typesToCreate = slugs.filter(slug => !existingLabels.has(slug));
+  const typesToCreate = slugs.filter((slug) => !existingLabels.has(slug));
 
   let newTypesCount = 0;
   let seededTypes = [...existingTypes];

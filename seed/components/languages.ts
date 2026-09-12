@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../prisma";
 
 export type SeededLanguages = Awaited<ReturnType<typeof seed>>;
 
@@ -13,18 +13,27 @@ export const languageData = [
     label: "German",
     value: "de-DE",
   },
+  {
+    label: "Hindi",
+    value: "en-IN",
+  },
 ];
 
 const seed = async (prisma: PrismaClient) => {
   // Get all existing languages to check for duplicates
   const existingLanguages = await prisma.language.findMany({
+    where: { value: { in: languageData.map(({ value }) => value) } },
     select: { id: true, label: true, value: true },
   });
 
-  const existingLanguageValues = new Set(existingLanguages.map(lang => lang.value));
+  const existingLanguageValues = new Set(
+    existingLanguages.map(({ value }) => value),
+  );
 
   // Prepare data for languages that don't already exist
-  const languagesToCreate = languageData.filter(lang => !existingLanguageValues.has(lang.value));
+  const languagesToCreate = languageData.filter(
+    ({ value }) => !existingLanguageValues.has(value),
+  );
 
   let newLanguagesCount = 0;
   let seededLanguages = [...existingLanguages];

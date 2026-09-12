@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "../prisma";
 import type { SeededImages } from "./images";
 import type { SeededSlugs } from "./slugs";
 import {
@@ -90,9 +90,18 @@ const seedBadges = async (
   prisma: PrismaClient,
   languages: SeededFooterLanguages,
 ) => {
-  // Get all existing testimonial badges to check for duplicates
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
+  const badgeKeys = testimonialBadges.flatMap((badge) => {
+    const languageId = languageIdByValue.get(badge.language.value);
+    return languageId ? [{ label: badge.label, languageId }] : [];
+  });
+
+  // Get only existing badges matching known seed keys.
   const existingBadges = await prisma.testimonialBadge.findMany({
-    select: { id: true, label: true, icon: true, languageId: true },
+    where: { OR: badgeKeys },
+    select: { id: true, label: true, languageId: true },
   });
 
   // Create unique keys based on label + languageId
@@ -102,9 +111,7 @@ const seedBadges = async (
 
   const badgesToCreate = testimonialBadges
     .map((badge) => {
-      const langId = languages.find(
-        (lang) => lang.value === badge.language.value,
-      )?.id;
+      const langId = languageIdByValue.get(badge.language.value);
 
       if (!langId) {
         throw new Error(`Language not seeded for badge ${badge.label}`);
@@ -144,14 +151,22 @@ const seedItems = async (
   slugs: SeededSlugs,
   languages: SeededFooterLanguages,
 ) => {
-  // Get the testimonial slug type ID
   const testimonialTypeId = slugs.find(
     (slug) => slug.label === "testimonial",
   )?.id;
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
+  const itemKeys = testimonialItems.map((item) => ({
+    name: item.name,
+    content: item.content,
+    languageId: languageIdByValue.get(item.language.value),
+  }));
 
-  // Get all existing testimonial items to check for duplicates
+  // Get only existing testimonial items matching known seed keys.
   const existingItems = await prisma.testimonialItem.findMany({
-    select: { id: true, name: true, content: true, languageId: true, badgeId: true, imageId: true, role: true, company: true, rating: true },
+    where: { OR: itemKeys },
+    select: { id: true, name: true, content: true, languageId: true },
   });
 
   // Create unique keys based on name + content + languageId
@@ -159,21 +174,18 @@ const seedItems = async (
     existingItems.map((item) => `${item.name}|${item.content}|${item.languageId}`)
   );
 
+  const testimonialLogo = images.find(
+    (image) =>
+      image.typeId === testimonialTypeId && image.alt.includes("logo"),
+  );
+  const badgeIdByLanguageId = new Map(
+    badges.map((badge) => [badge.languageId, badge.id]),
+  );
   const itemsToCreate = testimonialItems
     .map((item) => {
-      const langId = languages.find(
-        (lang) => lang.value === item.language.value,
-      )?.id;
-
-      // Filter images by testimonial typeId, then find by src pattern
-      const image = item.imageKey
-        ? images.find(
-          (img) =>
-            img.typeId === testimonialTypeId && img.alt.includes("logo"),
-        )
-        : undefined;
-
-      const badgeId = badges.find((badge) => badge.languageId === langId)?.id;
+      const langId = languageIdByValue.get(item.language.value);
+      const image = item.imageKey ? testimonialLogo : undefined;
+      const badgeId = badgeIdByLanguageId.get(langId ?? null);
 
       return {
         rating: item.rating,
@@ -193,13 +205,9 @@ const seedItems = async (
   let seededItems = [...existingItems];
 
   if (itemsToCreate.length > 0) {
-    const newItems = await Promise.all(
-      itemsToCreate.map(async ({ key, ...data }) => {
-        return await prisma.testimonialItem.create({
-          data,
-        });
-      })
-    );
+    const newItems = await prisma.testimonialItem.createManyAndReturn({
+      data: itemsToCreate.map(({ key, ...data }) => data),
+    });
     newItemsCount = newItems.length;
     seededItems = [...existingItems, ...newItems];
     console.log(`✓ Created ${newItemsCount} new testimonial item(s)`);
@@ -227,10 +235,18 @@ const seedSections = async (
 
   const badges = await seedBadges(prisma, languages);
   const items = await seedItems(prisma, badges, images, slugs, languages);
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
+  const sectionKeys = testimonialSections.flatMap((section) => {
+    const languageId = languageIdByValue.get(section.language.value);
+    return languageId ? [{ title: section.title, languageId }] : [];
+  });
 
-  // Get all existing testimonial sections to check for duplicates
+  // Get only existing testimonial sections matching known seed keys.
   const existingSections = await prisma.testimonialSection.findMany({
-    select: { id: true, title: true, languageId: true, fallbackId: true },
+    where: { OR: sectionKeys },
+    select: { id: true, title: true, languageId: true },
   });
 
   // Create unique keys based on title + languageId
@@ -239,12 +255,27 @@ const seedSections = async (
   );
 
   const sectionsToCreate = testimonialSections.filter((section) => {
-    const langId = languages.find(
-      (lang) => lang.value === section.language.value,
-    )?.id;
+    const langId = languageIdByValue.get(section.language.value);
     const key = `${section.title}|${langId}`;
     return !existingSectionKeys.has(key);
   });
+
+  const testimonialImages = images.filter(
+    (image) => image.typeId === testimonialTypeId,
+  );
+  const backgroundImageByKey = new Map([
+    [
+      "testimonialField",
+      testimonialImages.find((image) => image.src.includes("field")),
+    ],
+    [
+      "testimonialDrone",
+      testimonialImages.find((image) => image.src.includes("drone")),
+    ],
+  ]);
+  const itemByLanguageId = new Map(
+    items.map((item) => [item.languageId, item]),
+  );
 
   let newSectionsCount = 0;
   const seededSections = [...existingSections];
@@ -252,26 +283,11 @@ const seedSections = async (
   if (sectionsToCreate.length > 0) {
     const newSections = await Promise.all(
       sectionsToCreate.map((section) => {
-        const testimonialImages = images.filter(
-          (img) => img.typeId === testimonialTypeId,
-        );
-        const langId = languages.find(
-          (lang) => lang.value === section.language.value,
-        )?.id;
-
+        const langId = languageIdByValue.get(section.language.value);
         const backgroundImages = section.backgroundImageKeys
-          .map((key) => {
-            if (key === "testimonialField") {
-              return testimonialImages.find((img) => img.src?.includes("field"));
-            }
-            if (key === "testimonialDrone") {
-              return testimonialImages.find((img) => img.src?.includes("drone"));
-            }
-            return undefined;
-          })
-          .filter((img): img is NonNullable<typeof img> => img !== undefined);
-
-        const fallbackItem = items.find((item) => item.languageId === langId);
+          .map((key) => backgroundImageByKey.get(key))
+          .filter((image): image is NonNullable<typeof image> => Boolean(image));
+        const fallbackItem = itemByLanguageId.get(langId ?? null);
 
         return prisma.testimonialSection.create({
           data: {

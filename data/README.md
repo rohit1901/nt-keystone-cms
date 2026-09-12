@@ -1,4 +1,10 @@
-# This folder contains data files for the Nimbus TECH Website.
-## Should be only used as a reference for the website's content.
-## Do not edit or modify these files directly.
-## for actual editing, please refer to the `nt-keystone-cms/seed` folder.
+# `data/`
+
+This directory has two different roles:
+
+- `data.ts` is legacy, reference-only website content. It is not an active seed source and should not be edited as part of content updates.
+- `types.ts` contains active shared types used by seed modules.
+- `icons/remixicon-map.ts` is an active icon mapping used by seed modules.
+- `index.ts` re-exports the active shared types from `types.ts`.
+
+Maintain actual seed content under `seed/`. See the [seed CLI guide](../seed/README.md) for usage.

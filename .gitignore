@@ -139,10 +139,14 @@ dist
 
 # Keystone
 .keystone
+generated/
 keystone.db
 *.db-journal
 /.zed
 .DS_Store
 scratch.ts
 scripts/
-docs/
+
+# Keep ad-hoc documentation ignored, but track the canonical deployment guide.
+docs/*
+!docs/deployment.md

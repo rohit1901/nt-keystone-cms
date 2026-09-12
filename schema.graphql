@@ -603,11 +603,13 @@ input TestimonialSectionCreateInput {
 input ImageRelateToManyForCreateInput {
   create: [ImageCreateInput!]
   connect: [ImageWhereUniqueInput!]
+  set: [ImageWhereUniqueInput!]
 }
 
 input TestimonialItemRelateToManyForCreateInput {
   create: [TestimonialItemCreateInput!]
   connect: [TestimonialItemWhereUniqueInput!]
+  set: [TestimonialItemWhereUniqueInput!]
 }
 
 input TestimonialItemRelateToOneForCreateInput {
@@ -916,6 +918,7 @@ input BenefitSectionCreateInput {
 input BenefitRelateToManyForCreateInput {
   create: [BenefitCreateInput!]
   connect: [BenefitWhereUniqueInput!]
+  set: [BenefitWhereUniqueInput!]
 }
 
 type Faq {
@@ -1027,6 +1030,7 @@ input FaqSectionCreateInput {
 input FaqRelateToManyForCreateInput {
   create: [FaqCreateInput!]
   connect: [FaqWhereUniqueInput!]
+  set: [FaqWhereUniqueInput!]
 }
 
 type Certification {
@@ -1036,6 +1040,8 @@ type Certification {
   image: Image
   link: String
   language: Language
+  resumeCertifications(where: ResumeCertificationWhereInput! = {}, orderBy: [ResumeCertificationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeCertificationWhereUniqueInput): [ResumeCertification!]
+  resumeCertificationsCount(where: ResumeCertificationWhereInput! = {}): Int
 }
 
 input CertificationWhereUniqueInput {
@@ -1052,6 +1058,13 @@ input CertificationWhereInput {
   image: ImageWhereInput
   link: StringFilter
   language: LanguageWhereInput
+  resumeCertifications: ResumeCertificationManyRelationFilter
+}
+
+input ResumeCertificationManyRelationFilter {
+  every: ResumeCertificationWhereInput
+  some: ResumeCertificationWhereInput
+  none: ResumeCertificationWhereInput
 }
 
 input CertificationOrderByInput {
@@ -1067,6 +1080,14 @@ input CertificationUpdateInput {
   image: ImageRelateToOneForUpdateInput
   link: String
   language: LanguageRelateToOneForUpdateInput
+  resumeCertifications: ResumeCertificationRelateToManyForUpdateInput
+}
+
+input ResumeCertificationRelateToManyForUpdateInput {
+  disconnect: [ResumeCertificationWhereUniqueInput!]
+  set: [ResumeCertificationWhereUniqueInput!]
+  create: [ResumeCertificationCreateInput!]
+  connect: [ResumeCertificationWhereUniqueInput!]
 }
 
 input CertificationUpdateArgs {
@@ -1080,6 +1101,13 @@ input CertificationCreateInput {
   image: ImageRelateToOneForCreateInput
   link: String
   language: LanguageRelateToOneForCreateInput
+  resumeCertifications: ResumeCertificationRelateToManyForCreateInput
+}
+
+input ResumeCertificationRelateToManyForCreateInput {
+  create: [ResumeCertificationCreateInput!]
+  connect: [ResumeCertificationWhereUniqueInput!]
+  set: [ResumeCertificationWhereUniqueInput!]
 }
 
 type CertificationSection {
@@ -1151,6 +1179,7 @@ input CertificationSectionCreateInput {
 input CertificationRelateToManyForCreateInput {
   create: [CertificationCreateInput!]
   connect: [CertificationWhereUniqueInput!]
+  set: [CertificationWhereUniqueInput!]
 }
 
 type Feature {
@@ -1347,6 +1376,7 @@ input ApproachCreateInput {
 input ApproachStepRelateToManyForCreateInput {
   create: [ApproachStepCreateInput!]
   connect: [ApproachStepWhereUniqueInput!]
+  set: [ApproachStepWhereUniqueInput!]
 }
 
 type NavigationLink {
@@ -1495,6 +1525,7 @@ input NavigationCreateInput {
 input NavigationLinkRelateToManyForCreateInput {
   create: [NavigationLinkCreateInput!]
   connect: [NavigationLinkWhereUniqueInput!]
+  set: [NavigationLinkWhereUniqueInput!]
 }
 
 type FooterSectionKey {
@@ -1636,6 +1667,7 @@ input FooterCreateInput {
 input FooterSectionRelateToManyForCreateInput {
   create: [FooterSectionCreateInput!]
   connect: [FooterSectionWhereUniqueInput!]
+  set: [FooterSectionWhereUniqueInput!]
 }
 
 type AnalyticsStat {
@@ -1849,6 +1881,7 @@ input AnalyticsStatRelateToOneForCreateInput {
 input AnalyticsSummaryItemRelateToManyForCreateInput {
   create: [AnalyticsSummaryItemCreateInput!]
   connect: [AnalyticsSummaryItemWhereUniqueInput!]
+  set: [AnalyticsSummaryItemWhereUniqueInput!]
 }
 
 type Value {
@@ -1975,6 +2008,7 @@ input AboutCreateInput {
 input ValueRelateToManyForCreateInput {
   create: [ValueCreateInput!]
   connect: [ValueWhereUniqueInput!]
+  set: [ValueWhereUniqueInput!]
 }
 
 type Map {
@@ -2096,6 +2130,7 @@ input CtaSectionCreateInput {
 input CtaRelateToManyForCreateInput {
   create: [CtaCreateInput!]
   connect: [CtaWhereUniqueInput!]
+  set: [CtaWhereUniqueInput!]
 }
 
 type Section {
@@ -2370,66 +2405,79 @@ input SectionCreateInput {
 input HeroRelateToManyForCreateInput {
   create: [HeroCreateInput!]
   connect: [HeroWhereUniqueInput!]
+  set: [HeroWhereUniqueInput!]
 }
 
 input BenefitSectionRelateToManyForCreateInput {
   create: [BenefitSectionCreateInput!]
   connect: [BenefitSectionWhereUniqueInput!]
+  set: [BenefitSectionWhereUniqueInput!]
 }
 
 input FeatureRelateToManyForCreateInput {
   create: [FeatureCreateInput!]
   connect: [FeatureWhereUniqueInput!]
+  set: [FeatureWhereUniqueInput!]
 }
 
 input FaqSectionRelateToManyForCreateInput {
   create: [FaqSectionCreateInput!]
   connect: [FaqSectionWhereUniqueInput!]
+  set: [FaqSectionWhereUniqueInput!]
 }
 
 input TestimonialSectionRelateToManyForCreateInput {
   create: [TestimonialSectionCreateInput!]
   connect: [TestimonialSectionWhereUniqueInput!]
+  set: [TestimonialSectionWhereUniqueInput!]
 }
 
 input CertificationSectionRelateToManyForCreateInput {
   create: [CertificationSectionCreateInput!]
   connect: [CertificationSectionWhereUniqueInput!]
+  set: [CertificationSectionWhereUniqueInput!]
 }
 
 input ApproachRelateToManyForCreateInput {
   create: [ApproachCreateInput!]
   connect: [ApproachWhereUniqueInput!]
+  set: [ApproachWhereUniqueInput!]
 }
 
 input AboutRelateToManyForCreateInput {
   create: [AboutCreateInput!]
   connect: [AboutWhereUniqueInput!]
+  set: [AboutWhereUniqueInput!]
 }
 
 input AnalyticRelateToManyForCreateInput {
   create: [AnalyticCreateInput!]
   connect: [AnalyticWhereUniqueInput!]
+  set: [AnalyticWhereUniqueInput!]
 }
 
 input NavigationRelateToManyForCreateInput {
   create: [NavigationCreateInput!]
   connect: [NavigationWhereUniqueInput!]
+  set: [NavigationWhereUniqueInput!]
 }
 
 input FooterRelateToManyForCreateInput {
   create: [FooterCreateInput!]
   connect: [FooterWhereUniqueInput!]
+  set: [FooterWhereUniqueInput!]
 }
 
 input CtaSectionRelateToManyForCreateInput {
   create: [CtaSectionCreateInput!]
   connect: [CtaSectionWhereUniqueInput!]
+  set: [CtaSectionWhereUniqueInput!]
 }
 
 input MapRelateToManyForCreateInput {
   create: [MapCreateInput!]
   connect: [MapWhereUniqueInput!]
+  set: [MapWhereUniqueInput!]
 }
 
 type PageContent {
@@ -2513,10 +2561,12 @@ type ResumeLocation {
   countryCode: String
   region: String
   language: Language
+  basicInformation: ResumeBasicInformation
 }
 
 input ResumeLocationWhereUniqueInput {
   id: ID
+  basicInformation: ResumeBasicInformationWhereUniqueInput
 }
 
 input ResumeLocationWhereInput {
@@ -2530,6 +2580,7 @@ input ResumeLocationWhereInput {
   countryCode: StringFilter
   region: StringFilter
   language: LanguageWhereInput
+  basicInformation: ResumeBasicInformationWhereInput
 }
 
 input ResumeLocationOrderByInput {
@@ -2548,6 +2599,13 @@ input ResumeLocationUpdateInput {
   countryCode: String
   region: String
   language: LanguageRelateToOneForUpdateInput
+  basicInformation: ResumeBasicInformationRelateToOneForUpdateInput
+}
+
+input ResumeBasicInformationRelateToOneForUpdateInput {
+  create: ResumeBasicInformationCreateInput
+  connect: ResumeBasicInformationWhereUniqueInput
+  disconnect: Boolean
 }
 
 input ResumeLocationUpdateArgs {
@@ -2562,6 +2620,12 @@ input ResumeLocationCreateInput {
   countryCode: String
   region: String
   language: LanguageRelateToOneForCreateInput
+  basicInformation: ResumeBasicInformationRelateToOneForCreateInput
+}
+
+input ResumeBasicInformationRelateToOneForCreateInput {
+  create: ResumeBasicInformationCreateInput
+  connect: ResumeBasicInformationWhereUniqueInput
 }
 
 type ResumeProfile {
@@ -2570,6 +2634,7 @@ type ResumeProfile {
   username: String
   url: String
   language: Language
+  basicInformation: ResumeBasicInformation
 }
 
 input ResumeProfileWhereUniqueInput {
@@ -2585,6 +2650,7 @@ input ResumeProfileWhereInput {
   username: StringFilter
   url: StringFilter
   language: LanguageWhereInput
+  basicInformation: ResumeBasicInformationWhereInput
 }
 
 input ResumeProfileOrderByInput {
@@ -2599,6 +2665,7 @@ input ResumeProfileUpdateInput {
   username: String
   url: String
   language: LanguageRelateToOneForUpdateInput
+  basicInformation: ResumeBasicInformationRelateToOneForUpdateInput
 }
 
 input ResumeProfileUpdateArgs {
@@ -2611,6 +2678,7 @@ input ResumeProfileCreateInput {
   username: String
   url: String
   language: LanguageRelateToOneForCreateInput
+  basicInformation: ResumeBasicInformationRelateToOneForCreateInput
 }
 
 type ResumeBasicInformation {
@@ -2631,6 +2699,7 @@ type ResumeBasicInformation {
 
 input ResumeBasicInformationWhereUniqueInput {
   id: ID
+  location: ResumeLocationWhereUniqueInput
   resume: ResumeWhereUniqueInput
 }
 
@@ -2728,6 +2797,7 @@ input ResumeLocationRelateToOneForCreateInput {
 input ResumeProfileRelateToManyForCreateInput {
   create: [ResumeProfileCreateInput!]
   connect: [ResumeProfileWhereUniqueInput!]
+  set: [ResumeProfileWhereUniqueInput!]
 }
 
 input ResumeRelateToOneForCreateInput {
@@ -2889,6 +2959,7 @@ input ResumeWorkCreateInput {
 input ResumeHighlightRelateToManyForCreateInput {
   create: [ResumeHighlightCreateInput!]
   connect: [ResumeHighlightWhereUniqueInput!]
+  set: [ResumeHighlightWhereUniqueInput!]
 }
 
 type ResumeVolunteer {
@@ -3437,6 +3508,60 @@ input ResumeProjectCreateInput {
   resume: ResumeRelateToOneForCreateInput
 }
 
+type ResumeCertification {
+  id: ID!
+  credentialUrl: String
+  certification: Certification
+  resume: Resume
+}
+
+input ResumeCertificationWhereUniqueInput {
+  id: ID
+}
+
+input ResumeCertificationWhereInput {
+  AND: [ResumeCertificationWhereInput!]
+  OR: [ResumeCertificationWhereInput!]
+  NOT: [ResumeCertificationWhereInput!]
+  id: IDFilter
+  credentialUrl: StringFilter
+  certification: CertificationWhereInput
+  resume: ResumeWhereInput
+}
+
+input ResumeCertificationOrderByInput {
+  id: OrderDirection
+  credentialUrl: OrderDirection
+}
+
+input ResumeCertificationUpdateInput {
+  credentialUrl: String
+  certification: CertificationRelateToOneForUpdateInput
+  resume: ResumeRelateToOneForUpdateInput
+}
+
+input CertificationRelateToOneForUpdateInput {
+  create: CertificationCreateInput
+  connect: CertificationWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ResumeCertificationUpdateArgs {
+  where: ResumeCertificationWhereUniqueInput!
+  data: ResumeCertificationUpdateInput!
+}
+
+input ResumeCertificationCreateInput {
+  credentialUrl: String
+  certification: CertificationRelateToOneForCreateInput
+  resume: ResumeRelateToOneForCreateInput
+}
+
+input CertificationRelateToOneForCreateInput {
+  create: CertificationCreateInput
+  connect: CertificationWhereUniqueInput
+}
+
 type Resume {
   id: ID!
   title: String
@@ -3449,8 +3574,8 @@ type Resume {
   educationCount(where: ResumeEducationWhereInput! = {}): Int
   awards(where: ResumeAwardWhereInput! = {}, orderBy: [ResumeAwardOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeAwardWhereUniqueInput): [ResumeAward!]
   awardsCount(where: ResumeAwardWhereInput! = {}): Int
-  certificates(where: CertificationWhereInput! = {}, orderBy: [CertificationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CertificationWhereUniqueInput): [Certification!]
-  certificatesCount(where: CertificationWhereInput! = {}): Int
+  resumeCertifications(where: ResumeCertificationWhereInput! = {}, orderBy: [ResumeCertificationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeCertificationWhereUniqueInput): [ResumeCertification!]
+  resumeCertificationsCount(where: ResumeCertificationWhereInput! = {}): Int
   publications(where: ResumePublicationWhereInput! = {}, orderBy: [ResumePublicationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumePublicationWhereUniqueInput): [ResumePublication!]
   publicationsCount(where: ResumePublicationWhereInput! = {}): Int
   skills(where: ResumeSkillWhereInput! = {}, orderBy: [ResumeSkillOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeSkillWhereUniqueInput): [ResumeSkill!]
@@ -3485,7 +3610,7 @@ input ResumeWhereInput {
   volunteer: ResumeVolunteerManyRelationFilter
   education: ResumeEducationManyRelationFilter
   awards: ResumeAwardManyRelationFilter
-  certificates: CertificationManyRelationFilter
+  resumeCertifications: ResumeCertificationManyRelationFilter
   publications: ResumePublicationManyRelationFilter
   skills: ResumeSkillManyRelationFilter
   resumeLanguages: ResumeLanguageManyRelationFilter
@@ -3571,7 +3696,7 @@ input ResumeUpdateInput {
   volunteer: ResumeVolunteerRelateToManyForUpdateInput
   education: ResumeEducationRelateToManyForUpdateInput
   awards: ResumeAwardRelateToManyForUpdateInput
-  certificates: CertificationRelateToManyForUpdateInput
+  resumeCertifications: ResumeCertificationRelateToManyForUpdateInput
   publications: ResumePublicationRelateToManyForUpdateInput
   skills: ResumeSkillRelateToManyForUpdateInput
   resumeLanguages: ResumeLanguageRelateToManyForUpdateInput
@@ -3581,12 +3706,6 @@ input ResumeUpdateInput {
   language: LanguageRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
-}
-
-input ResumeBasicInformationRelateToOneForUpdateInput {
-  create: ResumeBasicInformationCreateInput
-  connect: ResumeBasicInformationWhereUniqueInput
-  disconnect: Boolean
 }
 
 input ResumeWorkRelateToManyForUpdateInput {
@@ -3671,7 +3790,7 @@ input ResumeCreateInput {
   volunteer: ResumeVolunteerRelateToManyForCreateInput
   education: ResumeEducationRelateToManyForCreateInput
   awards: ResumeAwardRelateToManyForCreateInput
-  certificates: CertificationRelateToManyForCreateInput
+  resumeCertifications: ResumeCertificationRelateToManyForCreateInput
   publications: ResumePublicationRelateToManyForCreateInput
   skills: ResumeSkillRelateToManyForCreateInput
   resumeLanguages: ResumeLanguageRelateToManyForCreateInput
@@ -3683,59 +3802,64 @@ input ResumeCreateInput {
   updatedAt: DateTime
 }
 
-input ResumeBasicInformationRelateToOneForCreateInput {
-  create: ResumeBasicInformationCreateInput
-  connect: ResumeBasicInformationWhereUniqueInput
-}
-
 input ResumeWorkRelateToManyForCreateInput {
   create: [ResumeWorkCreateInput!]
   connect: [ResumeWorkWhereUniqueInput!]
+  set: [ResumeWorkWhereUniqueInput!]
 }
 
 input ResumeVolunteerRelateToManyForCreateInput {
   create: [ResumeVolunteerCreateInput!]
   connect: [ResumeVolunteerWhereUniqueInput!]
+  set: [ResumeVolunteerWhereUniqueInput!]
 }
 
 input ResumeEducationRelateToManyForCreateInput {
   create: [ResumeEducationCreateInput!]
   connect: [ResumeEducationWhereUniqueInput!]
+  set: [ResumeEducationWhereUniqueInput!]
 }
 
 input ResumeAwardRelateToManyForCreateInput {
   create: [ResumeAwardCreateInput!]
   connect: [ResumeAwardWhereUniqueInput!]
+  set: [ResumeAwardWhereUniqueInput!]
 }
 
 input ResumePublicationRelateToManyForCreateInput {
   create: [ResumePublicationCreateInput!]
   connect: [ResumePublicationWhereUniqueInput!]
+  set: [ResumePublicationWhereUniqueInput!]
 }
 
 input ResumeSkillRelateToManyForCreateInput {
   create: [ResumeSkillCreateInput!]
   connect: [ResumeSkillWhereUniqueInput!]
+  set: [ResumeSkillWhereUniqueInput!]
 }
 
 input ResumeLanguageRelateToManyForCreateInput {
   create: [ResumeLanguageCreateInput!]
   connect: [ResumeLanguageWhereUniqueInput!]
+  set: [ResumeLanguageWhereUniqueInput!]
 }
 
 input ResumeInterestRelateToManyForCreateInput {
   create: [ResumeInterestCreateInput!]
   connect: [ResumeInterestWhereUniqueInput!]
+  set: [ResumeInterestWhereUniqueInput!]
 }
 
 input ResumeReferenceRelateToManyForCreateInput {
   create: [ResumeReferenceCreateInput!]
   connect: [ResumeReferenceWhereUniqueInput!]
+  set: [ResumeReferenceWhereUniqueInput!]
 }
 
 input ResumeProjectRelateToManyForCreateInput {
   create: [ResumeProjectCreateInput!]
   connect: [ResumeProjectWhereUniqueInput!]
+  set: [ResumeProjectWhereUniqueInput!]
 }
 
 """
@@ -4032,13 +4156,18 @@ type Mutation {
   updateResumeProjects(data: [ResumeProjectUpdateArgs!]!): [ResumeProject]
   deleteResumeProject(where: ResumeProjectWhereUniqueInput!): ResumeProject
   deleteResumeProjects(where: [ResumeProjectWhereUniqueInput!]!): [ResumeProject]
+  createResumeCertification(data: ResumeCertificationCreateInput!): ResumeCertification
+  createResumeCertifications(data: [ResumeCertificationCreateInput!]!): [ResumeCertification]
+  updateResumeCertification(where: ResumeCertificationWhereUniqueInput!, data: ResumeCertificationUpdateInput!): ResumeCertification
+  updateResumeCertifications(data: [ResumeCertificationUpdateArgs!]!): [ResumeCertification]
+  deleteResumeCertification(where: ResumeCertificationWhereUniqueInput!): ResumeCertification
+  deleteResumeCertifications(where: [ResumeCertificationWhereUniqueInput!]!): [ResumeCertification]
   createResume(data: ResumeCreateInput!): Resume
   createResumes(data: [ResumeCreateInput!]!): [Resume]
   updateResume(where: ResumeWhereUniqueInput!, data: ResumeUpdateInput!): Resume
   updateResumes(data: [ResumeUpdateArgs!]!): [Resume]
   deleteResume(where: ResumeWhereUniqueInput!): Resume
   deleteResumes(where: [ResumeWhereUniqueInput!]!): [Resume]
-  endSession: Boolean!
 }
 
 type Query {
@@ -4186,6 +4315,9 @@ type Query {
   resumeProject(where: ResumeProjectWhereUniqueInput!): ResumeProject
   resumeProjects(where: ResumeProjectWhereInput! = {}, orderBy: [ResumeProjectOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeProjectWhereUniqueInput): [ResumeProject!]
   resumeProjectsCount(where: ResumeProjectWhereInput! = {}): Int
+  resumeCertification(where: ResumeCertificationWhereUniqueInput!): ResumeCertification
+  resumeCertifications(where: ResumeCertificationWhereInput! = {}, orderBy: [ResumeCertificationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeCertificationWhereUniqueInput): [ResumeCertification!]
+  resumeCertificationsCount(where: ResumeCertificationWhereInput! = {}): Int
   resume(where: ResumeWhereUniqueInput!): Resume
   resumes(where: ResumeWhereInput! = {}, orderBy: [ResumeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ResumeWhereUniqueInput): [Resume!]
   resumesCount(where: ResumeWhereInput! = {}): Int
@@ -4198,34 +4330,34 @@ type KeystoneMeta {
 
 type KeystoneAdminMeta {
   lists: [KeystoneAdminUIListMeta!]!
-  list(key: String!): KeystoneAdminUIListMeta
+  list(key: String!, itemId: ID): KeystoneAdminUIListMeta
 }
 
 type KeystoneAdminUIListMeta {
   key: String!
-  path: String!
   label: String!
   singular: String!
   plural: String!
-  description: String
-  pageSize: Int!
+  path: String!
   labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
   groups: [KeystoneAdminUIFieldGroupMeta!]!
+  actions: [KeystoneAdminUIActionMeta!]!
   graphql: KeystoneAdminUIGraphQL!
+  pageSize: Int!
   initialColumns: [String!]!
   initialSearchFields: [String!]!
   initialSort: KeystoneAdminUISort
+  initialFilter: JSON
+  hiddenFilter: JSON
   isSingleton: Boolean!
+  hideNavigation: Boolean!
   hideCreate: Boolean!
   hideDelete: Boolean!
-  isHidden: Boolean!
-  itemQueryName: String!
-  listQueryName: String!
 }
 
 type KeystoneAdminUIFieldMeta {
-  path: String!
+  key: String!
   label: String!
   description: String
   isOrderable: Boolean!
@@ -4235,8 +4367,8 @@ type KeystoneAdminUIFieldMeta {
   viewsIndex: Int!
   customViewsIndex: Int
   createView: KeystoneAdminUIFieldMetaCreateView!
+  itemView: KeystoneAdminUIFieldMetaItemView
   listView: KeystoneAdminUIFieldMetaListView!
-  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
 }
 
@@ -4247,12 +4379,19 @@ enum KeystoneAdminUIFieldMetaIsNonNull {
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
-  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
+  fieldMode: JSON!
+  isRequired: JSON!
 }
 
-enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
-  edit
-  hidden
+type KeystoneAdminUIFieldMetaItemView {
+  fieldMode: JSON!
+  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition!
+  isRequired: JSON!
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
+  form
+  sidebar
 }
 
 type KeystoneAdminUIFieldMetaListView {
@@ -4264,26 +4403,66 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
   hidden
 }
 
-type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
-  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition
-}
-
-enum KeystoneAdminUIFieldMetaItemViewFieldMode {
-  edit
-  read
-  hidden
-}
-
-enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
-  form
-  sidebar
-}
-
 type KeystoneAdminUIFieldGroupMeta {
   label: String!
   description: String
   fields: [KeystoneAdminUIFieldMeta!]!
+}
+
+type KeystoneAdminUIActionMeta {
+  key: String!
+  label: String!
+  icon: String
+  messages: KeystoneAdminUIActionMetaMessages!
+  graphql: KeystoneAdminUIActionMetaGraphQL
+  itemView: KeystoneAdminUIActionMetaItemView
+  listView: KeystoneAdminUIActionMetaListView!
+}
+
+type KeystoneAdminUIActionMetaMessages {
+  promptTitle: String!
+  promptTitleMany: String
+  prompt: String!
+  promptMany: String
+  promptConfirmLabel: String!
+  promptConfirmLabelMany: String
+  fail: String!
+  failMany: String
+  success: String!
+  successMany: String
+}
+
+type KeystoneAdminUIActionMetaGraphQL {
+  arguments: [KeystoneAdminUIActionMetaGraphQLArgument!]!
+  names: KeystoneAdminUIActionMetaGraphQLNames!
+}
+
+type KeystoneAdminUIActionMetaGraphQLArgument {
+  name: String!
+  type: String!
+  source: JSON
+}
+
+type KeystoneAdminUIActionMetaGraphQLNames {
+  one: String!
+  many: String
+}
+
+type KeystoneAdminUIActionMetaItemView {
+  actionMode: JSON!
+  navigation: KeystoneAdminUIActionMetaItemViewNavigation!
+  hidePrompt: Boolean!
+  hideToast: Boolean!
+}
+
+enum KeystoneAdminUIActionMetaItemViewNavigation {
+  follow
+  refetch
+  return
+}
+
+type KeystoneAdminUIActionMetaListView {
+  actionMode: JSON!
 }
 
 type KeystoneAdminUIGraphQL {

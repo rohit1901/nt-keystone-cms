@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "../prisma";
 import type { Language } from "../../data";
 import { readFileSync } from "fs";
 import { join } from "path";
@@ -124,9 +124,20 @@ async function seed(prisma: PrismaClient) {
   return seededLegalPages;
 }
 
+async function clear(prisma: PrismaClient) {
+  const result = await prisma.pageContent.deleteMany({
+    where: {
+      slug: { in: legalPagesData.map(({ slug }) => slug) },
+    },
+  });
+
+  console.log(`✓ Deleted ${result.count} legal page(s)`);
+}
+
 const LegalPages = {
   data: legalPagesData,
   seed,
+  clear,
 };
 
 export default LegalPages;

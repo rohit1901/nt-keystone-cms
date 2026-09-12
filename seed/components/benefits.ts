@@ -1,8 +1,7 @@
-import Images from "./images";
 import type { SeededImages } from "./images";
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "../prisma";
 import type { SeededSlugs } from "./slugs";
-import Ctas, { SeededCTAs } from "./ctas";
+import type { SeededCTAs } from "./ctas";
 import { BenefitSection } from "../../data";
 import { SeededFooterLanguages } from "./footer";
 
@@ -95,30 +94,15 @@ const seed = async (
   prisma: PrismaClient,
   languages: SeededFooterLanguages,
 ) => {
-  // Get all existing benefits to check for duplicates
-  const existingBenefits = await prisma.benefit.findMany({
-    select: { id: true, title: true, description: true, languageId: true, icon: true },
-  });
-
-  // Create unique keys based on title + languageId
-  const existingBenefitKeys = new Set(
-    existingBenefits.map((benefit) => `${benefit.title}|${benefit.languageId}`)
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
   );
-
-  // Flatten all benefits from all sections
-  const allBenefits = benefitsSectionsData.flatMap((section) =>
-    section.benefits.map((benefit) => ({
-      ...benefit,
-      sectionLanguage: section.language,
-    }))
+  const allBenefits = benefitsSectionsData.flatMap(
+    (section) => section.benefits,
   );
-
-  // Filter out benefits that already exist
-  const benefitsToCreate = allBenefits
+  const resolvedBenefits = allBenefits
     .map((benefit) => {
-      const languageId = languages.find(
-        (l) => l.value === benefit.language.value
-      )?.id;
+      const languageId = languageIdByValue.get(benefit.language.value);
 
       if (!languageId) {
         console.warn(`! Language not found: ${benefit.language.value}`);
@@ -133,20 +117,34 @@ const seed = async (
         key: `${benefit.title}|${languageId}`,
       };
     })
-    .filter((benefit): benefit is NonNullable<typeof benefit> => benefit !== null)
-    .filter(({ key }) => !existingBenefitKeys.has(key));
+    .filter((benefit): benefit is NonNullable<typeof benefit> => benefit !== null);
+
+  // Get only existing benefits matching known seed keys.
+  const existingBenefits = await prisma.benefit.findMany({
+    where: {
+      OR: resolvedBenefits.map(({ title, languageId }) => ({
+        title,
+        languageId,
+      })),
+    },
+    select: { id: true, title: true, languageId: true },
+  });
+  const existingBenefitKeys = new Set(
+    existingBenefits.map(
+      (benefit) => `${benefit.title}|${benefit.languageId}`,
+    ),
+  );
+  const benefitsToCreate = resolvedBenefits.filter(
+    ({ key }) => !existingBenefitKeys.has(key),
+  );
 
   let newBenefitsCount = 0;
   let seededBenefits = [...existingBenefits];
 
   if (benefitsToCreate.length > 0) {
-    const newBenefits = await Promise.all(
-      benefitsToCreate.map(({ key, ...data }) =>
-        prisma.benefit.create({
-          data,
-        })
-      )
-    );
+    const newBenefits = await prisma.benefit.createManyAndReturn({
+      data: benefitsToCreate.map(({ key, ...data }) => data),
+    });
     newBenefitsCount = newBenefits.length;
     seededBenefits = [...existingBenefits, ...newBenefits];
     console.log(`✓ Created ${newBenefitsCount} new benefit(s)`);
@@ -168,8 +166,17 @@ const seedSection = async (
   // First seed all benefits
   const allBenefits = await seed(prisma, languages);
 
-  // Get all existing benefit sections to check for duplicates
+  const languageIdByValue = new Map(
+    languages.map((language) => [language.value, language.id]),
+  );
+  const sectionKeys = benefitsSectionsData.flatMap((section) => {
+    const languageId = languageIdByValue.get(section.language.value);
+    return languageId ? [{ title: section.title, languageId }] : [];
+  });
+
+  // Get only existing benefit sections matching known seed keys.
   const existingSections = await prisma.benefitSection.findMany({
+    where: { OR: sectionKeys },
     select: { id: true, title: true, languageId: true },
   });
 
@@ -180,9 +187,7 @@ const seedSection = async (
 
   // Filter out sections that already exist
   const sectionsToCreate = benefitsSectionsData.filter((sectionData) => {
-    const languageId = languages.find(
-      (l) => l.value === sectionData.language.value
-    )?.id;
+    const languageId = languageIdByValue.get(sectionData.language.value);
     const key = `${sectionData.title}|${languageId}`;
     return !existingSectionKeys.has(key);
   });
@@ -194,19 +199,23 @@ const seedSection = async (
     const newSections = await Promise.all(
       sectionsToCreate.map(async (sectionData) => {
         // Find the language ID
-        const languageId = languages.find(
-          (l) => l.value === sectionData.language.value
-        )?.id;
+        const languageId = languageIdByValue.get(
+          sectionData.language.value,
+        );
 
         if (!languageId) {
           console.warn(`! Language not found: ${sectionData.language.value}`);
           return null;
         }
 
-        // Find benefits that match this section's language
-        const matchingBenefits = allBenefits.filter((benefit) =>
-          benefit.languageId === languageId &&
-          sectionData.benefits.some((b) => b.title === benefit.title)
+        // Find benefits that match this section's language and titles.
+        const sectionBenefitTitles = new Set(
+          sectionData.benefits.map((benefit) => benefit.title),
+        );
+        const matchingBenefits = allBenefits.filter(
+          (benefit) =>
+            benefit.languageId === languageId &&
+            sectionBenefitTitles.has(benefit.title),
         );
 
         // Create the benefit section
