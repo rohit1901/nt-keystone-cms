@@ -5,7 +5,9 @@
 // Keystone imports the default export of this file, expecting a Keystone configuration object
 //   you can find out more at https://keystonejs.com/docs/apis/config
 import dotenv from "dotenv";
+import { resolve } from "node:path";
 import { config } from "@keystone-6/core";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 // to keep this file tidy, we define our schema in a different file
 import { lists } from "./schema";
@@ -13,8 +15,13 @@ import { lists } from "./schema";
 // authentication is configured separately here too, but you might move this elsewhere
 // when you write your list-level access control functions, as they typically rely on session data
 
-import { type Session, nextAuthSessionStrategy, requireEnv } from "./session";
-import type { TypeInfo } from ".keystone/types";
+import {
+  cmsAuthGroup,
+  type Session,
+  nextAuthSessionStrategy,
+  requireEnv,
+} from "./session";
+import type { TypeInfo } from "./generated/keystone/types";
 
 dotenv.config();
 
@@ -24,8 +31,9 @@ export const keystoneConfig = config<TypeInfo<Session>>({
     //   for more information on what database might be appropriate for you
     //   see https://keystonejs.com/docs/guides/choosing-a-database#title
     provider: "postgresql",
-    url: requireEnv("DATABASE_URL"),
-    enableLogging: process.env.NODE_ENV === "development",
+    prismaClientOptions: () => ({
+      adapter: new PrismaPg({ connectionString: requireEnv("DATABASE_URL") }),
+    }),
     idField: { kind: "autoincrement" },
   },
   server: {
@@ -37,6 +45,31 @@ export const keystoneConfig = config<TypeInfo<Session>>({
     },
   },
   ui: {
+    // Keystone generates its own _app; override it so global Admin UI styles are
+    // imported directly from Next's custom App, as required by Next.js 16.
+    getAdditionalFiles: () => [
+      {
+        mode: "copy",
+        inputPath: resolve("admin/app.js"),
+        outputPath: "pages/_app.js",
+      },
+      {
+        mode: "copy",
+        inputPath: resolve("admin/next.config.cjs"),
+        outputPath: "next.config.js",
+      },
+      {
+        mode: "copy",
+        inputPath: resolve("tailwind.config.cjs"),
+        outputPath: "tailwind.config.cjs",
+      },
+      {
+        mode: "copy",
+        inputPath: resolve("postcss.config.cjs"),
+        outputPath: "postcss.config.cjs",
+      },
+    ],
+
     // the following api routes are required for nextauth.js
     publicPages: [
       "/api/auth/csrf",
@@ -63,7 +96,8 @@ export const keystoneConfig = config<TypeInfo<Session>>({
         to: "/auth/signin",
       };
     },
-    isAccessAllowed: async (context) => Boolean(context.session?.id),
+    isAccessAllowed: async (context) =>
+      context.session?.userGroup === cmsAuthGroup,
   },
   lists,
   session: nextAuthSessionStrategy,
