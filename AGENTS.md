@@ -302,6 +302,20 @@ Use these skills to minimize token consumption:
 | `shadcn` | shadcn component management | shadcn components |
 | `find-skills` | Discover installable skills | "find skill for X" |
 
+### Prisma Skills (project-local)
+
+| Skill | Purpose | Trigger |
+|-------|---------|---------|
+| `prisma-cli` | CLI commands reference (init, generate, migrate, db, studio, etc.) | "prisma init", "prisma generate", "prisma migrate", "prisma db" |
+| `prisma-client-api` | Client API reference (queries, filters, CRUD, $transaction) | "prisma query", "findMany", "create", "update", "delete" |
+| `prisma-database-setup` | Database provider configuration (PostgreSQL, MySQL, SQLite, MongoDB) | "configure postgres", "connect to mysql", "setup mongodb" |
+| `prisma-postgres` | Prisma Postgres setup/provisioning via Console, CLI, Management API | "create a Prisma Postgres project", "provision a database" |
+| `prisma-postgres-setup` | Step-by-step Prisma Postgres provisioning via Management API | "set up a database", "get a connection string" |
+| `prisma-compute` | Deployment/hosting guide for Prisma apps | "deploying or hosting a Prisma app", "compute:deploy" |
+| `prisma-upgrade-v7` | Migration guide from Prisma v6 to v7 (breaking changes, new generator) | "upgrade to prisma 7", "prisma 7 migration" |
+| `prisma-driver-adapter-implementation` | SQL driver adapter implementation reference (v7) | "SqlDriverAdapter", "savepoint", "DriverAdapterError" |
+| `prisma-mongodb-upgrade` | MongoDB v6→v7 decision/migration guide | "upgrade prisma mongodb", "prisma 7 mongodb" |
+
 ## Code Style
 
 - **TypeScript**: Strict mode
