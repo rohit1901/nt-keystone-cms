@@ -504,7 +504,6 @@ DESCRIPTION:
 USAGE:
   pnpm db:seed [COMPONENTS...]
   pnpm db:seed -- [OPTIONS]
-  pnpm db:seed:all
 
 OPTIONS:
   --all, -a          Seed all components (default if no components specified)
@@ -522,7 +521,6 @@ ${SEED_ORDER.map(c => `    • ${c.padEnd(20)} ${getComponentDescription(c)}`).j
 EXAMPLES:
   # Seed all components (recommended for initial setup)
   pnpm db:seed
-  pnpm db:seed:all
   pnpm db:seed -- --all
 
   # Seed specific component(s)
@@ -569,7 +567,6 @@ QUICK REFERENCE:
 └─────────────────────────────────────────────────────────────────────────────┘
 
   pnpm db:seed              Seed all components (default)
-  pnpm db:seed:all          Explicitly seed all components
   pnpm db:seed:help         Show detailed seed help
 
   pnpm db:seed <component>  Seed specific component(s)
@@ -582,7 +579,7 @@ QUICK REFERENCE:
 │ 🗑️  CLEARING COMMANDS                                                       │
 └─────────────────────────────────────────────────────────────────────────────┘
 
-  pnpm db:clear:all         Clear all records in default component tables
+  pnpm db:clear -- --all     Clear all records in default component tables
   pnpm db:clear:help        Show detailed clear help
 
   pnpm db:clear -- <flags>  Clear specific components

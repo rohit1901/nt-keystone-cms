@@ -1,23 +1,46 @@
 # AGENTS.md - NT Keystone CMS
 
+## Quick Start
+
+```bash
+# 1. Install dependencies
+pnpm install
+
+# 2. Copy environment template and fill in values
+cp .env.copy .env
+
+# 3. Start local PostgreSQL
+docker compose -f docker-compose.postgres.yml up -d --build
+
+# 4. Generate Prisma client and run migrations
+pnpm generate
+
+# 5. Seed database (optional)
+pnpm db:seed
+
+# 6. Start dev server
+pnpm dev
+```
+
+Admin UI: http://localhost:3000/admin
+GraphQL: http://localhost:3000/api/graphql
+
 ## Project Overview
 
-KeystoneJS headless CMS for managing website content (hero sections, testimonials, FAQs, resumes, etc.). Uses PostgreSQL, Prisma ORM, NextAuth with Amazon Cognito for authentication.
-
-**Critical**: Schema changes require `pnpm generate` → `prisma db push` → restart dev server. Never modify `generated/` files directly.
+KeystoneJS headless CMS for Nimbus Tech website content (heroes, testimonials, FAQs, resumes, etc.). PostgreSQL + Prisma ORM + NextAuth with Amazon Cognito.
 
 ## Tech Stack
 
-| Component | Version | Notes |
-|-----------|---------|-------|
-| Node.js | >=22.12 | Required |
-| pnpm | 10.32.1 | Package manager |
-| Keystone | 8.1.0 | CMS framework |
-| Next.js | 16.3.5 | Admin UI |
-| React | 19.2.4 | |
-| Prisma | 7.10.0 | ORM |
-| PostgreSQL | - | Database |
-| TypeScript | 5.9.3 | |
+| Component | Version |
+|-----------|---------|
+| Node.js | >=22.12 |
+| pnpm | 10.32.1 |
+| Keystone | 8.1.0 |
+| Next.js | 16.3.5 |
+| React | 19.2.4 |
+| Prisma | 7.10.0 |
+| PostgreSQL | 15+ |
+| TypeScript | 5.9.3 |
 
 ## Project Structure
 
@@ -29,14 +52,52 @@ KeystoneJS headless CMS for managing website content (hero sections, testimonial
 │   ├── index.ts         # Seed orchestrator with dependency ordering
 │   ├── clear.ts         # Destructive clear CLI
 │   ├── prisma.ts        # Prisma client factory
-│   ├── types.ts         # Shared types (WithId, Maybe)
-│   └── components/      # 19 seed modules
+│   ├── types.ts         # Re-exports from data/types.ts
+│   ├── components/      # 19 seed modules
+│   └── __tests__/       # Seed module tests
 ├── admin/               # Custom Admin UI overrides
-├── data/                # Static data/types
+├── data/
+│   ├── data.ts          # Single source of truth for all seed content (EN+DE)
+│   ├── types.ts         # Shared TypeScript types
+│   ├── index.ts         # Barrel export
+│   └── icons/           # Icon mapping
 ├── generated/           # Auto-generated (NEVER edit)
 ├── migrations/          # Prisma migrations
-├── docs/                # Deployment docs
-└── Dockerfile           # Production deployment
+├── docs/
+│   └── deployment.md    # Northflank deployment guide
+└── Dockerfile           # Production image
+```
+
+## Architecture
+
+### Schema Flow
+
+```
+schema.ts (Keystone lists)
+    ↓ pnpm generate
+schema.prisma (generated, never edit)
+    ↓ prisma migrate dev / db push
+generated/prisma/client (generated, never edit)
+```
+
+### Data Flow
+
+```
+data/data.ts (all seed content, EN+DE)
+    ↓ imported by
+seed/components/*.ts (19 seed modules)
+    ↓ run via
+pnpm db:seed
+    ↓ writes to
+PostgreSQL database
+```
+
+### Auth Flow
+
+```
+Cognito → NextAuth → JWT (1hr) → session { id, userGroup }
+                                        ↓
+                              userGroup === "cms-admin" → CUD allowed
 ```
 
 ## Key Commands
@@ -48,11 +109,10 @@ pnpm build                  # Production build
 pnpm start                  # Start production server
 
 # Database
-pnpm generate               # Generate Prisma client + migrations
-pnpm db:push                # Push schema without migrations
+pnpm generate               # Regenerate Prisma client + migrations
+pnpm db:push                # Push schema without migrations (dev only)
 pnpm db:seed                # Seed all components
 pnpm db:seed <component>    # Seed specific component
-pnpm db:seed:all            # Explicitly seed all
 pnpm db:clear -- --all      # Clear all seeded data
 pnpm db:fresh               # Reset + seed (fresh start)
 pnpm db:reset               # Reset database (DESTRUCTIVE)
@@ -60,66 +120,90 @@ pnpm db:reset               # Reset database (DESTRUCTIVE)
 # Schema Verification
 pnpm schema:verify:dev      # Development verification
 pnpm schema:verify:prod     # Production verification
+
+# Testing
+pnpm test:run               # Run all tests
 ```
 
-## Schema Lists (Access Control)
+## Environment Variables
 
-All lists use `crud` access control:
-- **query**: `allowAll` (public read)
-- **create/update/delete**: Requires `session.userGroup === "cms-admin"`
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DATABASE_URL` | Yes | PostgreSQL connection string |
+| `SHADOW_DATABASE_URL` | Dev only | Separate DB for `prisma migrate dev` |
+| `NEXTAUTH_SECRET` | Yes | NextAuth JWT secret |
+| `NEXTAUTH_URL` | Yes | Public CMS URL (e.g., https://cms.example.com) |
+| `COGNITO_CLIENT_ID` | Yes | Cognito app client ID |
+| `COGNITO_CLIENT_SECRET` | Yes | Cognito app client secret |
+| `COGNITO_ISSUER` | Yes | Cognito user pool issuer URL |
+| `CMS_AUTH_GROUP` | Yes | Must be "cms-admin" |
+| `CORS_ORIGIN` | No | Comma-separated allowed origins |
 
-### Core Content Types
-- `User` - Authentication users
-- `Type` - Content type labels (certification, cta, hero, navigation, testimonial, footer, main, resume)
-- `Language` - Language options (English/German/Hindi)
-- `Image` - Image metadata
-- `Cta` - Call-to-action links
+**Never commit `.env` files.** Use `.env.copy` as template.
 
-### Page Sections
-- `Hero`, `HeroBanner`, `HeroBannerAdditional`
-- `Benefit`, `BenefitSection`
-- `Faq`, `FaqSection`
-- `Feature`
-- `Approach`, `ApproachStep`
-- `Certification`, `CertificationSection`
-- `TestimonialBadge`, `TestimonialItem`, `TestimonialSection`
-- `Navigation`, `NavigationLink`
-- `Footer`, `FooterSection`, `FooterSectionKey`
-- `About`, `Value`
-- `Map`
-- `CtaSection`
-- `AnalyticsStat`, `AnalyticsSummaryItem`, `Analytic`
+## Schema & Database
 
-### Page Composition
-- `Section` - Dynamic section type selector
-- `PageContent` - Page with slug, title, sections
+### Schema Changes Workflow
 
-### Resume Module
-- `Resume` - Top-level resume record
-- `ResumeBasicInformation`, `ResumeLocation`, `ResumeProfile`
-- `ResumeWork`, `ResumeHighlight`
-- `ResumeVolunteer`, `ResumeEducation`
-- `ResumeAward`, `ResumePublication`
-- `ResumeSkill`, `ResumeLanguage`, `ResumeInterest`, `ResumeReference`
-- `ResumeProject`, `ResumeCertification`
+```bash
+# 1. Edit schema.ts (Keystone schema, source of truth)
+# 2. Regenerate everything
+pnpm generate
 
-## Authentication Flow
+# 3. Push to database (development)
+pnpm db:push
 
-1. **Provider**: Amazon Cognito via NextAuth
-2. **Session Strategy**: JWT (1 hour expiry)
-3. **Group Validation**: User must be in `cms-admin` Cognito group
-4. **Session Shape**: `{ id, userGroup }` (userGroup is "cms-admin" or null)
-5. **Access Control**: GraphQL CUD operations require `userGroup === "cms-admin"`
+# 4. Restart dev server
+pnpm dev
+```
 
-**Key**: `decodeJwtPayload()` in `session.ts` reads JWT claims without signature verification (NextAuth handles that). Use it for debugging token contents.
+### Key Prisma Commands
+
+```bash
+pnpm exec prisma migrate dev      # Create migration (dev only)
+pnpm exec prisma migrate deploy   # Apply migrations (production)
+pnpm exec prisma migrate status   # Check migration status
+pnpm exec prisma db push          # Push schema without migrations
+pnpm exec prisma generate         # Regenerate Prisma client
+pnpm exec prisma studio           # Open Prisma Studio (DB browser)
+pnpm exec prisma format           # Format schema.prisma
+pnpm exec prisma validate         # Validate schema.prisma
+```
+
+### Schema Locations
+
+- **Keystone schema**: `schema.ts` (source of truth)
+- **Prisma schema**: `schema.prisma` (generated by `pnpm generate`)
+- **Generated client**: `generated/prisma/` (generated)
+- **Migrations**: `migrations/` directory
+
+### Important Rules
+
+- Never edit `generated/` files directly
+- Always run `pnpm generate` after schema changes
+- Use `cascadeOwnedForeignKey` helper for owned relationships (adds `onDelete: Cascade`)
+- Virtual fields don't persist to DB (computed at query time)
+- `pnpm generate` runs `keystone build --no-ui` first, then `prisma migrate dev`
 
 ## Seed System
 
+### Data Source: `data/data.ts`
+
+Single source of truth for all seed content. Contains typed arrays for every component (EN+DE). Seed components import from here instead of hardcoding inline.
+
+```typescript
+// In seed/components/*.ts:
+import { benefitsSectionsData, ctasData, imageSeedData } from "../../data";
+```
+
+**Note**: `data/data.ts` has `@ts-nocheck` — types aren't enforced there.
+
 ### Dependency Order (CRITICAL)
+
 ```typescript
 const SEED_ORDER = [
-  "slugs",        // Type records
-  "languages",    // Language records
+  "slugs",        // Type records (hero, certification, cta, etc.)
+  "languages",    // Language records (en-US, de-DE)
   "images",       // Image records
   "ctas",         // CTA links + sections
   "certifications",
@@ -141,140 +225,101 @@ const SEED_ORDER = [
 ```
 
 ### Adding New Seed Component
+
 1. Create `seed/components/<name>.ts`
 2. Export `seed(prisma, dependencies)` function
 3. Export `clear(prisma)` function (optional but recommended)
-4. Add to `SEED_ORDER` in `seed/index.ts`
-5. Add to `clear.ts` CLEAR_ACTIONS
-6. Add cache type to `SeedCache` in `seed/index.ts`
+4. Import data from `../../data` instead of hardcoding inline
+5. Add to `SEED_ORDER` in `seed/index.ts`
+6. Add to `clear.ts` CLEAR_ACTIONS
+7. Add cache type to `SeedCache` in `seed/index.ts`
+8. Add test exports in `seed/__tests__/seed-modules.test.ts`
+
+### Adding New Content Type
+
+1. Add type to `data/types.ts` (if new type needed)
+2. Add data arrays to `data/data.ts`
+3. Create seed component in `seed/components/`
+4. Add to `SEED_ORDER` and `SeedCache`
+5. Add to `clear.ts`
+6. Add to `schema.ts` (Keystone list)
+7. Run `pnpm generate` → `pnpm db:push`
 
 ### Seed Module Pattern
+
 ```typescript
+import { PrismaClient } from "../prisma";
+import { someData } from "../../data";
+
 export default async function seed(
   prisma: PrismaClient,
   deps: { languages: Language[]; /* other deps */ }
-): Promise<ReturnType[]> {
-  const results = [];
-  for (const item of seedData) {
-    const record = await prisma.<model>.upsert({
+) {
+  const languageIdByValue = new Map(
+    deps.languages.map((l) => [l.value, l.id])
+  );
+
+  for (const item of someData) {
+    const languageId = languageIdByValue.get(item.language.value);
+    await prisma.model.upsert({
       where: { /* unique field */ },
       update: { /* fields */ },
       create: { /* fields */ },
     });
-    results.push(record);
   }
-  return results;
-}
-
-export async function clear(prisma: PrismaClient): Promise<void> {
-  await prisma.<model>.deleteMany({});
 }
 ```
 
-## Common Patterns
+## Where to Look
 
-### Upsert for Idempotent Seeds
-```typescript
-await prisma.hero.upsert({
-  where: { id: existingId },
-  update: { title: "New Title" },
-  create: { title: "New Title", /* other fields */ },
-});
-```
+### Seed Issues
 
-### Cascade Deletes
-Schema uses `cascadeOwnedForeignKey` helper for owned relationships (e.g., `Resume.work` → `ResumeWork.resume`). This adds `onDelete: Cascade` to Prisma schema.
+1. **Check `SEED_ORDER`** in `seed/index.ts` — dependency order matters
+2. **Check `data/data.ts`** — all seed content lives here
+3. **Check specific component** in `seed/components/<name>.ts`
+4. **Run single component**: `pnpm db:seed <component>`
+5. **Check logs** — seed modules log success/failure with counts
 
-### Virtual Fields
-Some lists use `virtual()` for computed display values (e.g., `Image.preview`, `FooterSection.displayLabel`). These don't persist to DB.
+### Auth Issues
 
-## Prisma Development
+1. **Check Cognito group membership** — user must be in `cms-admin` group
+2. **Check JWT payload** — use `decodeJwtPayload()` in `session.ts:114`
+3. **Check `COGNITO_ISSUER`** — must match user pool URL
+4. **Check `NEXTAUTH_URL`** — must match public CMS URL
+5. **Check callback URL** — must be `https://<domain>/api/auth/callback/cognito`
 
-### Schema Changes Workflow
-```bash
-# 1. Edit schema.ts (Keystone schema)
-# 2. Generate Prisma client and migrations
-pnpm generate
+### Schema Issues
 
-# 3. Push schema to database (development)
-pnpm db:push
+1. **Run `pnpm generate`** — regenerates everything
+2. **Check `schema.ts`** — source of truth for lists
+3. **Check `prisma migrate status`** — see pending migrations
+4. **Check `generated/prisma/schema.prisma`** — verify generated schema
+5. **Restart dev server** — after schema changes
 
-# 4. Restart dev server
-pnpm dev
-```
+### Database Issues
 
-### Key Prisma Commands
-```bash
-pnpm exec prisma migrate dev      # Create migration (dev only)
-pnpm exec prisma migrate deploy   # Apply migrations (production)
-pnpm exec prisma db push          # Push schema without migrations
-pnpm exec prisma generate         # Regenerate Prisma client
-pnpm exec prisma studio           # Open Prisma Studio (DB browser)
-pnpm exec prisma format           # Format schema.prisma
-pnpm exec prisma validate         # Validate schema.prisma
-```
+1. **Check `DATABASE_URL`** — verify connection string
+2. **Check PostgreSQL is running** — `docker compose -f docker-compose.postgres.yml ps`
+3. **Check `prisma migrate status`** — pending migrations?
+4. **Check `prisma studio`** — browse data visually
+5. **Check seed logs** — what was created/skipped
 
-### Prisma Client Usage
-```typescript
-import { PrismaClient } from "../generated/prisma/client";
+### Build Failures
 
-// In seed modules, always use the factory:
-import { createPrismaClient } from "./prisma";
-const prisma = createPrismaClient();
+1. **Check env vars** — all required vars set (placeholders allowed at build time)
+2. **Check `pnpm generate`** — run before build
+3. **Check `prisma validate`** — schema valid?
+4. **Check Node.js version** — must be >=22.12
 
-// Common patterns:
-await prisma.model.findMany({ where: { ... } });
-await prisma.model.findFirst({ where: { ... } });
-await prisma.model.create({ data: { ... } });
-await prisma.model.createManyAndReturn({ data: [...] });
-await prisma.model.upsert({ where: { ... }, update: { ... }, create: { ... } });
-await prisma.model.update({ where: { ... }, data: { ... } });
-await prisma.model.deleteMany({ where: { ... } });
-await prisma.$transaction([/* array of operations */]);
-```
+## Authentication
 
-### Schema Location
-- **Keystone schema**: `schema.ts` (source of truth)
-- **Prisma schema**: `schema.prisma` (generated, never edit directly)
-- **Generated client**: `generated/prisma/` (never edit directly)
-- **Migrations**: `migrations/` directory
+1. **Provider**: Amazon Cognito via NextAuth
+2. **Session Strategy**: JWT (1 hour expiry)
+3. **Group Validation**: User must be in `cms-admin` Cognito group
+4. **Session Shape**: `{ id, userGroup }` (userGroup is "cms-admin" or null)
+5. **Access Control**: GraphQL CUD operations require `userGroup === "cms-admin"`
 
-### Important Notes
-- Never edit `generated/` files directly
-- Always run `pnpm generate` after schema changes
-- Use `cascadeOwnedForeignKey` helper for owned relationships
-- Virtual fields don't persist to DB (computed at query time)
-
-## Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `DATABASE_URL` | Yes | PostgreSQL connection string |
-| `NEXTAUTH_SECRET` | Yes | NextAuth JWT secret |
-| `NEXTAUTH_URL` | Yes | Public CMS URL (e.g., https://cms.example.com) |
-| `COGNITO_CLIENT_ID` | Yes | Cognito app client ID |
-| `COGNITO_CLIENT_SECRET` | Yes | Cognito app client secret |
-| `COGNITO_ISSUER` | Yes | Cognito user pool issuer URL |
-| `CMS_AUTH_GROUP` | Yes | Must be "cms-admin" |
-| `CORS_ORIGIN` | No | Comma-separated allowed origins |
-
-**Never commit `.env` files.** Use `.env.copy` as template.
-
-## Security Considerations
-
-1. **Access Control**: All CUD operations require CMS admin group membership
-2. **JWT Validation**: NextAuth handles Cognito token verification
-3. **CORS**: Configurable via `CORS_ORIGIN` env var
-4. **Build-Time Safety**: `requireEnv()` returns placeholder during `postinstall`/`build`
-5. **Production Clear**: Requires explicit `--confirm-production-clear` flag or `ALLOW_PRODUCTION_DB_CLEAR=true`
-
-## Debugging Tips
-
-1. **Seed Issues**: Check `SEED_ORDER` dependencies. Run specific component: `pnpm db:seed <component>`
-2. **Auth Issues**: Verify Cognito group membership, check JWT payload with `decodeJwtPayload()`
-3. **Schema Issues**: Run `pnpm generate` → `prisma db push` → restart dev
-4. **Database Issues**: Check `DATABASE_URL`, verify PostgreSQL connection
-5. **Build Failures**: Ensure all env vars set (except at build time where placeholders allowed)
+**Key**: `decodeJwtPayload()` in `session.ts` reads JWT claims without signature verification (NextAuth handles that). Use it for debugging token contents.
 
 ## Deployment (Northflank)
 
@@ -284,6 +329,8 @@ await prisma.$transaction([/* array of operations */]);
 4. Health check: `/api/graphql?query=%7B__typename%7D`
 
 **Never run `pnpm db:reset` or `pnpm db:fresh` in production.**
+
+See `docs/deployment.md` for full deployment guide.
 
 ## Available Skills
 
@@ -306,15 +353,15 @@ Use these skills to minimize token consumption:
 
 | Skill | Purpose | Trigger |
 |-------|---------|---------|
-| `prisma-cli` | CLI commands reference (init, generate, migrate, db, studio, etc.) | "prisma init", "prisma generate", "prisma migrate", "prisma db" |
-| `prisma-client-api` | Client API reference (queries, filters, CRUD, $transaction) | "prisma query", "findMany", "create", "update", "delete" |
-| `prisma-database-setup` | Database provider configuration (PostgreSQL, MySQL, SQLite, MongoDB) | "configure postgres", "connect to mysql", "setup mongodb" |
-| `prisma-postgres` | Prisma Postgres setup/provisioning via Console, CLI, Management API | "create a Prisma Postgres project", "provision a database" |
-| `prisma-postgres-setup` | Step-by-step Prisma Postgres provisioning via Management API | "set up a database", "get a connection string" |
-| `prisma-compute` | Deployment/hosting guide for Prisma apps | "deploying or hosting a Prisma app", "compute:deploy" |
-| `prisma-upgrade-v7` | Migration guide from Prisma v6 to v7 (breaking changes, new generator) | "upgrade to prisma 7", "prisma 7 migration" |
-| `prisma-driver-adapter-implementation` | SQL driver adapter implementation reference (v7) | "SqlDriverAdapter", "savepoint", "DriverAdapterError" |
-| `prisma-mongodb-upgrade` | MongoDB v6→v7 decision/migration guide | "upgrade prisma mongodb", "prisma 7 mongodb" |
+| `prisma-cli` | CLI commands reference | "prisma init", "prisma generate" |
+| `prisma-client-api` | Client API reference | "prisma query", "findMany" |
+| `prisma-database-setup` | Database provider configuration | "configure postgres" |
+| `prisma-postgres` | Prisma Postgres setup/provisioning | "create a Prisma Postgres project" |
+| `prisma-postgres-setup` | Step-by-step Prisma Postgres provisioning | "set up a database" |
+| `prisma-compute` | Deployment/hosting guide | "deploying a Prisma app" |
+| `prisma-upgrade-v7` | Migration guide from Prisma v6 to v7 | "upgrade to prisma 7" |
+| `prisma-driver-adapter-implementation` | SQL driver adapter reference | "SqlDriverAdapter" |
+| `prisma-mongodb-upgrade` | MongoDB v6→v7 migration guide | "upgrade prisma mongodb" |
 
 ## Code Style
 

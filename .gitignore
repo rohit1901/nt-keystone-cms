@@ -146,6 +146,7 @@ keystone.db
 .DS_Store
 scratch.ts
 scripts/
+data/prod.data.backup.json
 
 # Keep ad-hoc documentation ignored, but track the canonical deployment guide.
 docs/*

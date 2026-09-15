@@ -84,7 +84,7 @@ pnpm dev
 
 ## Database safety
 
-> **Destructive commands:** `pnpm db:clear`, `pnpm db:clear:all`, `pnpm db:reset`, `pnpm db:reset:seed`, and `pnpm db:fresh` delete content or reset the schema. Verify the target `DATABASE_URL` and take any required backup before running them. Do not run them against production unless data loss is intentional.
+> **Destructive commands:** `pnpm db:clear`, `pnpm db:reset`, `pnpm db:reset:seed`, and `pnpm db:fresh` delete content or reset the schema. Verify the target `DATABASE_URL` and take any required backup before running them. Do not run them against production unless data loss is intentional.
 
 Use `pnpm generate` only for development migration work and Prisma client generation. In production, run `pnpm exec prisma migrate deploy` in a dedicated deployment migration job before releasing the web service. Do not make schema migration part of application startup. See [the Northflank/Docker deployment guide](docs/deployment.md).
 
@@ -102,10 +102,8 @@ These are the scripts currently defined in `package.json`:
 | `pnpm generate` | Regenerate Keystone schemas/client, run `prisma migrate dev`, then `prisma generate`. |
 | `pnpm db:push` | Regenerate Keystone schemas/client, push with `prisma db push`, then `prisma generate`. |
 | `pnpm db:seed` | Run the seed CLI. |
-| `pnpm db:seed:all` | Run the seed CLI with `--all`. |
 | `pnpm db:seed:help` | Show seed CLI help. |
 | `pnpm db:clear` | Run the clear CLI. |
-| `pnpm db:clear:all` | Run the clear CLI with `--all`. |
 | `pnpm db:clear:help` | Show clear CLI help. |
 | `pnpm db:reset` | Regenerate Keystone schemas/client, force-reset with `prisma db push`, then run `prisma generate`. |
 | `pnpm db:reset:seed` | Force-reset the database, generate the Prisma client, then seed it. |
