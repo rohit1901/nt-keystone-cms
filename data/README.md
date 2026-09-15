@@ -1,10 +1,23 @@
 # `data/`
 
-This directory has two different roles:
+Single source of truth for all seed content (EN + DE) and shared types.
 
-- `data.ts` is legacy, reference-only website content. It is not an active seed source and should not be edited as part of content updates.
-- `types.ts` contains active shared types used by seed modules.
-- `icons/remixicon-map.ts` is an active icon mapping used by seed modules.
-- `index.ts` re-exports the active shared types from `types.ts`.
+## Files
 
-Maintain actual seed content under `seed/`. See the [seed CLI guide](../seed/README.md) for usage.
+- `data.ts` — All seed data as typed arrays. Seed components import from here instead of hardcoding inline.
+- `types.ts` — Shared TypeScript types (`Maybe`, `WithId`, `ImageConfig`, `CTA`, etc.).
+- `index.ts` — Barrel export for both `types` and `data`.
+
+## Usage
+
+Seed components import data directly:
+
+```typescript
+import { benefitsSectionsData, ctasData, imageSeedData } from "../../data";
+```
+
+## Maintenance
+
+- Edit `data.ts` to update seed content
+- Edit `types.ts` to add/modify shared types
+- Never edit `generated/` files directly

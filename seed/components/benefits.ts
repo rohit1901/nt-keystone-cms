@@ -2,93 +2,11 @@ import type { SeededImages } from "./images";
 import type { PrismaClient } from "../prisma";
 import type { SeededSlugs } from "./slugs";
 import type { SeededCTAs } from "./ctas";
-import { BenefitSection } from "../../data";
+import { benefitsSectionsData } from "../../data";
 import { SeededFooterLanguages } from "./footer";
 
 export type SeededBenefits = Awaited<ReturnType<typeof seed>>;
 export type SeededBenefitSections = Awaited<ReturnType<typeof seedSection>>;
-
-// --- Data ---
-const benefitsSectionsData: BenefitSection[] = [
-  {
-    title: "Why small, mid-market, and enterprise businesses choose Nimbus Tech",
-    language: {
-      label: "English",
-      value: "en-US",
-    },
-    benefits: [
-      {
-        icon: "RiMoneyEuroBoxFill",
-        title: "Transparent Costs",
-        description:
-          "We design your AWS environment with cloud cost optimization in mind so that costs remain predictable and under control – no hidden surprises.",
-        language: {
-          label: "English",
-          value: "en-US",
-        },
-      },
-      {
-        icon: "RiAwardFill",
-        title: "AWS-Certified Experts",
-        description:
-          "You work directly with experienced, AWS-certified architects and engineers who design according to the AWS Well-Architected Framework – not a rotating team of juniors.",
-        language: {
-          label: "English",
-          value: "en-US",
-        },
-      },
-      {
-        icon: "RiFlashlightFill",
-        title: "Fast, Pragmatic Delivery",
-        description:
-          "We focus on lean, cloud-native solutions that can go live quickly, using serverless computing and managed services where they make sense, so your setup can evolve with your business.",
-        language: {
-          label: "English",
-          value: "en-US",
-        },
-      },
-    ],
-  },
-  {
-    title: "Warum Unternehmen mit Nimbus Tech arbeiten",
-    language: {
-      label: "German",
-      value: "de-DE",
-    },
-    benefits: [
-      {
-        icon: "RiMoneyEuroBoxFill",
-        title: "Klare Kosten",
-        description:
-          "Wir gestalten Ihre AWS-Umgebung mit Fokus auf Cloud-Kostenoptimierung, sodass Kosten planbar bleiben und Sie jederzeit den Überblick behalten – ohne böse Überraschungen.",
-        language: {
-          label: "German",
-          value: "de-DE",
-        },
-      },
-      {
-        icon: "RiAwardFill",
-        title: "Zertifizierte AWS-Experten",
-        description:
-          "Sie arbeiten direkt mit erfahrenen, AWS-zertifizierten Architekt:innen und Engineer:innen, die nach dem AWS Well-Architected Framework entwerfen – nicht mit ständig wechselnden Junior-Teams.",
-        language: {
-          label: "German",
-          value: "de-DE",
-        },
-      },
-      {
-        icon: "RiFlashlightFill",
-        title: "Schnelle, praxisnahe Umsetzung",
-        description:
-          "Wir setzen schlanke, cloud-native Lösungen um, die schnell live gehen – mit Serverless Computing und Managed Services, wo sie sinnvoll sind – und die mit Ihrem Geschäft mitwachsen.",
-        language: {
-          label: "German",
-          value: "de-DE",
-        },
-      },
-    ],
-  },
-];
 
 const seed = async (
   prisma: PrismaClient,

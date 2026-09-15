@@ -3,10 +3,9 @@ import type { PrismaClient } from "../prisma";
 import type { SeededImages } from "./images";
 import type { SeededSlugs } from "./slugs";
 import {
-  Language,
-  TestimonialBadge,
-  TestimonialItem,
-  TestimonialSection,
+  testimonialBadges,
+  testimonialItems,
+  testimonialSections,
 } from "../../data";
 import { SeededFooterLanguages } from "./footer";
 
@@ -15,76 +14,6 @@ export type SeededTestimonialItems = Awaited<ReturnType<typeof seedItems>>;
 export type SeededTestimonialSections = Awaited<
   ReturnType<typeof seedSections>
 >;
-
-// --- Testimonial Badge data ---
-const english: Language = {
-  label: "English",
-  value: "en-US",
-};
-
-const german: Language = {
-  label: "German",
-  value: "de-DE",
-};
-
-export const testimonialBadges: TestimonialBadge[] = [
-  {
-    icon: "RiTimeLine",
-    label: "Coming Soon",
-    language: english,
-  },
-  {
-    icon: "RiTimeLine",
-    label: "Bald verfügbar",
-    language: german,
-  },
-];
-
-// --- Testimonial Item data ---
-export const testimonialItems: TestimonialItem[] = [
-  {
-    rating: 5.0,
-    badge: testimonialBadges.find(
-      (badge) => badge.language.value === english.value,
-    ),
-    name: "The Nimbus Tech Team",
-    role: "AWS Cloud & Software Experts, Germany",
-    company: "Nimbus Tech",
-    content:
-      "As Nimbus Tech launches, we look forward to partnering with small, mid-market, and enterprise businesses to deliver clear, effective AWS cloud solutions. Your feedback could be featured here!",
-    imageKey: "testimonialLogo",
-    language: english,
-  },
-  {
-    rating: 5.0,
-    badge: testimonialBadges.find(
-      (badge) => badge.language.value === german.value,
-    ),
-    name: "Das Nimbus Tech Team",
-    role: "AWS-Cloud- & Software-Expert:innen, Deutschland",
-    company: "Nimbus Tech",
-    content:
-      "Zum Start von Nimbus Tech freuen wir uns darauf, gemeinsam mit Unternehmen klare, wirksame AWS-Cloud-Lösungen umzusetzen. Ihr Feedback könnte hier erscheinen!",
-    imageKey: "testimonialLogo",
-    language: german,
-  },
-];
-
-// --- Testimonial Section data ---
-export const testimonialSections: TestimonialSection[] = [
-  {
-    title: "Client Success Stories",
-    backgroundImageKeys: ["testimonialField", "testimonialDrone"],
-    fallbackIndex: 0,
-    language: english,
-  },
-  {
-    title: "Kundenerfahrungen",
-    backgroundImageKeys: ["testimonialField", "testimonialDrone"],
-    fallbackIndex: 0,
-    language: german,
-  },
-];
 
 const seedBadges = async (
   prisma: PrismaClient,

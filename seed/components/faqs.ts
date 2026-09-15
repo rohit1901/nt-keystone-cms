@@ -1,153 +1,15 @@
 import { PrismaClient } from "../prisma";
-import { FAQ, FaqSection } from "../../data";
+import { faqData, faqSectionsData } from "../../data";
 import { SeededFooterLanguages } from "./footer";
 
 export type SeededFAQs = Awaited<ReturnType<typeof seed>>;
 export type SeededFaqSections = Awaited<ReturnType<typeof seedSections>>;
 
-// --- FAQ data ---
-export const faqs: FAQ[] = [
-  // English FAQs (en-US)
-  {
-    question: "Who is Nimbus Tech a good fit for?",
-    answer:
-      "We primarily work with small and medium-sized businesses and startups that want to use AWS more effectively – for new products, migrations, or to stabilize and optimize existing setups.",
-    language: {
-      label: "English",
-      value: "en-US",
-    },
-  },
-  {
-    question: "Do you only work with AWS?",
-    answer:
-      "Our clear focus is AWS. We may connect to other platforms or tools if needed, but our consulting, architecture, and operations work is centered on AWS.",
-    language: {
-      label: "English",
-      value: "en-US",
-    },
-  },
-  {
-    question: "How does a typical engagement start?",
-    answer:
-      "We usually start with a free 15-minute call to understand your situation. After that, we can offer a short assessment or architecture review and then define a concrete project scope with timeline and budget.",
-    language: {
-      label: "English",
-      value: "en-US",
-    },
-  },
-  {
-    question: "Can you help if we already use AWS?",
-    answer:
-      "Yes. Many clients come to us with an existing AWS setup that has grown over time. We review your environment using the AWS Well-Architected Framework, highlight risks and opportunities, and then help you clean up, secure, and optimize costs using best practices for multi-account strategies and Infrastructure as Code (IaC).",
-    language: {
-      label: "English",
-      value: "en-US",
-    },
-  },
-  {
-    question: "How do you charge for your services?",
-    answer:
-      "We offer fixed-price packages for assessments and clearly scoped projects, and transparent day rates for ongoing support. Together we choose the model that fits your budget and decision process.",
-    language: {
-      label: "English",
-      value: "en-US",
-    },
-  },
-  {
-    question: "Do you provide ongoing support after a project?",
-    answer:
-      "If you wish, we stay on as your AWS partner for monitoring, incident response, and continuous improvements. We can also train your internal team so they become more self-sufficient over time.",
-    language: {
-      label: "English",
-      value: "en-US",
-    },
-  },
-  // German FAQs (de-DE)
-  {
-    question: "Für welche Unternehmen ist Nimbus Tech geeignet?",
-    answer:
-      "Wir arbeiten vor allem mit kleinen und mittelständischen Unternehmen sowie Start-ups, die AWS gezielt einsetzen möchten – für neue Produkte, Migrationen oder die Stabilisierung bestehender Umgebungen.",
-    language: {
-      label: "German",
-      value: "de-DE",
-    },
-  },
-  {
-    question: "Arbeiten Sie ausschließlich mit AWS?",
-    answer:
-      "Unser klarer Schwerpunkt ist AWS. Wo nötig binden wir andere Plattformen oder Tools an, aber unsere Beratung, Architektur und der Betrieb sind auf AWS ausgerichtet.",
-    language: {
-      label: "German",
-      value: "de-DE",
-    },
-  },
-  {
-    question: "Wie startet eine Zusammenarbeit typischerweise?",
-    answer:
-      "In der Regel beginnen wir mit einem kostenlosen 15-minütigen Gespräch, um Ihre Situation zu verstehen. Darauf folgt bei Bedarf ein kompaktes Assessment oder Architektur-Review, aus dem wir ein konkretes Projektangebot mit Umfang, Zeitplan und Budget ableiten.",
-    language: {
-      label: "German",
-      value: "de-DE",
-    },
-  },
-  {
-    question: "Unterstützen Sie auch bestehende AWS-Setups?",
-    answer:
-      "Ja. Viele Kund:innen kommen mit einer bestehenden AWS-Umgebung zu uns, die über die Zeit gewachsen ist. Wir überprüfen Ihre Umgebung mit dem AWS Well-Architected Framework, zeigen Risiken und Chancen auf und helfen Ihnen anschließend, mit einer passenden Multi-Account-Strategie sowie Infrastructure as Code (IaC) Sicherheit und Kosten zu optimieren.",
-    language: {
-      label: "German",
-      value: "de-DE",
-    },
-  },
-  {
-    question: "Wie berechnen Sie Ihre Leistungen?",
-    answer:
-      "Für Assessments und klar umrissene Projekte bieten wir Festpreise an, für laufende Unterstützung transparente Tagessätze. Gemeinsam wählen wir das Modell, das zu Ihrem Budget und Entscheidungsprozess passt.",
-    language: {
-      label: "German",
-      value: "de-DE",
-    },
-  },
-  {
-    question: "Bieten Sie laufende Betreuung an?",
-    answer:
-      "Auf Wunsch bleiben wir als AWS-Partner an Ihrer Seite – für Monitoring, Incident-Response und kontinuierliche Verbesserungen. Außerdem können wir Ihr internes Team gezielt weiterbilden.",
-    language: {
-      label: "German",
-      value: "de-DE",
-    },
-  },
-];
-
-// --- FAQ Section data ---
-export const faqSections: FaqSection[] = [
-  {
-    title: "Frequently Asked Questions",
-    description:
-      "Find answers to common questions about our AWS cloud consulting, migration projects, and how we work with small, mid-market, and enterprise businesses.",
-    faqs: faqs.filter((faq) => faq.language.value === "en-US"),
-    language: {
-      label: "English",
-      value: "en-US",
-    },
-  },
-  {
-    title: "Häufige Fragen",
-    description:
-      "Antworten auf typische Fragen zu unserer AWS-Cloud-Beratung, Migrationsprojekten und der Zusammenarbeit mit Unternehmen.",
-    faqs: faqs.filter((faq) => faq.language.value === "de-DE"),
-    language: {
-      label: "German",
-      value: "de-DE",
-    },
-  },
-];
-
 const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
   const languageIdByValue = new Map(
     languages.map((language) => [language.value, language.id]),
   );
-  const faqKeys = faqs.flatMap((faq) => {
+  const faqKeys = faqData.flatMap((faq) => {
     const languageId = languageIdByValue.get(faq.language.value);
     return languageId ? [{ question: faq.question, languageId }] : [];
   });
@@ -164,7 +26,7 @@ const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
   );
 
   // Filter out FAQs that already exist
-  const faqsToCreate = faqs
+  const faqsToCreate = faqData
     .map((faq) => {
       const languageId = languageIdByValue.get(faq.language.value);
 
@@ -211,7 +73,7 @@ const seedSections = async (
   const languageIdByValue = new Map(
     languages.map((language) => [language.value, language.id]),
   );
-  const sectionKeys = faqSections.flatMap((section) => {
+  const sectionKeys = faqSectionsData.flatMap((section) => {
     const languageId = languageIdByValue.get(section.language.value);
     return languageId ? [{ title: section.title, languageId }] : [];
   });
@@ -228,7 +90,7 @@ const seedSections = async (
   );
 
   // Filter out sections that already exist
-  const sectionsToCreate = faqSections.filter((section) => {
+  const sectionsToCreate = faqSectionsData.filter((section) => {
     const languageId = languageIdByValue.get(section.language.value);
     const key = `${section.title}|${languageId}`;
     return !existingSectionKeys.has(key);
@@ -290,7 +152,7 @@ const clear = async (prisma: PrismaClient) => {
 };
 
 const FAQs = {
-  data: faqSections,
+  data: faqSectionsData,
   seed,
   seedSections,
   clear,

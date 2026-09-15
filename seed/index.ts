@@ -61,7 +61,7 @@ function isSeedComponent(component: string): component is SeedComponent {
 }
 
 // Cache for seeded dependencies to avoid re-seeding
-type SeedCache = {
+export type SeedCache = {
   slugs?: Awaited<ReturnType<typeof Slugs.seed>>;
   languages?: Awaited<ReturnType<typeof Footer.seedLanguages>>;
   images?: Awaited<ReturnType<typeof Images.seed>>;

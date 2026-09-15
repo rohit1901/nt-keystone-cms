@@ -1,31 +1,8 @@
 import type { PrismaClient } from "../prisma";
-import { MapSection } from "../../data";
+import { mapData } from "../../data";
 import { SeededFooterLanguages } from "./footer";
 
 export type SeededMap = Awaited<ReturnType<typeof seed>>;
-
-const mapPageContent: MapSection[] = [
-  {
-    title: "Global AWS Reach, Local Expertise",
-    subheading: "Cloud-native AWS architectures for businesses of all sizes.",
-    description:
-      "We design and operate secure, cost-optimized AWS environments using multi-account strategies, Infrastructure as Code (IaC), and automation – wherever your team is based.",
-    language: {
-      value: "en-US",
-      label: "English",
-    },
-  },
-  {
-    title: "Globale AWS-Reichweite, lokale Expertise",
-    subheading: "Cloud-native AWS-Architekturen für Unternehmen jeder Größe.",
-    description:
-      "Wir entwerfen und betreiben sichere, kostenoptimierte AWS-Umgebungen mit Multi-Account-Strategien, Infrastructure as Code (IaC) und Automatisierung – ganz gleich, wo Ihr Team ansässig ist.",
-    language: {
-      value: "de-DE",
-      label: "German",
-    },
-  },
-];
 
 const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
   console.log("Seeding map content...");
@@ -33,7 +10,7 @@ const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
   const languageIdByValue = new Map(
     languages.map((language) => [language.value, language.id]),
   );
-  const mapKeys = mapPageContent.flatMap((section) => {
+  const mapKeys = mapData.flatMap((section) => {
     const languageId = languageIdByValue.get(section.language.value);
     return languageId ? [{ title: section.title, languageId }] : [];
   });
@@ -50,7 +27,7 @@ const seed = async (prisma: PrismaClient, languages: SeededFooterLanguages) => {
   );
 
   // Filter out maps that already exist
-  const mapsToCreate = mapPageContent
+  const mapsToCreate = mapData
     .map((section) => {
       const languageId = languageIdByValue.get(section.language.value);
 
@@ -95,7 +72,7 @@ const clear = async (prisma: PrismaClient) => {
 };
 
 const Maps = {
-  data: mapPageContent,
+  data: mapData,
   seed,
   clear,
 };

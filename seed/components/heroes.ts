@@ -2,75 +2,10 @@ import type { SeededImages } from "./images";
 import type { PrismaClient } from "../prisma";
 import type { SeededSlugs } from "./slugs";
 import Ctas, { SeededCTAs } from "./ctas";
-import { CTA, HeroType } from "../../data";
+import { heroesData, ctasData } from "../../data";
 import { SeededFooterLanguages } from "./footer";
 
 export type SeededHeroes = Awaited<ReturnType<typeof seed>>;
-
-// --- Heroes Data ---
-
-const fallbackCTA: CTA[] = [
-  {
-    label: "News",
-    href: "https://nimbustechgmbh.substack.com/p/nimbus-tech-gmbh-is-launching-soon",
-    external: true,
-    type: "hero",
-    language: { label: "English", value: "en-US" },
-  },
-  {
-    label: "Aktuelles",
-    href: "https://nimbustechgmbh.substack.com/p/nimbus-tech-gmbh-is-launching-soon",
-    external: true,
-    type: "hero",
-    language: { label: "German", value: "de-DE" },
-  },
-];
-
-// Helper to find banner CTA by language
-const getBannerCta = (langValue: string) =>
-  Ctas.ctas.find(
-    (cta) =>
-      cta.type === "hero" && cta.external && cta.language.value === langValue,
-  ) ??
-  fallbackCTA.find((c) => c.language.value === langValue) ??
-  fallbackCTA[0];
-
-const heroesData: HeroType[] = [
-  // English Hero
-  {
-    title: "AWS Cloud Consulting for SMEs & Startups",
-    description:
-      "AWS expertise in cloud-native architecture, secure cloud transformation, and cost-optimized infrastructures for your business.",
-    language: { label: "English", value: "en-US" },
-    hero: {
-      subHeading: "AWS expertise for cloud-native, secure, and cost-optimized infrastructures.",
-      banner: {
-        ...getBannerCta("en-US"),
-        additional: {
-          icon: "RiArrowRightUpLine",
-          text: "Nimbus Tech is launching soon!",
-        },
-      },
-    },
-  },
-  // German Hero
-  {
-    title: "Nimbus Tech",
-    description:
-      "Nimbus Tech unterstützt kleine und mittelständische Unternehmen sowie Start-ups in der DACH-Region dabei, AWS optimal zu nutzen – mit cloud-native Architekturen und einer durchdachten Multi-Account-Strategie. Wir planen, bauen und optimieren Ihre Cloud-Umgebung mit Infrastructure as Code (IaC), setzen Serverless Computing dort ein, wo es sinnvoll ist, und nutzen bewährte Methoden zur Kostenoptimierung.",
-    language: { label: "German", value: "de-DE" },
-    hero: {
-      subHeading: "AWS-Expertise für cloud-native, sichere und kostenoptimierte Infrastrukturen.",
-      banner: {
-        ...getBannerCta("de-DE"),
-        additional: {
-          icon: "RiArrowRightUpLine",
-          text: "Nimbus Tech startet bald!",
-        },
-      },
-    },
-  },
-];
 
 const seed = async (
   prisma: PrismaClient,

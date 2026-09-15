@@ -17,7 +17,7 @@ pnpm db:clear -- --resume
 pnpm db:clear -- --resume --analytics --navigation
 pnpm db:clear resume analytics navigation
 pnpm db:clear -- --pages privacy-policy terms
-pnpm db:clear:all
+pnpm db:clear -- --all
 ```
 
 Arguments after `--` are passed to the script. Plain component names can also be passed directly.

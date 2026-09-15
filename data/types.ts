@@ -1,5 +1,9 @@
-import type { Maybe } from "../seed/types";
 import type { remixIconMap } from "./icons/remixicon-map";
+
+// --- Utility Types ---
+export type Maybe<T> = T | null | undefined;
+export type WithId<T> = T & { id: number };
+
 // --- Image Types ---
 export type ImageConfig = {
   src: string;
@@ -51,6 +55,25 @@ export type FaqSection = {
 };
 
 export type CtaImageKeys = "ctaForeground";
+
+// --- Image Key Types (used by seed image data) ---
+export type TestimonialImageKey =
+  | "testimonialField"
+  | "testimonialDrone"
+  | "testimonialLogo";
+
+export type ResumeImageKey =
+  | "resumePhotoFlori"
+  | "resumePhoto";
+
+export type NavigationImageKey = "navigationPrimary";
+
+export type ImageKeys =
+  | CertificationImageKey
+  | CtaImageKeys
+  | NavigationImageKey
+  | TestimonialImageKey
+  | ResumeImageKey;
 export type CTA = {
   label: string;
   href: string;
@@ -368,5 +391,4 @@ const example: PageWithBenefitsAndFaq = {
 };
 */
 
-// Prisma Types
-export type PrismaType<T, U = {}> = T & { id: number } & U;
+
