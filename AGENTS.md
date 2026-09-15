@@ -188,6 +188,63 @@ Schema uses `cascadeOwnedForeignKey` helper for owned relationships (e.g., `Resu
 ### Virtual Fields
 Some lists use `virtual()` for computed display values (e.g., `Image.preview`, `FooterSection.displayLabel`). These don't persist to DB.
 
+## Prisma Development
+
+### Schema Changes Workflow
+```bash
+# 1. Edit schema.ts (Keystone schema)
+# 2. Generate Prisma client and migrations
+pnpm generate
+
+# 3. Push schema to database (development)
+pnpm db:push
+
+# 4. Restart dev server
+pnpm dev
+```
+
+### Key Prisma Commands
+```bash
+pnpm exec prisma migrate dev      # Create migration (dev only)
+pnpm exec prisma migrate deploy   # Apply migrations (production)
+pnpm exec prisma db push          # Push schema without migrations
+pnpm exec prisma generate         # Regenerate Prisma client
+pnpm exec prisma studio           # Open Prisma Studio (DB browser)
+pnpm exec prisma format           # Format schema.prisma
+pnpm exec prisma validate         # Validate schema.prisma
+```
+
+### Prisma Client Usage
+```typescript
+import { PrismaClient } from "../generated/prisma/client";
+
+// In seed modules, always use the factory:
+import { createPrismaClient } from "./prisma";
+const prisma = createPrismaClient();
+
+// Common patterns:
+await prisma.model.findMany({ where: { ... } });
+await prisma.model.findFirst({ where: { ... } });
+await prisma.model.create({ data: { ... } });
+await prisma.model.createManyAndReturn({ data: [...] });
+await prisma.model.upsert({ where: { ... }, update: { ... }, create: { ... } });
+await prisma.model.update({ where: { ... }, data: { ... } });
+await prisma.model.deleteMany({ where: { ... } });
+await prisma.$transaction([/* array of operations */]);
+```
+
+### Schema Location
+- **Keystone schema**: `schema.ts` (source of truth)
+- **Prisma schema**: `schema.prisma` (generated, never edit directly)
+- **Generated client**: `generated/prisma/` (never edit directly)
+- **Migrations**: `migrations/` directory
+
+### Important Notes
+- Never edit `generated/` files directly
+- Always run `pnpm generate` after schema changes
+- Use `cascadeOwnedForeignKey` helper for owned relationships
+- Virtual fields don't persist to DB (computed at query time)
+
 ## Environment Variables
 
 | Variable | Required | Description |
@@ -237,6 +294,8 @@ Use these skills to minimize token consumption:
 | `caveman` | Ultra-compressed communication | "caveman mode", `/caveman` |
 | `caveman-commit` | Compressed commit messages | "write commit", `/commit` |
 | `caveman-review` | Compressed code review | "review PR", `/review` |
+| `caveman-compress` | Compress memory files | "compress memory file" |
+| `caveman-help` | Quick reference for caveman commands | "caveman help" |
 | `pragmatic-development` | Conservative, minimal-change approach | Always applicable |
 | `vercel-react-best-practices` | React/Next.js performance | React/Next.js code |
 | `nextjs-typescript` | Next.js TypeScript patterns | Next.js code |
